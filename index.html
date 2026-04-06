@@ -113,14 +113,14 @@ nav .container{display:flex;align-items:center;justify-content:space-between;gap
 .hero-phone{position:relative;animation:float 6s ease-in-out infinite}
 .hero-phone .glow-ring{position:absolute;inset:-30px;border-radius:50px;background:radial-gradient(ellipse,rgba(124,58,237,.2) 0%,rgba(255,77,0,.1) 50%,transparent 70%);filter:blur(20px);pointer-events:none;z-index:0}
 /* Hero phone — live iframe mockup */
-.hero-phone-outer{position:relative;width:320px;filter:drop-shadow(0 0 40px rgba(124,58,237,.3)) drop-shadow(0 0 80px rgba(255,77,0,.12))}
+.hero-phone-outer{position:relative;width:400px;filter:drop-shadow(0 0 40px rgba(124,58,237,.3)) drop-shadow(0 0 80px rgba(255,77,0,.12))}
 .hero-phone-outer::before{content:'';position:absolute;inset:-2px;border-radius:46px;background:linear-gradient(135deg,rgba(124,58,237,.4),rgba(255,77,0,.2),rgba(124,58,237,.1),rgba(255,122,0,.3));z-index:0;animation:spin-slow 8s linear infinite}
-.hero-phone-frame{position:relative;width:320px;height:680px;border-radius:44px;background:#08080f;border:2px solid rgba(255,255,255,.06);overflow:hidden;z-index:1}
+.hero-phone-frame{position:relative;width:400px;height:880px;border-radius:44px;background:#08080f;border:2px solid rgba(255,255,255,.06);overflow:hidden;z-index:1}
 .hero-phone-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:110px;height:28px;background:#08080f;border-radius:0 0 18px 18px;z-index:10;display:flex;align-items:center;justify-content:center;gap:7px;padding-bottom:4px}
 .hero-phone-notch .cam{width:10px;height:10px;border-radius:50%;background:#1a1a2e;border:1.5px solid rgba(255,255,255,.08)}
 .hero-phone-notch .spkr{width:40px;height:5px;border-radius:3px;background:#111122}
 .hero-phone-screen{position:absolute;top:0;left:0;right:0;bottom:0;overflow:hidden;border-radius:42px}
-.hero-phone-screen iframe{width:430px;height:953px;border:0;transform:scale(0.7442);transform-origin:top left;pointer-events:all;display:block}
+.hero-phone-screen iframe{width:430px;height:953px;border:0;transform:scale(0.9302);transform-origin:top left;pointer-events:all;display:block}
 .hero-phone-home{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:100px;height:4px;border-radius:2px;background:rgba(255,255,255,.25);z-index:10;pointer-events:none}
 .hero-phone .fb{position:absolute;z-index:3;padding:10px 16px;border-radius:14px;background:rgba(14,13,26,.95);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.07);font-size:12px;font-weight:500;white-space:nowrap;animation:float 4s ease-in-out infinite alternate}
 .hero-phone .fb1{top:14%;right:-84px}
@@ -133,9 +133,9 @@ nav .container{display:flex;align-items:center;justify-content:space-between;gap
   .hero-stats{justify-content:center}
   .hero-visual{margin-top:40px}
   .hero-phone .fb{display:none}
-  .hero-phone-outer,.hero-phone-frame{width:260px}
-  .hero-phone-frame{height:552px}
-  .hero-phone-screen iframe{transform:scale(0.6047)}
+  .hero-phone-outer,.hero-phone-frame{width:300px}
+  .hero-phone-frame{height:660px}
+  .hero-phone-screen iframe{transform:scale(0.6977)}
 }
 
 /* ── STATS BAR ───────────────────────────────────────────── */
@@ -461,7 +461,6 @@ footer{padding:48px 0 110px;border-top:1px solid rgba(255,255,255,.04)}
     </a>
     <div class="nav-links">
       <a href="#features">Fonctionnalités</a>
-      <a href="#app-demo">L'App Live</a>
       <a href="#community">GoatHub</a>
       <a href="#insta">Instagram</a>
       <a href="#beta">Accès bêta</a>
@@ -638,94 +637,6 @@ footer{padding:48px 0 110px;border-top:1px solid rgba(255,255,255,.04)}
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- ═══════════════ APP INTERACTIVE DEMO ═══════════════ -->
-<section class="app-demo" id="app-demo">
-  <div class="app-demo-glow"></div>
-  <div class="container">
-    <div class="app-demo-header reveal">
-      <div class="section-label centered">Démo interactive</div>
-      <div class="section-title">Teste l'app.<br><span class="gradient">Maintenant.</span></div>
-      <p class="section-sub" style="margin:14px auto 0">Scroll dans le téléphone. Clique. Explore. C'est l'app réelle — pas une maquette, pas un mockup statique.</p>
-    </div>
-
-    <div class="phone-mockup-wrap">
-
-      <!-- Phone mockup -->
-      <div class="phone-mockup reveal">
-        <div class="phone-outer">
-          <div class="phone-frame">
-            <!-- Notch -->
-            <div class="phone-notch">
-              <div class="cam"></div>
-              <div class="spkr"></div>
-              <div class="cam"></div>
-            </div>
-            <!-- App iframe -->
-            <div class="phone-screen">
-              <iframe
-                src="appli/appli.html"
-                scrolling="yes"
-                frameborder="0"
-                title="GOAT FUEL — Application interactive"
-                loading="lazy"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              ></iframe>
-            </div>
-            <!-- Home bar -->
-            <div class="phone-home-bar"></div>
-            <!-- Side buttons -->
-            <div class="phone-side-btn vol1"></div>
-            <div class="phone-side-btn vol2"></div>
-            <div class="phone-side-btn pwr"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Features list -->
-      <div class="demo-features reveal">
-        <h3>L'app complète,<br>dans ta poche.</h3>
-        <p class="sub">Scroll dans le téléphone pour explorer toutes les fonctionnalités. Clique sur les onglets de navigation pour naviguer entre les écrans.</p>
-        <div class="demo-feat-list">
-          <div class="demo-feat">
-            <div class="df-icon">🏠</div>
-            Dashboard personnalisé
-          </div>
-          <div class="demo-feat">
-            <div class="df-icon">💪</div>
-            Tracking entraînements ultra-rapide
-          </div>
-          <div class="demo-feat">
-            <div class="df-icon">🍗</div>
-            Suivi nutrition & macros
-          </div>
-          <div class="demo-feat">
-            <div class="df-icon">🏆</div>
-            Records personnels avec photo
-          </div>
-          <div class="demo-feat">
-            <div class="df-icon">⚔️</div>
-            Classement compétitif live
-          </div>
-          <div class="demo-feat">
-            <div class="df-icon">🐐</div>
-            GoatHub — réseau athlètes
-          </div>
-        </div>
-        <p class="demo-hint">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
-          Scroll dans le téléphone pour naviguer dans l'app
-        </p>
-        <div style="margin-top:24px">
-          <a href="#beta" class="btn btn-primary">🔥 Demander mon accès à la bêta</a>
-        </div>
-      </div>
-
     </div>
   </div>
 </section>
@@ -1024,7 +935,6 @@ footer{padding:48px 0 110px;border-top:1px solid rgba(255,255,255,.04)}
       </a>
       <div class="footer-links">
         <a href="#features">Fonctionnalités</a>
-        <a href="#app-demo">L'App Live</a>
         <a href="#community">GoatHub</a>
         <a href="#insta">Instagram</a>
         <a href="#beta">Accès bêta</a>
