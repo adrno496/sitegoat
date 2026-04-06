@@ -2879,10 +2879,32 @@ if(typeof CanvasRenderingContext2D!=='undefined'&&!CanvasRenderingContext2D.prot
 
 /* ── STORAGE MANAGER ──────────────────────────────────────── */
 /* Préfixe gf_ — compatible avec app.js module */
+const _IS_PREVIEW = new URLSearchParams(location.search).has('preview');
+const _DEMO_STORE = _IS_PREVIEW ? {
+  onboarded: true,
+  userProfile: {name:'GOAT',age:22,gender:'male',height:180,weight:80,goal:'muscle_gain',level:'intermediate'},
+  nutritionGoals: {calories:2800,protein:180,carbs:300,fat:80},
+  weights: [{date:new Date().toISOString().split('T')[0],weight:80}],
+  workoutHistory: [],
+  nutritionLog: {},
+  habits: {},
+  xpData: {xp:1240,level:5},
+  personalRecords: {},
+  challenges: {challenges:[]}
+} : null;
 const SM = {
-  get(key,def=null){try{const v=localStorage.getItem('gf_'+key);return v!=null?JSON.parse(v):def}catch(e){return def}},
-  set(key,val){try{localStorage.setItem('gf_'+key,JSON.stringify(val))}catch(e){}},
-  del(key){try{localStorage.removeItem('gf_'+key)}catch(e){}}
+  get(key,def=null){
+    if(_IS_PREVIEW){const v=_DEMO_STORE[key];return v!==undefined?v:def;}
+    try{const v=localStorage.getItem('gf_'+key);return v!=null?JSON.parse(v):def}catch(e){return def}
+  },
+  set(key,val){
+    if(_IS_PREVIEW){_DEMO_STORE[key]=val;return;}
+    try{localStorage.setItem('gf_'+key,JSON.stringify(val))}catch(e){}
+  },
+  del(key){
+    if(_IS_PREVIEW){delete _DEMO_STORE[key];return;}
+    try{localStorage.removeItem('gf_'+key)}catch(e){}
+  }
 };
 
 /* ── DATA: EXERCISES ──────────────────────────────────────── */
