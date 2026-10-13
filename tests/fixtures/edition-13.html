@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Les idées passent. Gardez le fil.</title>
+    <style>
+      body {
+        background: #f6f3eb;
+        color: #173e38;
+        font-family: Georgia, serif;
+        padding: 25px;
+        max-width: 850px;
+        margin: auto;
+      }
+      h1 {
+        font-size: 42px;
+        line-height: 1.1;
+      }
+      p {
+        line-height: 1.8;
+      }
+      article {
+        border-top: 1px solid #ccd2c3;
+        padding: 20px 0;
+      }
+      .chart {
+        display: flex;
+        align-items: end;
+        gap: 15px;
+        height: 110px;
+        margin: 25px 0;
+      }
+      .chart i {
+        background: #4d7863;
+        width: 50px;
+      }
+      small {
+        font-family: Arial;
+        font-size: 11px;
+      }
+    </style>
+    <script type="application/json" id="editionData">
+      {
+        "title": "Les idées passent. Gardez le fil.",
+        "editionDate": "2026-10-13",
+        "items": [
+          {
+            "id": "b1",
+            "event_id": "demo-local-first",
+            "title": "Une bibliothèque qui vous appartient",
+            "category": "Technologie",
+            "plain": "Démonstration fictive : une bibliothèque locale conserve les fichiers sur votre appareil. Une sauvegarde indépendante permet de les retrouver après une perte de données. Cette deuxième version ajoute une archive cloud privée et versionnée.",
+            "sources": []
+          },
+          {
+            "id": "b2",
+            "title": "Retrouver une idée, un mois plus tard",
+            "category": "Méthodes",
+            "plain": "Démonstration fictive : recherchez dans les éditions et les notes. Un identifiant explicite permet de suivre un même sujet entre plusieurs éditions sans inventer de rapprochement.",
+            "sources": []
+          },
+          {
+            "id": "b3",
+            "title": "Le graphique doit raconter une mesure",
+            "category": "Données",
+            "plain": "Démonstration fictive : les barres ci-dessous représentent les nombres 2, 4 et 3, uniquement pour tester un rendu CSS autonome. Elles ne décrivent pas un marché ou une performance réelle.",
+            "sources": []
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <small>JOURNAL 360° · DÉMONSTRATION FICTIVE · 13 OCTOBRE 2026</small>
+    <h1>Les idées passent.<br />Gardez le fil.</h1>
+    <p>Une seconde édition de test, avec un sujet commun.</p>
+    <article>
+      <h2>Une bibliothèque qui vous appartient</h2>
+      <p>
+        Démonstration fictive : cette deuxième version ajoute une archive cloud
+        privée et versionnée.
+      </p>
+    </article>
+    <article>
+      <h2>Retrouver une idée, un mois plus tard</h2>
+      <p>
+        Un identifiant explicite permet de suivre un même sujet entre plusieurs
+        éditions.
+      </p>
+    </article>
+    <article>
+      <h2>Le graphique doit raconter une mesure</h2>
+      <p>Valeurs de démonstration uniquement : 2, 4 et 3.</p>
+      <div class="chart">
+        <i style="height: 50%"></i><i style="height: 100%"></i
+        ><i style="height: 75%"></i>
+      </div>
+    </article>
+  </body>
+</html>

@@ -1,0 +1,46 @@
+{
+  "testedAt": "2026-10-13T20:00:05.228Z",
+  "environment": "Chromium local sur Mac, aucune simulation de CPU téléphone",
+  "results": [
+    {
+      "metric": "Première ouverture navigateur local",
+      "milliseconds": 306
+    },
+    {
+      "metric": "Import et rendu 10 éditions synthétiques (10 cumulées)",
+      "milliseconds": 563
+    },
+    {
+      "metric": "Import et rendu 20 éditions synthétiques (30 cumulées)",
+      "milliseconds": 902
+    },
+    {
+      "metric": "Import et rendu 20 éditions synthétiques (50 cumulées)",
+      "milliseconds": 1427
+    },
+    {
+      "metric": "Import et rendu 20 éditions synthétiques (70 cumulées)",
+      "milliseconds": 1357
+    },
+    {
+      "metric": "Import et rendu 20 éditions synthétiques (90 cumulées)",
+      "milliseconds": 1450
+    },
+    {
+      "metric": "Import et rendu 10 éditions synthétiques (100 cumulées)",
+      "milliseconds": 1270
+    },
+    {
+      "metric": "Recherche dans 100 éditions",
+      "milliseconds": 173
+    },
+    {
+      "metric": "Originaux synthétiques importés",
+      "bytes": 11413880
+    },
+    {
+      "metric": "Stockage site estimé après 100 éditions",
+      "bytes": 1250176
+    }
+  ]
+}

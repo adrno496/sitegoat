@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Observer. Comprendre. Agir.</title>
+    <style>
+      body {
+        background: #f6f3eb;
+        color: #173e38;
+        font-family: Georgia, serif;
+        padding: 25px;
+        max-width: 850px;
+        margin: auto;
+      }
+      h1 {
+        font-size: 42px;
+        line-height: 1.1;
+      }
+      p {
+        line-height: 1.8;
+      }
+      article {
+        border-top: 1px solid #ccd2c3;
+        padding: 20px 0;
+      }
+      button {
+        padding: 14px;
+        background: #173e38;
+        color: white;
+        border: 0;
+        border-radius: 3px;
+      }
+      small {
+        font-family: Arial;
+        font-size: 11px;
+      }
+      #counter {
+        display: inline-block;
+        margin-left: 15px;
+      }
+    </style>
+    <script type="application/json" id="editionData">
+      {
+        "title": "Observer. Comprendre. Agir.",
+        "editionDate": "2026-10-12",
+        "items": [
+          {
+            "id": "a1",
+            "event_id": "demo-local-first",
+            "title": "Une bibliothèque qui vous appartient",
+            "category": "Technologie",
+            "plain": "Démonstration fictive : une bibliothèque locale conserve les fichiers sur votre appareil. Une sauvegarde indépendante permet de les retrouver après une perte de données.",
+            "sources": []
+          },
+          {
+            "id": "a2",
+            "title": "De la lecture à la décision",
+            "category": "Méthodes",
+            "plain": "Démonstration fictive : associez une note à une lecture pour garder votre propre point de vue. Les annotations sont distinctes des fichiers originaux.",
+            "sources": []
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <small>JOURNAL 360° · DÉMONSTRATION FICTIVE · 12 OCTOBRE 2026</small>
+    <h1>Observer.<br />Comprendre. Agir.</h1>
+    <p>Un journal de test pour découvrir votre bibliothèque.</p>
+    <article>
+      <h2>Une bibliothèque qui vous appartient</h2>
+      <p>
+        Démonstration fictive : une bibliothèque locale conserve les fichiers
+        sur votre appareil. Une sauvegarde indépendante permet de les retrouver
+        après une perte de données.
+      </p>
+    </article>
+    <article>
+      <h2>De la lecture à la décision</h2>
+      <p>
+        Démonstration fictive : associez une note à une lecture pour garder
+        votre propre point de vue. Les annotations sont distinctes des fichiers
+        originaux.
+      </p>
+    </article>
+    <button
+      onclick="
+        document.getElementById('counter').textContent = String(++window.clicks)
+      "
+    >
+      Tester l’interaction</button
+    ><span id="counter">0</span>
+    <script>
+      window.clicks = 0;
+    </script>
+  </body>
+</html>

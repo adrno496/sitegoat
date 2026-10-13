@@ -1,0 +1,117 @@
+{
+  "testedAt": "2026-10-13T20:23:48.874425+00:00",
+  "command": "npm run check",
+  "lint": "PASS",
+  "productionBuild": "PASS",
+  "unitTests": {
+    "passed": 15,
+    "failed": 0
+  },
+  "browserStats": {
+    "startTime": "2026-10-13T20:22:28.916Z",
+    "duration": 54312.950000000004,
+    "expected": 16,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "browserTests": [
+    {
+      "name": "parcours complet : import, lecture, notes, favori, recherche, offline, export et restauration",
+      "engine": "chromium",
+      "status": "expected",
+      "durationMs": 3479
+    },
+    {
+      "name": "démonstrations, interaction explicite et mémoire basée sur event_id",
+      "engine": "chromium",
+      "status": "expected",
+      "durationMs": 1500
+    },
+    {
+      "name": "renommage doublon, version, archive et corbeille récupérable",
+      "engine": "chromium",
+      "status": "expected",
+      "durationMs": 8676
+    },
+    {
+      "name": "sécurité : parent, stockage, fetch, ressources, top et popups bloqués",
+      "engine": "chromium",
+      "status": "expected",
+      "durationMs": 1229
+    },
+    {
+      "name": "responsive, thèmes et accessibilité sur six largeurs",
+      "engine": "chromium",
+      "status": "expected",
+      "durationMs": 8753
+    },
+    {
+      "name": "manifest et réception Web Share Target en service worker",
+      "engine": "chromium",
+      "status": "expected",
+      "durationMs": 673
+    },
+    {
+      "name": "File Handling launchQueue traite un HTML via le même écran de vérification",
+      "engine": "chromium",
+      "status": "expected",
+      "durationMs": 693
+    },
+    {
+      "name": "parcours complet : import, lecture, notes, favori, recherche, offline, export et restauration",
+      "engine": "webkit",
+      "status": "expected",
+      "durationMs": 5004
+    },
+    {
+      "name": "démonstrations, interaction explicite et mémoire basée sur event_id",
+      "engine": "webkit",
+      "status": "expected",
+      "durationMs": 2052
+    },
+    {
+      "name": "renommage doublon, version, archive et corbeille récupérable",
+      "engine": "webkit",
+      "status": "expected",
+      "durationMs": 1782
+    },
+    {
+      "name": "sécurité : parent, stockage, fetch, ressources, top et popups bloqués",
+      "engine": "webkit",
+      "status": "expected",
+      "durationMs": 1602
+    },
+    {
+      "name": "responsive, thèmes et accessibilité sur six largeurs",
+      "engine": "webkit",
+      "status": "expected",
+      "durationMs": 11397
+    },
+    {
+      "name": "manifest et réception Web Share Target en service worker",
+      "engine": "webkit",
+      "status": "expected",
+      "durationMs": 799
+    },
+    {
+      "name": "File Handling launchQueue traite un HTML via le même écran de vérification",
+      "engine": "webkit",
+      "status": "expected",
+      "durationMs": 833
+    },
+    {
+      "name": "mise à jour réelle du service worker sans perte des originaux et favoris",
+      "engine": "chromium",
+      "status": "expected",
+      "durationMs": 1136
+    },
+    {
+      "name": "mise à jour réelle du service worker sans perte des originaux et favoris",
+      "engine": "webkit",
+      "status": "expected",
+      "durationMs": 1371
+    }
+  ],
+  "physicalPhoneTests": "NON TESTÉ SUR APPAREIL RÉEL"
+}

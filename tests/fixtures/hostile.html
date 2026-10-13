@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="refresh" content="0;url=https://example.com/exfil" />
+    <base href="https://example.com/" />
+  </head>
+  <body>
+    <h1>Test hostile</h1>
+    <img src="https://example.com/leak.png" />
+    <form action="https://example.com/secret"><button>Envoyer</button></form>
+    <a href="https://example.com/navigation" target="_top">Lien externe</a>
+    <script>
+      window.result = {};
+      try {
+        parent.document.body.dataset.pwned = "yes";
+        result.parent = true;
+      } catch {
+        result.parent = false;
+      }
+      try {
+        localStorage.setItem("stolen", "yes");
+        result.storage = true;
+      } catch {
+        result.storage = false;
+      }
+      try {
+        window.open("https://example.com/popup");
+      } catch {}
+      fetch("https://example.com/fetch")
+        .then(() => (result.fetch = true))
+        .catch(() => (result.fetch = false));
+      try {
+        top.location = "https://example.com/top";
+      } catch {}
+      document.body.insertAdjacentHTML(
+        "beforeend",
+        '<p id="result">' + JSON.stringify(result) + "</p>",
+      );
+    </script>
+  </body>
+</html>
