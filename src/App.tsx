@@ -1,3 +1,4 @@
+import { APP_VERSION } from "./config";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { liveQuery } from "dexie";
 import { useRegisterSW } from "virtual:pwa-register/react";
@@ -50,7 +51,13 @@ import {
   download,
   type BackupData,
 } from "./features/backup";
-import { cloud, remote, coordinator, type Snapshot } from "./features/cloud";
+import {
+  cloud,
+  remote,
+  coordinator,
+  unlockCloud,
+  type Snapshot,
+} from "./features/cloud";
 import { useDialogFocus } from "./features/dialogFocus";
 import { registerFileHandling } from "./features/fileHandling";
 type Tab = "today" | "library" | "search" | "memory" | "settings";
@@ -116,7 +123,7 @@ export default function App() {
   >("active");
   const [sort, setSort] = useState<"date" | "title" | "import">("date");
   const [session, setSession] = useState<Session | null>(null);
-  const [email, setEmail] = useState("");
+  const [accessCode, setAccessCode] = useState("");
   const [snapshots, setSnapshots] = useState<Snapshot[]>([]);
   const [cloudStatus, setCloudStatus] = useState(
     "Aucune sauvegarde cloud active",
@@ -644,7 +651,9 @@ export default function App() {
             {online ? "Stockage local actif" : "Vous êtes hors ligne"}
             <ChevronRight size={15} />
           </button>
-          <span className="sidebar-version">JOURNAL 360 MOBILE · v1.0</span>
+          <span className="sidebar-version">
+            JOURNAL 360 MOBILE · v{APP_VERSION}
+          </span>
         </div>
       </aside>
       <div className="main-wrap">
@@ -1595,7 +1604,7 @@ export default function App() {
                         {session ? (
                           <>
                             <span className="dot" />
-                            {session.user.email}
+                            Sauvegardes privées accessibles
                           </>
                         ) : (
                           <>
@@ -1607,45 +1616,40 @@ export default function App() {
                       <p className="muted">
                         {session
                           ? cloudStatus
-                          : "Connectez-vous avec un lien par email pour sauvegarder et retrouver votre bibliothèque sur un autre appareil."}
+                          : "Saisissez votre code d’accès pour sauvegarder et retrouver votre bibliothèque sur le Mac ou le téléphone."}
                       </p>
                       {!session ? (
                         <form
                           onSubmit={(e) => {
                             e.preventDefault();
                             run(async () => {
-                              const { error } = await cloud.auth.signInWithOtp({
-                                email,
-                                options: {
-                                  emailRedirectTo: location.origin,
-                                  shouldCreateUser: false,
-                                },
-                              });
-                              if (error) throw new Error(error.message);
-                            }, "Si ce compte existe, le lien de connexion a été demandé. Vérifiez votre messagerie.");
+                              await unlockCloud(accessCode);
+                              setAccessCode("");
+                            }, "Accès privé ouvert. Vous pouvez sauvegarder ou retrouver vos archives.");
                           }}
                         >
                           <label>
-                            Email de votre compte Supabase
+                            Code d’accès
                             <input
-                              type="email"
+                              type="password"
                               required
-                              value={email}
-                              onChange={(e) => setEmail(e.target.value)}
-                              placeholder="vous@exemple.fr"
-                              autoComplete="email"
+                              value={accessCode}
+                              onChange={(e) => setAccessCode(e.target.value)}
+                              placeholder="Votre code privé"
+                              autoComplete="current-password"
                             />
                           </label>
                           <button
                             className="primary"
                             disabled={!online || busy}
                           >
-                            Recevoir un lien de connexion
+                            Ouvrir mes sauvegardes
                             <ArrowRight size={17} />
                           </button>
                           <p className="small-note">
-                            Compte à créer par l’administrateur Supabase ;
-                            aucune inscription publique dans cette application.
+                            Le même code retrouve vos archives sur chaque
+                            appareil. Aucun email ni mot de passe Supabase à
+                            saisir.
                           </p>
                         </form>
                       ) : (

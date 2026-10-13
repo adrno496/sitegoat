@@ -1,3 +1,4 @@
+const baseURL = process.env.JOURNAL360_BASE_URL || "http://127.0.0.1:4173";
 import fs from "node:fs";
 import { createClient } from "@supabase/supabase-js";
 if (fs.existsSync(".env.local")) process.loadEnvFile(".env.local");
@@ -20,7 +21,7 @@ function check(name, condition) {
   if (!condition) throw new Error(name);
 }
 async function api(token, body) {
-  return fetch("http://127.0.0.1:4173/api/backup", {
+  return fetch(`${baseURL}/api/backup`, {
     method: body ? "POST" : "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -54,7 +55,7 @@ try {
     users[i].client = client;
     users[i].token = auth.data.session.access_token;
   }
-  const anonymous = await fetch("http://127.0.0.1:4173/api/backup");
+  const anonymous = await fetch(`${baseURL}/api/backup`);
   check("API anonyme refusée", anonymous.status === 401);
   const invalid = await api("invalid");
   check("API token invalide refusée", invalid.status === 401);
@@ -152,10 +153,13 @@ try {
   }
   fs.mkdirSync("docs/evidence", { recursive: true });
   fs.writeFileSync(
-    "docs/evidence/cloud.json",
+    baseURL.startsWith("https:")
+      ? "docs/evidence/cloud-production.json"
+      : "docs/evidence/cloud.json",
     JSON.stringify(
       {
         testedAt: new Date().toISOString(),
+        baseURL,
         project: "guevmgdxznrvxcjvvzyu",
         results,
       },

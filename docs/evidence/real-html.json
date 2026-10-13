@@ -1,0 +1,32 @@
+{
+  "testedAt": "2026-10-13T20:53:23.113Z",
+  "environment": "Fichier réel local, deux moteurs automatisés, aucun envoi cloud ni contenu publié",
+  "results": [
+    {
+      "engine": "chromium",
+      "status": "PASS",
+      "bytes": 104507,
+      "nativeArticleCount": 6,
+      "fullPage": true,
+      "tabs": true,
+      "articleReading": true,
+      "calculator": true,
+      "originalIntact": true,
+      "trustRemembered": true,
+      "scriptErrors": 0
+    },
+    {
+      "engine": "webkit",
+      "status": "PASS",
+      "bytes": 104507,
+      "nativeArticleCount": 6,
+      "fullPage": true,
+      "tabs": true,
+      "articleReading": true,
+      "calculator": true,
+      "originalIntact": true,
+      "trustRemembered": true,
+      "scriptErrors": 0
+    }
+  ]
+}

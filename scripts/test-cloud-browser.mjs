@@ -1,3 +1,4 @@
+const baseURL = process.env.JOURNAL360_BASE_URL || "http://127.0.0.1:4173";
 import fs from "node:fs";
 import { createClient } from "@supabase/supabase-js";
 import { chromium } from "playwright";
@@ -23,7 +24,7 @@ async function waitCount(page, selector, count) {
 }
 async function contextFor(auth) {
   const context = await browser.newContext({
-    baseURL: "http://127.0.0.1:4173",
+    baseURL,
   });
   await context.addInitScript(
     (session) =>
@@ -71,6 +72,9 @@ try {
     .click();
   await p1
     .getByRole("button", { name: "Lire Journal générique", exact: true })
+    .click();
+  await p1
+    .getByRole("button", { name: "Réduire la lecture", exact: true })
     .click();
   await p1
     .getByRole("button", { name: "Ajouter aux favoris", exact: true })
@@ -131,6 +135,9 @@ try {
       .getByRole("heading", { name: "Journal générique" })
       .isVisible(),
   );
+  await p2
+    .getByRole("button", { name: "Réduire la lecture", exact: true })
+    .click();
   check(
     "État lu restitué",
     await p2
@@ -229,10 +236,13 @@ try {
     });
   }
   fs.writeFileSync(
-    "docs/evidence/cloud-browser.json",
+    baseURL.startsWith("https:")
+      ? "docs/evidence/cloud-browser-production.json"
+      : "docs/evidence/cloud-browser.json",
     JSON.stringify(
       {
         testedAt: new Date().toISOString(),
+        baseURL,
         environment:
           "Chromium local, Supabase réel, deux sessions A et un compte B synthétiques",
         results,

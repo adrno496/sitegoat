@@ -77,9 +77,11 @@ export async function inspectHTML(
           const u =
             typeof s === "string"
               ? s
-              : s && typeof s === "object"
-                ? str((s as Record<string, unknown>).url)
-                : "";
+              : Array.isArray(s)
+                ? str(s[1])
+                : s && typeof s === "object"
+                  ? str((s as Record<string, unknown>).url)
+                  : "";
           return /^https?:\/\//i.test(u) ? [u] : [];
         })
       : [];
@@ -122,7 +124,9 @@ export async function inspectHTML(
   const id = crypto.randomUUID();
   const title =
     plain(data.title) ||
-    cleanText(document.querySelector("h1")?.textContent || document.title) ||
+    cleanText(
+      document.title || document.querySelector("h1")?.textContent || "",
+    ) ||
     filename.replace(/\.html?$/i, "");
   return editionSchema.parse({
     id,
@@ -190,8 +194,16 @@ export function isolatedHTML(bytes: Uint8Array, interactive: boolean) {
     new TextDecoder().decode(bytes),
     "text/html",
   );
+  // Conserver les contrôles/calculatrices sans autoriser de soumission réseau.
+  doc.querySelectorAll("form").forEach((form) => {
+    const neutral = doc.createElement("div");
+    for (const attribute of [...form.attributes])
+      neutral.setAttribute(attribute.name, attribute.value);
+    neutral.append(...form.childNodes);
+    form.replaceWith(neutral);
+  });
   doc
-    .querySelectorAll("base,meta[http-equiv],iframe,object,embed,link,form")
+    .querySelectorAll("base,meta[http-equiv],iframe,object,embed,link")
     .forEach((e) => e.remove());
   doc.querySelectorAll("*").forEach((e) => {
     for (const attr of [...e.attributes]) {
@@ -222,5 +234,11 @@ export function isolatedHTML(bytes: Uint8Array, interactive: boolean) {
   csp.httpEquiv = "Content-Security-Policy";
   csp.content = `default-src 'none'; script-src ${interactive ? "'unsafe-inline'" : "'none'"}; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; media-src data: blob:; connect-src 'none'; object-src 'none'; frame-src 'none'; form-action 'none'; base-uri 'none'`;
   doc.head.prepend(csp);
+  if (interactive) {
+    const routing = doc.createElement("script");
+    // about:srcdoc à origine opaque refuse pushState ; les fragments restent locaux au cadre.
+    routing.textContent = `(()=>{for(const method of ['pushState','replaceState']){const original=history[method].bind(history);history[method]=function(state,unused,url){try{return original(state,unused,url)}catch(error){if(error.name==='SecurityError'&&typeof url==='string'&&url.startsWith('#')){location.hash=url;return}throw error}}}})();`;
+    csp.after(routing);
+  }
   return "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;
 }

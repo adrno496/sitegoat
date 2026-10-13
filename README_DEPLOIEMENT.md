@@ -6,10 +6,11 @@ Le dépôt demandé `adrno496/sitegoat` remplace l’ancien site GOAT FUEL. Le p
 
 `vercel.json` définit Vite, `npm run build`, `dist`, les headers et les routes SPA. L’API `api/backup.mjs` est une fonction Node Vercel, séparée du bundle client. Les HTML importés ne vont ni dans `public` ni dans `dist`.
 
-Variables **serveur** à configurer dans Vercel (Production et Preview si la sauvegarde doit aussi fonctionner en preview) :
+Variables **serveur** configurées dans Vercel Production (Preview reste facultatif et n’est pas activé) :
 
 - `SUPABASE_URL` : URL du projet choisi.
 - `SUPABASE_SECRET_KEY` : clé secrète de ce projet, uniquement côté serveur.
+- `JOURNAL360_ACCOUNT_EMAIL` : compte propriétaire préalablement créé, jamais demandé dans l’interface.
 
 Variables **client facultatives** : `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`. Le projet demandé est déjà configuré par défaut avec sa clé publique. Pour changer de projet, adapter aussi la directive CSP connect-src dans `vercel.json`.
 
@@ -19,7 +20,9 @@ Ne jamais ajouter `VITE_SUPABASE_SECRET_KEY`, mettre un secret dans Git, ni publ
 
 Le bucket privé et la protection RLS sont configurés dans le projet demandé. Migration reproductible : `supabase/migrations/202610130001_private_backups.sql`. Aucun changement des autres tables ou buckets. Les transferts signés passent par le serveur : pas de policy client permissive.
 
-Compte privé créé administrativement ; connexion email par lien magique. Ajouter l’adresse HTTPS exacte du site dans Authentication → URL Configuration → Redirect URLs. L’application utilise `emailRedirectTo: location.origin`. Conserver les URL des autres applications si le projet est partagé. Le SMTP / quota d’envoi email doit être vérifié par une vraie connexion de l’utilisateur ; les tests techniques emploient des comptes synthétiques sans envoyer d’email.
+Connexion par code via `api/access.mjs`, sans email envoyé ni SMTP. Le serveur dérive un mot de passe long par HMAC avec le secret serveur, puis obtient une vraie session Supabase du compte propriétaire. Le même code sur chaque appareil retrouve le même UID et les mêmes archives. Le code n’est pas dans Git, le bundle ou les sauvegardes. Les sessions sont renouvelées par Supabase, et la déconnexion conserve la bibliothèque locale.
+
+Pour changer le code : configurer `.env.local`, puis fournir le nouveau code sur l’entrée standard de `node scripts/configure-access.mjs` (ne pas le passer en argument ni l’inscrire dans un fichier suivi). Une rotation de `SUPABASE_SECRET_KEY` nécessite de reconfigurer le mot de passe dérivé avec ce script. Le callback HTTPS autorisé précédemment est conservé ; il n’est plus nécessaire pour cette connexion. Les paramètres Auth globaux et les autres comptes ne sont pas modifiés.
 
 ## Vérification après publication
 

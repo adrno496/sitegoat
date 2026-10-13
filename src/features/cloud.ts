@@ -15,6 +15,26 @@ export interface Snapshot {
   createdAt: string;
   size: number;
 }
+export async function unlockCloud(code: string) {
+  const response = await fetch("/api/access", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ code }),
+    cache: "no-store",
+  });
+  let data;
+  try {
+    data = await response.json();
+  } catch {
+    throw new Error("Cet hébergement ne dispose pas du serveur d’accès privé.");
+  }
+  if (!response.ok) throw new Error(data.error || "Connexion indisponible.");
+  const { error } = await cloud.auth.setSession({
+    access_token: data.access_token,
+    refresh_token: data.refresh_token,
+  });
+  if (error) throw new Error("Session indisponible. Réessayez.");
+}
 async function request(session: Session, body?: object) {
   const response = await fetch("/api/backup", {
     method: body ? "POST" : "GET",

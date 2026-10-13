@@ -98,15 +98,13 @@ describe("Import et stockage réel (IndexedDB émulé)", () => {
   it("migration v1 vers v3 sans perte", async () => {
     const name = `migration-${crypto.randomUUID()}`;
     const legacy = new Dexie(name);
-    legacy
-      .version(1)
-      .stores({
-        editions: "id,sha256,date,familyId,importedAt",
-        originals: "id",
-        states: "id,editionId",
-        notes: "id,editionId,updatedAt",
-        preferences: "key",
-      });
+    legacy.version(1).stores({
+      editions: "id,sha256,date,familyId,importedAt",
+      originals: "id",
+      states: "id,editionId",
+      notes: "id,editionId,updatedAt",
+      preferences: "key",
+    });
     const e = await inspectHTML("generic.html", fixture("generic.html"));
     await legacy.table("editions").add(e);
     await legacy
@@ -206,4 +204,41 @@ describe("Isolation préparée sans modifier l’original", () => {
     expect(interactive).toContain("window.result");
     expect(interactive).not.toContain("<form");
   });
+});
+
+it("formulaire neutralisé : contrôles conservés, aucune soumission ni action distante", () => {
+  const bytes = new TextEncoder().encode(
+    '<!doctype html><html><body><form id="calc" action="https://example.com"><label>Prix<input id="price" value="12"></label></form></body></html>',
+  );
+  const reader = new DOMParser().parseFromString(
+    isolatedHTML(bytes, true),
+    "text/html",
+  );
+  expect(reader.querySelector("form")).toBeNull();
+  expect(reader.querySelector("#calc #price")?.getAttribute("value")).toBe(
+    "12",
+  );
+  expect(reader.querySelector("#calc")?.getAttribute("action")).toBeNull();
+  expect(
+    reader
+      .querySelector('meta[http-equiv="Content-Security-Policy"]')
+      ?.getAttribute("content"),
+  ).toContain("form-action 'none'");
+});
+it("sources JSON sous forme [libellé, URL] indexées sans exécuter le journal", async () => {
+  const metadata = {
+    title: "Édition",
+    items: [
+      {
+        id: "a",
+        title: "Article",
+        sources: [["Source", "https://example.com/source"]],
+      },
+    ],
+  };
+  const bytes = new TextEncoder().encode(
+    `<html><head><title>Édition</title></head><body><script type="application/json" id="editionData">${JSON.stringify(metadata)}</script></body></html>`,
+  );
+  const edition = await inspectHTML("sources.html", bytes);
+  expect(edition.articles[0].sources).toEqual(["https://example.com/source"]);
 });

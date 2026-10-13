@@ -1,5 +1,6 @@
 {
-  "testedAt": "2026-10-13T20:23:10.870Z",
+  "testedAt": "2026-10-13T20:54:16.276Z",
+  "baseURL": "http://127.0.0.1:4173",
   "environment": "Chromium local, Supabase réel, deux sessions A et un compte B synthétiques",
   "results": [
     {

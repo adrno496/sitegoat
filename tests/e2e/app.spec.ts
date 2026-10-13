@@ -3,6 +3,11 @@ import AxeBuilder from "@axe-core/playwright";
 import { readFileSync } from "node:fs";
 const fixture = (name: string) => `tests/fixtures/${name}`;
 async function nav(page: Page, label: string) {
+  const reduce = page.getByRole("button", {
+    name: "Réduire la lecture",
+    exact: true,
+  });
+  if (await reduce.isVisible()) await reduce.click();
   await page
     .locator(".sidebar")
     .getByRole("button", { name: label, exact: true })
@@ -38,6 +43,9 @@ test("parcours complet : import, lecture, notes, favori, recherche, offline, exp
   await importFile(page);
   await page
     .getByRole("button", { name: "Lire Journal générique", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Réduire la lecture", exact: true })
     .click();
   await expect(page.locator("iframe")).toHaveAttribute("sandbox", "");
   await expect(
@@ -87,6 +95,9 @@ test("parcours complet : import, lecture, notes, favori, recherche, offline, exp
   await nav(page, "Bibliothèque");
   await page
     .getByRole("button", { name: "Lire Journal générique", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Réduire la lecture", exact: true })
     .click();
   await expect(
     page
@@ -167,6 +178,9 @@ test("renommage doublon, version, archive et corbeille récupérable", async ({
   await page
     .getByRole("button", { name: "Lire Journal générique", exact: true })
     .click();
+  await page
+    .getByRole("button", { name: "Réduire la lecture", exact: true })
+    .click();
   await page.getByRole("button", { name: "Archiver", exact: true }).click();
   await nav(page, "Bibliothèque");
   await expect(page.locator(".edition-card")).toHaveCount(0);
@@ -244,7 +258,7 @@ test("responsive, thèmes et accessibilité sur six largeurs", async ({
     ).toEqual([]);
     await page.screenshot({
       path: `docs/screenshots/home-${width}.png`,
-      fullPage: true,
+      fullPage: false,
     });
   }
   await page.getByRole("button", { name: "Activer le mode sombre" }).click();
@@ -329,4 +343,59 @@ test("File Handling launchQueue traite un HTML via le même écran de vérificat
     .getByRole("button", { name: "Enregistrer dans ma bibliothèque" })
     .click();
   await expect(page.locator(".edition-card")).toHaveCount(1);
+});
+
+test("lecture pleine page : tout le viewport, interactions conservées et retour sur mobile", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await demo(page);
+  await page
+    .getByRole("button", {
+      name: "Lire Observer. Comprendre. Agir.",
+      exact: true,
+    })
+    .click();
+  await page.getByRole("button", { name: "Interactif", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Je fais confiance à ce fichier" })
+    .click();
+  const frame = page.frameLocator("iframe");
+  await frame.getByRole("button", { name: "Tester l’interaction" }).click();
+  await expect(frame.locator("#counter")).toHaveText("1");
+  await page
+    .getByRole("button", { name: "Réduire la lecture", exact: true })
+    .click();
+  for (const width of [1440, 390, 320]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page
+      .getByRole("button", { name: "Lecture pleine page", exact: true })
+      .click();
+    await expect(page.getByRole("dialog")).toBeVisible();
+    const bounds = await page.locator("iframe").boundingBox();
+    expect(bounds?.x).toBe(0);
+    expect(bounds?.width).toBe(width);
+    expect(bounds?.height).toBeGreaterThan(750);
+    await expect(page.locator("iframe")).toHaveAttribute(
+      "sandbox",
+      "allow-scripts",
+    );
+    await expect(frame.locator("#counter")).toHaveText("1");
+    const a11y = await new AxeBuilder({ page }).analyze();
+    expect(a11y.violations).toEqual([]);
+    await page.screenshot({
+      path: `docs/screenshots/reader-full-page-${width}.png`,
+      fullPage: false,
+    });
+    await page
+      .getByRole("button", { name: "Réduire la lecture", exact: true })
+      .click();
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await expect(frame.locator("#counter")).toHaveText("1");
+  }
+  await page
+    .getByRole("button", { name: "Lecture pleine page", exact: true })
+    .click();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
 });

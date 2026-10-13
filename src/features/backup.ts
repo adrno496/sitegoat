@@ -1,3 +1,4 @@
+import { APP_VERSION } from "../config";
 import JSZip from "jszip";
 import { z } from "zod";
 import {
@@ -38,7 +39,7 @@ export async function exportBackup(repository: LocalRepository): Promise<Blob> {
     JSON.stringify({
       format: "journal360",
       formatVersion: 1,
-      appVersion: "1.0.0",
+      appVersion: APP_VERSION,
       generatedAt: now(),
       privacyWarning:
         "Cette archive contient vos documents et notes privés. Aucun token ni session.",

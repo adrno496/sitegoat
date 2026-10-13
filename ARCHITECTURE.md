@@ -1,6 +1,6 @@
 # Architecture
 
-React, TypeScript strict, Vite, vite-plugin-pwa, Dexie, Supabase JS, ZIP/JSZip et validation Zod. Pas de backend permanent. Une fonction Vercel Node sert uniquement d’intermédiaire d’autorisation pour les sauvegardes privées.
+React, TypeScript strict, Vite, vite-plugin-pwa, Dexie, Supabase JS, ZIP/JSZip et validation Zod. Pas de backend permanent. Deux fonctions Vercel Node servent à la connexion privée par code et à l’autorisation des sauvegardes.
 
 ## Données locales
 
@@ -24,11 +24,11 @@ Les graphiques comptent les vraies éditions connues. Les sujets communs utilise
 
 Analyse par DOMParser détaché, sans exécution de scripts. JSON `#editionData[type=application/json]` validé ; aucune tentative d’évaluer `DATA.items` dans du JavaScript. HTML générique : texte intégral et zéro article inventé. L’original est préservé.
 
-Le lecteur utilise `srcdoc` dans une iframe sandboxée. Sans scripts par défaut ; `allow-scripts` seul après action explicite. Jamais `allow-same-origin`, popups, téléchargement par le cadre ou navigation top. CSP restrictive injectée avant le contenu et nettoyage des ressources externes / formulaires / bases / redirections. Le téléchargement intact passe par la PWA comme pièce jointe Blob. Les liens sources validés sont présentés dans la lecture textuelle, ouverts sur action de l’utilisateur.
+Le lecteur utilise `srcdoc` dans une iframe sandboxée. Sans scripts par défaut ; `allow-scripts` seul après action explicite. Jamais `allow-same-origin`, popups, téléchargement par le cadre ou navigation top. CSP restrictive injectée avant le contenu et nettoyage des ressources externes / bases / redirections et neutralisation des formulaires en conservant leurs contrôles. Le téléchargement intact passe par la PWA comme pièce jointe Blob. Les liens sources validés sont présentés dans la lecture textuelle, ouverts sur action de l’utilisateur.
 
 ## Cloud
 
-`CloudRepository` fabrique une archive complète validée. `SyncCoordinator` conserve la file locale. La fonction `api/backup.mjs` vérifie le bearer via `auth.getUser()` ; le préfixe est toujours l’UID vérifié. Les chemins sont `<uid>/<uuid>.zip`, jamais un nom de fichier utilisateur. Aucun owner_id fourni par le client n’est accepté.
+`api/access.mjs` dérive un mot de passe Supabase par HMAC du code fourni avec le secret serveur ; le compte fixe est une variable serveur. Une vraie session Auth est obtenue, conservée et renouvelée sur l’appareil. Aucun fournisseur SMTP ni compte anonyme. `CloudRepository` fabrique une archive complète validée. `SyncCoordinator` conserve la file locale. La fonction `api/backup.mjs` vérifie le bearer via `auth.getUser()` ; le préfixe est toujours l’UID vérifié. Les chemins sont `<uid>/<uuid>.zip`, jamais un nom de fichier utilisateur. Aucun owner_id fourni par le client n’est accepté.
 
 Storage privé, limite 50 Mo par snapshot. La RLS restrictive `journal360_server_only` interdit les opérations clients directes sur ce bucket, même si d’autres politiques permissives existent. Le serveur signe les uploads immuables et les téléchargements (60 secondes). Aucune table PostgreSQL applicative supplémentaire : les métadonnées d’édition et les états sont dans les archives privées, les dates/taille des snapshots dans Storage. Les autres buckets et tables du projet restent inchangés.
 
@@ -39,3 +39,5 @@ La restauration fusionne les identifiants/hash ; collision d’original → nouv
 Service worker injectManifest : cache versionné du shell et des démos publiques, aucun journal utilisateur dans CacheStorage. `/api/` est exclu du fallback et du cache ; aucun cache de session ou réponse cloud. POST `/share-target` est intercepté localement, stocké en `pending`, puis redirigé vers le shell. Les fichiers privés ne sont jamais renvoyés par une URL du serveur.
 
 Le manifest déclare `file_handlers` et `share_target`. File Handling n’a pas de polyfill et reste limité aux plateformes compatibles ; l’import depuis Fichiers est le parcours universel. Une mise à jour demande l’action de l’utilisateur et conserve IndexedDB. Les tâches cloud ne présument pas la disponibilité de Background Sync.
+
+La lecture occupe le viewport dès l’ouverture ; agrandir/réduire conserve la même iframe et son état courant. La confiance par édition est stockée localement dans preferences et exclue des sauvegardes. En interactif, un adaptateur de history pushState/replaceState se limite aux fragments en cas de refus SecurityError dans srcdoc : aucun accès à l’historique parent. Affichage mobile 70 % avec hauteur plein écran compensée.

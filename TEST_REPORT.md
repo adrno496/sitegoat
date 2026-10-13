@@ -1,14 +1,14 @@
 # Rapport de tests — Journal 360 Mobile
 
-Date : 13 octobre 2026, Europe/Paris. Environnement réel : macOS sur Mac ARM64, Node 24.21.0 / npm 11.19.0. Chromium Playwright 156 et WebKit 27.2. **Pas d’iPhone ou Android physique utilisé. Aucun fichier Journal V3 réel fourni.**
+Date : 13 octobre 2026, Europe/Paris. Environnement réel : macOS sur Mac ARM64, Node 24.21.0 / npm 11.19.0. Chromium Playwright 156 et WebKit 27.2. **Pas d’iPhone ou Android physique utilisé. Le HTML réel fourni (104 507 octets) a été vérifié localement sans publication de son contenu.**
 
 ## Commandes et preuves
 
 | Contrôle | Commande / preuve | Statut |
 |---|---|---|
-| TypeScript strict, lint, build | `npm run check` : lint, build, 15 unités, 16 E2E | PASS |
-| Unités / intégration IndexedDB | `npm test`, 15 cas exécutés | PASS |
-| E2E Chrome / WebKit | `npm run test:e2e`, 16 cas ; [preuve expurgée](docs/evidence/e2e.json) | PASS |
+| TypeScript strict, lint, build | `npm run check` : lint, build, 20 unités, 18 E2E | PASS |
+| Unités / intégration IndexedDB | `npm test`, 20 cas exécutés | PASS |
+| E2E Chrome / WebKit | `npm run test:e2e`, 18 cas ; [preuve expurgée](docs/evidence/e2e.json) | PASS |
 | Responsive + axe | `npm run test:e2e -- --grep responsive`, 2 tests, chacun 6 largeurs + thème sombre, zéro violation | PASS |
 | Dépendances | `npm audit`, 0 vulnérabilité après installation ; `npm audit --omit=dev`, 0 | PASS |
 | Git / secrets | `git diff --check`, `node scripts/check-secrets.mjs` | PASS |
@@ -48,17 +48,19 @@ Supabase réel, comptes A/B synthétiques et sans email envoyé :
 - File de sauvegarde offline, reprise au retour réseau et déconnexion conservant la bibliothèque locale.
 - Comptes et fichiers synthétiques nettoyés après les tests. Compte propriétaire configuré séparément, sans message envoyé.
 
+Connexion par code dans l’interface : refus du mauvais code, session persistante, sauvegarde réelle et récupération depuis un second navigateur vierge, déconnexion conservant le local. [Preuve](docs/evidence/access.json).
+
 ## Mesures réelles, sans extrapolation au téléphone
 
 100 HTML synthétiques d’environ 114 Ko chacun, 11 413 880 octets d’originaux au total. Mesure locale Chromium : première ouverture 306 ms ; import/rendu des 10 premiers 563 ms ; lots suivants de 20 : 902 / 1427 / 1357 / 1450 ms ; 10 derniers : 1270 ms ; recherche parmi 100 éditions : 173 ms. Ce sont des observations uniques sur ce Mac, sans garantie sur téléphone. `navigator.storage.estimate()` après test : 1 250 176 octets, estimation du navigateur qui peut tenir compte de la compression ; ne pas confondre avec la somme des originaux.
 
-Build vérifié : JS principal ~791 Ko (232 Ko gzip), CSS ~29 Ko (6,9 Ko gzip), service worker ~114 Ko avant injection. Le build signale un gros chunk et un avertissement de compatibilité d’option Workbox/Vite, sans échec. Pas de mesure de mémoire précise, batterie, réseau 3G ni CPU iPhone.
+Build vérifié : JS principal ~795 Ko (233 Ko gzip), CSS ~31 Ko (7,1 Ko gzip), service worker ~114 Ko avant injection. Le build signale un gros chunk et un avertissement de compatibilité d’option Workbox/Vite, sans échec. Pas de mesure de mémoire précise, batterie, réseau 3G ni CPU iPhone.
 
 ## Limites et NON TESTÉS
 
 - **Installation iPhone / Android, partage Android depuis Fichiers, ouverture native OS : NON TESTÉS SUR APPAREIL RÉEL.** WebKit automatisé n’équivaut pas à Safari iOS installé.
-- HTML V3 réel : NON TESTÉ, absent. Pas de garantie de compatibilité des scripts localStorage ou ressources externes ; ceux-ci sont annoncés comme incompatibles / bloqués.
-- Email SMTP réel du propriétaire, contrôle des callbacks HTTPS après publication et limites d’envoi : NON TESTÉS tant que l’utilisateur ne se connecte pas.
+- HTML réel : PASS sur Chromium et WebKit à 390 × 844, six onglets, article complet, simulateur, confiance conservée et original intact ; zéro erreur JS. [Preuve sans contenu](docs/evidence/real-html.json). Pas de garantie de compatibilité des scripts localStorage ou ressources externes ; ceux-ci sont annoncés comme incompatibles / bloqués.
+- Connexion email remplacée par un code privé : aucun SMTP nécessaire. Configuration du compte propriétaire et connexion réelle par code vérifiées. Tests serveur : origine étrangère, corps excessif, mauvais code, limitation des essais et absence de secret serveur dans la réponse.
 - Interruption physique par extinction pendant import / transfert, vrai quota saturé, storage privé Safari, lecteur d’écran physique et zoom système 200 % : NON TESTÉS. Quota refusé couvert par simulation transactionnelle.
 - Pas de synchronisation destructive en continu, d’automatisation des futures veilles, de ZIP d’import libre, de suppression définitive, de comparaison sémantique IA ni de snapshot HTML sous URL publique.
 - Hébergement final : vérifier le statut effectif dans le compte rendu ; un alias ancien ne prouve pas la publication du nouveau produit.

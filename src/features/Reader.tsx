@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -11,6 +11,8 @@ import {
   Plus,
   Minus,
   Archive,
+  Maximize,
+  Minimize,
 } from "lucide-react";
 import type { Edition, ReadingState, Note } from "../data/model";
 import { blobOf, dateLabel, now } from "../data/model";
@@ -35,6 +37,8 @@ export function Reader({
   onOpen: (id: string) => void;
   run: (action: () => Promise<unknown>, success?: string) => void;
 }) {
+  const surfaceRef = useRef<HTMLDivElement>(null);
+  const [expanded, setExpanded] = useState(true);
   const [bytes, setBytes] = useState<Uint8Array>();
   const [mode, setMode] = useState<"safe" | "interactive" | "text">("safe");
   const [confirm, setConfirm] = useState(false);
@@ -50,17 +54,22 @@ export function Reader({
   );
   const index = editions.findIndex((e) => e.id === edition.id);
   useEffect(() => {
+    setExpanded(true);
     setBytes(undefined);
     setMode("safe");
     setNote("");
     setLoadError("");
     let canceled = false;
-    db.originals
-      .get(edition.id)
-      .then((o) => {
+    Promise.all([
+      db.originals.get(edition.id),
+      db.preferences.get(`reader-trust-${edition.id}`),
+    ])
+      .then(([o, trust]) => {
         if (!canceled) {
-          if (o) setBytes(o.bytes);
-          else
+          if (o) {
+            setBytes(o.bytes);
+            if (trust?.value === "interactive") setMode("interactive");
+          } else
             setLoadError(
               "Original manquant. La lecture textuelle reste disponible.",
             );
@@ -76,6 +85,35 @@ export function Reader({
   useEffect(() => {
     if (bytes) setSrcDoc(isolatedHTML(bytes, mode === "interactive"));
   }, [bytes, mode]);
+  useEffect(() => {
+    if (!expanded || !surfaceRef.current) return;
+    const surface = surfaceRef.current;
+    const siblings: { element: HTMLElement; inert: boolean }[] = [];
+    let branch: HTMLElement = surface;
+    while (branch.parentElement) {
+      for (const sibling of branch.parentElement.children) {
+        if (sibling !== branch && sibling instanceof HTMLElement) {
+          siblings.push({ element: sibling, inert: sibling.inert });
+          sibling.inert = true;
+        }
+      }
+      branch = branch.parentElement;
+    }
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    surface.querySelector<HTMLButtonElement>("button")?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setExpanded(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      siblings.forEach(({ element, inert }) => {
+        element.inert = inert;
+      });
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [expanded]);
   async function saveNote() {
     if (!note.trim()) return;
     await db.notes.add({
@@ -175,8 +213,24 @@ export function Reader({
           {edition.archived ? "Désarchiver" : "Archiver"}
         </button>
       </div>
-      <div className="mode-tabs" role="group" aria-label="Mode de lecture">
-        <button aria-pressed={mode === "safe"} onClick={() => setMode("safe")}>
+      <div
+        className="mode-tabs"
+        hidden={expanded}
+        role="group"
+        aria-label="Mode de lecture"
+      >
+        <button
+          aria-pressed={mode === "safe"}
+          onClick={() =>
+            run(async () => {
+              await db.preferences.put({
+                key: `reader-trust-${edition.id}`,
+                value: "safe",
+              });
+              setMode("safe");
+            })
+          }
+        >
           <ShieldCheck size={16} />
           Sécurisé
         </button>
@@ -215,124 +269,223 @@ export function Reader({
           {loadError}
         </p>
       )}
-      {mode === "text" ? (
-        <div className="text-reader">
-          <div className="font-toolbar">
-            <span>Taille du texte</span>
-            <button
-              className="icon-button"
-              aria-label="Réduire le texte"
-              onClick={() => setFont(Math.max(14, font - 2))}
-            >
-              <Minus />
-            </button>
-            <button
-              className="icon-button"
-              aria-label="Agrandir le texte"
-              onClick={() => setFont(Math.min(32, font + 2))}
-            >
-              <Plus />
-            </button>
-          </div>
-          <div style={{ fontSize: font }}>
-            {edition.articles.length ? (
-              edition.articles.map((a) => (
-                <article
-                  className="indexed-article"
-                  key={a.id}
-                  id={`article-${a.id}`}
-                >
-                  <p className="eyebrow">{a.category}</p>
-                  <h2>{a.title}</h2>
-                  <p className="article-text">
-                    {a.text ||
-                      "Aucun texte extrait pour cet article : consultez le HTML original."}
-                  </p>
-                  <div className="reader-toolbar">
-                    <button
-                      className="secondary"
-                      onClick={() =>
-                        run(() =>
-                          db.reading(edition.id, a.id, {
-                            favorite: !states.find(
-                              (s) =>
-                                s.editionId === edition.id &&
-                                s.articleId === a.id,
-                            )?.favorite,
-                          }),
-                        )
-                      }
-                    >
-                      <Star size={16} />
-                      {states.find(
-                        (s) =>
-                          s.editionId === edition.id && s.articleId === a.id,
-                      )?.favorite
-                        ? "Retirer le favori"
-                        : "Favori article"}
-                    </button>
-                    <button
-                      className="secondary"
-                      onClick={() =>
-                        run(() =>
-                          db.reading(edition.id, a.id, {
-                            read: !states.find(
-                              (s) =>
-                                s.editionId === edition.id &&
-                                s.articleId === a.id,
-                            )?.read,
-                          }),
-                        )
-                      }
-                    >
-                      <Check size={16} />
-                      {states.find(
-                        (s) =>
-                          s.editionId === edition.id && s.articleId === a.id,
-                      )?.read
-                        ? "Article lu"
-                        : "Marquer l’article lu"}
-                    </button>
-                    <button
-                      className="text-button"
-                      onClick={() => {
-                        setArticle(a.id);
-                        document.getElementById("note-body")?.focus();
-                      }}
-                    >
-                      Annoter cet article
-                    </button>
-                  </div>
-                  {a.sources.length > 0 && (
-                    <ul className="sources">
-                      {a.sources.map((u) => (
-                        <li key={u}>
-                          <a href={u} target="_blank" rel="noopener noreferrer">
-                            {u}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </article>
-              ))
-            ) : (
-              <p className="article-text">{edition.text}</p>
-            )}
-          </div>
+      <div
+        ref={surfaceRef}
+        className={`reading-surface${expanded ? " reading-surface-expanded" : ""}`}
+        role={expanded && !confirm ? "dialog" : undefined}
+        aria-modal={expanded && !confirm ? true : undefined}
+        aria-label={
+          expanded ? `Lecture pleine page de ${edition.title}` : undefined
+        }
+      >
+        <div className="reading-surface-header">
+          {expanded && (
+            <>
+              <button
+                className="icon-button"
+                aria-label="Retour à la bibliothèque"
+                onClick={onBack}
+              >
+                <ArrowLeft size={18} />
+              </button>
+              <span>{edition.title}</span>
+              <button
+                className="secondary"
+                aria-pressed={mode === "interactive"}
+                onClick={() => {
+                  if (mode !== "interactive") setConfirm(true);
+                  else
+                    run(async () => {
+                      await db.preferences.put({
+                        key: `reader-trust-${edition.id}`,
+                        value: "safe",
+                      });
+                      setMode("safe");
+                    });
+                }}
+              >
+                <Code size={16} />
+                {mode === "interactive" ? "Désactiver JS" : "Interactif"}
+              </button>
+            </>
+          )}
+          <button
+            className="secondary"
+            aria-expanded={expanded}
+            onClick={() => setExpanded(!expanded)}
+          >
+            {expanded ? <Minimize size={18} /> : <Maximize size={18} />}
+            {expanded ? "Réduire la lecture" : "Lecture pleine page"}
+          </button>
         </div>
-      ) : bytes ? (
-        <iframe
-          key={`${edition.id}-${mode}`}
-          className="edition-frame"
-          title={`Lecture de ${edition.title}`}
-          sandbox={mode === "interactive" ? "allow-scripts" : ""}
-          referrerPolicy="no-referrer"
-          srcDoc={srcDoc}
-        />
-      ) : (
-        <p>Chargement de l’original…</p>
-      )}
+        {mode === "text" ? (
+          <div className="text-reader">
+            <div className="font-toolbar">
+              <span>Taille du texte</span>
+              <button
+                className="icon-button"
+                aria-label="Réduire le texte"
+                onClick={() => setFont(Math.max(14, font - 2))}
+              >
+                <Minus />
+              </button>
+              <button
+                className="icon-button"
+                aria-label="Agrandir le texte"
+                onClick={() => setFont(Math.min(32, font + 2))}
+              >
+                <Plus />
+              </button>
+            </div>
+            <div style={{ fontSize: font }}>
+              {edition.articles.length ? (
+                edition.articles.map((a) => (
+                  <article
+                    className="indexed-article"
+                    key={a.id}
+                    id={`article-${a.id}`}
+                  >
+                    <p className="eyebrow">{a.category}</p>
+                    <h2>{a.title}</h2>
+                    <p className="article-text">
+                      {a.text ||
+                        "Aucun texte extrait pour cet article : consultez le HTML original."}
+                    </p>
+                    <div className="reader-toolbar">
+                      <button
+                        className="secondary"
+                        onClick={() =>
+                          run(() =>
+                            db.reading(edition.id, a.id, {
+                              favorite: !states.find(
+                                (s) =>
+                                  s.editionId === edition.id &&
+                                  s.articleId === a.id,
+                              )?.favorite,
+                            }),
+                          )
+                        }
+                      >
+                        <Star size={16} />
+                        {states.find(
+                          (s) =>
+                            s.editionId === edition.id && s.articleId === a.id,
+                        )?.favorite
+                          ? "Retirer le favori"
+                          : "Favori article"}
+                      </button>
+                      <button
+                        className="secondary"
+                        onClick={() =>
+                          run(() =>
+                            db.reading(edition.id, a.id, {
+                              read: !states.find(
+                                (s) =>
+                                  s.editionId === edition.id &&
+                                  s.articleId === a.id,
+                              )?.read,
+                            }),
+                          )
+                        }
+                      >
+                        <Check size={16} />
+                        {states.find(
+                          (s) =>
+                            s.editionId === edition.id && s.articleId === a.id,
+                        )?.read
+                          ? "Article lu"
+                          : "Marquer l’article lu"}
+                      </button>
+                      <button
+                        className="text-button"
+                        onClick={() => {
+                          setArticle(a.id);
+                          document.getElementById("note-body")?.focus();
+                        }}
+                      >
+                        Annoter cet article
+                      </button>
+                    </div>
+                    {a.sources.length > 0 && (
+                      <ul className="sources">
+                        {a.sources.map((u) => (
+                          <li key={u}>
+                            <a
+                              href={u}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {u}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </article>
+                ))
+              ) : (
+                <p className="article-text">{edition.text}</p>
+              )}
+            </div>
+          </div>
+        ) : bytes ? (
+          <iframe
+            key={`${edition.id}-${mode}`}
+            className="edition-frame"
+            title={`Lecture de ${edition.title}`}
+            sandbox={mode === "interactive" ? "allow-scripts" : ""}
+            referrerPolicy="no-referrer"
+            srcDoc={srcDoc}
+          />
+        ) : (
+          <p>Chargement de l’original…</p>
+        )}
+        {confirm && (
+          <div className="modal-backdrop">
+            <section
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="trust-title"
+              className="modal compact"
+            >
+              <h2 id="trust-title">Activer les interactions ?</h2>
+              <p>
+                Uniquement si vous connaissez l’origine de ce fichier. Les
+                scripts pourront s’exécuter dans leur cadre isolé. Les requêtes
+                fetch et les ressources externes sont bloquées, mais la
+                navigation du cadre par un script peut encore provoquer une
+                requête réseau. Ce mode ne garantit pas l’absence d’exfiltration
+                du contenu du journal.
+              </p>
+              <p>
+                Le journal n’aura pas accès à votre session Supabase, vos notes
+                ni votre bibliothèque. Ses fonctions utilisant localStorage
+                peuvent échouer.
+              </p>
+              <div className="modal-actions">
+                <button className="secondary" onClick={() => setConfirm(false)}>
+                  Rester en mode sécurisé
+                </button>
+                <button
+                  className="primary"
+                  onClick={() =>
+                    run(async () => {
+                      await db.preferences.put({
+                        key: `reader-trust-${edition.id}`,
+                        value: "interactive",
+                      });
+                      setMode("interactive");
+                      setConfirm(false);
+                    })
+                  }
+                >
+                  Je fais confiance à ce fichier
+                </button>
+              </div>
+            </section>
+          </div>
+        )}
+      </div>
       <section className="annotation-panel">
         <div>
           <p className="eyebrow">VOTRE REGARD</p>
@@ -408,44 +561,6 @@ export function Reader({
             ))}
         </div>
       </section>
-      {confirm && (
-        <div className="modal-backdrop">
-          <section
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="trust-title"
-            className="modal compact"
-          >
-            <h2 id="trust-title">Activer les interactions ?</h2>
-            <p>
-              Uniquement si vous connaissez l’origine de ce fichier. Les scripts
-              pourront s’exécuter dans leur cadre isolé. Les requêtes fetch et
-              les ressources externes sont bloquées, mais la navigation du cadre
-              par un script peut encore provoquer une requête réseau. Ce mode ne
-              garantit pas l’absence d’exfiltration du contenu du journal.
-            </p>
-            <p>
-              Le journal n’aura pas accès à votre session Supabase, vos notes ni
-              votre bibliothèque. Ses fonctions utilisant localStorage peuvent
-              échouer.
-            </p>
-            <div className="modal-actions">
-              <button className="secondary" onClick={() => setConfirm(false)}>
-                Rester en mode sécurisé
-              </button>
-              <button
-                className="primary"
-                onClick={() => {
-                  setMode("interactive");
-                  setConfirm(false);
-                }}
-              >
-                Je fais confiance à ce fichier
-              </button>
-            </div>
-          </section>
-        </div>
-      )}
     </section>
   );
 }
