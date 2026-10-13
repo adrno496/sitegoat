@@ -1,0 +1,51 @@
+{
+  "testedAt": "2026-10-13T20:56:38.123Z",
+  "baseURL": "https://sitegoat.vercel.app",
+  "environment": "Chromium local, Supabase réel, deux sessions A et un compte B synthétiques",
+  "results": [
+    {
+      "name": "UI sauvegarde ZIP avec original, note, favori et lecture",
+      "status": "PASS"
+    },
+    {
+      "name": "Nouvelle session restaure favori et note depuis Supabase",
+      "status": "PASS"
+    },
+    {
+      "name": "Original restitué dans iframe",
+      "status": "PASS"
+    },
+    {
+      "name": "État lu restitué",
+      "status": "PASS"
+    },
+    {
+      "name": "Deux appareils conservent et fusionnent leurs notes",
+      "status": "PASS"
+    },
+    {
+      "name": "Compte B ne voit aucun snapshot A",
+      "status": "PASS"
+    },
+    {
+      "name": "File de sauvegarde conservée offline",
+      "status": "PASS"
+    },
+    {
+      "name": "File reprise au retour du réseau",
+      "status": "PASS"
+    },
+    {
+      "name": "Déconnexion conserve la bibliothèque locale",
+      "status": "PASS"
+    },
+    {
+      "name": "Nettoyage données synthétiques",
+      "status": "PASS"
+    },
+    {
+      "name": "Nettoyage données synthétiques",
+      "status": "PASS"
+    }
+  ]
+}

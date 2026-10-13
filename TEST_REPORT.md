@@ -14,6 +14,8 @@ Date : 13 octobre 2026, Europe/Paris. Environnement réel : macOS sur Mac ARM64,
 | Git / secrets | `git diff --check`, `node scripts/check-secrets.mjs` | PASS |
 | Cloud privé / RLS | `node scripts/test-cloud.mjs`, [26 résultats réels](docs/evidence/cloud.json) | PASS |
 | Sauvegarde cloud dans l’UI | `node scripts/test-cloud-browser.mjs`, [11 résultats](docs/evidence/cloud-browser.json) | PASS |
+| Cloud HTTPS publié | 26 contrôles API/RLS + 11 contrôles interface, preuves `cloud-production.json` et `cloud-browser-production.json` | PASS |
+| Code sur HTTPS | 6 contrôles, [preuve production](docs/evidence/access-production.json) | PASS |
 | SQL RLS | Dashboard Supabase connecté, résultat `false / RESTRICTIVE / ALL` | PASS |
 | Performance synthétique | `node scripts/test-performance.mjs`, [mesures brutes](docs/evidence/performance.json) | PASS |
 
@@ -63,7 +65,7 @@ Build vérifié : JS principal ~795 Ko (233 Ko gzip), CSS ~31 Ko (7,1 Ko gzip), 
 - Connexion email remplacée par un code privé : aucun SMTP nécessaire. Configuration du compte propriétaire et connexion réelle par code vérifiées. Tests serveur : origine étrangère, corps excessif, mauvais code, limitation des essais et absence de secret serveur dans la réponse.
 - Interruption physique par extinction pendant import / transfert, vrai quota saturé, storage privé Safari, lecteur d’écran physique et zoom système 200 % : NON TESTÉS. Quota refusé couvert par simulation transactionnelle.
 - Pas de synchronisation destructive en continu, d’automatisation des futures veilles, de ZIP d’import libre, de suppression définitive, de comparaison sémantique IA ni de snapshot HTML sous URL publique.
-- Hébergement final : vérifier le statut effectif dans le compte rendu ; un alias ancien ne prouve pas la publication du nouveau produit.
+- Hébergement HTTPS publié et vérifié : https://sitegoat.vercel.app, Vercel READY, deux fonctions serveur présentes ; [preuve de publication](docs/evidence/deployment.json). Un premier essai réalisé pendant la construction a encore rencontré l’ancienne version ; tous les tests ci-dessus ont été relancés et réussis après la bascule.
 
 ## Régression et rollback
 

@@ -1,0 +1,32 @@
+{
+  "testedAt": "2026-10-13T20:56:23.846Z",
+  "baseURL": "https://sitegoat.vercel.app",
+  "results": [
+    {
+      "name": "Code incorrect refusé dans l’interface",
+      "status": "PASS"
+    },
+    {
+      "name": "Code ouvre une session sans email",
+      "status": "PASS"
+    },
+    {
+      "name": "Session conservée après rechargement",
+      "status": "PASS"
+    },
+    {
+      "name": "Archive synthétique transférée dans Supabase",
+      "status": "PASS"
+    },
+    {
+      "name": "Même code sur appareil vierge : archive retrouvée et HTML lisible",
+      "status": "PASS"
+    },
+    {
+      "name": "Déconnexion conserve la bibliothèque locale",
+      "status": "PASS"
+    }
+  ],
+  "syntheticArchivesCleaned": 1,
+  "privateContentUploaded": false
+}
