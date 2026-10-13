@@ -23,7 +23,7 @@ Le code et les données de test sont dans `tests/`, les preuves expurgées dans 
 
 ## Correctif 1.0.2
 
-Page blanche constatée dans le Chrome 153 actif de l’utilisateur : srcdoc présent (103 158 caractères), mais document du cadre vide malgré readyState complete. Remonter le même cadre avec son srcdoc complet a rendu immédiatement le HTML. Correctif : calcul synchrone du srcdoc avant montage, au lieu d’un effet postérieur. Tests : aucun montage avec srcdoc vide, passage sécurisé/interactif, réouverture avec confiance mémorisée, zoom 70 → 60 → 70 % conservant l’état, rechargement explicite du cadre. Le test de largeur tolère les arrondis sous-pixel dus au scale CSS.
+Page blanche constatée dans le Chrome 153 actif de l’utilisateur : srcdoc présent (103 158 caractères), mais document du cadre vide malgré readyState complete. Remonter le même cadre avec son srcdoc complet a rendu immédiatement le HTML. Correctif : calcul synchrone du srcdoc avant montage, au lieu d’un effet postérieur. Tests : aucun montage avec srcdoc vide, passage sécurisé/interactif, réouverture avec confiance mémorisée, zoom 70 → 60 → 70 % conservant l’état, rechargement explicite du cadre. Le test de largeur tolère les arrondis sous-pixel dus au scale CSS. Après publication : mise à jour de la PWA dans le Chrome 153 actif de l’utilisateur, édition déjà importée conservée et ouverte, onglet Business fonctionnel, zoom 70 → 60 → 70 % sans perte de vue, retour à la une visible en capture. [Preuve native sans contenu privé](docs/evidence/reader-chrome.json). Les deux moteurs automatisés ont aussi exécuté le fichier réel sur HTTPS à 70 %, sans erreur JS.
 
 ## Parcours fonctionnels exécutés
 

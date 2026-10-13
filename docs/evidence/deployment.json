@@ -1,18 +1,16 @@
 {
-  "verifiedAt": "2026-10-13T20:57:22.417382+00:00",
+  "verifiedAt": "2026-10-13T21:15:19.228Z",
+  "appVersion": "1.0.2",
   "url": "https://sitegoat.vercel.app",
-  "applicationCommit": "1b6fda2f11b0e39c1b54d66eda71d22e165263a1",
-  "deploymentId": "dpl_8ThCBRLyzRpuFZgRLK1t6AggS8AG",
+  "applicationCommit": "fc1846afcfd2f7834df049ec78149fd809f16e17",
+  "deploymentId": "dpl_ETBh99KXgR8X8PzE6cx6iaDhjGT6",
   "vercelStatus": "READY",
   "checks": {
-    "shell": "200",
-    "manifest": "200",
-    "serviceWorker": "200",
-    "anonymousBackupAPI": "401",
-    "privateCodeLogin": "PASS",
-    "backupRestoreSecondBrowser": "PASS",
-    "cloudIsolation": "26 PASS",
-    "cloudBrowser": "11 PASS"
+    "shell": 200,
+    "newBundle": true,
+    "anonymousBackupAPI": 401,
+    "realHTMLTwoEngines": "PASS"
   },
+  "cloudProofs": "Les preuves cloud de 1.0.1 restent distinctes ; les fonctions serveur ne changent pas dans 1.0.2.",
   "physicalPhones": "NON TESTÉS"
 }

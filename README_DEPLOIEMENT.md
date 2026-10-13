@@ -2,7 +2,7 @@
 
 ## Vercel
 
-Le dépôt demandé `adrno496/sitegoat` remplace l’ancien site GOAT FUEL. Le projet Vercel existant `sitegoat` a été trouvé ; son alias existant est `https://sitegoat.vercel.app`. La version 1.0.1 est publiée et vérifiée en HTTPS ; preuves dans `docs/evidence/deployment.json`, `access-production.json`, `cloud-production.json` et `cloud-browser-production.json`.
+Le dépôt demandé `adrno496/sitegoat` remplace l’ancien site GOAT FUEL. Le projet Vercel existant `sitegoat` a été trouvé ; son alias existant est `https://sitegoat.vercel.app`. La version 1.0.2 est publiée et vérifiée en HTTPS ; preuves dans `docs/evidence/deployment.json`, `access-production.json`, `cloud-production.json` et `cloud-browser-production.json`.
 
 `vercel.json` définit Vite, `npm run build`, `dist`, les headers et les routes SPA. L’API `api/backup.mjs` est une fonction Node Vercel, séparée du bundle client. Les HTML importés ne vont ni dans `public` ni dans `dist`.
 

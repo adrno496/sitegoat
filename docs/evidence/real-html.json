@@ -1,6 +1,6 @@
 {
-  "testedAt": "2026-10-13T21:11:25.097Z",
-  "baseURL": "http://127.0.0.1:4173",
+  "testedAt": "2026-10-13T21:13:30.198Z",
+  "baseURL": "https://sitegoat.vercel.app",
   "environment": "Fichier réel local, deux moteurs automatisés, aucun envoi cloud ni contenu publié",
   "results": [
     {
