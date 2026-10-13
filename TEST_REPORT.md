@@ -21,6 +21,10 @@ Date : 13 octobre 2026, Europe/Paris. Environnement réel : macOS sur Mac ARM64,
 
 Le code et les données de test sont dans `tests/`, les preuves expurgées dans `docs/evidence/`. Les captures `docs/screenshots/home-{320,375,390,768,1024,1440}.png` sont des simulations navigateur. Les traces Playwright restent localement dans `test-results/`, ignoré par Git ; aucun token/session cloud n’y est enregistré par les tests E2E locaux.
 
+## Correctif 1.0.2
+
+Page blanche constatée dans le Chrome 153 actif de l’utilisateur : srcdoc présent (103 158 caractères), mais document du cadre vide malgré readyState complete. Remonter le même cadre avec son srcdoc complet a rendu immédiatement le HTML. Correctif : calcul synchrone du srcdoc avant montage, au lieu d’un effet postérieur. Tests : aucun montage avec srcdoc vide, passage sécurisé/interactif, réouverture avec confiance mémorisée, zoom 70 → 60 → 70 % conservant l’état, rechargement explicite du cadre. Le test de largeur tolère les arrondis sous-pixel dus au scale CSS.
+
 ## Parcours fonctionnels exécutés
 
 - Accueil vide ; import HTML générique sans JSON/date ; prévisualisation ; stockage ; lecture dans une iframe isolée.

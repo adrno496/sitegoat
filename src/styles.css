@@ -2273,7 +2273,34 @@ textarea {
 .reading-surface-expanded .reading-surface-header button {
   flex-shrink: 0;
 }
-.reading-surface-expanded .edition-frame {
+.edition-viewport {
+  position: relative;
+  height: 75vh;
+  min-height: 400px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.edition-viewport .edition-frame {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  transform-origin: top left;
+}
+.reading-zoom {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.reading-zoom output {
+  min-width: 44px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.reading-surface-expanded .edition-viewport {
   flex: 1 1 auto;
   min-height: 0;
   height: 0;
@@ -2301,6 +2328,13 @@ textarea {
   }
   .reading-surface-expanded .reading-surface-header {
     font-size: 11px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .reading-surface-expanded .reading-zoom {
+    order: 1;
+    flex-basis: 100%;
+    justify-content: center;
   }
   .primary,
   .secondary,

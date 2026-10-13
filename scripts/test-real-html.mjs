@@ -5,6 +5,7 @@ if (!file || !fs.existsSync(file))
   throw new Error(
     "Fournissez le chemin d’un HTML réel, conservé hors du dépôt.",
   );
+const baseURL = process.env.JOURNAL360_BASE_URL || "http://127.0.0.1:4173";
 const original = fs.readFileSync(file);
 const results = [];
 for (const [engine, browserType] of Object.entries({ chromium, webkit })) {
@@ -17,7 +18,7 @@ for (const [engine, browserType] of Object.entries({ chromium, webkit })) {
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.name));
   try {
-    await page.goto("http://127.0.0.1:4173");
+    await page.goto(baseURL);
     await page.getByLabel("Fichiers HTML à importer").setInputFiles(file);
     await page
       .getByLabel("Titre", { exact: true })
@@ -63,7 +64,7 @@ for (const [engine, browserType] of Object.entries({ chromium, webkit })) {
     const after = await frame.locator("#result").innerText();
     if (before === after) throw new Error("Calculatrice inactive");
     const bounds = await page.locator("iframe").boundingBox();
-    if (Math.abs(bounds.width - 390) > 1 || bounds.height < 740)
+    if (Math.abs(bounds.width - 390) > 1 || bounds.height < 650)
       throw new Error("Écran incomplet");
     await page
       .getByRole("button", { name: "Réduire la lecture", exact: true })
@@ -88,6 +89,9 @@ for (const [engine, browserType] of Object.entries({ chromium, webkit })) {
         .locator("#homeStories .storycard")
         .count(),
       fullPage: true,
+      htmlZoom: await page
+        .getByLabel("Échelle du HTML", { exact: true })
+        .innerText(),
       tabs: true,
       articleReading: true,
       calculator: true,
@@ -131,6 +135,7 @@ fs.writeFileSync(
   JSON.stringify(
     {
       testedAt: new Date().toISOString(),
+      baseURL,
       environment:
         "Fichier réel local, deux moteurs automatisés, aucun envoi cloud ni contenu publié",
       results,

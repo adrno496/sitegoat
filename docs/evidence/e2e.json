@@ -1,10 +1,7 @@
 {
-  "testedAt": "2026-10-13T20:54:52.276225+00:00",
-  "commands": [
-    "npm run check",
-    "npm test",
-    "npm run lint"
-  ],
+  "testedAt": "2026-10-13T21:12:18.731652+00:00",
+  "appVersion": "1.0.2",
+  "command": "npm run check",
   "lint": "PASS",
   "productionBuild": "PASS",
   "unitTests": {
@@ -12,8 +9,8 @@
     "failed": 0
   },
   "browserStats": {
-    "startTime": "2026-10-13T20:52:50.755Z",
-    "duration": 69600.356,
+    "startTime": "2026-10-13T21:10:53.161Z",
+    "duration": 58772.407,
     "expected": 18,
     "skipped": 0,
     "unexpected": 0,
@@ -24,109 +21,109 @@
       "name": "parcours complet : import, lecture, notes, favori, recherche, offline, export et restauration",
       "engine": "chromium",
       "status": "expected",
-      "durationMs": 2183
+      "durationMs": 4274
     },
     {
       "name": "démonstrations, interaction explicite et mémoire basée sur event_id",
       "engine": "chromium",
       "status": "expected",
-      "durationMs": 1002
+      "durationMs": 1838
     },
     {
       "name": "renommage doublon, version, archive et corbeille récupérable",
       "engine": "chromium",
       "status": "expected",
-      "durationMs": 7992
+      "durationMs": 8513
     },
     {
       "name": "sécurité : parent, stockage, fetch, ressources, top et popups bloqués",
       "engine": "chromium",
       "status": "expected",
-      "durationMs": 729
+      "durationMs": 1820
     },
     {
       "name": "responsive, thèmes et accessibilité sur six largeurs",
       "engine": "chromium",
       "status": "expected",
-      "durationMs": 6318
+      "durationMs": 7815
     },
     {
       "name": "manifest et réception Web Share Target en service worker",
       "engine": "chromium",
       "status": "expected",
-      "durationMs": 930
+      "durationMs": 817
     },
     {
       "name": "File Handling launchQueue traite un HTML via le même écran de vérification",
       "engine": "chromium",
       "status": "expected",
-      "durationMs": 594
+      "durationMs": 1082
     },
     {
       "name": "lecture pleine page : tout le viewport, interactions conservées et retour sur mobile",
       "engine": "chromium",
       "status": "expected",
-      "durationMs": 4298
+      "durationMs": 4653
     },
     {
       "name": "parcours complet : import, lecture, notes, favori, recherche, offline, export et restauration",
       "engine": "webkit",
       "status": "expected",
-      "durationMs": 5211
+      "durationMs": 3288
     },
     {
       "name": "démonstrations, interaction explicite et mémoire basée sur event_id",
       "engine": "webkit",
       "status": "expected",
-      "durationMs": 2835
+      "durationMs": 1722
     },
     {
       "name": "renommage doublon, version, archive et corbeille récupérable",
       "engine": "webkit",
       "status": "expected",
-      "durationMs": 1969
+      "durationMs": 1335
     },
     {
       "name": "sécurité : parent, stockage, fetch, ressources, top et popups bloqués",
       "engine": "webkit",
       "status": "expected",
-      "durationMs": 1745
+      "durationMs": 969
     },
     {
       "name": "responsive, thèmes et accessibilité sur six largeurs",
       "engine": "webkit",
       "status": "expected",
-      "durationMs": 14043
+      "durationMs": 6928
     },
     {
       "name": "manifest et réception Web Share Target en service worker",
       "engine": "webkit",
       "status": "expected",
-      "durationMs": 1398
+      "durationMs": 554
     },
     {
       "name": "File Handling launchQueue traite un HTML via le même écran de vérification",
       "engine": "webkit",
       "status": "expected",
-      "durationMs": 1330
+      "durationMs": 649
     },
     {
       "name": "lecture pleine page : tout le viewport, interactions conservées et retour sur mobile",
       "engine": "webkit",
       "status": "expected",
-      "durationMs": 6997
+      "durationMs": 5859
     },
     {
       "name": "mise à jour réelle du service worker sans perte des originaux et favoris",
       "engine": "chromium",
       "status": "expected",
-      "durationMs": 3495
+      "durationMs": 984
     },
     {
       "name": "mise à jour réelle du service worker sans perte des originaux et favoris",
       "engine": "webkit",
       "status": "expected",
-      "durationMs": 1940
+      "durationMs": 1071
     }
   ],
   "physicalPhoneTests": "NON TESTÉ SUR APPAREIL RÉEL"

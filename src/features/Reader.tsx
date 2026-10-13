@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -13,6 +13,7 @@ import {
   Archive,
   Maximize,
   Minimize,
+  RefreshCw,
 } from "lucide-react";
 import type { Edition, ReadingState, Note } from "../data/model";
 import { blobOf, dateLabel, now } from "../data/model";
@@ -46,7 +47,14 @@ export function Reader({
   const [note, setNote] = useState("");
   const [kind, setKind] = useState<"note" | "decision">("note");
   const [article, setArticle] = useState("");
-  const [srcDoc, setSrcDoc] = useState("");
+  const [htmlZoom, setHtmlZoom] = useState(70);
+  const [frameRevision, setFrameRevision] = useState(0);
+  // Monter le cadre avec son document final. Un srcdoc vide puis modifié après
+  // montage peut rester blanc dans Chrome, surtout lors du changement de sandbox.
+  const srcDoc = useMemo(
+    () => (bytes ? isolatedHTML(bytes, mode === "interactive") : ""),
+    [bytes, mode],
+  );
   const [loadError, setLoadError] = useState("");
   useDialogFocus(confirm, () => setConfirm(false));
   const state = states.find(
@@ -82,9 +90,6 @@ export function Reader({
       canceled = true;
     };
   }, [edition.id]);
-  useEffect(() => {
-    if (bytes) setSrcDoc(isolatedHTML(bytes, mode === "interactive"));
-  }, [bytes, mode]);
   useEffect(() => {
     if (!expanded || !surfaceRef.current) return;
     const surface = surfaceRef.current;
@@ -309,6 +314,40 @@ export function Reader({
               </button>
             </>
           )}
+          {mode !== "text" && (
+            <div
+              className="reading-zoom"
+              role="group"
+              aria-label="Zoom du HTML"
+            >
+              <button
+                className="icon-button"
+                aria-label="Dézoomer le HTML"
+                disabled={htmlZoom <= 40}
+                onClick={() => setHtmlZoom(Math.max(40, htmlZoom - 10))}
+              >
+                <Minus size={16} />
+              </button>
+              <output aria-live="polite" aria-label="Échelle du HTML">
+                {htmlZoom} %
+              </output>
+              <button
+                className="icon-button"
+                aria-label="Zoomer le HTML"
+                disabled={htmlZoom >= 150}
+                onClick={() => setHtmlZoom(Math.min(150, htmlZoom + 10))}
+              >
+                <Plus size={16} />
+              </button>
+              <button
+                className="icon-button"
+                aria-label="Recharger le HTML"
+                onClick={() => setFrameRevision((revision) => revision + 1)}
+              >
+                <RefreshCw size={16} />
+              </button>
+            </div>
+          )}
           <button
             className="secondary"
             aria-expanded={expanded}
@@ -428,17 +467,31 @@ export function Reader({
               )}
             </div>
           </div>
-        ) : bytes ? (
-          <iframe
-            key={`${edition.id}-${mode}`}
-            className="edition-frame"
-            title={`Lecture de ${edition.title}`}
-            sandbox={mode === "interactive" ? "allow-scripts" : ""}
-            referrerPolicy="no-referrer"
-            srcDoc={srcDoc}
-          />
+        ) : srcDoc ? (
+          <div className="edition-viewport">
+            <iframe
+              key={`${edition.id}-${mode}-${frameRevision}`}
+              className="edition-frame"
+              title={`Lecture de ${edition.title}`}
+              sandbox={mode === "interactive" ? "allow-scripts" : ""}
+              referrerPolicy="no-referrer"
+              srcDoc={srcDoc}
+              style={{
+                width: `${10000 / htmlZoom}%`,
+                height: `${10000 / htmlZoom}%`,
+                transform: `scale(${htmlZoom / 100})`,
+              }}
+            />
+          </div>
         ) : (
-          <p>Chargement de l’original…</p>
+          <div className="reader-loading">
+            <p role="status">{loadError || "Chargement de l’original…"}</p>
+            {loadError && (
+              <button className="secondary" onClick={() => setMode("text")}>
+                Afficher le texte conservé
+              </button>
+            )}
+          </div>
         )}
         {confirm && (
           <div className="modal-backdrop">

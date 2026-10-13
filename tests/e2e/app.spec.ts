@@ -348,6 +348,19 @@ test("File Handling launchQueue traite un HTML via le même écran de vérificat
 test("lecture pleine page : tout le viewport, interactions conservées et retour sur mobile", async ({
   page,
 }) => {
+  await page.addInitScript(() => {
+    const append = Node.prototype.appendChild;
+    Node.prototype.appendChild = function <T extends Node>(node: T): T {
+      if (
+        node instanceof HTMLIFrameElement &&
+        node.classList.contains("edition-frame") &&
+        !node.srcdoc
+      ) {
+        document.documentElement.dataset.emptyReaderFrame = "true";
+      }
+      return append.call(this, node) as T;
+    };
+  });
   await page.goto("/");
   await demo(page);
   await page
@@ -374,8 +387,22 @@ test("lecture pleine page : tout le viewport, interactions conservées et retour
     await expect(page.getByRole("dialog")).toBeVisible();
     const bounds = await page.locator("iframe").boundingBox();
     expect(bounds?.x).toBe(0);
-    expect(bounds?.width).toBe(width);
-    expect(bounds?.height).toBeGreaterThan(750);
+    expect(Math.abs(bounds!.width - width)).toBeLessThan(1);
+    expect(bounds?.height).toBeGreaterThan(600);
+    expect(Math.abs(bounds!.y + bounds!.height - 844)).toBeLessThan(1);
+    await expect(
+      page.getByLabel("Échelle du HTML", { exact: true }),
+    ).toHaveText("70 %");
+    await page
+      .getByRole("button", { name: "Dézoomer le HTML", exact: true })
+      .click();
+    await expect(
+      page.getByLabel("Échelle du HTML", { exact: true }),
+    ).toHaveText("60 %");
+    await expect(frame.locator("#counter")).toHaveText("1");
+    await page
+      .getByRole("button", { name: "Zoomer le HTML", exact: true })
+      .click();
     await expect(page.locator("iframe")).toHaveAttribute(
       "sandbox",
       "allow-scripts",
@@ -398,4 +425,32 @@ test("lecture pleine page : tout le viewport, interactions conservées et retour
     .click();
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toHaveCount(0);
+  expect(
+    await page.locator("html").getAttribute("data-empty-reader-frame"),
+  ).toBeNull();
+  await page.reload();
+  await page
+    .getByRole("button", {
+      name: "Lire Observer. Comprendre. Agir.",
+      exact: true,
+    })
+    .click();
+  await expect(
+    page.getByRole("button", { name: "Désactiver JS", exact: true }),
+  ).toBeVisible();
+  await frame.getByRole("button", { name: "Tester l’interaction" }).click();
+  await expect(frame.locator("#counter")).toHaveText("1");
+  expect(
+    await page.locator("html").getAttribute("data-empty-reader-frame"),
+  ).toBeNull();
+  await page
+    .getByRole("button", { name: "Recharger le HTML", exact: true })
+    .click();
+  await expect(frame.locator("#counter")).toHaveText("0");
+  await expect(page.getByLabel("Échelle du HTML", { exact: true })).toHaveText(
+    "70 %",
+  );
+  await expect(
+    page.getByRole("button", { name: "Désactiver JS", exact: true }),
+  ).toBeVisible();
 });

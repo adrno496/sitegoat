@@ -26,7 +26,7 @@ Ouvrir `http://127.0.0.1:4173`. `npm run dev` sert l’interface ; il ne lance p
 
 1. **Importer** un ou plusieurs `.html` / `.htm` UTF-8 (10 Mo par fichier, 20 fichiers et 100 Mo par sélection).
 2. Vérifier titre, date, avertissements et conservation des doublons. Enregistrer. Un même hash peut être ignoré, conservé séparément ou ajouté comme version.
-3. Ouvrir l’édition : elle occupe directement toute la page. Pour ses onglets et simulateurs, toucher **Interactif**, puis confirmer la confiance. Ce choix reste local à cette édition/appareil et peut être révoqué avec **Désactiver JS**. Le lecteur sécurisé désactive les scripts par défaut.
+3. Ouvrir l’édition : elle occupe directement toute la page. Le HTML est affiché à 70 % ; les boutons −/+ ajustent ce zoom sans perdre la navigation. Pour ses onglets et simulateurs, toucher **Interactif**, puis confirmer la confiance. Ce choix reste local à cette édition/appareil et peut être révoqué avec **Désactiver JS**. Le lecteur sécurisé désactive les scripts par défaut.
 4. Toucher **Réduire la lecture** pour accéder au mode texte et aux annotations. Garder un favori, marquer une lecture, enregistrer notes et décisions. Tous ces états sont dans IndexedDB, séparément du HTML original.
 5. Dans **Réglages**, exporter un ZIP et le conserver hors du navigateur. Restaurer un ZIP vérifie les fichiers SHA-256 avant toute écriture et fusionne sans effacement.
 6. Pour le cloud, saisir le code d’accès privé dans **Réglages**, puis **Sauvegarder dans Supabase**. Sur un autre appareil, retrouver une sauvegarde et la restaurer. Les transferts différés reprennent lors de la prochaine ouverture ou du retour réseau dans l’application.

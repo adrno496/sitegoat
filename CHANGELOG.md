@@ -1,5 +1,9 @@
 # Versions
 
+## 1.0.2 — 13 octobre 2026
+
+Correction du lecteur blanc constaté sur Chrome 153 : le srcdoc est calculé avant montage du cadre au lieu d’être mis à jour dans un effet après montage. Zoom HTML indépendant à 70 % par défaut, réglable de 40 à 150 % sans recharger le contenu ; bouton de rechargement du cadre. Texte de secours visible si l’original manque.
+
 ## 1.0.1 — 13 octobre 2026
 
 Lecture pleine page dès l’ouverture, retour/réduction, affichage mobile à 70 %, confiance mémorisée par édition sur cet appareil. Contrôles de simulateurs conservés sans formulaires actifs, navigation par fragments adaptée au srcdoc isolé, sources JSON [libellé, URL] reconnues. Tests du fichier réel fourni sans publication de son contenu. Connexion par code privé sans email, même compte de sauvegarde sur tous les appareils. Configuration serveur de production.
