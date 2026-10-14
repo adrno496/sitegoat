@@ -1,0 +1,39 @@
+[WebServer] (node:60107) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:60108) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 10 tests using 1 worker
+
+(node:60109) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [webkit] › tests/e2e/google-ai.spec.ts:144:1 › Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation (3.1s)
+(node:60148) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   2 [webkit] › tests/e2e/google-ai.spec.ts:144:1 › Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation (2.7s)
+(node:60171) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   3 [webkit] › tests/e2e/google-ai.spec.ts:144:1 › Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation (2.9s)
+(node:60211) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   4 [webkit] › tests/e2e/google-ai.spec.ts:144:1 › Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation (2.8s)
+(node:60233) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   5 [webkit] › tests/e2e/google-ai.spec.ts:144:1 › Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation (2.9s)
+(node:60273) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   6 [webkit] › tests/e2e/google-ai.spec.ts:144:1 › Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation (2.8s)
+(node:60313) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   7 [webkit] › tests/e2e/google-ai.spec.ts:144:1 › Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation (2.9s)
+(node:60354) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   8 [webkit] › tests/e2e/google-ai.spec.ts:144:1 › Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation (2.8s)
+(node:60392) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 [webkit] › tests/e2e/google-ai.spec.ts:144:1 › Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation (2.8s)
+(node:60445) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  10 [webkit] › tests/e2e/google-ai.spec.ts:144:1 › Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation (2.9s)
+
+  10 passed (36.0s)

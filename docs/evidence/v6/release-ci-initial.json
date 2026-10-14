@@ -1,0 +1,11 @@
+{
+  "run": "https://github.com/adrno496/sitegoat/actions/runs/38638428688",
+  "commit": "4f3d3e0a556682b8e6b8338ba853c44e02211a8f",
+  "status": "FAIL",
+  "unitTestsPassed": 128,
+  "e2ePassed": 46,
+  "e2eFailed": 1,
+  "failure": "WebKit Linux : capability v1 perdue au passage s\u00fbr\u2192interactif ; re\u00e7u indisponible au lieu du handshake.",
+  "correction": "Listener postMessage install\u00e9 via useLayoutEffect pendant le commit React avant les t\u00e2ches de la nouvelle iframe ; contr\u00f4les source/origin inchang\u00e9s.",
+  "localFocusedRepetition": "10/10 PASS WebKit apr\u00e8s correction, 36.0s"
+}

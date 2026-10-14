@@ -34,3 +34,9 @@ La compatibilité structurelle du bucket Supabase existant a suffi : **aucune mi
 Les sorties de test brutes peuvent contenir des espaces finaux et le patch des lignes de contexte : ils sont conservés pour fidélité des preuves ; le contrôle de whitespace du code exclut ces pièces. Le patch source historique et son hash couvrent la phase locale avant le changement de version stable ; pour rollback de production utiliser le déploiement/commit antérieur indiqué ci-dessus et le plan de migration. Aucun effacement de base.
 
 Vérification automatisée GitHub de l’application publiée : [run38638428688](https://github.com/adrno496/sitegoat/actions/runs/38638428688). Les pushes déclenchent également la CI ; consulter le résultat associé au SHA courant dans GitHub Actions. Les commits de preuves ne modifient pas le bundle de l’application.
+
+## Correctif de démarrage WebKit pendant la validation
+
+La première CI Linux a exécuté128 unités et46/47 E2E avec succès. Un scénario WebKit a perdu le handshake v1 au passage sûr→interactif : le script du cadre envoyait son message unique avant l’installation passive du listener parent. Le listener est maintenant installé synchroniquement avec useLayoutEffect au commit React. La validation du WindowProxy, de l’origine opaque, des payloads, la confirmation et le sandbox restent identiques. Ce correctif est publié dans un commit séparé de la même release2.0.0 ; le nouveau bundle déclenche la mise à jour PWA.
+
+Validation locale du correctif : lint/build PASS et répétition10/10 du scénario WebKit concerné (36,0s), sans retry caché ni augmentation du timeout. [Preuve](evidence/v6/release-webkit-startup.log), [échec initial et correction](evidence/v6/release-ci-initial.json). Le résultat du workflow associé au dernier SHA reste la référence CI finale.

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -88,7 +88,9 @@ export function Reader({
     setGoogleAiRequest(null);
   }
   useDialogFocus(!!googleAiRequest, dismissGoogleAi);
-  useEffect(() => {
+  // Install synchronously during commit, before a freshly mounted opaque iframe
+  // can deliver its one-shot capability message (notably on WebKit mode changes).
+  useLayoutEffect(() => {
     pendingAiRef.current = null;
     setGoogleAiRequest(null);
     const receive = (event: MessageEvent<unknown>) => {
