@@ -1,0 +1,106 @@
+[
+  {
+    "name": "Bucket existant et privé",
+    "status": "PASS"
+  },
+  {
+    "name": "Création compte synthétique 1",
+    "status": "PASS"
+  },
+  {
+    "name": "Authentification réelle 1",
+    "status": "PASS"
+  },
+  {
+    "name": "Création compte synthétique 2",
+    "status": "PASS"
+  },
+  {
+    "name": "Authentification réelle 2",
+    "status": "PASS"
+  },
+  {
+    "name": "API anonyme refusée",
+    "status": "PASS"
+  },
+  {
+    "name": "API token invalide refusée",
+    "status": "PASS"
+  },
+  {
+    "name": "Signature upload propriétaire A",
+    "status": "PASS"
+  },
+  {
+    "name": "Chemin forcé sous UID A",
+    "status": "PASS"
+  },
+  {
+    "name": "Upload privé signé réel",
+    "status": "PASS"
+  },
+  {
+    "name": "A retrouve son snapshot",
+    "status": "PASS"
+  },
+  {
+    "name": "B ne liste pas les snapshots A",
+    "status": "PASS"
+  },
+  {
+    "name": "Téléchargement signé A",
+    "status": "PASS"
+  },
+  {
+    "name": "Octets ZIP cloud identiques",
+    "status": "PASS"
+  },
+  {
+    "name": "IDOR : B connaît UUID A mais ne peut lire",
+    "status": "PASS"
+  },
+  {
+    "name": "Traversal refusé",
+    "status": "PASS"
+  },
+  {
+    "name": "Storage SELECT croisé refusé",
+    "status": "PASS"
+  },
+  {
+    "name": "Storage INSERT croisé refusé",
+    "status": "PASS"
+  },
+  {
+    "name": "Storage UPDATE croisé refusé",
+    "status": "PASS"
+  },
+  {
+    "name": "Storage DELETE croisé sans effet",
+    "status": "PASS"
+  },
+  {
+    "name": "URL publique refusée",
+    "status": "PASS"
+  },
+  {
+    "name": "Storage anonyme refusé",
+    "status": "PASS"
+  },
+  {
+    "name": "URL signée expirée refusée",
+    "status": "PASS"
+  },
+  {
+    "name": "Nettoyage objet synthétique",
+    "status": "PASS"
+  },
+  {
+    "name": "Nettoyage compte synthétique",
+    "status": "PASS"
+  },
+  {
+    "name": "Nettoyage compte synthétique",
+    "status": "PASS"
+  }
+]

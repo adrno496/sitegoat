@@ -1,0 +1,9 @@
+PASS: Bucket Supabase existant privé, limite 50 MiB conservée ; aucune migration SQL
+PASS: API production refuse anonyme et token invalide
+PASS: Production 2.0.0 : import 08/16/21 regroupé et envoyé automatiquement à Supabase
+PASS: WebKit iPhone simulé : récupération automatique des trois versions et lecteur interactif isolé
+PASS: Pont Google v2 en production : confirmation et annulation sans ouverture externe
+PASS: Note et favori WebKit récupérés sur PC après synchronisation
+PASS: Export ZIP2 après cloud : trois originaux octet pour octet, SHA, note et favori conservés
+PASS: Lecture de la version récupérée depuis Supabase après rechargement hors ligne
+PASS: Seuls le compte et les snapshots créés par ce test ont été supprimés

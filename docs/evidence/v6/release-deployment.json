@@ -1,0 +1,20 @@
+{
+  "checkedAt": "2026-10-14T21:14:04.482Z",
+  "baseURL": "https://sitegoat.vercel.app",
+  "version": "2.0.0",
+  "applicationCommit": "4f3d3e0a556682b8e6b8338ba853c44e02211a8f",
+  "deploymentId": "dpl_GGVSkrCgK1g7Agbv6bbCwcKhrpXa",
+  "deploymentURL": "https://sitegoat-14lfmvtsj-savetheworldfr-8237s-projects.vercel.app",
+  "deploymentState": "READY",
+  "httpStatus": 200,
+  "bundlePath": "/assets/index-Dd-Jsl1_.js",
+  "bundleSHA256": "48eadb1283938571ae6799b30319e60eb0c31c82daacabfc12e728d0a06008eb",
+  "bundleIdenticalToLocalBuild": true,
+  "cspUnchanged": true,
+  "manifestStatus": 200,
+  "serviceWorkerStatus": 200,
+  "rollbackDeployment": "dpl_FvmEA8cSMXNw9M3gWQ5dZTJCuUFv",
+  "rollbackCommit": "b1fc804f9767a97afe789d93323846eb57330df6",
+  "supabaseProject": "guevmgdxznrvxcjvvzyu",
+  "supabaseMigrationRequired": false
+}

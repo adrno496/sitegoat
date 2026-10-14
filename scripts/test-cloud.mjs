@@ -153,9 +153,10 @@ try {
   }
   fs.mkdirSync("docs/evidence", { recursive: true });
   fs.writeFileSync(
-    baseURL.startsWith("https:")
-      ? "docs/evidence/cloud-production.json"
-      : "docs/evidence/cloud.json",
+    process.env.JOURNAL360_EVIDENCE_FILE ||
+      (baseURL.startsWith("https:")
+        ? "docs/evidence/cloud-production.json"
+        : "docs/evidence/cloud.json"),
     JSON.stringify(
       {
         testedAt: new Date().toISOString(),

@@ -74,7 +74,7 @@ Ces tests créent uniquement des comptes et archives synthétiques, puis les sup
 
 Les HTML V6 avec métadonnées canoniques sont proposés comme versions d’une journée 08h/16h/21h. Les originaux sont conservés, les cumuls incomplets et les branches concurrentes signalés. L’historique permet de lire chaque version ; les notes et favoris gardent leurs liens d’origine. Les éditions sans métadonnées V6 restent indépendantes sauf choix manuel.
 
-Google accepte le protocole historique et un protocole v2 avec question seule : vérification/modification, copie et ouverture volontaire de l’entrée Mode IA. Le sandbox reste isolé et le mode interactif automatique conservé. Le zoom du HTML va de70 à200% ; les contrôles du shell gardent leur taille normale.
+Google accepte le protocole historique et un protocole v2 avec question seule : vérification/modification, copie et ouverture volontaire de l’entrée Mode IA. Le sandbox reste isolé et le mode interactif automatique conservé. Le zoom du HTML est à70% par défaut et peut atteindre200% ; les contrôles du shell gardent leur taille normale.
 
 Les sauvegardes V6 utilisent le format ZIP2 : **mettre à jour tous les appareils avant de synchroniser ces éditions**. Les ZIP1 historiques restent lisibles. Aucun effacement automatique ni migration SQL Supabase n’est nécessaire ; la base locale passe au schéma4 de façon additive.
 

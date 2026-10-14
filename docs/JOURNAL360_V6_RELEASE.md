@@ -17,4 +17,20 @@ Exécuter `scripts/test-v6-production.mjs` uniquement avec l’URL explicitement
 
 Mettre à jour chaque PWA depuis l’avis de mise à jour, sans effacer IndexedDB, avant d’utiliser les nouveaux imports V6 ; l’ancien client ne lit pas ZIP2. Les limites de RAM annuelle, quotas globaux et navigation propre du cadre interactif restent celles des rapports V6. Le retour au bundle précédent ne reconvertit pas les données V6 ; garder un export et un lecteur2.0.0 disponible.
 
-État final et preuves de publication ajoutés après vérification réelle.
+## Résultats exécutés après autorisation
+
+- **PASS GitHub** : application commit `4f3d3e0a556682b8e6b8338ba853c44e02211a8f` poussé sur main sans force-push.
+- **PASS Vercel** : déploiement `dpl_GGVSkrCgK1g7Agbv6bbCwcKhrpXa`, état READY, alias https://sitegoat.vercel.app en HTTP200. JS servi strictement identique au build local2.0.0, CSP inchangée, manifest et SW200, SW no-cache. [Preuve](evidence/v6/release-deployment.json).
+- **PASS Supabase réel,26 contrôles** : upload signé, téléchargement identique, isolation des deux comptes synthétiques, IDOR/traversal refusés, SELECT/INSERT/UPDATE/DELETE croisés inefficaces, URL publique/anonyme/expirée refusée, nettoyage des seuls objets/comptes de test confirmé. [Preuve](evidence/v6/release-cloud-security.json).
+- **PASS parcours production,9 contrôles** : V6 08/16/21 envoyé automatiquement par Chromium, récupéré automatiquement par WebKit iPhone simulé ; note/favori renvoyés au PC, trois originaux/empreintes conservés dans export ZIP2, confirmation Google v2, lecture hors ligne, nettoyage du compte/snapshots de test. [Preuve](evidence/v6/release-production-smoke.json).
+- **PASS release locale** : lint, build,128 unités ; mêmes dépendances, secrets serveur absents des fichiers préparés et du bundle. Les47 E2E et3 charges locales restent détaillés dans le rapport initial.
+
+Aucun journal utilisateur, compte propriétaire, secret, code d’accès ou session n’a été copié dans les preuves. Aucun compte propriétaire ni RLS ni variable serveur n’a été modifié. Les seuls comptes créés sont trois comptes synthétiques temporaires, supprimés à la fin des vérifications.
+
+Les rapports initiaux marquaient le cloud réel NON TESTÉ pour la phase locale ; les contrôles ci-dessus constituent la validation ultérieure autorisée. Téléphones physiques, fichier producteur V6 réel, quotas globaux, coût et RAM annuelle mobile restent NON TESTÉS. Le grand inventaire cloud100+ a été validé par mocks, pas généré en production pour cette release.
+
+La compatibilité structurelle du bucket Supabase existant a suffi : **aucune migration SQL, aucun changement RLS ni déploiement de fonction Supabase nécessaire**. La nouvelle pagination est déployée dans api/backup.mjs sur Vercel. Les changements v4 sont appliqués localement par Dexie à l’ouverture de la PWA.
+
+Les sorties de test brutes peuvent contenir des espaces finaux et le patch des lignes de contexte : ils sont conservés pour fidélité des preuves ; le contrôle de whitespace du code exclut ces pièces. Le patch source historique et son hash couvrent la phase locale avant le changement de version stable ; pour rollback de production utiliser le déploiement/commit antérieur indiqué ci-dessus et le plan de migration. Aucun effacement de base.
+
+Vérification automatisée GitHub de l’application publiée : [run38638428688](https://github.com/adrno496/sitegoat/actions/runs/38638428688). Les pushes déclenchent également la CI ; consulter le résultat associé au SHA courant dans GitHub Actions. Les commits de preuves ne modifient pas le bundle de l’application.

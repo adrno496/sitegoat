@@ -1,0 +1,47 @@
+{
+  "testedAt": "2026-10-14T21:13:21.695Z",
+  "baseURL": "https://sitegoat.vercel.app",
+  "version": "2.0.0",
+  "realSupabase": true,
+  "ownerAccountUsed": false,
+  "privateUserContentUploaded": false,
+  "physicalPhones": "NON TESTÉS",
+  "results": [
+    {
+      "name": "Bucket Supabase existant privé, limite 50 MiB conservée ; aucune migration SQL",
+      "status": "PASS"
+    },
+    {
+      "name": "API production refuse anonyme et token invalide",
+      "status": "PASS"
+    },
+    {
+      "name": "Production 2.0.0 : import 08/16/21 regroupé et envoyé automatiquement à Supabase",
+      "status": "PASS"
+    },
+    {
+      "name": "WebKit iPhone simulé : récupération automatique des trois versions et lecteur interactif isolé",
+      "status": "PASS"
+    },
+    {
+      "name": "Pont Google v2 en production : confirmation et annulation sans ouverture externe",
+      "status": "PASS"
+    },
+    {
+      "name": "Note et favori WebKit récupérés sur PC après synchronisation",
+      "status": "PASS"
+    },
+    {
+      "name": "Export ZIP2 après cloud : trois originaux octet pour octet, SHA, note et favori conservés",
+      "status": "PASS"
+    },
+    {
+      "name": "Lecture de la version récupérée depuis Supabase après rechargement hors ligne",
+      "status": "PASS"
+    },
+    {
+      "name": "Seuls le compte et les snapshots créés par ce test ont été supprimés",
+      "status": "PASS"
+    }
+  ]
+}
