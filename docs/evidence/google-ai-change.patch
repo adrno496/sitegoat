@@ -1,0 +1,1059 @@
+--- a/src/features/Reader.tsx
++++ b/src/features/Reader.tsx
+@@ -21,6 +21,17 @@
+ import { isolatedHTML } from "./import";
+ import { useDialogFocus } from "./dialogFocus";
+ import { download } from "./backup";
++import {
++  parseGoogleAiMessage,
++  validateGoogleAiUrl,
++  type GoogleAiDestination,
++} from "./googleAi";
++interface GoogleAiRequest {
++  destination: GoogleAiDestination;
++  source: Window;
++  editionId: string;
++  frameRevision: number;
++}
+ export function Reader({
+   edition,
+   editions,
+@@ -39,6 +50,10 @@
+   run: (action: () => Promise<unknown>, success?: string) => void;
+ }) {
+   const surfaceRef = useRef<HTMLDivElement>(null);
++  const iframeRef = useRef<HTMLIFrameElement>(null);
++  const pendingAiRef = useRef<GoogleAiRequest | null>(null);
++  const [googleAiRequest, setGoogleAiRequest] =
++    useState<GoogleAiRequest | null>(null);
+   const [expanded, setExpanded] = useState(true);
+   const [bytes, setBytes] = useState<Uint8Array>();
+   const [mode, setMode] = useState<"safe" | "interactive" | "text">("safe");
+@@ -57,6 +72,73 @@
+   );
+   const [loadError, setLoadError] = useState("");
+   useDialogFocus(confirm, () => setConfirm(false));
++  function dismissGoogleAi() {
++    pendingAiRef.current = null;
++    setGoogleAiRequest(null);
++  }
++  useDialogFocus(!!googleAiRequest, dismissGoogleAi);
++  useEffect(() => {
++    pendingAiRef.current = null;
++    setGoogleAiRequest(null);
++    const receive = (event: MessageEvent<unknown>) => {
++      const frameWindow = iframeRef.current?.contentWindow;
++      // "null" alone does not authenticate an opaque sandbox. Always check the
++      // actual current WindowProxy, and accept only the interactive srcdoc.
++      if (
++        !frameWindow ||
++        event.source !== frameWindow ||
++        event.origin !== "null" ||
++        mode !== "interactive"
++      )
++        return;
++      const message = parseGoogleAiMessage(event.data);
++      if (!message) return;
++      if (message.type === "capability") {
++        // Opaque origins cannot be addressed by an origin string. "*" is used
++        // only on this verified WindowProxy, with a public capability, no secret.
++        frameWindow.postMessage(
++          {
++            type: "journal360:google-ai:capability",
++            version: 1,
++            enabled: true,
++          },
++          "*",
++        );
++      } else if (!pendingAiRef.current && !confirm) {
++        const request = {
++          destination: message.destination,
++          source: frameWindow,
++          editionId: edition.id,
++          frameRevision,
++        };
++        pendingAiRef.current = request;
++        setGoogleAiRequest(request);
++      }
++    };
++    window.addEventListener("message", receive);
++    return () => {
++      window.removeEventListener("message", receive);
++      pendingAiRef.current = null;
++    };
++  }, [edition.id, mode, frameRevision, confirm]);
++  function openGoogleAi() {
++    const request = pendingAiRef.current;
++    const destination = request && validateGoogleAiUrl(request.destination.url);
++    if (
++      !request ||
++      !destination ||
++      mode !== "interactive" ||
++      request.source !== iframeRef.current?.contentWindow ||
++      request.editionId !== edition.id ||
++      request.frameRevision !== frameRevision
++    ) {
++      dismissGoogleAi();
++      return;
++    }
++    // Direct button gesture, never called by receive() or a promise/timer.
++    window.open(destination.url, "_blank", "noopener,noreferrer");
++    dismissGoogleAi();
++  }
+   const state = states.find(
+     (s) => s.editionId === edition.id && s.articleId === "edition",
+   );
+@@ -108,7 +190,7 @@
+     document.body.style.overflow = "hidden";
+     surface.querySelector<HTMLButtonElement>("button")?.focus();
+     const onKey = (event: KeyboardEvent) => {
+-      if (event.key === "Escape") setExpanded(false);
++      if (event.key === "Escape" && !pendingAiRef.current) setExpanded(false);
+     };
+     document.addEventListener("keydown", onKey);
+     return () => {
+@@ -277,13 +359,13 @@
+       <div
+         ref={surfaceRef}
+         className={`reading-surface${expanded ? " reading-surface-expanded" : ""}`}
+-        role={expanded && !confirm ? "dialog" : undefined}
+-        aria-modal={expanded && !confirm ? true : undefined}
++        role={expanded && !confirm && !googleAiRequest ? "dialog" : undefined}
++        aria-modal={expanded && !confirm && !googleAiRequest ? true : undefined}
+         aria-label={
+           expanded ? `Lecture pleine page de ${edition.title}` : undefined
+         }
+       >
+-        <div className="reading-surface-header">
++        <div className="reading-surface-header" inert={!!googleAiRequest}>
+           {expanded && (
+             <>
+               <button
+@@ -468,8 +550,9 @@
+             </div>
+           </div>
+         ) : srcDoc ? (
+-          <div className="edition-viewport">
++          <div className="edition-viewport" inert={!!googleAiRequest}>
+             <iframe
++              ref={iframeRef}
+               key={`${edition.id}-${mode}-${frameRevision}`}
+               className="edition-frame"
+               title={`Lecture de ${edition.title}`}
+@@ -491,6 +574,36 @@
+                 Afficher le texte conservé
+               </button>
+             )}
++          </div>
++        )}
++        {googleAiRequest && (
++          <div className="modal-backdrop">
++            <section
++              role="dialog"
++              aria-modal="true"
++              aria-labelledby="google-ai-title"
++              aria-describedby="google-ai-warning"
++              className="modal compact google-ai-dialog"
++            >
++              <h2 id="google-ai-title">
++                Ouvrir Google Mode IA dans votre navigateur ?
++              </h2>
++              <p id="google-ai-warning">
++                Le texte de la question sera transmis à Google.
++              </p>
++              <p className="eyebrow">QUESTION À TRANSMETTRE</p>
++              <p className="google-ai-query">
++                {googleAiRequest.destination.query}
++              </p>
++              <div className="modal-actions">
++                <button className="secondary" onClick={dismissGoogleAi}>
++                  Annuler
++                </button>
++                <button className="primary" onClick={openGoogleAi}>
++                  Ouvrir
++                </button>
++              </div>
++            </section>
+           </div>
+         )}
+         {confirm && (
+--- a/src/features/import.ts
++++ b/src/features/import.ts
+@@ -6,6 +6,7 @@
+   hash,
+ } from "../data/model";
+ import { LocalRepository } from "../data/db";
++import { GOOGLE_AI_LINK_BRIDGE, validateGoogleAiUrl } from "./googleAi";
+ const cleanText = (s: string) => s.replace(/\s+/g, " ").trim();
+ const str = (s: unknown) => (typeof s === "string" ? s : "");
+ function plain(s: unknown) {
+@@ -206,6 +207,10 @@
+     .querySelectorAll("base,meta[http-equiv],iframe,object,embed,link")
+     .forEach((e) => e.remove());
+   doc.querySelectorAll("*").forEach((e) => {
++    const googleAi =
++      interactive && e.matches('a[data-ai-link="google-ai-mode"]')
++        ? validateGoogleAiUrl(e.getAttribute("href"))
++        : null;
+     for (const attr of [...e.attributes]) {
+       if (
+         (!interactive && attr.name.startsWith("on")) ||
+@@ -217,6 +222,7 @@
+           "target",
+           "download",
+           "autofocus",
++          "data-journal360-google-ai-url",
+         ].includes(attr.name)
+       )
+         e.removeAttribute(attr.name);
+@@ -227,6 +233,10 @@
+       )
+         e.removeAttribute(attr.name);
+     }
++    if (googleAi) {
++      e.setAttribute("data-journal360-google-ai-url", googleAi.url);
++      e.setAttribute("href", "#");
++    }
+   });
+   if (!interactive) doc.querySelectorAll("script").forEach((e) => e.remove());
+   else doc.querySelectorAll("script[src]").forEach((e) => e.remove());
+@@ -235,6 +245,9 @@
+   csp.content = `default-src 'none'; script-src ${interactive ? "'unsafe-inline'" : "'none'"}; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; media-src data: blob:; connect-src 'none'; object-src 'none'; frame-src 'none'; form-action 'none'; base-uri 'none'`;
+   doc.head.prepend(csp);
+   if (interactive) {
++    const googleAi = doc.createElement("script");
++    googleAi.textContent = GOOGLE_AI_LINK_BRIDGE;
++    csp.after(googleAi);
+     const routing = doc.createElement("script");
+     // about:srcdoc à origine opaque refuse pushState ; les fragments restent locaux au cadre.
+     routing.textContent = `(()=>{for(const method of ['pushState','replaceState']){const original=history[method].bind(history);history[method]=function(state,unused,url){try{return original(state,unused,url)}catch(error){if(error.name==='SecurityError'&&typeof url==='string'&&url.startsWith('#')){location.hash=url;return}throw error}}}})();`;
+--- a/src/styles.css
++++ b/src/styles.css
+@@ -2363,3 +2363,12 @@
+   flex: 0 0 auto;
+   accent-color: var(--accent);
+ }
++.google-ai-query {
++  overflow-wrap: anywhere;
++  white-space: pre-wrap;
++  max-height: 30vh;
++  overflow: auto;
++  padding: 12px;
++  border: 1px solid var(--line);
++  border-radius: 7px;
++}
+--- a/playwright.config.ts
++++ b/playwright.config.ts
+@@ -17,6 +17,11 @@
+   projects: [
+     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+     { name: "webkit", use: { ...devices["Desktop Safari"] } },
++    {
++      name: "chromium-mobile",
++      testMatch: "google-ai.spec.ts",
++      use: { ...devices["Pixel 7"] },
++    },
+   ],
+   webServer: {
+     command: "npm run preview",
+--- a/SECURITY.md
++++ b/SECURITY.md
+@@ -32,3 +32,15 @@
+ Les tests ne prouvent pas la sécurité de tout JavaScript possible. Pas d’audit indépendant, de test physique téléphone, ni de garantie d’absence de faille inconnue. En cas de doute, utiliser le mode sécurisé ou le texte indexé.
+
+ Les formulaires sont remplacés dans la copie de lecture par des conteneurs conservant les IDs et contrôles ; les actions de soumission sont retirées. Sandbox sans allow-forms et form-action none restent actifs. La navigation par fragments reste dans le cadre opaque, sans pont avec l’application. La confiance est mémorisée seulement après confirmation explicite, localement pour un ID d’édition immutable ; toute nouvelle édition reste sûre par défaut.
++
++## Pont Google Mode IA (local, non publié)
++
++Le parent n’accepte que les messages version 1 de `iframeRef.current.contentWindow`, en mode interactif, sous origine opaque `null`. Une autre fenêtre opaque n’est pas acceptée. Le handshake renvoie uniquement `{type:"journal360:google-ai:capability",version:1,enabled:true}` au WindowProxy vérifié. Le destinataire opaque impose `"*"` ; aucun jeton, note, état ou contenu de bibliothèque n’est joint. Voir [MDN postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) et [sandbox iframe](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe).
++
++Les destinations admises sont des URL littérales HTTPS de `www.google.com/search`, sans normalisation réparatrice, identifiants, port explicite ou fragment. Seuls `hl=fr` (facultatif), `udm=50` et une seule question `q` sont admis ; tout autre paramètre, notamment une redirection, est refusé. Limites : 4096 caractères pour l’URL et 2000 caractères pour la question décodée. Les contrôles et caractères de réordonnancement bidirectionnel sont refusés. La question est du texte React, jamais du HTML ou une commande.
++
++Dans la copie interactive, seuls les liens `a[data-ai-link="google-ai-mode"]` dont le href est validé reçoivent un href local et une destination inerte. Un adaptateur placé avant les scripts importés intercepte leur clic et empêche le fallback d’ouvrir ou de naviguer. L’original et `editionData` restent intacts. Le mode sécurisé n’exécute aucun adaptateur et ne permet pas ces liens externes.
++
++Un message valide affiche seulement une confirmation ; il ne provoque aucun appel externe. Une question déjà affichée ne peut pas être remplacée par un message suivant. Seul le clic sur **Ouvrir** appelle `window.open(url, "_blank", "noopener,noreferrer")` dans le parent. La destination et le cadre courant sont revérifiés au clic ; changement d’édition, mode ou recréation du cadre invalident la demande. Annuler ou Échap ferme la demande. Aucun attribut de sandbox ni aucune directive CSP n’est élargi. Voir [MDN window.open](https://developer.mozilla.org/en-US/docs/Web/API/Window/open).
++
++Un HTML interactif reste du code non fiable : il peut demander un dialogue sans clic dans le cadre, mais ne peut pas confirmer ce dialogue dans le parent isolé. La PWA ne peut pas établir automatiquement qu’une question contenue dans le fichier est publique : l’utilisateur voit le texte avant de l’envoyer. La limite existante concernant la navigation de son propre cadre par un script n’est pas supprimée par ce pont. Les navigateurs peuvent décider comment ouvrir un nouvel onglet depuis une PWA ; aucune ouverture dans Safari physique n’est déclarée vérifiée.
+--- /dev/null
++++ b/src/features/googleAi.ts
+@@ -0,0 +1,110 @@
++export interface GoogleAiDestination {
++  url: string;
++  query: string;
++}
++
++// Accept a literal Google AI search, never a URL that needs repairing or a
++// redirect. Keep the question as text; it is not evaluated or enriched by PWA data.
++export function validateGoogleAiUrl(
++  value: unknown,
++): GoogleAiDestination | null {
++  if (
++    typeof value !== "string" ||
++    value.length > 4096 ||
++    !value.startsWith("https://www.google.com/search?") ||
++    /[\s\\#]/u.test(value) ||
++    hasControl(value) ||
++    /%(?![\da-f]{2})/iu.test(value)
++  )
++    return null;
++  try {
++    const url = new URL(value);
++    if (
++      url.href !== value ||
++      url.protocol !== "https:" ||
++      url.hostname !== "www.google.com" ||
++      url.pathname !== "/search" ||
++      url.username ||
++      url.password ||
++      url.port ||
++      url.hash
++    )
++      return null;
++    const parameters = [...url.searchParams];
++    const allowed = new Set(["hl", "udm", "q"]);
++    if (
++      parameters.some(([key]) => !allowed.has(key)) ||
++      new Set(parameters.map(([key]) => key)).size !== parameters.length ||
++      url.searchParams.get("udm") !== "50" ||
++      (url.searchParams.has("hl") && url.searchParams.get("hl") !== "fr")
++    )
++      return null;
++    // URLSearchParams tolerates malformed UTF-8; do not silently repair it.
++    for (const entry of url.search.slice(1).split("&")) {
++      const [key, ...rest] = entry.split("=");
++      if (!allowed.has(key)) return null;
++      decodeURIComponent(rest.join("="));
++    }
++    const query = url.searchParams.get("q");
++    if (
++      !query ||
++      !query.trim() ||
++      query.length > 2000 ||
++      hasControl(query) ||
++      /[\u202a-\u202e\u2066-\u2069]/u.test(query)
++    )
++      return null;
++    return { url: value, query };
++  } catch {
++    return null;
++  }
++}
++function hasControl(value: string) {
++  return [...value].some((character) => {
++    const code = character.charCodeAt(0);
++    return code <= 31 || code === 127;
++  });
++}
++
++export type GoogleAiMessage =
++  { type: "capability" } | { type: "open"; destination: GoogleAiDestination };
++
++export function parseGoogleAiMessage(value: unknown): GoogleAiMessage | null {
++  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
++  const data = value as Record<string, unknown>;
++  const keys = Object.keys(data);
++  if (data.version !== 1) return null;
++  if (
++    data.type === "journal360:google-ai:capability-request" &&
++    keys.length === 2 &&
++    keys.includes("type") &&
++    keys.includes("version")
++  )
++    return { type: "capability" };
++  if (
++    data.type !== "journal360:google-ai:open-request" ||
++    keys.length !== 3 ||
++    !keys.includes("url") ||
++    !keys.includes("type") ||
++    !keys.includes("version")
++  )
++    return null;
++  const destination = validateGoogleAiUrl(data.url);
++  return destination ? { type: "open", destination } : null;
++}
++
++// Runs only in an interactive, opaque iframe. The copied anchor has a local
++// href; capture its click before an imported fallback can navigate/open a tab.
++// Every request is independently validated and confirmed again by the parent.
++export const GOOGLE_AI_LINK_BRIDGE = `(()=>{
++  const selector='a[data-ai-link="google-ai-mode"]';
++  for(const type of ['click','auxclick']) window.addEventListener(type,event=>{
++    const link=event.target instanceof Element?event.target.closest(selector):null;
++    if(!link)return;
++    event.preventDefault();event.stopImmediatePropagation();
++    if(type==='click'&&event.button===0)parent.postMessage({
++      type:'journal360:google-ai:open-request',version:1,
++      url:link.getAttribute('data-journal360-google-ai-url')||link.getAttribute('href')
++    },'*');
++  },true);
++})();`;
+--- /dev/null
++++ b/tests/googleAi.unit.test.ts
+@@ -0,0 +1,147 @@
++import { describe, expect, it } from "vitest";
++import {
++  validateGoogleAiUrl,
++  parseGoogleAiMessage,
++} from "../src/features/googleAi";
++import { isolatedHTML, inspectHTML } from "../src/features/import";
++import { hash } from "../src/data/model";
++
++const base = "https://www.google.com/search?hl=fr&udm=50&q=";
++describe("Google Mode IA : validation fermée", () => {
++  it("accepte une question publique encodée sans l’exécuter ni la compléter", () => {
++    const query = "Comprendre le climat & $(commande) <script> # @";
++    const url = base + encodeURIComponent(query);
++    expect(validateGoogleAiUrl(url)).toEqual({ url, query });
++    expect(
++      validateGoogleAiUrl("https://www.google.com/search?q=Question&udm=50"),
++    ).not.toBeNull();
++    expect(validateGoogleAiUrl(base + "x".repeat(2000))).not.toBeNull();
++  });
++  it.each([
++    null,
++    {},
++    4,
++    "",
++    "javascript:alert(1)",
++    "http://www.google.com/search?udm=50&q=x",
++    "//www.google.com/search?udm=50&q=x",
++    "https://www.google.com.evil.example/search?udm=50&q=x",
++    "https://google.com.evil.example/search?udm=50&q=x",
++    "https://google.com/search?udm=50&q=x",
++    "https://www.google.com@evil.example/search?udm=50&q=x",
++    "https://user:password@www.google.com/search?udm=50&q=x",
++    "https://www.google.com:444/search?udm=50&q=x",
++    "https://www.google.com:443/search?udm=50&q=x",
++    "https://WWW.GOOGLE.COM/search?udm=50&q=x",
++    "https://%77ww.google.com/search?udm=50&q=x",
++    "https://www.google.com/other/../search?udm=50&q=x",
++    "https://www.google.com/search/?udm=50&q=x",
++    "https://www.google.com/se%61rch?udm=50&q=x",
++    "https://www.google.com\\@evil.example/search?udm=50&q=x",
++    base + "test#fragment",
++    " " + base + "test",
++    base + "a b",
++    base + "%ZZ",
++    base + "%C0%AF",
++    base + "%00",
++    base + "%0Asecret",
++    base + "%E2%80%AEgoogle",
++    base + "",
++    base + "+",
++    base + "x".repeat(2001),
++    base + "x".repeat(4097),
++    base + "test&url=https://evil.example",
++    base + "test&redirect=https://evil.example",
++    base + "test&continue=https://evil.example",
++    base + "test&next=https://evil.example",
++    base + "test&q=autre",
++    base + "test&udm=50",
++    base + "test&hl=fr",
++    base + "test&",
++    "https://www.google.com/search?hl=en&udm=50&q=x",
++    "https://www.google.com/search?udm=5&q=x",
++    "https://www.google.com/search?udm=50",
++    "https://www.google.com/search?q=x",
++    "https://www.google.com/search?%75dm=50&q=x",
++  ])("refuse une destination invalide : %s", (value) => {
++    expect(validateGoogleAiUrl(value)).toBeNull();
++  });
++  it("ignore types, versions et payloads inconnus", () => {
++    const capability = {
++      type: "journal360:google-ai:capability-request",
++      version: 1,
++    };
++    const open = {
++      type: "journal360:google-ai:open-request",
++      version: 1,
++      url: base + "test",
++    };
++    expect(parseGoogleAiMessage(capability)).toEqual({ type: "capability" });
++    expect(parseGoogleAiMessage(open)?.type).toBe("open");
++    for (const value of [
++      null,
++      [],
++      "message",
++      { ...capability, version: "1" },
++      { ...open, version: 2 },
++      { ...open, type: "open" },
++      { ...open, url: {} },
++      { ...open, redirect: true },
++      { ...capability, url: open.url },
++      { type: open.type, url: open.url },
++      Object.assign(Object.create(open), { url: open.url, x: 1, y: 2 }),
++    ]) {
++      expect(parseGoogleAiMessage(value)).toBeNull();
++    }
++  });
++});
++
++it("copie interactive : seul le lien Google marqué est adapté, sans changer les CSP ni l’original JSON/HTML", async () => {
++  const original = `<html><head><title>Contrat Google IA</title></head><body>
++    <a id="ai" data-ai-link="google-ai-mode" href="${base}Question">En savoir plus</a>
++    <a id="other" href="https://example.com/">Autre</a>
++    <a id="redirect" data-ai-link="google-ai-mode" href="${base}Q&amp;url=https://evil.example">Redirect</a>
++    <a id="forged" data-ai-link="google-ai-mode" data-journal360-google-ai-url="${base}Fake">Faux</a>
++    <script type="application/json" id="editionData">{"title":"Contrat Google IA","items":[]}</script>
++    <script>window.originalScript = true;</script></body></html>`;
++  const bytes = new TextEncoder().encode(original);
++  const checksum = await hash(bytes);
++  const before = await inspectHTML("contrat.html", bytes);
++  for (const interactive of [false, true]) {
++    const doc = new DOMParser().parseFromString(
++      isolatedHTML(bytes, interactive),
++      "text/html",
++    );
++    expect(
++      doc
++        .querySelector('meta[http-equiv="Content-Security-Policy"]')
++        ?.getAttribute("content"),
++    ).toBe(
++      `default-src 'none'; script-src ${interactive ? "'unsafe-inline'" : "'none'"}; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; media-src data: blob:; connect-src 'none'; object-src 'none'; frame-src 'none'; form-action 'none'; base-uri 'none'`,
++    );
++    expect(doc.querySelector("#ai")?.getAttribute("href")).toBe(
++      interactive ? "#" : null,
++    );
++    expect(
++      doc.querySelector("#ai")?.getAttribute("data-journal360-google-ai-url"),
++    ).toBe(interactive ? base + "Question" : null);
++    for (const id of ["other", "redirect", "forged"]) {
++      expect(doc.querySelector(`#${id}`)?.hasAttribute("href")).toBe(false);
++      expect(
++        doc
++          .querySelector(`#${id}`)
++          ?.hasAttribute("data-journal360-google-ai-url"),
++      ).toBe(false);
++    }
++    if (!interactive) expect(doc.querySelectorAll("script")).toHaveLength(0);
++    else
++      expect(doc.querySelector("#editionData")?.textContent).toBe(
++        '{"title":"Contrat Google IA","items":[]}',
++      );
++  }
++  expect(new TextDecoder().decode(bytes)).toBe(original);
++  expect(await hash(bytes)).toBe(checksum);
++  const after = await inspectHTML("contrat.html", bytes);
++  expect(after.articles).toEqual(before.articles);
++  expect(after.sha256).toBe(before.sha256);
++});
+--- /dev/null
++++ b/tests/e2e/google-ai.spec.ts
+@@ -0,0 +1,444 @@
++import { test, expect, type Page, type Frame } from "@playwright/test";
++import AxeBuilder from "@axe-core/playwright";
++import { readFileSync } from "node:fs";
++
++const question = "Comprendre les aurores boréales";
++const validUrl =
++  "https://www.google.com/search?hl=fr&udm=50&q=" +
++  encodeURIComponent(question);
++const request = (url: unknown = validUrl) => ({
++  type: "journal360:google-ai:open-request",
++  version: 1,
++  url,
++});
++const capability = {
++  type: "journal360:google-ai:capability-request",
++  version: 1,
++};
++const dialog = (page: Page) =>
++  page.getByRole("dialog", {
++    name: "Ouvrir Google Mode IA dans votre navigateur ?",
++  });
++const policy = (interactive: boolean) =>
++  `default-src 'none'; script-src ${interactive ? "'unsafe-inline'" : "'none'"}; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; media-src data: blob:; connect-src 'none'; object-src 'none'; frame-src 'none'; form-action 'none'; base-uri 'none'`;
++
++declare global {
++  interface Window {
++    googleAiOpenCalls: {
++      url: string;
++      target?: string;
++      features?: string;
++      active: boolean;
++    }[];
++    previousReaderWindow: Window | null;
++    replies: number;
++  }
++}
++async function setup(page: Page, interactive = true) {
++  await page.addInitScript(() => {
++    window.googleAiOpenCalls = [];
++    const original = window.open.bind(window);
++    window.open = (url, target, features) => {
++      window.googleAiOpenCalls.push({
++        url: String(url),
++        target,
++        features,
++        active: navigator.userActivation.isActive,
++      });
++      return original(url, target, features);
++    };
++  });
++  const response = await page.goto("/");
++  const parentPolicy = JSON.parse(
++    readFileSync("vercel.json", "utf8"),
++  ).headers[0].headers.find(
++    (h: { key: string }) => h.key === "Content-Security-Policy",
++  ).value;
++  expect(response?.headers()["content-security-policy"]).toBe(parentPolicy);
++  await page
++    .getByLabel("Fichiers HTML à importer")
++    .setInputFiles("tests/fixtures/google-ai.html");
++  await page
++    .getByRole("button", {
++      name: "Enregistrer dans ma bibliothèque",
++      exact: true,
++    })
++    .click();
++  await page
++    .getByRole("button", { name: "Lire Journal Google IA", exact: true })
++    .click();
++  await expect(
++    page
++      .frameLocator(".edition-frame")
++      .getByRole("heading", { name: "Journal Google IA" }),
++  ).toBeVisible();
++  if (interactive) await enable(page);
++}
++async function enable(page: Page) {
++  await page.getByRole("button", { name: "Interactif", exact: true }).click();
++  await page
++    .getByRole("button", {
++      name: "Je fais confiance à ce fichier",
++      exact: true,
++    })
++    .click();
++  await expect(
++    page.frameLocator(".edition-frame").locator("#capability"),
++  ).toHaveText(
++    JSON.stringify({
++      type: "journal360:google-ai:capability",
++      version: 1,
++      enabled: true,
++    }),
++  );
++}
++async function currentFrame(page: Page): Promise<Frame> {
++  const handle = await page.locator(".edition-frame").elementHandle();
++  const native = await handle?.contentFrame();
++  if (!native) throw new Error("Cadre de lecture absent");
++  return native;
++}
++async function send(page: Page, payloads: unknown[]) {
++  const frame = await currentFrame(page);
++  await frame.evaluate(async (payloads) => {
++    await new Promise<void>((resolve) => {
++      const acknowledge = (event: MessageEvent) => {
++        if (
++          event.source === parent &&
++          event.data?.type === "journal360:google-ai:capability"
++        ) {
++          removeEventListener("message", acknowledge);
++          resolve();
++        }
++      };
++      addEventListener("message", acknowledge);
++      for (const payload of payloads) parent.postMessage(payload, "*");
++      parent.postMessage(
++        { type: "journal360:google-ai:capability-request", version: 1 },
++        "*",
++      );
++    });
++  }, payloads);
++}
++
++test("Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation", async ({
++  page,
++  context,
++}) => {
++  const external: string[] = [];
++  context.on("request", (req) => {
++    if (req.url().startsWith("https://www.google.com/"))
++      external.push(req.url());
++  });
++  await setup(page, false);
++  const frame = page.frameLocator(".edition-frame");
++  await expect(page.locator(".edition-frame")).toHaveAttribute("sandbox", "");
++  expect(await page.locator(".edition-frame").getAttribute("srcdoc")).toContain(
++    policy(false),
++  );
++  await frame.getByText("En savoir plus", { exact: true }).click();
++  await expect(dialog(page)).toHaveCount(0);
++  expect(context.pages()).toHaveLength(1);
++  await enable(page);
++  await expect(page.locator(".edition-frame")).toHaveAttribute(
++    "sandbox",
++    "allow-scripts",
++  );
++  expect(await page.locator(".edition-frame").getAttribute("srcdoc")).toContain(
++    policy(true),
++  );
++  await frame.getByRole("button", { name: "Tester l’interaction" }).click();
++  await page
++    .getByRole("button", { name: "Dézoomer le HTML", exact: true })
++    .click();
++  await frame
++    .getByRole("link", { name: "En savoir plus", exact: true })
++    .click();
++  await expect(dialog(page)).toBeVisible();
++  await expect(dialog(page)).toContainText(
++    "Le texte de la question sera transmis à Google.",
++  );
++  await expect(dialog(page).locator(".google-ai-query")).toHaveText(question);
++  await expect(
++    dialog(page).getByRole("button", { name: "Annuler", exact: true }),
++  ).toBeFocused();
++  await page.keyboard.press("Shift+Tab");
++  await expect(
++    dialog(page).getByRole("button", { name: "Ouvrir", exact: true }),
++  ).toBeFocused();
++  await page.keyboard.press("Tab");
++  await expect(
++    dialog(page).getByRole("button", { name: "Annuler", exact: true }),
++  ).toBeFocused();
++  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
++  expect(external).toEqual([]);
++  expect(await page.evaluate(() => window.googleAiOpenCalls)).toEqual([]);
++  await page.screenshot({
++    path: `test-results/google-ai-confirm-${test.info().project.name}.png`,
++  });
++  await page.keyboard.press("Escape");
++  await expect(dialog(page)).toHaveCount(0);
++  await expect(page.locator(".reading-surface-expanded")).toBeVisible();
++  await expect(page.getByLabel("Échelle du HTML", { exact: true })).toHaveText(
++    "60 %",
++  );
++  await expect(frame.locator("#counter")).toHaveText("1");
++  expect(await (await currentFrame(page)).evaluate(() => location.hash)).toBe(
++    "#interaction",
++  );
++  await frame
++    .getByRole("link", { name: "En savoir plus", exact: true })
++    .click();
++  await dialog(page)
++    .getByRole("button", { name: "Annuler", exact: true })
++    .click();
++  // Editions may create their marked anchors after the original HTML is parsed.
++  await (
++    await currentFrame(page)
++  ).evaluate((url) => {
++    const dynamic = document.createElement("a");
++    dynamic.textContent = "Lien IA dynamique";
++    dynamic.dataset.aiLink = "google-ai-mode";
++    dynamic.href = url;
++    dynamic.target = "_blank";
++    document.body.append(dynamic);
++  }, validUrl);
++  await frame
++    .getByRole("link", { name: "Lien IA dynamique", exact: true })
++    .click();
++  await expect(dialog(page)).toBeVisible();
++  await expect(dialog(page).locator(".google-ai-query")).toHaveText(question);
++  await dialog(page)
++    .getByRole("button", { name: "Annuler", exact: true })
++    .click();
++  await frame
++    .getByRole("link", { name: "Lien IA dynamique", exact: true })
++    .evaluate((link) => link.setAttribute("href", "https://evil.example/"));
++  await frame
++    .getByRole("link", { name: "Lien IA dynamique", exact: true })
++    .click();
++  await send(page, []);
++  await expect(dialog(page)).toHaveCount(0);
++  expect(external).toEqual([]);
++  expect(context.pages()).toHaveLength(1);
++});
++
++test("Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles refusés", async ({
++  page,
++  context,
++}) => {
++  await setup(page);
++  await page.evaluate(
++    ({ capability, open }) => {
++      const foreign = document.createElement("iframe");
++      foreign.id = "foreign-reader";
++      foreign.hidden = true;
++      foreign.sandbox.add("allow-scripts");
++      window.addEventListener("message", (event) => {
++        if (event.source === foreign.contentWindow) {
++          foreign.dataset.events = String(
++            Number(foreign.dataset.events || 0) + 1,
++          );
++        }
++      });
++      foreign.srcdoc = `<script>window.replies=0;addEventListener('message',()=>window.replies++);parent.postMessage(${JSON.stringify(capability)},'*');parent.postMessage(${JSON.stringify(open)},'*');</script>`;
++      document.body.append(foreign);
++      window.postMessage(open, "*");
++    },
++    { capability, open: request() },
++  );
++  await expect(page.locator("#foreign-reader")).toHaveAttribute(
++    "data-events",
++    "2",
++  );
++  expect(
++    await page
++      .frameLocator("#foreign-reader")
++      .locator("body")
++      .evaluate(() => window.replies),
++  ).toBe(0);
++  const invalid = [
++    "https://www.google.com.evil.example/search?udm=50&q=x",
++    "https://google.com.evil.example/search?udm=50&q=x",
++    "javascript:alert(1)",
++    "http://www.google.com/search?udm=50&q=x",
++    "//www.google.com/search?udm=50&q=x",
++    "https://www.google.com@evil.example/search?udm=50&q=x",
++    "https://user@www.google.com/search?udm=50&q=x",
++    "https://www.google.com:444/search?udm=50&q=x",
++    "https://www.google.com/../search?udm=50&q=x",
++    validUrl + "&url=https://evil.example",
++    validUrl + "&redirect=https://evil.example",
++    validUrl + "&continue=https://evil.example",
++    validUrl + "&q=second",
++    "https://www.google.com/search?udm=50&q=%ZZ",
++    "not a URL",
++    "https://www.google.com/search?udm=50&q=" + "x".repeat(2001),
++    "https://www.google.com/search?udm=50&q=" + "x".repeat(4097),
++  ];
++  await send(page, [
++    null,
++    [],
++    "message",
++    { ...request(), version: "1" },
++    { ...request(), version: 2 },
++    { ...request(), type: "unknown" },
++    { ...request(), extra: true },
++    request({}),
++    ...invalid.map(request),
++  ]);
++  await expect(dialog(page)).toHaveCount(0);
++  expect(await page.evaluate(() => window.googleAiOpenCalls)).toEqual([]);
++  await send(page, [request()]);
++  await expect(dialog(page)).toBeVisible();
++  await page.evaluate(() => {
++    window.previousReaderWindow =
++      document.querySelector<HTMLIFrameElement>(
++        ".edition-frame",
++      )!.contentWindow;
++  });
++  // Simulate a host-driven reload while its header is inert under the dialog.
++  await page
++    .getByRole("button", { name: "Recharger le HTML", exact: true })
++    .evaluate((button: HTMLButtonElement) => button.click());
++  await expect(dialog(page)).toHaveCount(0);
++  await expect(
++    page.frameLocator(".edition-frame").locator("#capability"),
++  ).toContainText('"enabled":true');
++  await page.evaluate((open) => {
++    // WebKit rejects a detached WindowProxy in MessageEventInit.source.
++    // Set the source property directly to exercise the same stale-source guard.
++    const event = new MessageEvent("message", { origin: "null", data: open });
++    Object.defineProperty(event, "source", {
++      value: window.previousReaderWindow,
++    });
++    window.dispatchEvent(event);
++  }, request());
++  await send(page, []);
++  await expect(dialog(page)).toHaveCount(0);
++  await page
++    .getByRole("button", { name: "Désactiver JS", exact: true })
++    .click();
++  await expect(page.locator(".edition-frame")).toHaveAttribute("sandbox", "");
++  await (
++    await currentFrame(page)
++  ).evaluate((open) => parent.postMessage(open, "*"), request());
++  // A parent message barrier ensures the preceding posted task was processed.
++  await page.evaluate(
++    () =>
++      new Promise<void>((resolve) => {
++        const marker = "google-ai-test-barrier";
++        addEventListener("message", function done(event) {
++          if (event.data === marker) {
++            removeEventListener("message", done);
++            resolve();
++          }
++        });
++        window.postMessage(marker, "*");
++      }),
++  );
++  await expect(dialog(page)).toHaveCount(0);
++  expect(context.pages()).toHaveLength(1);
++});
++
++test("Google IA : seule la confirmation ouvre la question affichée, sans opener, referrer ni notes PWA", async ({
++  page,
++  context,
++}) => {
++  const requests: string[] = [];
++  await context.route("https://www.google.com/**", async (route) => {
++    requests.push(route.request().url());
++    await route.fulfill({
++      contentType: "text/html",
++      body: "<!doctype html><title>Google IA simulé</title><p>Destination externe interceptée par le test</p>",
++    });
++  });
++  await setup(page);
++  await page
++    .getByRole("button", { name: "Réduire la lecture", exact: true })
++    .click();
++  await page
++    .getByLabel("Votre note", { exact: true })
++    .fill("NOTE PRIVÉE À NE JAMAIS TRANSMETTRE");
++  await page
++    .getByRole("button", { name: "Enregistrer la note", exact: true })
++    .click();
++  await expect(page.locator(".note")).toContainText("NOTE PRIVÉE");
++  await page
++    .getByRole("button", { name: "Lecture pleine page", exact: true })
++    .click();
++  // A script can request a confirmation but cannot open an external destination.
++  await send(page, [request()]);
++  await expect(dialog(page)).toBeVisible();
++  await send(page, [
++    request("https://www.google.com/search?udm=50&q=Question-remplac%C3%A9e"),
++  ]);
++  await expect(dialog(page).locator(".google-ai-query")).toHaveText(question);
++  expect(requests).toEqual([]);
++  expect(await page.evaluate(() => window.googleAiOpenCalls)).toEqual([]);
++  const popupEvent = context.waitForEvent("page");
++  await dialog(page)
++    .getByRole("button", { name: "Ouvrir", exact: true })
++    .click();
++  const popup = await popupEvent;
++  await popup.waitForLoadState("domcontentloaded");
++  expect(popup.url()).toBe(validUrl);
++  expect(await popup.evaluate(() => window.opener === null)).toBe(true);
++  expect(await popup.evaluate(() => document.referrer)).toBe("");
++  expect(await page.evaluate(() => window.googleAiOpenCalls)).toEqual([
++    {
++      url: validUrl,
++      target: "_blank",
++      features: "noopener,noreferrer",
++      active: true,
++    },
++  ]);
++  expect(requests).toEqual([validUrl]);
++  await expect(dialog(page)).toHaveCount(0);
++  await expect(page.locator(".edition-frame")).toHaveAttribute(
++    "sandbox",
++    "allow-scripts",
++  );
++  await popup.close();
++});
++
++test("Google IA : lecture et confirmation hors ligne, copie HTML originale intacte", async ({
++  page,
++  context,
++}) => {
++  await setup(page);
++  await page.evaluate(async () => {
++    await navigator.serviceWorker.ready;
++  });
++  await expect
++    .poll(() => page.evaluate(() => !!navigator.serviceWorker.controller))
++    .toBe(true);
++  await context.setOffline(true);
++  await page.reload();
++  await page
++    .getByRole("button", { name: "Lire Journal Google IA", exact: true })
++    .click();
++  await expect(
++    page.frameLocator(".edition-frame").locator("#capability"),
++  ).toContainText('"enabled":true');
++  await page
++    .frameLocator(".edition-frame")
++    .getByRole("link", { name: "En savoir plus", exact: true })
++    .click();
++  await expect(dialog(page)).toBeVisible();
++  await dialog(page)
++    .getByRole("button", { name: "Annuler", exact: true })
++    .click();
++  await page
++    .getByRole("button", { name: "Réduire la lecture", exact: true })
++    .click();
++  const downloadEvent = page.waitForEvent("download");
++  await page
++    .getByRole("button", { name: "Original intact", exact: true })
++    .click();
++  expect(readFileSync((await (await downloadEvent).path())!)).toEqual(
++    readFileSync("tests/fixtures/google-ai.html"),
++  );
++  expect(await page.evaluate(() => window.googleAiOpenCalls)).toEqual([]);
++  expect(context.pages()).toHaveLength(1);
++});
+--- /dev/null
++++ b/tests/fixtures/google-ai.html
+@@ -0,0 +1,70 @@
++<!doctype html>
++<html lang="fr">
++  <head>
++    <meta charset="utf-8" />
++    <title>Journal Google IA</title>
++    <meta name="viewport" content="width=device-width,initial-scale=1" />
++  </head>
++  <body>
++    <h1>Journal Google IA</h1>
++    <p>Une question publique de démonstration.</p>
++    <a
++      id="ai"
++      data-ai-link="google-ai-mode"
++      href="https://www.google.com/search?hl=fr&amp;udm=50&amp;q=Comprendre%20les%20aurores%20bor%C3%A9ales"
++      target="_blank"
++      >En savoir plus</a
++    >
++    <a id="other" href="https://evil.example/" target="_blank"
++      >Lien non autorisé</a
++    >
++    <p id="capability">indisponible</p>
++    <p id="counter">0</p>
++    <button
++      onclick="
++        document.querySelector('#counter').textContent = String(
++          ++window.counter,
++        );
++        history.pushState(null, '', '#interaction');
++      "
++    >
++      Tester l’interaction
++    </button>
++    <script type="application/json" id="editionData">
++      {
++        "title": "Journal Google IA",
++        "items": [
++          {
++            "id": "public",
++            "title": "Question publique",
++            "summary": "Comprendre les aurores boréales",
++            "category": "Sciences"
++          }
++        ]
++      }
++    </script>
++    <script>
++      window.counter = 0;
++      window.capabilities = [];
++      addEventListener("message", (event) => {
++        if (
++          event.source === parent &&
++          event.data?.type === "journal360:google-ai:capability"
++        ) {
++          window.capabilities.push(event.data);
++          document.querySelector("#capability").textContent = JSON.stringify(
++            event.data,
++          );
++        }
++      });
++      parent.postMessage(
++        { type: "journal360:google-ai:capability-request", version: 1 },
++        "*",
++      );
++      document.querySelector("#ai").addEventListener("click", (event) => {
++        event.preventDefault();
++        window.open(event.currentTarget.href, "_blank");
++      });
++    </script>
++  </body>
++</html>

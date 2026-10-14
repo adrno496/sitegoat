@@ -29,9 +29,9 @@ Ouvrir `http://127.0.0.1:4173`. `npm run dev` sert l’interface ; il ne lance p
 3. Ouvrir l’édition : elle occupe directement toute la page. Le HTML est affiché à 70 % ; les boutons −/+ ajustent ce zoom sans perdre la navigation. Pour ses onglets et simulateurs, toucher **Interactif**, puis confirmer la confiance. Ce choix reste local à cette édition/appareil et peut être révoqué avec **Désactiver JS**. Le lecteur sécurisé désactive les scripts par défaut.
 4. Toucher **Réduire la lecture** pour accéder au mode texte et aux annotations. Garder un favori, marquer une lecture, enregistrer notes et décisions. Tous ces états sont dans IndexedDB, séparément du HTML original.
 5. Dans **Réglages**, exporter un ZIP et le conserver hors du navigateur. Restaurer un ZIP vérifie les fichiers SHA-256 avant toute écriture et fusionne sans effacement.
-6. Pour le cloud, saisir le code d’accès privé dans **Réglages**, puis **Sauvegarder dans Supabase**. Sur un autre appareil, retrouver une sauvegarde et la restaurer. Les transferts différés reprennent lors de la prochaine ouverture ou du retour réseau dans l’application.
+6. Pour retrouver la même bibliothèque sur PC et smartphone, ouvrir [sitegoat.vercel.app](https://sitegoat.vercel.app) et saisir le même code d’accès privé dans **Réglages** sur chaque appareil. La synchronisation Supabase est activée par défaut : les éditions, notes, favoris, lectures, archives et corbeille sont récupérés automatiquement. Les modifications partent après deux secondes de repos ; les nouveautés sont vérifiées toutes les 30 secondes, au retour du réseau et au retour dans l’application. **Synchroniser maintenant** permet de forcer une vérification. Une case permet de suspendre la synchronisation de cet appareil.
 
-Le cloud est une **sauvegarde complète privée et versionnée**, pas une synchronisation automatique en continu. Les snapshots restent immuables. Les notes concurrentes sont conservées séparément ; la fusion des favoris et lectures est conservative. Une corbeille locale conserve les originaux et permet leur restauration. Aucune suppression définitive n’est proposée dans ce MVP.
+Le cloud utilise des **archives complètes privées et versionnées** pour la synchronisation automatique. Les snapshots restent immuables. Les notes concurrentes sont conservées séparément ; en synchronisation, le changement le plus récent détermine les favoris, lectures et états d’édition. Les changements d’archive et de corbeille passent aussi entre les appareils, sans supprimer les originaux ni les anciennes sauvegardes. La restauration manuelle d’une sauvegarde reste disponible et fusionne les favoris et lectures de façon conservative. La synchronisation nécessite que l’application soit ouverte et connectée ; la lecture locale fonctionne hors ligne.
 
 Affichage mobile réglé à 70 % sur demande ; lecteur pleine page adapté au viewport et boutons principaux conservant une cible tactile d’environ 45 px.
 
@@ -62,6 +62,7 @@ Tests cloud réels, avec variables serveur dans `.env.local` et le serveur de pr
 ```sh
 node scripts/test-cloud.mjs
 node scripts/test-cloud-browser.mjs
+node scripts/test-sync-browser.mjs
 node scripts/test-performance.mjs
 ```
 

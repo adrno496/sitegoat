@@ -2,6 +2,7 @@ const baseURL = process.env.JOURNAL360_BASE_URL || "http://127.0.0.1:4173";
 import fs from "node:fs";
 import { createClient } from "@supabase/supabase-js";
 import { chromium } from "playwright";
+import { expect } from "@playwright/test";
 process.loadEnvFile(".env.local");
 const url = process.env.SUPABASE_URL;
 const key = "sb_publishable_ZoulExB_bKV1a4m_G9ThNw_2tHVT9zC";
@@ -65,6 +66,15 @@ try {
   const p1 = await ctx1.newPage();
   await p1.goto("/");
   await p1
+    .locator(".sidebar")
+    .getByRole("button", { name: "Réglages", exact: true })
+    .click();
+  const auto1 = p1.getByLabel("Synchroniser automatiquement cet appareil", {
+    exact: true,
+  });
+  await auto1.click();
+  await expect(auto1).not.toBeChecked();
+  await p1
     .getByLabel("Fichiers HTML à importer")
     .setInputFiles("tests/fixtures/generic.html");
   await p1
@@ -108,6 +118,11 @@ try {
     .locator(".sidebar")
     .getByRole("button", { name: "Réglages", exact: true })
     .click();
+  const auto2 = p2.getByLabel("Synchroniser automatiquement cet appareil", {
+    exact: true,
+  });
+  await auto2.click();
+  await expect(auto2).not.toBeChecked();
   await p2.getByRole("button", { name: "Retrouver mes sauvegardes" }).click();
   await waitCount(p2, ".snapshot", 1);
   await p2

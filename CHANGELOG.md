@@ -1,5 +1,9 @@
 # Versions
 
+## 1.1.0 — 14 octobre 2026
+
+Synchronisation automatique privée Supabase entre PC et smartphone avec le même code d’accès. Récupération à la connexion, envoi après les modifications, vérification toutes les 30 secondes et reprise après coupure réseau. Éditions, originaux, notes, favoris, lectures, archives et corbeille partagés. Notes concurrentes conservées sans duplication ; changements de favoris et d’archivage propagés. Suspension par appareil et bouton Synchroniser maintenant. Sauvegardes manuelles et ZIP conservés.
+
 ## 1.0.2 — 13 octobre 2026
 
 Correction du lecteur blanc constaté sur Chrome 153 : le srcdoc est calculé avant montage du cadre au lieu d’être mis à jour dans un effet après montage. Zoom HTML indépendant à 70 % par défaut, réglable de 40 à 150 % sans recharger le contenu ; bouton de rechargement du cadre. Texte de secours visible si l’original manque.

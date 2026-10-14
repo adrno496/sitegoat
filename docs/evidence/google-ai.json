@@ -1,0 +1,310 @@
+{
+  "verifiedAt": "2026-10-14T19:58:16.873053+00:00",
+  "environment": "macOS, Playwright Chromium desktop / Pixel 7 emulation and WebKit desktop, local preview only",
+  "scope": "Google AI bridge; full local suite; no deployment, push or production modification",
+  "commands": {
+    "lint": "PASS",
+    "build": "PASS",
+    "unitTests": {
+      "status": "PASS",
+      "passed": 73
+    },
+    "e2e": {
+      "status": "PASS",
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "e2e": [
+    {
+      "name": "parcours complet : import, lecture, notes, favori, recherche, offline, export et restauration",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "démonstrations, interaction explicite et mémoire basée sur event_id",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "renommage doublon, version, archive et corbeille récupérable",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "sécurité : parent, stockage, fetch, ressources, top et popups bloqués",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "responsive, thèmes et accessibilité sur six largeurs",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "manifest et réception Web Share Target en service worker",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "File Handling launchQueue traite un HTML via le même écran de vérification",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "lecture pleine page : tout le viewport, interactions conservées et retour sur mobile",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "parcours complet : import, lecture, notes, favori, recherche, offline, export et restauration",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "démonstrations, interaction explicite et mémoire basée sur event_id",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "renommage doublon, version, archive et corbeille récupérable",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "sécurité : parent, stockage, fetch, ressources, top et popups bloqués",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "responsive, thèmes et accessibilité sur six largeurs",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "manifest et réception Web Share Target en service worker",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "File Handling launchQueue traite un HTML via le même écran de vérification",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "lecture pleine page : tout le viewport, interactions conservées et retour sur mobile",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles refusés",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "Google IA : seule la confirmation ouvre la question affichée, sans opener, referrer ni notes PWA",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "Google IA : lecture et confirmation hors ligne, copie HTML originale intacte",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles refusés",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "Google IA : seule la confirmation ouvre la question affichée, sans opener, referrer ni notes PWA",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "Google IA : lecture et confirmation hors ligne, copie HTML originale intacte",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles refusés",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "Google IA : seule la confirmation ouvre la question affichée, sans opener, referrer ni notes PWA",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "Google IA : lecture et confirmation hors ligne, copie HTML originale intacte",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "mise à jour réelle du service worker sans perte des originaux et favoris",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "name": "mise à jour réelle du service worker sans perte des originaux et favoris",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    }
+  ],
+  "externalGoogleTest": "Real browser window.open, user activation, opener/referrer checked; Google navigation intercepted and fulfilled locally, no live Google content tested",
+  "manualSafariIOS": "NON TESTÉ",
+  "originalV53": "NON TESTÉ; fixture based on supplied contract",
+  "e2eStats": {
+    "startTime": "2026-10-14T19:56:40.882Z",
+    "duration": 76911.548,
+    "expected": 30,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "rollback": {
+    "status": "PASS",
+    "method": "Reverse task-only patch applied to temporary copy; existing files match pre-task snapshot and new source/test files removed"
+  },
+  "unchangedFiles": {
+    "vercel.json": "5dbe538353c0e80b5156b50d3cb8ecc27182db71cc9b1b4499d949207671f23c",
+    "src/sw.ts": "7f818e5abb9af0641ced6c3f5adf7c81cbbffe4f7e03b4ec1d35968ed467cf39",
+    "src/features/dialogFocus.ts": "9487811c676d76e3590cfce05dda3d02ebc2088116a1fd98847b62976e16f351"
+  },
+  "sourceSHA256": {
+    "src/features/Reader.tsx": "e6e9196c27a3f4f956623a53297e9fe34ba95b42fa0509e865c6eda04d74a5b5",
+    "src/features/import.ts": "a5508e05cca240d1ac6f930a2f379e188f81a23974070699c990fc6d946ad8b9",
+    "src/features/googleAi.ts": "f34622bc4f6e762f95f5aa84027a6c3ba05feba1215f3ed2c05f617eeb450074",
+    "src/styles.css": "60d593666444b628e6fa2ff0950ef24ed536c8d6bb11e1337f108e39b8353cac",
+    "playwright.config.ts": "099669285e5625567116ba0e0a4f1e7ebba6d4075162168d687e0dfe8c7cd820",
+    "SECURITY.md": "442b942316843cf4f49cee1c7325a001ffa13808f3702e893d92c6b94c18d101",
+    "tests/googleAi.unit.test.ts": "8cd60612a94e4236a0ff5b0e502c6715939b1ffb36dfa9bb9ceb52160613ec9a",
+    "tests/e2e/google-ai.spec.ts": "1236cb9cf7f736a18ef3588f8ba6573a4c664237d59183991b8e43481ecfe946",
+    "tests/fixtures/google-ai.html": "c7e1d17f848fd9fc78fff48abe8c08c6fe0f6039d2fc57d6ae6bf70e9087c7fb"
+  },
+  "sandbox": {
+    "safe": "",
+    "interactive": "allow-scripts",
+    "additionalPermissions": false
+  },
+  "checks": {
+    "foreignOpaqueWindowIgnored": "PASS",
+    "unknownMessagesAndInvalidURLsIgnored": "PASS",
+    "pendingQuestionCannotBeReplaced": "PASS",
+    "pendingRequestInvalidatedOnReload": "PASS",
+    "dynamicMarkedLinks": "PASS",
+    "noExternalOpenBeforeConfirmation": "PASS",
+    "userGestureAndNoopenerNoreferrer": "PASS",
+    "originalHTMLAndJSONUnchanged": "PASS",
+    "offlineReader": "PASS",
+    "axeDialogAccessibility": "PASS",
+    "visualInspection": "PASS"
+  }
+}

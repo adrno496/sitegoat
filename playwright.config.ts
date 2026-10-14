@@ -17,6 +17,11 @@ export default defineConfig({
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
     { name: "webkit", use: { ...devices["Desktop Safari"] } },
+    {
+      name: "chromium-mobile",
+      testMatch: "google-ai.spec.ts",
+      use: { ...devices["Pixel 7"] },
+    },
   ],
   webServer: {
     command: "npm run preview",

@@ -1,0 +1,14 @@
+{
+  "verifiedAt": "2026-10-14T19:29:28.624Z",
+  "appVersion": "1.1.0",
+  "url": "https://sitegoat.vercel.app",
+  "deploymentId": "dpl_EYQp8wUY5iCt9shcpMrcwRNQs7po",
+  "vercelStatus": "READY",
+  "checks": {
+    "shell": 200,
+    "bundle": "/assets/index-C3EyxBUL.js",
+    "asset": 200,
+    "anonymousBackupAPI": 401
+  },
+  "physicalPhones": "NON TESTÉS"
+}

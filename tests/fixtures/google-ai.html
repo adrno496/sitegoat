@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Journal Google IA</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+  </head>
+  <body>
+    <h1>Journal Google IA</h1>
+    <p>Une question publique de démonstration.</p>
+    <a
+      id="ai"
+      data-ai-link="google-ai-mode"
+      href="https://www.google.com/search?hl=fr&amp;udm=50&amp;q=Comprendre%20les%20aurores%20bor%C3%A9ales"
+      target="_blank"
+      >En savoir plus</a
+    >
+    <a id="other" href="https://evil.example/" target="_blank"
+      >Lien non autorisé</a
+    >
+    <p id="capability">indisponible</p>
+    <p id="counter">0</p>
+    <button
+      onclick="
+        document.querySelector('#counter').textContent = String(
+          ++window.counter,
+        );
+        history.pushState(null, '', '#interaction');
+      "
+    >
+      Tester l’interaction
+    </button>
+    <script type="application/json" id="editionData">
+      {
+        "title": "Journal Google IA",
+        "items": [
+          {
+            "id": "public",
+            "title": "Question publique",
+            "summary": "Comprendre les aurores boréales",
+            "category": "Sciences"
+          }
+        ]
+      }
+    </script>
+    <script>
+      window.counter = 0;
+      window.capabilities = [];
+      addEventListener("message", (event) => {
+        if (
+          event.source === parent &&
+          event.data?.type === "journal360:google-ai:capability"
+        ) {
+          window.capabilities.push(event.data);
+          document.querySelector("#capability").textContent = JSON.stringify(
+            event.data,
+          );
+        }
+      });
+      parent.postMessage(
+        { type: "journal360:google-ai:capability-request", version: 1 },
+        "*",
+      );
+      document.querySelector("#ai").addEventListener("click", (event) => {
+        event.preventDefault();
+        window.open(event.currentTarget.href, "_blank");
+      });
+    </script>
+  </body>
+</html>

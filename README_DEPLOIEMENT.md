@@ -2,7 +2,7 @@
 
 ## Vercel
 
-Le dépôt demandé `adrno496/sitegoat` remplace l’ancien site GOAT FUEL. Le projet Vercel existant `sitegoat` a été trouvé ; son alias existant est `https://sitegoat.vercel.app`. La version 1.0.2 est publiée et vérifiée en HTTPS ; preuves dans `docs/evidence/deployment.json`, `access-production.json`, `cloud-production.json` et `cloud-browser-production.json`.
+Le dépôt demandé `adrno496/sitegoat` remplace l’ancien site GOAT FUEL. Le projet Vercel existant `sitegoat` a été trouvé ; son alias existant est `https://sitegoat.vercel.app`. La version 1.1.0 est publiée en HTTPS avec synchronisation automatique ; preuve du nouveau bundle et du contrôle d’accès dans `docs/evidence/deployment-sync.json`. Les vérifications des versions précédentes restent dans `docs/evidence/deployment.json`, `access-production.json`, `cloud-production.json` et `cloud-browser-production.json`.
 
 `vercel.json` définit Vite, `npm run build`, `dist`, les headers et les routes SPA. L’API `api/backup.mjs` est une fonction Node Vercel, séparée du bundle client. Les HTML importés ne vont ni dans `public` ni dans `dist`.
 
@@ -20,7 +20,7 @@ Ne jamais ajouter `VITE_SUPABASE_SECRET_KEY`, mettre un secret dans Git, ni publ
 
 Le bucket privé et la protection RLS sont configurés dans le projet demandé. Migration reproductible : `supabase/migrations/202610130001_private_backups.sql`. Aucun changement des autres tables ou buckets. Les transferts signés passent par le serveur : pas de policy client permissive.
 
-Connexion par code via `api/access.mjs`, sans email envoyé ni SMTP. Le serveur dérive un mot de passe long par HMAC avec le secret serveur, puis obtient une vraie session Supabase du compte propriétaire. Le même code sur chaque appareil retrouve le même UID et les mêmes archives. Le code n’est pas dans Git, le bundle ou les sauvegardes. Les sessions sont renouvelées par Supabase, et la déconnexion conserve la bibliothèque locale.
+Connexion par code via `api/access.mjs`, sans email envoyé ni SMTP. Le serveur dérive un mot de passe long par HMAC avec le secret serveur, puis obtient une vraie session Supabase du compte propriétaire. Le même code sur chaque appareil retrouve le même UID et la même bibliothèque, synchronisée automatiquement à partir des archives privées. La version 1.1.0 réutilise les fonctions, le bucket, la RLS et les variables existantes sans migration supplémentaire. Le code n’est pas dans Git, le bundle ou les sauvegardes. Les sessions sont renouvelées par Supabase, et la déconnexion conserve la bibliothèque locale.
 
 Pour changer le code : configurer `.env.local`, puis fournir le nouveau code sur l’entrée standard de `node scripts/configure-access.mjs` (ne pas le passer en argument ni l’inscrire dans un fichier suivi). Une rotation de `SUPABASE_SECRET_KEY` nécessite de reconfigurer le mot de passe dérivé avec ce script. Le callback HTTPS autorisé précédemment est conservé ; il n’est plus nécessaire pour cette connexion. Les paramètres Auth globaux et les autres comptes ne sont pas modifiés.
 
@@ -39,3 +39,7 @@ Le service worker annonce la mise à jour ; bouton Mettre à jour. IndexedDB est
 L’ancien site reste dans le commit `2345801` et dans l’archive locale extérieure au dépôt `../sitegoat-before-journal360.tar`. Un revert du remplacement est possible ; aucun force-push n’est nécessaire.
 
 Aucun domaine personnalisé, abonnement, plan Supabase ou DNS n’a été modifié. Limite actuelle du bucket : 50 Mo par sauvegarde ; coût et quotas globaux du compte non audités, aucun coût chiffré supposé.
+
+## Push Git sans mise en production
+
+Le commit/push a été demandé séparément après la revue Google IA, sans autorisation de déploiement. Le projet Vercel étant connecté à GitHub avec `main` comme branche de production, `vercel.json` désactive les déploiements Git automatiques de `main` via `git.deploymentEnabled.main: false`. Les CSP et en-têtes ne changent pas. La mise en production reste une action distincte à autoriser explicitement ; les déploiements manuels Vercel restent disponibles. [Configuration Git Vercel](https://vercel.com/docs/project-configuration/git-configuration).

@@ -1,5 +1,6 @@
 import { APP_VERSION } from "../config";
 import JSZip from "jszip";
+import Dexie from "dexie";
 import { z } from "zod";
 import {
   editionSchema,
@@ -31,8 +32,11 @@ export interface BackupData {
   states: ReadingState[];
   notes: Note[];
 }
-export async function exportBackup(repository: LocalRepository): Promise<Blob> {
-  const data = await repository.snapshot();
+export async function exportBackup(
+  repository: LocalRepository,
+  snapshot?: BackupData,
+): Promise<Blob> {
+  const data = snapshot || (await repository.snapshot());
   const zip = new JSZip();
   zip.file(
     "manifest.json",
@@ -125,6 +129,7 @@ export async function inspectBackup(bytes: Uint8Array): Promise<BackupData> {
 export async function restoreBackup(
   repository: LocalRepository,
   data: BackupData,
+  mode: "backup" | "sync" = "backup",
 ) {
   let added = 0,
     conflicts = 0;
@@ -143,16 +148,25 @@ export async function restoreBackup(
         const same =
           exact?.sha256 === e.sha256
             ? exact
-            : await repository.editions
-                .where("sha256")
-                .equals(e.sha256)
-                .first();
+            : mode === "backup"
+              ? await repository.editions
+                  .where("sha256")
+                  .equals(e.sha256)
+                  .first()
+              : undefined;
         if (same) {
           mapping.set(e.id, same.id);
+          if (mode === "sync" && newer(e, same))
+            await repository.editions.put({ ...e, id: same.id });
           continue;
         }
-        const id = exact ? crypto.randomUUID() : e.id;
+        const id = exact
+          ? mode === "sync"
+            ? await Dexie.waitFor(conflictId(`${e.id}:${e.sha256}`))
+            : crypto.randomUUID()
+          : e.id;
         mapping.set(e.id, id);
+        if (await repository.editions.get(id)) continue;
         await repository.editions.add({
           ...e,
           id,
@@ -168,6 +182,12 @@ export async function restoreBackup(
         const editionId = mapping.get(state.editionId)!;
         const id = `${editionId}:${state.articleId}`;
         const existing = await repository.states.get(id);
+        if (mode === "sync") {
+          const incoming = { ...state, editionId, id };
+          if (!existing || newer(incoming, existing))
+            await repository.states.put(incoming);
+          continue;
+        }
         await repository.states.put({
           ...state,
           editionId,
@@ -195,17 +215,63 @@ export async function restoreBackup(
         )
           continue;
         if (existing) {
-          await repository.notes.add({
-            ...note,
-            editionId,
-            id: crypto.randomUUID(),
-          });
-          conflicts++;
+          const incoming = { ...note, editionId };
+          const winner =
+            mode === "sync" && newer(incoming, existing) ? incoming : existing;
+          const other = winner === incoming ? existing : incoming;
+          const duplicate = await repository.notes
+            .where("editionId")
+            .equals(editionId)
+            .filter(
+              (n) =>
+                n.body === other.body &&
+                n.kind === other.kind &&
+                !(winner === incoming && n.id === note.id),
+            )
+            .first();
+          if (mode === "sync" && winner === incoming)
+            await repository.notes.put(incoming);
+          if (!duplicate)
+            await repository.notes.put({
+              ...other,
+              editionId,
+              id:
+                mode === "sync"
+                  ? await Dexie.waitFor(
+                      conflictId(
+                        `${note.id}:${editionId}:${other.kind}:${other.body}`,
+                      ),
+                    )
+                  : crypto.randomUUID(),
+            });
+          if (!duplicate) conflicts++;
         } else await repository.notes.add({ ...note, editionId });
       }
     },
   );
   return { added, conflicts };
+}
+function newer(a: { updatedAt: string }, b: { updatedAt: string }) {
+  return (
+    a.updatedAt > b.updatedAt ||
+    (a.updatedAt === b.updatedAt && canonicalJSON(a) > canonicalJSON(b))
+  );
+}
+export function canonicalJSON(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(canonicalJSON).join(",")}]`;
+  if (value && typeof value === "object") {
+    const object = value as Record<string, unknown>;
+    return `{${Object.keys(object)
+      .sort()
+      .filter((key) => object[key] !== undefined)
+      .map((key) => `${JSON.stringify(key)}:${canonicalJSON(object[key])}`)
+      .join(",")}}`;
+  }
+  return JSON.stringify(value);
+}
+async function conflictId(value: string) {
+  const hex = await hash(new TextEncoder().encode(value));
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-4${hex.slice(13, 16)}-8${hex.slice(17, 20)}-${hex.slice(20, 32)}`;
 }
 export function download(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);

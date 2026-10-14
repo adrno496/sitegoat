@@ -6,6 +6,7 @@ import {
   hash,
 } from "../data/model";
 import { LocalRepository } from "../data/db";
+import { GOOGLE_AI_LINK_BRIDGE, validateGoogleAiUrl } from "./googleAi";
 const cleanText = (s: string) => s.replace(/\s+/g, " ").trim();
 const str = (s: unknown) => (typeof s === "string" ? s : "");
 function plain(s: unknown) {
@@ -206,6 +207,10 @@ export function isolatedHTML(bytes: Uint8Array, interactive: boolean) {
     .querySelectorAll("base,meta[http-equiv],iframe,object,embed,link")
     .forEach((e) => e.remove());
   doc.querySelectorAll("*").forEach((e) => {
+    const googleAi =
+      interactive && e.matches('a[data-ai-link="google-ai-mode"]')
+        ? validateGoogleAiUrl(e.getAttribute("href"))
+        : null;
     for (const attr of [...e.attributes]) {
       if (
         (!interactive && attr.name.startsWith("on")) ||
@@ -217,6 +222,7 @@ export function isolatedHTML(bytes: Uint8Array, interactive: boolean) {
           "target",
           "download",
           "autofocus",
+          "data-journal360-google-ai-url",
         ].includes(attr.name)
       )
         e.removeAttribute(attr.name);
@@ -227,6 +233,10 @@ export function isolatedHTML(bytes: Uint8Array, interactive: boolean) {
       )
         e.removeAttribute(attr.name);
     }
+    if (googleAi) {
+      e.setAttribute("data-journal360-google-ai-url", googleAi.url);
+      e.setAttribute("href", "#");
+    }
   });
   if (!interactive) doc.querySelectorAll("script").forEach((e) => e.remove());
   else doc.querySelectorAll("script[src]").forEach((e) => e.remove());
@@ -235,6 +245,9 @@ export function isolatedHTML(bytes: Uint8Array, interactive: boolean) {
   csp.content = `default-src 'none'; script-src ${interactive ? "'unsafe-inline'" : "'none'"}; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; media-src data: blob:; connect-src 'none'; object-src 'none'; frame-src 'none'; form-action 'none'; base-uri 'none'`;
   doc.head.prepend(csp);
   if (interactive) {
+    const googleAi = doc.createElement("script");
+    googleAi.textContent = GOOGLE_AI_LINK_BRIDGE;
+    csp.after(googleAi);
     const routing = doc.createElement("script");
     // about:srcdoc à origine opaque refuse pushState ; les fragments restent locaux au cadre.
     routing.textContent = `(()=>{for(const method of ['pushState','replaceState']){const original=history[method].bind(history);history[method]=function(state,unused,url){try{return original(state,unused,url)}catch(error){if(error.name==='SecurityError'&&typeof url==='string'&&url.startsWith('#')){location.hash=url;return}throw error}}}})();`;

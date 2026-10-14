@@ -58,6 +58,7 @@ import {
   unlockCloud,
   type Snapshot,
 } from "./features/cloud";
+import { fingerprint, synchronizer } from "./features/sync";
 import { useDialogFocus } from "./features/dialogFocus";
 import { registerFileHandling } from "./features/fileHandling";
 type Tab = "today" | "library" | "search" | "memory" | "settings";
@@ -145,6 +146,12 @@ export default function App() {
   )?.value;
   const lastCloud = data.preferences.find(
     (p) => p.key === `last-cloud-${session?.user.id}`,
+  )?.value;
+  const autoSync =
+    data.preferences.find((p) => p.key === `auto-sync-${session?.user.id}`)
+      ?.value !== "off";
+  const lastSync = data.preferences.find(
+    (p) => p.key === `last-sync-${session?.user.id}`,
   )?.value;
   useDialogFocus(!!restoration, () => setRestoration(null));
   const {
@@ -268,44 +275,101 @@ export default function App() {
     );
     return () => subscription.unsubscribe();
   }, [prepare, run]);
+  const syncDevices = useCallback(async () => {
+    if (!session) throw new Error("Saisissez votre code d’accès d’abord.");
+    if (!navigator.onLine) {
+      setCloudStatus(
+        "Hors ligne · les modifications seront synchronisées au retour du réseau",
+      );
+      return;
+    }
+    if (busyCloud.current) return;
+    busyCloud.current = true;
+    setCloudStatus("Synchronisation avec Supabase…");
+    try {
+      await coordinator.flush(session);
+      setSnapshots(await synchronizer.sync(session));
+      setCloudStatus("Bibliothèque synchronisée sur vos appareils");
+    } catch (error) {
+      setCloudStatus(
+        error instanceof Error ? error.message : "Synchronisation interrompue.",
+      );
+      throw error;
+    } finally {
+      busyCloud.current = false;
+    }
+  }, [session]);
+  useEffect(() => {
+    if (!session || !autoSync || !data.ready) return;
+    if (!online) {
+      setCloudStatus(
+        "Hors ligne · les modifications seront synchronisées au retour du réseau",
+      );
+      return;
+    }
+    let debounce: ReturnType<typeof setTimeout>;
+    let previous = "";
+    const sync = () => {
+      if (document.visibilityState === "visible")
+        void syncDevices().catch(() => {});
+    };
+    sync();
+    const subscription = liveQuery(async () =>
+      fingerprint(await db.snapshot()),
+    ).subscribe({
+      next: (signature) => {
+        if (signature === previous) return;
+        previous = signature;
+        clearTimeout(debounce);
+        debounce = setTimeout(sync, 2000);
+      },
+      error: () =>
+        setCloudStatus(
+          "Le stockage local est indisponible pour la synchronisation.",
+        ),
+    });
+    const interval = setInterval(sync, 30000);
+    window.addEventListener("online", sync);
+    document.addEventListener("visibilitychange", sync);
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(debounce);
+      clearInterval(interval);
+      window.removeEventListener("online", sync);
+      document.removeEventListener("visibilitychange", sync);
+    };
+  }, [session, online, autoSync, data.ready, syncDevices]);
   useEffect(() => {
     if (!session || !online) return;
     let canceled = false;
-    async function flush() {
-      if (busyCloud.current) return;
-      busyCloud.current = true;
+    const resumeBackups = async () => {
+      if (document.visibilityState !== "visible") return;
       try {
-        const hadJobs = await db.jobs
+        const count = await db.jobs
           .where("ownerId")
-          .equals(session!.user.id)
+          .equals(session.user.id)
           .count();
-        await coordinator.flush(session!);
+        if (!count) return;
+        await coordinator.flush(session);
+        const available = await remote.list(session);
         if (!canceled) {
-          setCloudStatus(
-            hadJobs
-              ? "Sauvegarde confirmée par Supabase"
-              : "Compte connecté · sauvegarde manuelle",
-          );
-          if (hadJobs) setSnapshots(await remote.list(session!));
+          setSnapshots(available);
+          setCloudStatus("Sauvegarde confirmée par Supabase");
         }
-      } catch (e) {
+      } catch (error) {
         if (!canceled)
           setCloudStatus(
-            e instanceof Error ? e.message : "Erreur de sauvegarde.",
+            error instanceof Error ? error.message : "Erreur de sauvegarde.",
           );
-      } finally {
-        busyCloud.current = false;
       }
-    }
-    void flush();
-    const visible = () => {
-      if (document.visibilityState === "visible") void flush();
     };
-    window.addEventListener("online", visible);
+    void resumeBackups();
+    const visible = () => {
+      void resumeBackups();
+    };
     document.addEventListener("visibilitychange", visible);
     return () => {
       canceled = true;
-      window.removeEventListener("online", visible);
       document.removeEventListener("visibilitychange", visible);
     };
   }, [session, online]);
@@ -1598,13 +1662,13 @@ export default function App() {
                     </section>
                     <section className="quiet-panel cloud-panel">
                       <h2>
-                        <Cloud size={21} /> Sauvegarde privée Supabase
+                        <Cloud size={21} /> PC & téléphone · Supabase
                       </h2>
                       <p className="mode-label">
                         {session ? (
                           <>
                             <span className="dot" />
-                            Sauvegardes privées accessibles
+                            Bibliothèque privée connectée
                           </>
                         ) : (
                           <>
@@ -1616,7 +1680,7 @@ export default function App() {
                       <p className="muted">
                         {session
                           ? cloudStatus
-                          : "Saisissez votre code d’accès pour sauvegarder et retrouver votre bibliothèque sur le Mac ou le téléphone."}
+                          : "Saisissez le même code d’accès sur votre PC et votre téléphone. Vos éditions, notes, favoris et lectures se synchroniseront automatiquement."}
                       </p>
                       {!session ? (
                         <form
@@ -1625,7 +1689,7 @@ export default function App() {
                             run(async () => {
                               await unlockCloud(accessCode);
                               setAccessCode("");
-                            }, "Accès privé ouvert. Vous pouvez sauvegarder ou retrouver vos archives.");
+                            }, "Accès privé ouvert. La synchronisation de votre bibliothèque démarre.");
                           }}
                         >
                           <label>
@@ -1647,13 +1711,43 @@ export default function App() {
                             <ArrowRight size={17} />
                           </button>
                           <p className="small-note">
-                            Le même code retrouve vos archives sur chaque
+                            Le même code retrouve votre bibliothèque sur chaque
                             appareil. Aucun email ni mot de passe Supabase à
                             saisir.
                           </p>
                         </form>
                       ) : (
                         <>
+                          <label className="sync-toggle">
+                            <input
+                              type="checkbox"
+                              checked={autoSync}
+                              onChange={(e) =>
+                                run(() =>
+                                  db.preferences.put({
+                                    key: `auto-sync-${session.user.id}`,
+                                    value: e.target.checked ? "on" : "off",
+                                  }),
+                                )
+                              }
+                            />
+                            Synchroniser automatiquement cet appareil
+                          </label>
+                          <p className="muted">
+                            {lastSync
+                              ? `Dernière synchronisation : ${new Date(lastSync).toLocaleString("fr-FR", { timeZone: "Europe/Paris" })}`
+                              : "La bibliothèque sera récupérée dès la connexion."}
+                          </p>
+                          <div className="settings-actions">
+                            <button
+                              className="primary"
+                              disabled={!online || busy}
+                              onClick={() => run(syncDevices)}
+                            >
+                              Synchroniser maintenant
+                              <RefreshCw size={17} />
+                            </button>
+                          </div>
                           <p className="muted">
                             {lastCloud
                               ? `Dernière sauvegarde confirmée : ${new Date(lastCloud).toLocaleString("fr-FR", { timeZone: "Europe/Paris" })}`
@@ -1742,11 +1836,12 @@ export default function App() {
                         </>
                       )}
                       <p className="small-note">
-                        Sauvegardes complètes versionnées, déclenchées
-                        manuellement. Une sauvegarde en attente reprend au
-                        retour du réseau. Les suppressions locales ne suppriment
-                        pas les archives cloud ; la fusion conserve les favoris
-                        et lectures existants.
+                        Les changements sont envoyés automatiquement et les
+                        nouveautés récupérées toutes les 30 secondes tant que
+                        l’application est ouverte. Hors ligne, vos données
+                        restent sur cet appareil et reprennent au retour du
+                        réseau. Les archives privées sont conservées ; les notes
+                        en conflit restent accessibles.
                       </p>
                     </section>
                     <section className="quiet-panel">

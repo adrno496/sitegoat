@@ -1,0 +1,40 @@
+{
+  "testedAt": "2026-10-14T19:30:09.468Z",
+  "baseURL": "https://sitegoat.vercel.app",
+  "environment": "Chromium PC et WebKit viewport iPhone, Supabase réel, compte synthétique",
+  "physicalPhones": "NON TESTÉS",
+  "results": [
+    {
+      "name": "Import sur PC envoyé automatiquement dans Supabase, sans sauvegarde manuelle",
+      "status": "PASS"
+    },
+    {
+      "name": "Nouvel appareil WebKit iPhone récupère et lit automatiquement le HTML du PC",
+      "status": "PASS"
+    },
+    {
+      "name": "Note et favori créés sur smartphone récupérés par le PC",
+      "status": "PASS"
+    },
+    {
+      "name": "Import PC hors ligne conservé et envoyé après retour du réseau",
+      "status": "PASS"
+    },
+    {
+      "name": "Bouton de synchronisation immédiate fonctionnel",
+      "status": "PASS"
+    },
+    {
+      "name": "Réglages synchronisation sans débordement horizontal sur iPhone",
+      "status": "PASS"
+    },
+    {
+      "name": "Déconnexion conserve la bibliothèque locale",
+      "status": "PASS"
+    },
+    {
+      "name": "Compte et archives synthétiques supprimés",
+      "status": "PASS"
+    }
+  ]
+}

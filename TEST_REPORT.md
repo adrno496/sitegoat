@@ -21,6 +21,12 @@ Date : 13 octobre 2026, Europe/Paris. Environnement réel : macOS sur Mac ARM64,
 
 Le code et les données de test sont dans `tests/`, les preuves expurgées dans `docs/evidence/`. Les captures `docs/screenshots/home-{320,375,390,768,1024,1440}.png` sont des simulations navigateur. Les traces Playwright restent localement dans `test-results/`, ignoré par Git ; aucun token/session cloud n’y est enregistré par les tests E2E locaux.
 
+## Synchronisation 1.1.0 — 14 octobre 2026
+
+Lint, compilation TypeScript et build : PASS. 25 tests unitaires et 18 tests E2E Chromium/WebKit : PASS. Les cinq nouveaux tests vérifient la récupération automatique sur une base vierge, l’absence de renvois inutiles, le retrait d’un favori et l’archivage, les branches concurrentes, la conservation de deux imports identiques, les erreurs réseau, la réouverture, une modification pendant un transfert et l’idempotence des conflits de notes.
+
+Les parcours local et HTTPS de production de `scripts/test-sync-browser.mjs` sont PASS (8 contrôles chacun) et vérifie le Supabase réel avec un compte synthétique, un PC Chromium et un viewport iPhone WebKit ; résultats séparés dans `docs/evidence/sync.json` et `sync-production.json`. Il nettoie uniquement son compte et ses archives. Aucun téléphone physique n’a été testé. Le parcours de sauvegarde manuelle a aussi été rejoué : 11 contrôles PASS, notamment l’isolation entre comptes et la reprise hors ligne. Les anciens tests de sauvegarde manuelle suspendent la nouvelle synchronisation pour vérifier indépendamment leur parcours.
+
 ## Correctif 1.0.2
 
 Page blanche constatée dans le Chrome 153 actif de l’utilisateur : srcdoc présent (103 158 caractères), mais document du cadre vide malgré readyState complete. Remonter le même cadre avec son srcdoc complet a rendu immédiatement le HTML. Correctif : calcul synchrone du srcdoc avant montage, au lieu d’un effet postérieur. Tests : aucun montage avec srcdoc vide, passage sécurisé/interactif, réouverture avec confiance mémorisée, zoom 70 → 60 → 70 % conservant l’état, rechargement explicite du cadre. Le test de largeur tolère les arrondis sous-pixel dus au scale CSS. Après publication : mise à jour de la PWA dans le Chrome 153 actif de l’utilisateur, édition déjà importée conservée et ouverte, onglet Business fonctionnel, zoom 70 → 60 → 70 % sans perte de vue, retour à la une visible en capture. [Preuve native sans contenu privé](docs/evidence/reader-chrome.json). Les deux moteurs automatisés ont aussi exécuté le fichier réel sur HTTPS à 70 %, sans erreur JS.

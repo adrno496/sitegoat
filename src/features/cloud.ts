@@ -1,8 +1,13 @@
 import { createClient, type Session } from "@supabase/supabase-js";
 import { CLOUD_KEY, CLOUD_URL } from "../config";
-import { db } from "../data/db";
+import { db, type LocalRepository } from "../data/db";
 import { now } from "../data/model";
-import { exportBackup, inspectBackup, restoreBackup } from "./backup";
+import {
+  exportBackup,
+  inspectBackup,
+  restoreBackup,
+  type BackupData,
+} from "./backup";
 export const cloud = createClient(CLOUD_URL, CLOUD_KEY, {
   auth: {
     persistSession: true,
@@ -58,8 +63,12 @@ export class CloudRepository {
   async list(session: Session): Promise<Snapshot[]> {
     return (await request(session)).snapshots;
   }
-  async backup(session: Session) {
-    const blob = await exportBackup(db);
+  async backup(
+    session: Session,
+    repository: LocalRepository = db,
+    data?: BackupData,
+  ) {
+    const blob = await exportBackup(repository, data);
     if (blob.size > 50 * 1024 * 1024)
       throw new Error(
         "Sauvegarde cloud supérieure à 50 Mo : utilisez un export local.",
@@ -74,13 +83,16 @@ export class CloudRepository {
       throw new Error(
         "Transfert Supabase interrompu : votre bibliothèque locale est conservée.",
       );
-    await db.preferences.put({
+    await repository.preferences.put({
       key: `last-cloud-${session.user.id}`,
       value: now(),
     });
     return signed.id as string;
   }
   async restore(session: Session, id: string) {
+    return restoreBackup(db, await this.read(session, id));
+  }
+  async read(session: Session, id: string): Promise<BackupData> {
     const signed = await request(session, { action: "download", id });
     const response = await fetch(signed.url, { cache: "no-store" });
     if (!response.ok) throw new Error("Téléchargement impossible.");
@@ -107,7 +119,7 @@ export class CloudRepository {
       bytes.set(c, at);
       at += c.length;
     }
-    return restoreBackup(db, await inspectBackup(bytes));
+    return inspectBackup(bytes);
   }
 }
 export const remote = new CloudRepository();

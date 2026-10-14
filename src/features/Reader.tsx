@@ -21,6 +21,17 @@ import { db } from "../data/db";
 import { isolatedHTML } from "./import";
 import { useDialogFocus } from "./dialogFocus";
 import { download } from "./backup";
+import {
+  parseGoogleAiMessage,
+  validateGoogleAiUrl,
+  type GoogleAiDestination,
+} from "./googleAi";
+interface GoogleAiRequest {
+  destination: GoogleAiDestination;
+  source: Window;
+  editionId: string;
+  frameRevision: number;
+}
 export function Reader({
   edition,
   editions,
@@ -39,6 +50,10 @@ export function Reader({
   run: (action: () => Promise<unknown>, success?: string) => void;
 }) {
   const surfaceRef = useRef<HTMLDivElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const pendingAiRef = useRef<GoogleAiRequest | null>(null);
+  const [googleAiRequest, setGoogleAiRequest] =
+    useState<GoogleAiRequest | null>(null);
   const [expanded, setExpanded] = useState(true);
   const [bytes, setBytes] = useState<Uint8Array>();
   const [mode, setMode] = useState<"safe" | "interactive" | "text">("safe");
@@ -57,6 +72,73 @@ export function Reader({
   );
   const [loadError, setLoadError] = useState("");
   useDialogFocus(confirm, () => setConfirm(false));
+  function dismissGoogleAi() {
+    pendingAiRef.current = null;
+    setGoogleAiRequest(null);
+  }
+  useDialogFocus(!!googleAiRequest, dismissGoogleAi);
+  useEffect(() => {
+    pendingAiRef.current = null;
+    setGoogleAiRequest(null);
+    const receive = (event: MessageEvent<unknown>) => {
+      const frameWindow = iframeRef.current?.contentWindow;
+      // "null" alone does not authenticate an opaque sandbox. Always check the
+      // actual current WindowProxy, and accept only the interactive srcdoc.
+      if (
+        !frameWindow ||
+        event.source !== frameWindow ||
+        event.origin !== "null" ||
+        mode !== "interactive"
+      )
+        return;
+      const message = parseGoogleAiMessage(event.data);
+      if (!message) return;
+      if (message.type === "capability") {
+        // Opaque origins cannot be addressed by an origin string. "*" is used
+        // only on this verified WindowProxy, with a public capability, no secret.
+        frameWindow.postMessage(
+          {
+            type: "journal360:google-ai:capability",
+            version: 1,
+            enabled: true,
+          },
+          "*",
+        );
+      } else if (!pendingAiRef.current && !confirm) {
+        const request = {
+          destination: message.destination,
+          source: frameWindow,
+          editionId: edition.id,
+          frameRevision,
+        };
+        pendingAiRef.current = request;
+        setGoogleAiRequest(request);
+      }
+    };
+    window.addEventListener("message", receive);
+    return () => {
+      window.removeEventListener("message", receive);
+      pendingAiRef.current = null;
+    };
+  }, [edition.id, mode, frameRevision, confirm]);
+  function openGoogleAi() {
+    const request = pendingAiRef.current;
+    const destination = request && validateGoogleAiUrl(request.destination.url);
+    if (
+      !request ||
+      !destination ||
+      mode !== "interactive" ||
+      request.source !== iframeRef.current?.contentWindow ||
+      request.editionId !== edition.id ||
+      request.frameRevision !== frameRevision
+    ) {
+      dismissGoogleAi();
+      return;
+    }
+    // Direct button gesture, never called by receive() or a promise/timer.
+    window.open(destination.url, "_blank", "noopener,noreferrer");
+    dismissGoogleAi();
+  }
   const state = states.find(
     (s) => s.editionId === edition.id && s.articleId === "edition",
   );
@@ -108,7 +190,7 @@ export function Reader({
     document.body.style.overflow = "hidden";
     surface.querySelector<HTMLButtonElement>("button")?.focus();
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setExpanded(false);
+      if (event.key === "Escape" && !pendingAiRef.current) setExpanded(false);
     };
     document.addEventListener("keydown", onKey);
     return () => {
@@ -277,13 +359,13 @@ export function Reader({
       <div
         ref={surfaceRef}
         className={`reading-surface${expanded ? " reading-surface-expanded" : ""}`}
-        role={expanded && !confirm ? "dialog" : undefined}
-        aria-modal={expanded && !confirm ? true : undefined}
+        role={expanded && !confirm && !googleAiRequest ? "dialog" : undefined}
+        aria-modal={expanded && !confirm && !googleAiRequest ? true : undefined}
         aria-label={
           expanded ? `Lecture pleine page de ${edition.title}` : undefined
         }
       >
-        <div className="reading-surface-header">
+        <div className="reading-surface-header" inert={!!googleAiRequest}>
           {expanded && (
             <>
               <button
@@ -468,8 +550,9 @@ export function Reader({
             </div>
           </div>
         ) : srcDoc ? (
-          <div className="edition-viewport">
+          <div className="edition-viewport" inert={!!googleAiRequest}>
             <iframe
+              ref={iframeRef}
               key={`${edition.id}-${mode}-${frameRevision}`}
               className="edition-frame"
               title={`Lecture de ${edition.title}`}
@@ -491,6 +574,36 @@ export function Reader({
                 Afficher le texte conservé
               </button>
             )}
+          </div>
+        )}
+        {googleAiRequest && (
+          <div className="modal-backdrop">
+            <section
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="google-ai-title"
+              aria-describedby="google-ai-warning"
+              className="modal compact google-ai-dialog"
+            >
+              <h2 id="google-ai-title">
+                Ouvrir Google Mode IA dans votre navigateur ?
+              </h2>
+              <p id="google-ai-warning">
+                Le texte de la question sera transmis à Google.
+              </p>
+              <p className="eyebrow">QUESTION À TRANSMETTRE</p>
+              <p className="google-ai-query">
+                {googleAiRequest.destination.query}
+              </p>
+              <div className="modal-actions">
+                <button className="secondary" onClick={dismissGoogleAi}>
+                  Annuler
+                </button>
+                <button className="primary" onClick={openGoogleAi}>
+                  Ouvrir
+                </button>
+              </div>
+            </section>
           </div>
         )}
         {confirm && (
