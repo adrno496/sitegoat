@@ -1,0 +1,116 @@
+
+Running 32 tests using 1 worker
+
+  ✓   1 [chromium] › tests/e2e/app.spec.ts:35:1 › parcours complet : import, lecture, notes, favori, recherche, offline, export et restauration (2.4s)
+  ✓   2 [chromium] › tests/e2e/app.spec.ts:135:1 › démonstrations, interaction explicite et mémoire basée sur event_id (1.0s)
+  ✓   3 [chromium] › tests/e2e/app.spec.ts:175:1 › renommage doublon, version, archive et corbeille récupérable (8.0s)
+  ✘   4 [chromium] › tests/e2e/app.spec.ts:212:1 › sécurité : parent, stockage, fetch, ressources, top et popups bloqués (728ms)
+  ✓   5 [chromium] › tests/e2e/app.spec.ts:250:1 › responsive, thèmes et accessibilité sur six largeurs (5.0s)
+  ✓   6 [chromium] › tests/e2e/app.spec.ts:286:1 › manifest et réception Web Share Target en service worker (566ms)
+  ✓   7 [chromium] › tests/e2e/app.spec.ts:323:1 › File Handling launchQueue traite un HTML via le même écran de vérification (457ms)
+  ✓   8 [chromium] › tests/e2e/app.spec.ts:363:1 › lecture pleine page : tout le viewport, interactions conservées et retour sur mobile (3.2s)
+  ✓   9 [chromium] › tests/e2e/app.spec.ts:473:1 › mode interactif automatique, choix sécurisé conservé après rechargement et nouvelle édition interactive (1.1s)
+  ✓  10 [chromium] › tests/e2e/google-ai.spec.ts:144:1 › Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation (1.8s)
+  ✓  11 [chromium] › tests/e2e/google-ai.spec.ts:246:1 › Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles refusés (788ms)
+  ✓  12 [chromium] › tests/e2e/google-ai.spec.ts:364:1 › Google IA : seule la confirmation ouvre la question affichée, sans opener, referrer ni notes PWA (890ms)
+  ✓  13 [chromium] › tests/e2e/google-ai.spec.ts:425:1 › Google IA : lecture et confirmation hors ligne, copie HTML originale intacte (1.0s)
+  ✓  14 [chromium] › tests/e2e/update.spec.ts:5:1 › mise à jour réelle du service worker sans perte des originaux et favoris (677ms)
+  ✓  15 [webkit] › tests/e2e/app.spec.ts:35:1 › parcours complet : import, lecture, notes, favori, recherche, offline, export et restauration (3.6s)
+  ✓  16 [webkit] › tests/e2e/app.spec.ts:135:1 › démonstrations, interaction explicite et mémoire basée sur event_id (1.8s)
+  ✓  17 [webkit] › tests/e2e/app.spec.ts:175:1 › renommage doublon, version, archive et corbeille récupérable (1.7s)
+  ✘  18 [webkit] › tests/e2e/app.spec.ts:212:1 › sécurité : parent, stockage, fetch, ressources, top et popups bloqués (1.5s)
+  ✓  19 [webkit] › tests/e2e/app.spec.ts:250:1 › responsive, thèmes et accessibilité sur six largeurs (7.7s)
+  ✓  20 [webkit] › tests/e2e/app.spec.ts:286:1 › manifest et réception Web Share Target en service worker (625ms)
+  ✓  21 [webkit] › tests/e2e/app.spec.ts:323:1 › File Handling launchQueue traite un HTML via le même écran de vérification (599ms)
+  ✓  22 [webkit] › tests/e2e/app.spec.ts:363:1 › lecture pleine page : tout le viewport, interactions conservées et retour sur mobile (5.6s)
+  ✓  23 [webkit] › tests/e2e/app.spec.ts:473:1 › mode interactif automatique, choix sécurisé conservé après rechargement et nouvelle édition interactive (2.1s)
+  ✓  24 [webkit] › tests/e2e/google-ai.spec.ts:144:1 › Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation (2.9s)
+  ✓  25 [webkit] › tests/e2e/google-ai.spec.ts:246:1 › Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles refusés (1.2s)
+  ✓  26 [webkit] › tests/e2e/google-ai.spec.ts:364:1 › Google IA : seule la confirmation ouvre la question affichée, sans opener, referrer ni notes PWA (1.6s)
+  ✓  27 [webkit] › tests/e2e/google-ai.spec.ts:425:1 › Google IA : lecture et confirmation hors ligne, copie HTML originale intacte (1.4s)
+  ✓  28 [webkit] › tests/e2e/update.spec.ts:5:1 › mise à jour réelle du service worker sans perte des originaux et favoris (946ms)
+  ✓  29 [chromium-mobile] › tests/e2e/google-ai.spec.ts:144:1 › Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation (2.0s)
+  ✓  30 [chromium-mobile] › tests/e2e/google-ai.spec.ts:246:1 › Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles refusés (744ms)
+  ✓  31 [chromium-mobile] › tests/e2e/google-ai.spec.ts:364:1 › Google IA : seule la confirmation ouvre la question affichée, sans opener, referrer ni notes PWA (797ms)
+  ✓  32 [chromium-mobile] › tests/e2e/google-ai.spec.ts:425:1 › Google IA : lecture et confirmation hors ligne, copie HTML originale intacte (916ms)
+
+
+  1) [chromium] › tests/e2e/app.spec.ts:212:1 › sécurité : parent, stockage, fetch, ressources, top et popups bloqués 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "http://127.0.0.1:4173/"
+    Received: "http://127.0.0.1:4180/"
+
+      245 |   expect(await page.locator("body").getAttribute("data-pwned")).toBeNull();
+      246 |   expect(network).toEqual([]);
+    > 247 |   expect(page.url()).toBe("http://127.0.0.1:4180/");
+          |                      ^
+      248 |   expect(page.context().pages()).toHaveLength(1);
+      249 | });
+      250 | test("responsive, thèmes et accessibilité sur six largeurs", async ({
+        at /private/tmp/journal360-v6-baseline-b1fc804/tests/e2e/app.spec.ts:247:22
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/app-sécurité-parent-stocka-d5177-urces-top-et-popups-bloqués-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/app-sécurité-parent-stocka-d5177-urces-top-et-popups-bloqués-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/app-sécurité-parent-stocka-d5177-urces-top-et-popups-bloqués-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/app-sécurité-parent-stocka-d5177-urces-top-et-popups-bloqués-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [webkit] › tests/e2e/app.spec.ts:212:1 › sécurité : parent, stockage, fetch, ressources, top et popups bloqués 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "http://127.0.0.1:4173/"
+    Received: "http://127.0.0.1:4180/"
+
+      245 |   expect(await page.locator("body").getAttribute("data-pwned")).toBeNull();
+      246 |   expect(network).toEqual([]);
+    > 247 |   expect(page.url()).toBe("http://127.0.0.1:4180/");
+          |                      ^
+      248 |   expect(page.context().pages()).toHaveLength(1);
+      249 | });
+      250 | test("responsive, thèmes et accessibilité sur six largeurs", async ({
+        at /private/tmp/journal360-v6-baseline-b1fc804/tests/e2e/app.spec.ts:247:22
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/app-sécurité-parent-stocka-d5177-urces-top-et-popups-bloqués-webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/app-sécurité-parent-stocka-d5177-urces-top-et-popups-bloqués-webkit/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/app-sécurité-parent-stocka-d5177-urces-top-et-popups-bloqués-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/app-sécurité-parent-stocka-d5177-urces-top-et-popups-bloqués-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [chromium] › tests/e2e/app.spec.ts:212:1 › sécurité : parent, stockage, fetch, ressources, top et popups bloqués 
+    [webkit] › tests/e2e/app.spec.ts:212:1 › sécurité : parent, stockage, fetch, ressources, top et popups bloqués 
+  30 passed (1.2m)
+
+[WebServer] (node:85039) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:85041) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+(node:85045) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:85113) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:85188) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:85253) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:85727) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)

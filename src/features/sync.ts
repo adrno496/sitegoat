@@ -55,11 +55,21 @@ export class DeviceSynchronizer {
       ?.value;
     let snapshots = await this.cloud.list(session);
     const pending = snapshots.filter((s) => !seen[s.id]).reverse();
-    for (const snapshot of pending) {
+    for (const snapshot of pending.slice(0, 10)) {
       const data = await this.cloud.read(session, snapshot.id);
       await restoreBackup(this.repository, data, "sync");
       seen[snapshot.id] = await fingerprint(data);
+      // Persist each successful merge. A later failed download/rate limit must
+      // not force repeated downloads or create an endless recovery loop.
+      await this.repository.preferences.put({
+        key: seenKey,
+        value: JSON.stringify(seen),
+      });
     }
+    if (pending.length > 10)
+      throw new Error(
+        `Récupération en cours : ${pending.length - 10} archive(s) restantes. Reprise à la prochaine vérification ; aucune synchronisation complète annoncée.`,
+      );
     // Export this exact data, so an edit made during an upload stays dirty and
     // will be sent on the next pass. A failed transfer never advances baseline.
     const data = await this.repository.snapshot();

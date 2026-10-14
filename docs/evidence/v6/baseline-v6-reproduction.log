@@ -1,0 +1,9 @@
+
+ RUN  v5.0.4 /private/tmp/journal360-v6-baseline-b1fc804
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  22:26:14
+   Duration  597ms (environment 75%, import 11%, transform 5%, setup 5%, tests 4%, worker 1%)
+

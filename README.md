@@ -13,12 +13,14 @@ npm ci
 npm run dev
 ```
 
-Pour tester le service worker et la sauvegarde cloud avec la fonction serveur :
+Pour tester le service worker localement (cloud désactivé par défaut) :
 
 ```sh
 npm run build
 npm run preview
 ```
+
+Pour activer explicitement les fonctions cloud locales avec vos variables serveur : `JOURNAL360_ALLOW_CLOUD_LOCAL=1 npm run preview`. Ne jamais utiliser ce mode pour les tests isolés.
 
 Ouvrir `http://127.0.0.1:4173`. `npm run dev` sert l’interface ; il ne lance pas l’API cloud. Une adresse HTTPS de production est nécessaire à l’installation sur téléphone.
 
@@ -67,3 +69,13 @@ node scripts/test-performance.mjs
 ```
 
 Ces tests créent uniquement des comptes et archives synthétiques, puis les suppriment. Le script cloud ne doit pas être lancé avec une clé client. `scripts/setup-cloud.mjs` reçoit la clé serveur sur stdin ; ne l’inscrire ni dans une commande publiée ni dans un fichier suivi par Git.
+
+## Version 2.0.0 : journées V6
+
+Les HTML V6 avec métadonnées canoniques sont proposés comme versions d’une journée 08h/16h/21h. Les originaux sont conservés, les cumuls incomplets et les branches concurrentes signalés. L’historique permet de lire chaque version ; les notes et favoris gardent leurs liens d’origine. Les éditions sans métadonnées V6 restent indépendantes sauf choix manuel.
+
+Google accepte le protocole historique et un protocole v2 avec question seule : vérification/modification, copie et ouverture volontaire de l’entrée Mode IA. Le sandbox reste isolé et le mode interactif automatique conservé. Le zoom du HTML va de70 à200% ; les contrôles du shell gardent leur taille normale.
+
+Les sauvegardes V6 utilisent le format ZIP2 : **mettre à jour tous les appareils avant de synchroniser ces éditions**. Les ZIP1 historiques restent lisibles. Aucun effacement automatique ni migration SQL Supabase n’est nécessaire ; la base locale passe au schéma4 de façon additive.
+
+[Compatibilité](docs/JOURNAL360_V6_COMPATIBILITY_MATRIX.md) · [Tests locaux](docs/JOURNAL360_V6_TEST_REPORT.md) · [Sécurité](docs/JOURNAL360_V6_SECURITY_REVIEW.md) · [Migration et rollback](docs/JOURNAL360_V6_MIGRATION_AND_ROLLBACK.md) · [Publication](docs/JOURNAL360_V6_RELEASE.md)

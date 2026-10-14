@@ -1,0 +1,14 @@
+
+> journal360-mobile@1.1.1 test
+> vitest run
+
+
+ RUN  v5.0.4 /private/tmp/journal360-v6-baseline-b1fc804
+
+
+ Test Files  5 passed (5)
+      Tests  73 passed (73)
+   Start at  22:22:13
+   Duration  7.10s (tests 64%, environment 24%, import 6%, transform 3%, setup 2%)
+
+

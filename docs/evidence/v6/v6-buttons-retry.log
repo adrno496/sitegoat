@@ -1,0 +1,18 @@
+[WebServer] (node:18715) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:18717) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:18733) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/v6.spec.ts:253:1 › V6 : tous les boutons de section, v2 question seule, copie corrigée et entrée Google sans données privées (3.1s)
+(node:18782) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [webkit] › tests/e2e/v6.spec.ts:253:1 › V6 : tous les boutons de section, v2 question seule, copie corrigée et entrée Google sans données privées (3.7s)
+(node:18819) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [chromium-mobile] › tests/e2e/v6.spec.ts:253:1 › V6 : tous les boutons de section, v2 question seule, copie corrigée et entrée Google sans données privées (2.0s)
+
+  3 passed (16.5s)

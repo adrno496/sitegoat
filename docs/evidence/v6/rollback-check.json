@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "base": "b1fc804f9767a97afe789d93323846eb57330df6",
+  "patchSha256": "3099193e60b20a4485638d94a24ca53d1201e48e693f688dea25dcd6d8144358",
+  "patchBytes": 187160,
+  "validated": "application + inversion dans copie temporaire git archive ; empreintes de tous les fichiers identiques \u00e0 la base ensuite",
+  "personalDatabaseAccess": false,
+  "productionChanged": false
+}

@@ -3,7 +3,10 @@ import fs from "node:fs";
 import path from "node:path";
 import handler from "../api/backup.mjs";
 import accessHandler from "../api/access.mjs";
-if (fs.existsSync(".env.local")) process.loadEnvFile(".env.local");
+const cloudEnabled = process.env.JOURNAL360_ALLOW_CLOUD_LOCAL === "1";
+if (cloudEnabled && fs.existsSync(".env.local"))
+  process.loadEnvFile(".env.local");
+const port = Number(process.env.JOURNAL360_TEST_PORT || 4173);
 const headers = JSON.parse(fs.readFileSync("vercel.json", "utf8")).headers[0]
   .headers;
 const root = path.resolve("dist");
@@ -17,6 +20,15 @@ const types = {
 };
 http
   .createServer(async (req, res) => {
+    if (req.url?.startsWith("/api/") && !cloudEnabled) {
+      res.writeHead(503, {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store",
+      });
+      return res.end(
+        JSON.stringify({ error: "Cloud désactivé pour cette session locale." }),
+      );
+    }
     if (req.url?.split("?")[0] === "/api/backup") return handler(req, res);
     if (req.url?.split("?")[0] === "/api/access")
       return accessHandler(req, res);
@@ -45,6 +57,6 @@ http
     );
     fs.createReadStream(p).pipe(res);
   })
-  .listen(4173, "127.0.0.1", () =>
-    console.log("Journal 360 : http://127.0.0.1:4173"),
+  .listen(port, "127.0.0.1", () =>
+    console.log(`Journal 360 local : http://127.0.0.1:${port}`),
   );

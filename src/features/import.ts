@@ -6,7 +6,20 @@ import {
   hash,
 } from "../data/model";
 import { LocalRepository } from "../data/db";
-import { GOOGLE_AI_LINK_BRIDGE, validateGoogleAiUrl } from "./googleAi";
+import {
+  GOOGLE_AI_LINK_BRIDGE,
+  validateGoogleAiUrl,
+  GOOGLE_AI_ENTRY,
+  rememberReadingQuestions,
+} from "./googleAi";
+import Dexie from "dexie";
+import {
+  editorialMetadata,
+  verifiedInstant,
+  validDate,
+} from "../data/editorial";
+import { editorialUUID, assessVersion, resolveDay } from "../data/day";
+import { validateSourceUrl } from "./sourceUrl";
 const cleanText = (s: string) => s.replace(/\s+/g, " ").trim();
 const str = (s: unknown) => (typeof s === "string" ? s : "");
 function plain(s: unknown) {
@@ -19,10 +32,7 @@ function editorialDate(value: unknown): string | null {
   const m = s.match(/^\d{4}-\d{2}-\d{2}(?:T.*)?$/);
   if (!m) return null;
   const date = s.slice(0, 10);
-  return !Number.isNaN(Date.parse(date)) &&
-    new Date(`${date}T12:00:00Z`).toISOString().slice(0, 10) === date
-    ? date
-    : null;
+  return validDate(date) ? date : null;
 }
 export async function inspectHTML(
   filename: string,
@@ -66,12 +76,25 @@ export async function inspectHTML(
   }
   const items = Array.isArray(data.items) ? data.items.slice(0, 2000) : [];
   const articleIds = new Set<string>();
+  let rejectedArticles = 0,
+    duplicateArticles = 0,
+    rejectedSources = 0;
+  if (Array.isArray(data.items) && data.items.length > 2000)
+    warnings.push(
+      "Sommaire limité à 2000 articles ; le HTML original reste intégral.",
+    );
   const articles = items.flatMap((item: unknown, index) => {
-    if (!item || typeof item !== "object") return [];
+    if (!item || typeof item !== "object") {
+      rejectedArticles++;
+      return [];
+    }
     const a = item as Record<string, unknown>;
     if (!str(a.title)) return [];
     const id = str(a.id) || `article-${index + 1}`;
-    if (articleIds.has(id)) return [];
+    if (articleIds.has(id)) {
+      duplicateArticles++;
+      return [];
+    }
     articleIds.add(id);
     const sources = Array.isArray(a.sources)
       ? a.sources.flatMap((s: unknown) => {
@@ -83,7 +106,9 @@ export async function inspectHTML(
                 : s && typeof s === "object"
                   ? str((s as Record<string, unknown>).url)
                   : "";
-          return /^https?:\/\//i.test(u) ? [u] : [];
+          const valid = validateSourceUrl(u);
+          if (!valid) rejectedSources++;
+          return valid ? [valid] : [];
         })
       : [];
     const text = [
@@ -102,9 +127,32 @@ export async function inspectHTML(
       text,
       sources,
       date: editorialDate(a.date) || undefined,
+      firstSeenSlot: ["08:00", "16:00", "21:00"].includes(str(a.firstSeenSlot))
+        ? a.firstSeenSlot
+        : undefined,
+      kind: [
+        "news",
+        "business",
+        "hypothesis",
+        "technical",
+        "decision",
+      ].includes(str(a.kind))
+        ? a.kind
+        : undefined,
     });
+    if (!parsed.success) rejectedArticles++;
     return parsed.success ? [parsed.data] : [];
   });
+  if (rejectedArticles)
+    warnings.push(
+      `${rejectedArticles} article(s) non indexé(s) car invalides ; originaux conservés.`,
+    );
+  if (duplicateArticles)
+    warnings.push(
+      `${duplicateArticles} identifiant(s) d’article répété(s) : premier article conservé dans l’index.`,
+    );
+  if (rejectedSources)
+    warnings.push(`${rejectedSources} URL de source refusée(s) dans l’index.`);
   if (document.querySelector('script:not([type="application/json"])'))
     warnings.push("Scripts présents : désactivés en lecture sécurisée.");
   if (
@@ -129,6 +177,15 @@ export async function inspectHTML(
       document.title || document.querySelector("h1")?.textContent || "",
     ) ||
     filename.replace(/\.html?$/i, "");
+  const date = editorialDate(
+    data.editionDate ??
+      data.date ??
+      document
+        .querySelector('meta[name="edition-date"]')
+        ?.getAttribute("content"),
+  );
+  const metadata = editorialMetadata(data, date, warnings);
+  const sourceVerifiedAt = verifiedInstant(data.sourceVerifiedAt, warnings);
   return editionSchema.parse({
     id,
     familyId: id,
@@ -136,13 +193,7 @@ export async function inspectHTML(
     filename,
     sha256: await hash(bytes),
     title,
-    date: editorialDate(
-      data.editionDate ??
-        data.date ??
-        document
-          .querySelector('meta[name="edition-date"]')
-          ?.getAttribute("content"),
-    ),
+    date,
     importedAt: now(),
     updatedAt: now(),
     size: bytes.length,
@@ -154,47 +205,103 @@ export async function inspectHTML(
     demo,
     archived: false,
     deleted: false,
-    sourceVerifiedAt: editorialDate(data.sourceVerifiedAt) || undefined,
+    sourceVerifiedAt,
+    ...metadata,
   });
 }
 export async function commitImport(
   repository: LocalRepository,
   edition: Edition,
   bytes: Uint8Array,
-  choice: "ignore" | "keep" | "version",
+  choice: "ignore" | "keep" | "version" | "day",
   parentId?: string,
 ) {
-  const existing = await repository.editions
-    .where("sha256")
-    .equals(edition.sha256)
-    .first();
-  if (existing && choice === "ignore")
-    return { id: existing.id, duplicate: true };
-  if (choice === "version" && parentId) {
-    const parent = await repository.editions.get(parentId);
-    if (!parent) throw new Error("Édition précédente introuvable.");
-    edition = {
-      ...edition,
-      familyId: parent.familyId,
-      revision:
-        Math.max(
-          ...(
-            await repository.editions
-              .where("familyId")
-              .equals(parent.familyId)
-              .toArray()
-          ).map((e) => e.revision),
-        ) + 1,
-    };
+  // Derive identities before opening the local transaction; waitFor also keeps
+  // the caller's batch transaction alive without including any network request.
+  if (choice === "day" && edition.dayKey) {
+    const [familyId, id] = await Dexie.waitFor(
+      Promise.all([
+        editorialUUID(`family:${edition.dayKey}`),
+        editorialUUID(`version:${edition.dayKey}:${edition.sha256}`),
+      ]),
+    );
+    edition = { ...edition, familyId, id, independent: false };
   }
-  await repository.saveEdition(edition, bytes);
-  return { id: edition.id, duplicate: false };
+  return repository.transaction(
+    "rw",
+    [repository.editions, repository.originals],
+    async () => {
+      const matching = await repository.editions
+        .where("sha256")
+        .equals(edition.sha256)
+        .toArray();
+      const existing =
+        choice === "day"
+          ? matching.find((e) => e.dayKey === edition.dayKey && !e.independent)
+          : matching[0];
+      if (
+        existing &&
+        (choice === "ignore" ||
+          (choice === "day" &&
+            existing.dayKey === edition.dayKey &&
+            !existing.independent))
+      )
+        return { id: existing.id, duplicate: true };
+      if (choice === "day" && edition.dayKey) {
+        const family = await repository.editions
+          .where("dayKey")
+          .equals(edition.dayKey)
+          .filter((e) => !e.independent)
+          .toArray();
+        const current = resolveDay(family).current;
+        const assessment = assessVersion(edition, family);
+        edition = {
+          ...edition,
+          revision: Math.max(0, ...family.map((e) => e.revision)) + 1,
+          cumulativeStatus: assessment.status,
+          supersedes:
+            current &&
+            assessment.status === "COMPLETE" &&
+            (edition.externalRevision || 0) > (current.externalRevision || 0)
+              ? current.id
+              : undefined,
+        };
+      } else if (choice === "keep" && edition.dayKey)
+        edition = { ...edition, independent: true };
+      if (choice === "version" && parentId) {
+        const parent = await repository.editions.get(parentId);
+        if (!parent) throw new Error("Édition précédente introuvable.");
+        if (parent.dayKey && edition.date !== parent.date)
+          throw new Error(
+            "Le rattachement à une journée exige la même date éditoriale.",
+          );
+        edition = {
+          ...edition,
+          familyId: parent.familyId,
+          dayKey: parent.dayKey,
+          independent: parent.independent,
+          revision:
+            Math.max(
+              ...(
+                await repository.editions
+                  .where("familyId")
+                  .equals(parent.familyId)
+                  .toArray()
+              ).map((e) => e.revision),
+            ) + 1,
+        };
+      }
+      await repository.saveEdition(edition, bytes);
+      return { id: edition.id, duplicate: false };
+    },
+  );
 }
 export function isolatedHTML(bytes: Uint8Array, interactive: boolean) {
   const doc = new DOMParser().parseFromString(
     new TextDecoder().decode(bytes),
     "text/html",
   );
+  rememberReadingQuestions(bytes, doc);
   // Conserver les contrôles/calculatrices sans autoriser de soumission réseau.
   doc.querySelectorAll("form").forEach((form) => {
     const neutral = doc.createElement("div");
@@ -209,7 +316,10 @@ export function isolatedHTML(bytes: Uint8Array, interactive: boolean) {
   doc.querySelectorAll("*").forEach((e) => {
     const googleAi =
       interactive && e.matches('a[data-ai-link="google-ai-mode"]')
-        ? validateGoogleAiUrl(e.getAttribute("href"))
+        ? validateGoogleAiUrl(e.getAttribute("href")) ||
+          (e.getAttribute("href") === GOOGLE_AI_ENTRY
+            ? { url: GOOGLE_AI_ENTRY, query: "" }
+            : null)
         : null;
     for (const attr of [...e.attributes]) {
       if (

@@ -21,6 +21,11 @@ import { db } from "../data/db";
 import { isolatedHTML } from "./import";
 import { useDialogFocus } from "./dialogFocus";
 import { download } from "./backup";
+import { GoogleAiDialog } from "./GoogleAiDialog";
+import { GOOGLE_AI_ENTRY, readingQuestions } from "./googleAi";
+import { verifiedLabel } from "../data/editorial";
+import { resolveDay } from "../data/day";
+import { validateSourceUrl } from "./sourceUrl";
 import {
   parseGoogleAiMessage,
   validateGoogleAiUrl,
@@ -28,7 +33,9 @@ import {
 } from "./googleAi";
 interface GoogleAiRequest {
   destination: GoogleAiDestination;
-  source: Window;
+  source: Window | null;
+  origin: "host" | "frame";
+  mode: "safe" | "interactive" | "text";
   editionId: string;
   frameRevision: number;
 }
@@ -39,6 +46,7 @@ export function Reader({
   notes,
   onBack,
   onOpen,
+  onDay,
   run,
 }: {
   edition: Edition;
@@ -47,6 +55,7 @@ export function Reader({
   notes: Note[];
   onBack: () => void;
   onOpen: (id: string) => void;
+  onDay?: (dayKey: string) => void;
   run: (action: () => Promise<unknown>, success?: string) => void;
 }) {
   const surfaceRef = useRef<HTMLDivElement>(null);
@@ -101,8 +110,15 @@ export function Reader({
         frameWindow.postMessage(
           {
             type: "journal360:google-ai:capability",
-            version: 1,
+            version: message.version,
             enabled: true,
+            ...(message.version === 2
+              ? {
+                  actions: ["copy-question", "open-entry"],
+                  entryUrl: GOOGLE_AI_ENTRY,
+                  maxQuestionLength: 2000,
+                }
+              : {}),
           },
           "*",
         );
@@ -110,6 +126,8 @@ export function Reader({
         const request = {
           destination: message.destination,
           source: frameWindow,
+          origin: "frame" as const,
+          mode,
           editionId: edition.id,
           frameRevision,
         };
@@ -123,23 +141,43 @@ export function Reader({
       pendingAiRef.current = null;
     };
   }, [edition.id, mode, frameRevision, confirm]);
-  function openGoogleAi() {
+  function isCurrentGoogleAi() {
     const request = pendingAiRef.current;
-    const destination = request && validateGoogleAiUrl(request.destination.url);
-    if (
-      !request ||
-      !destination ||
-      mode !== "interactive" ||
-      request.source !== iframeRef.current?.contentWindow ||
-      request.editionId !== edition.id ||
-      request.frameRevision !== frameRevision
-    ) {
-      dismissGoogleAi();
-      return;
-    }
-    // Direct button gesture, never called by receive() or a promise/timer.
-    window.open(destination.url, "_blank", "noopener,noreferrer");
-    dismissGoogleAi();
+    return (
+      !!request &&
+      request.mode === mode &&
+      (request.origin === "host" ||
+        (mode === "interactive" &&
+          request.source === iframeRef.current?.contentWindow)) &&
+      request.editionId === edition.id &&
+      request.frameRevision === frameRevision &&
+      (!!validateGoogleAiUrl(request.destination.url) ||
+        request.destination.url === GOOGLE_AI_ENTRY)
+    );
+  }
+  const day =
+    edition.dayKey && !edition.independent
+      ? resolveDay(
+          editions.filter(
+            (e) => e.dayKey === edition.dayKey && !e.independent && !e.deleted,
+          ),
+        )
+      : null;
+  const questions = useMemo(
+    () => (bytes ? readingQuestions(bytes) : []),
+    [bytes],
+  );
+  function prepareQuestion(question: string) {
+    const request: GoogleAiRequest = {
+      destination: { url: GOOGLE_AI_ENTRY, query: question, entryOnly: true },
+      source: null,
+      origin: "host",
+      mode,
+      editionId: edition.id,
+      frameRevision,
+    };
+    pendingAiRef.current = request;
+    setGoogleAiRequest(request);
   }
   const state = states.find(
     (s) => s.editionId === edition.id && s.articleId === "edition",
@@ -253,9 +291,33 @@ export function Reader({
           timeZone: "Europe/Paris",
         })}
         {edition.sourceVerifiedAt
-          ? ` · Sources vérifiées le ${dateLabel(edition.sourceVerifiedAt)}`
+          ? ` · Sources vérifiées le ${verifiedLabel(edition.sourceVerifiedAt)}`
           : " · Actualité des sources non vérifiée"}
       </p>
+      {day && (
+        <div className="reader-toolbar">
+          {day.reliable && day.reliable.id !== edition.id && (
+            <button
+              className="secondary"
+              onClick={() => onOpen(day.reliable!.id)}
+            >
+              Dernière version fiable
+            </button>
+          )}
+          <button
+            className="secondary"
+            onClick={() => onDay?.(edition.dayKey!)}
+          >
+            Historique des éditions
+          </button>
+          <span>
+            Cumul{" "}
+            {day.versions.find((v) => v.edition.id === edition.id)?.assessment
+              .status || "UNKNOWN"}{" "}
+            · révision externe {edition.externalRevision ?? "inconnue"}
+          </span>
+        </div>
+      )}
       <div className="reader-toolbar">
         <button
           className={state?.favorite ? "secondary active" : "secondary"}
@@ -398,6 +460,14 @@ export function Reader({
               </button>
             </>
           )}
+          {expanded && day && (
+            <button
+              className="secondary"
+              onClick={() => onDay?.(edition.dayKey!)}
+            >
+              Historique
+            </button>
+          )}
           {mode !== "text" && (
             <div
               className="reading-zoom"
@@ -418,8 +488,8 @@ export function Reader({
               <button
                 className="icon-button"
                 aria-label="Zoomer le HTML"
-                disabled={htmlZoom >= 150}
-                onClick={() => setHtmlZoom(Math.min(150, htmlZoom + 10))}
+                disabled={htmlZoom >= 200}
+                onClick={() => setHtmlZoom(Math.min(200, htmlZoom + 10))}
               >
                 <Plus size={16} />
               </button>
@@ -441,6 +511,27 @@ export function Reader({
             {expanded ? "Réduire la lecture" : "Lecture pleine page"}
           </button>
         </div>
+        {mode !== "interactive" && questions.length > 0 && (
+          <details
+            className="parent-google-questions"
+            inert={!!googleAiRequest}
+          >
+            <summary>Questions Google disponibles ({questions.length})</summary>
+            <p>
+              Prévisualiser, corriger et copier une question du fichier, sans
+              activer ses scripts.
+            </p>
+            {questions.map((question, index) => (
+              <button
+                className="secondary"
+                key={question}
+                onClick={() => prepareQuestion(question)}
+              >
+                Préparer la question {index + 1}
+              </button>
+            ))}
+          </details>
+        )}
         {mode === "text" ? (
           <div className="text-reader">
             <div className="font-toolbar">
@@ -531,17 +622,20 @@ export function Reader({
                     </div>
                     {a.sources.length > 0 && (
                       <ul className="sources">
-                        {a.sources.map((u) => (
-                          <li key={u}>
-                            <a
-                              href={u}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {u}
-                            </a>
-                          </li>
-                        ))}
+                        {a.sources
+                          .map(validateSourceUrl)
+                          .filter((u): u is string => !!u)
+                          .map((u) => (
+                            <li key={u}>
+                              <a
+                                href={u}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                {u}
+                              </a>
+                            </li>
+                          ))}
                       </ul>
                     )}
                   </article>
@@ -579,34 +673,11 @@ export function Reader({
           </div>
         )}
         {googleAiRequest && (
-          <div className="modal-backdrop">
-            <section
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="google-ai-title"
-              aria-describedby="google-ai-warning"
-              className="modal compact google-ai-dialog"
-            >
-              <h2 id="google-ai-title">
-                Ouvrir Google Mode IA dans votre navigateur ?
-              </h2>
-              <p id="google-ai-warning">
-                Le texte de la question sera transmis à Google.
-              </p>
-              <p className="eyebrow">QUESTION À TRANSMETTRE</p>
-              <p className="google-ai-query">
-                {googleAiRequest.destination.query}
-              </p>
-              <div className="modal-actions">
-                <button className="secondary" onClick={dismissGoogleAi}>
-                  Annuler
-                </button>
-                <button className="primary" onClick={openGoogleAi}>
-                  Ouvrir
-                </button>
-              </div>
-            </section>
-          </div>
+          <GoogleAiDialog
+            destination={googleAiRequest.destination}
+            isCurrent={isCurrentGoogleAi}
+            onDismiss={dismissGoogleAi}
+          />
         )}
         {confirm && (
           <div className="modal-backdrop">

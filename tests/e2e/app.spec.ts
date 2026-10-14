@@ -244,7 +244,7 @@ test("sécurité : parent, stockage, fetch, ressources, top et popups bloqués",
   );
   expect(await page.locator("body").getAttribute("data-pwned")).toBeNull();
   expect(network).toEqual([]);
-  expect(page.url()).toBe("http://127.0.0.1:4173/");
+  expect(page.url()).toBe(`${test.info().project.use.baseURL}/`);
   expect(page.context().pages()).toHaveLength(1);
 });
 test("responsive, thèmes et accessibilité sur six largeurs", async ({

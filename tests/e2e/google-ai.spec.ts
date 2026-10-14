@@ -184,7 +184,10 @@ test("Google IA : mode sûr inchangé, handshake exact, confirmation et annulati
   ).toBeFocused();
   await page.keyboard.press("Shift+Tab");
   await expect(
-    dialog(page).getByRole("button", { name: "Ouvrir", exact: true }),
+    dialog(page).getByRole("button", {
+      name: "Ouvrir Google Mode IA",
+      exact: true,
+    }),
   ).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(
@@ -261,7 +264,7 @@ test("Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles 
           );
         }
       });
-      foreign.srcdoc = `<script>window.replies=0;addEventListener('message',()=>window.replies++);parent.postMessage(${JSON.stringify(capability)},'*');parent.postMessage(${JSON.stringify(open)},'*');</script>`;
+      foreign.srcdoc = `<script>window.replies=0;addEventListener('message',()=>window.replies++);parent.postMessage(${JSON.stringify(capability)},'*');parent.postMessage(${JSON.stringify(open)},'*');parent.postMessage({type:'journal360:google-ai:capability-request',version:2},'*');parent.postMessage({type:'journal360:google-ai:question-request',version:2,question:'Texte tiers'},'*');</script>`;
       document.body.append(foreign);
       window.postMessage(open, "*");
     },
@@ -269,7 +272,7 @@ test("Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles 
   );
   await expect(page.locator("#foreign-reader")).toHaveAttribute(
     "data-events",
-    "2",
+    "4",
   );
   expect(
     await page
@@ -305,6 +308,22 @@ test("Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles 
     { ...request(), type: "unknown" },
     { ...request(), extra: true },
     request({}),
+    {
+      type: "journal360:google-ai:question-request",
+      version: 2,
+      question: "x".repeat(2001),
+    },
+    {
+      type: "journal360:google-ai:question-request",
+      version: 2,
+      question: "Public",
+      url: validUrl,
+    },
+    {
+      type: "journal360:google-ai:question-request",
+      version: 3,
+      question: "Public",
+    },
     ...invalid.map(request),
   ]);
   await expect(dialog(page)).toHaveCount(0);

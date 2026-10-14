@@ -1,4 +1,7 @@
 import { APP_VERSION } from "./config";
+import { Diagnostics, recordDiagnostic } from "./features/diagnostics";
+import { currentEditions, isDayVersion } from "./data/day";
+import { DayCard, DayView } from "./features/DayView";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { liveQuery } from "dexie";
 import { useRegisterSW } from "virtual:pwa-register/react";
@@ -111,6 +114,7 @@ export default function App() {
   const data = useLibrary();
   const [tab, setTab] = useState<Tab>("today");
   const [selected, setSelected] = useState<string | null>(null);
+  const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [restoration, setRestoration] = useState<BackupData | null>(null);
   const [toast, setToast] = useState("");
@@ -167,7 +171,11 @@ export default function App() {
     () => sortEditions(data.editions.filter((e) => !e.deleted)),
     [data.editions],
   );
-  const latest = editions[0];
+  const displayedEditions = useMemo(
+    () => sortEditions(currentEditions(editions)),
+    [editions],
+  );
+  const latest = displayedEditions[0];
   const current = data.editions.find((e) => e.id === selected);
   const categories = [...new Set(editions.flatMap((e) => e.categories))].sort();
   const months = [
@@ -182,13 +190,14 @@ export default function App() {
         .then(() => {
           if (success) setToast(success);
         })
-        .catch((e) =>
+        .catch((e) => {
+          void recordDiagnostic("operation-failed");
           setToast(
             e instanceof Error
               ? e.message
               : "Opération impossible. Vérifiez le stockage et réessayez.",
-          ),
-        )
+          );
+        })
         .finally(() => setBusy(false));
     },
     [],
@@ -294,6 +303,7 @@ export default function App() {
       setCloudStatus(
         error instanceof Error ? error.message : "Synchronisation interrompue.",
       );
+      void recordDiagnostic("sync-failed");
       throw error;
     } finally {
       busyCloud.current = false;
@@ -384,10 +394,17 @@ export default function App() {
   }, [tab]);
   function navigate(next: Tab) {
     setSelected(null);
+    setSelectedDay(null);
     setTab(next);
     window.scrollTo({ top: 0, behavior: "instant" });
   }
+  function openDay(dayKey: string) {
+    setSelected(null);
+    setSelectedDay(dayKey);
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }
   function openEdition(id: string) {
+    setSelectedDay(null);
     setSelected(id);
     window.scrollTo({ top: 0, behavior: "instant" });
     run(() => db.reading(id, "edition", { openedAt: now() }));
@@ -482,7 +499,11 @@ export default function App() {
       s.read &&
       editions.some((e) => e.id === s.editionId),
   ).length;
-  const articleCount = editions.reduce((sum, e) => sum + e.articles.length, 0);
+  const articleCount = displayedEditions.reduce(
+    (sum, e) =>
+      sum + e.articles.filter((a) => !a.kind || a.kind === "news").length,
+    0,
+  );
   const favorites = data.states.filter(
     (s) => s.favorite && editions.some((e) => e.id === s.editionId),
   );
@@ -522,6 +543,32 @@ export default function App() {
       </span>
     </div>
   );
+  const renderCards = (rows: Edition[]) => {
+    const seen = new Set<string>();
+    return rows.map((edition, index) => {
+      if (!isDayVersion(edition)) return renderCard(edition, index);
+      if (seen.has(edition.dayKey!)) return null;
+      seen.add(edition.dayKey!);
+      return (
+        <DayCard
+          key={edition.dayKey}
+          versions={data.editions.filter(
+            (e) =>
+              isDayVersion(e) &&
+              e.dayKey === edition.dayKey &&
+              (tab !== "library"
+                ? !e.deleted
+                : libraryMode === "trash"
+                  ? e.deleted
+                  : !e.deleted &&
+                    (libraryMode === "archived" ? e.archived : !e.archived)),
+          )}
+          onOpen={openEdition}
+          onHistory={openDay}
+        />
+      );
+    });
+  };
   const renderCard = (edition: Edition, index: number) => (
     <article className="edition-card" key={edition.id}>
       <button
@@ -690,7 +737,7 @@ export default function App() {
             >
               <t.icon size={20} />
               <span>{t.label}</span>
-              {t.id === "library" && <small>{editions.length}</small>}
+              {t.id === "library" && <small>{displayedEditions.length}</small>}
             </button>
           ))}
         </nav>
@@ -808,7 +855,18 @@ export default function App() {
               notes={data.notes}
               onBack={() => navigate("library")}
               onOpen={openEdition}
+              onDay={openDay}
               run={run}
+            />
+          ) : selectedDay ? (
+            <DayView
+              key={selectedDay}
+              versions={data.editions.filter(
+                (e) => e.dayKey === selectedDay && !e.independent,
+              )}
+              notes={data.notes}
+              onBack={() => navigate("library")}
+              onOpen={openEdition}
             />
           ) : (
             <>
@@ -907,7 +965,7 @@ export default function App() {
                   >
                     {[
                       {
-                        value: editions.length,
+                        value: displayedEditions.length,
                         label: "Éditions conservées",
                         icon: Library,
                       },
@@ -949,7 +1007,18 @@ export default function App() {
                   </div>
                   {editions.length ? (
                     <div className="edition-grid">
-                      {editions.slice(0, 3).map(renderCard)}
+                      {renderCards(
+                        displayedEditions
+                          .slice(0, 3)
+                          .flatMap((e) =>
+                            isDayVersion(e)
+                              ? editions.filter(
+                                  (v) =>
+                                    isDayVersion(v) && v.dayKey === e.dayKey,
+                                )
+                              : [e],
+                          ),
+                      )}
                     </div>
                   ) : (
                     <div className="empty-library">
@@ -1152,15 +1221,13 @@ export default function App() {
                     </button>
                   </div>
                   <p className="muted results-count">
-                    {filtered.length} édition(s) ·{" "}
+                    {currentEditions(filtered).length} journée(s) / édition(s) ·{" "}
                     {libraryMode === "trash"
                       ? "Les originaux sont conservés. Vous pouvez les restaurer."
                       : "Les dates inconnues sont affichées après les éditions datées."}
                   </p>
                   {filtered.length ? (
-                    <div className="edition-grid">
-                      {filtered.map(renderCard)}
-                    </div>
+                    <div className="edition-grid">{renderCards(filtered)}</div>
                   ) : (
                     <div className="empty-state">
                       <Library />
@@ -1660,6 +1727,13 @@ export default function App() {
                         textes sont conservés.
                       </p>
                     </section>
+                    <Diagnostics
+                      value={
+                        data.preferences.find(
+                          (p) => p.key === "local-diagnostics",
+                        )?.value
+                      }
+                    />
                     <section className="quiet-panel cloud-panel">
                       <h2>
                         <Cloud size={21} /> PC & téléphone · Supabase

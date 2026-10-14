@@ -40,16 +40,19 @@ export async function unlockCloud(code: string) {
   });
   if (error) throw new Error("Session indisponible. Réessayez.");
 }
-async function request(session: Session, body?: object) {
-  const response = await fetch("/api/backup", {
-    method: body ? "POST" : "GET",
-    headers: {
-      Authorization: `Bearer ${session.access_token}`,
-      ...(body ? { "Content-Type": "application/json" } : {}),
+async function request(session: Session, body?: object, offset = 0) {
+  const response = await fetch(
+    `/api/backup${offset ? `?offset=${offset}` : ""}`,
+    {
+      method: body ? "POST" : "GET",
+      headers: {
+        Authorization: `Bearer ${session.access_token}`,
+        ...(body ? { "Content-Type": "application/json" } : {}),
+      },
+      body: body ? JSON.stringify(body) : undefined,
+      cache: "no-store",
     },
-    body: body ? JSON.stringify(body) : undefined,
-    cache: "no-store",
-  });
+  );
   let data;
   try {
     data = await response.json();
@@ -61,7 +64,40 @@ async function request(session: Session, body?: object) {
 }
 export class CloudRepository {
   async list(session: Session): Promise<Snapshot[]> {
-    return (await request(session)).snapshots;
+    const snapshots = new Map<string, Snapshot>();
+    let offset = 0;
+    for (let page = 0; page < 51; page++) {
+      const response = await request(session, undefined, offset);
+      if (!Array.isArray(response.snapshots) || response.snapshots.length > 100)
+        throw new Error("Inventaire cloud invalide.");
+      for (const snapshot of response.snapshots as Snapshot[])
+        snapshots.set(snapshot.id, snapshot);
+      if (snapshots.size > 5000)
+        throw new Error(
+          "Inventaire cloud supérieur à 5000 archives : aucune archive supprimée.",
+        );
+      if (
+        response.nextOffset === undefined &&
+        response.snapshots.length === 100
+      )
+        throw new Error(
+          "Serveur cloud ancien : inventaire potentiellement tronqué, mise à jour nécessaire.",
+        );
+      if (response.nextOffset === null || response.nextOffset === undefined)
+        return [...snapshots.values()].sort(
+          (a, b) =>
+            b.createdAt.localeCompare(a.createdAt) || a.id.localeCompare(b.id),
+        );
+      if (
+        !Number.isSafeInteger(response.nextOffset) ||
+        response.nextOffset <= offset
+      )
+        throw new Error("Pagination cloud invalide : inventaire non confirmé.");
+      offset = response.nextOffset;
+    }
+    throw new Error(
+      "Inventaire cloud supérieur à 5000 archives : vérification manuelle nécessaire, aucune archive supprimée.",
+    );
   }
   async backup(
     session: Session,

@@ -43,12 +43,21 @@ export default async function handler(req, res) {
       });
     const bucket = admin.storage.from(BUCKET);
     if (req.method === "GET") {
+      const offsetValue =
+        new URL(req.url || "/api/backup", "http://localhost").searchParams.get(
+          "offset",
+        ) || "0";
+      if (!/^\d{1,6}$/.test(offsetValue) || Number(offsetValue) > 100000)
+        return reply(400, { error: "Pagination invalide." });
+      const offset = Number(offsetValue);
       const { data: files, error } = await bucket.list(uid, {
         limit: 100,
+        offset,
         sortBy: { column: "created_at", order: "desc" },
       });
       if (error) throw error;
       return reply(200, {
+        nextOffset: files?.length === 100 ? offset + 100 : null,
         snapshots: (files || [])
           .filter((f) => /^[a-f0-9-]{36}\.zip$/.test(f.name))
           .map((f) => ({

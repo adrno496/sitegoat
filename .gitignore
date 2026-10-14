@@ -1,4 +1,4 @@
-node_modules/
+node_modules
 dist/
 .env
 .env.*
@@ -9,3 +9,6 @@ playwright-report/
 .DS_Store
 *.log
 *.tsbuildinfo
+
+# Preuves locales expurgées de la mission V6
+!docs/evidence/v6/*.log

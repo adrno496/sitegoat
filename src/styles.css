@@ -2316,11 +2316,8 @@ textarea {
 
 /* Échelle mobile demandée : davantage de contenu visible sans geste de zoom. */
 @media (max-width: 767px) {
-  html {
-    zoom: 0.7;
-  }
+  /* Le 70 % reste limité au document, sans réduire le texte du shell. */
   .reading-surface-expanded {
-    zoom: calc(1 / 0.7);
     height: 100dvh;
   }
   .reading-surface-expanded .reading-surface-header button {
@@ -2371,4 +2368,65 @@ textarea {
   padding: 12px;
   border: 1px solid var(--line);
   border-radius: 7px;
+}
+
+.day-card {
+  padding: 22px;
+}
+.day-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0;
+}
+.day-slots span {
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 12px;
+}
+.day-slots .included {
+  font-weight: 700;
+}
+.day-status {
+  font-weight: 700;
+}
+.day-history {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 16px;
+  margin: 18px 0;
+}
+.day-import-preview {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  margin: 12px 0;
+}
+.hash-text {
+  overflow-wrap: anywhere;
+  word-break: break-all;
+}
+.day-view .quiet-panel {
+  margin-bottom: 14px;
+}
+.google-ai-dialog textarea {
+  width: 100%;
+  font-size: 16px;
+}
+
+.parent-google-questions {
+  padding: 10px 16px;
+  max-height: 25vh;
+  overflow: auto;
+  flex-shrink: 0;
+}
+.parent-google-questions summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.parent-google-questions button {
+  margin: 5px;
 }

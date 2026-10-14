@@ -1,0 +1,4362 @@
+diff --git a/.gitignore b/.gitignore
+index 3015cab..582d5d1 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,4 +1,4 @@
+-node_modules/
++node_modules
+ dist/
+ .env
+ .env.*
+@@ -9,3 +9,6 @@ playwright-report/
+ .DS_Store
+ *.log
+ *.tsbuildinfo
++
++# Preuves locales expurgées de la mission V6
++!docs/evidence/v6/*.log
+diff --git a/api/backup.mjs b/api/backup.mjs
+index 7325fe6..e682012 100644
+--- a/api/backup.mjs
++++ b/api/backup.mjs
+@@ -43,12 +43,21 @@ export default async function handler(req, res) {
+       });
+     const bucket = admin.storage.from(BUCKET);
+     if (req.method === "GET") {
++      const offsetValue =
++        new URL(req.url || "/api/backup", "http://localhost").searchParams.get(
++          "offset",
++        ) || "0";
++      if (!/^\d{1,6}$/.test(offsetValue) || Number(offsetValue) > 100000)
++        return reply(400, { error: "Pagination invalide." });
++      const offset = Number(offsetValue);
+       const { data: files, error } = await bucket.list(uid, {
+         limit: 100,
++        offset,
+         sortBy: { column: "created_at", order: "desc" },
+       });
+       if (error) throw error;
+       return reply(200, {
++        nextOffset: files?.length === 100 ? offset + 100 : null,
+         snapshots: (files || [])
+           .filter((f) => /^[a-f0-9-]{36}\.zip$/.test(f.name))
+           .map((f) => ({
+diff --git a/package-lock.json b/package-lock.json
+index 37cf7ba..775a1bd 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -1,12 +1,12 @@
+ {
+   "name": "journal360-mobile",
+-  "version": "1.1.1",
++  "version": "2.0.0-local.1",
+   "lockfileVersion": 3,
+   "requires": true,
+   "packages": {
+     "": {
+       "name": "journal360-mobile",
+-      "version": "1.1.1",
++      "version": "2.0.0-local.1",
+       "dependencies": {
+         "@supabase/supabase-js": "^2.0.0",
+         "dexie": "^4.0.0",
+diff --git a/package.json b/package.json
+index 85b4f55..c1a23af 100644
+--- a/package.json
++++ b/package.json
+@@ -1,7 +1,7 @@
+ {
+   "name": "journal360-mobile",
+   "private": true,
+-  "version": "1.1.1",
++  "version": "2.0.0-local.1",
+   "type": "module",
+   "scripts": {
+     "dev": "vite --host 127.0.0.1",
+@@ -11,6 +11,7 @@
+     "lint": "eslint .",
+     "test": "vitest run",
+     "test:e2e": "playwright test",
++    "test:performance": "vitest run --config vitest.performance.config.ts",
+     "check": "npm run lint && npm run build && npm test && npm run test:e2e"
+   },
+   "dependencies": {
+diff --git a/playwright.config.ts b/playwright.config.ts
+index f028bf8..2c30413 100644
+--- a/playwright.config.ts
++++ b/playwright.config.ts
+@@ -10,7 +10,10 @@ export default defineConfig({
+     ["json", { outputFile: "test-results/e2e-results.json" }],
+   ],
+   use: {
+-    baseURL: "http://127.0.0.1:4173",
++    baseURL: "http://127.0.0.1:4181",
++    launchOptions: {
++      proxy: { server: "http://127.0.0.1:4199", bypass: "127.0.0.1,localhost" },
++    },
+     trace: "retain-on-failure",
+     screenshot: "only-on-failure",
+   },
+@@ -19,14 +22,23 @@ export default defineConfig({
+     { name: "webkit", use: { ...devices["Desktop Safari"] } },
+     {
+       name: "chromium-mobile",
+-      testMatch: "google-ai.spec.ts",
++      testMatch: /(?:^|\/)(?:google-ai|v6)[^/]*\.spec\.ts$/,
+       use: { ...devices["Pixel 7"] },
+     },
+   ],
+-  webServer: {
+-    command: "npm run preview",
+-    url: "http://127.0.0.1:4173",
+-    reuseExistingServer: !process.env.CI,
+-    timeout: 30000,
+-  },
++  webServer: [
++    {
++      command: "npm run preview",
++      url: "http://127.0.0.1:4181",
++      env: { JOURNAL360_TEST_PORT: "4181", JOURNAL360_ALLOW_CLOUD_LOCAL: "0" },
++      reuseExistingServer: false,
++      timeout: 30000,
++    },
++    {
++      command: "node tests/support/block-network.mjs",
++      port: 4199,
++      reuseExistingServer: false,
++      timeout: 10000,
++    },
++  ],
+ });
+diff --git a/scripts/serve.mjs b/scripts/serve.mjs
+index a36964e..b9cd2b7 100644
+--- a/scripts/serve.mjs
++++ b/scripts/serve.mjs
+@@ -3,7 +3,10 @@ import fs from "node:fs";
+ import path from "node:path";
+ import handler from "../api/backup.mjs";
+ import accessHandler from "../api/access.mjs";
+-if (fs.existsSync(".env.local")) process.loadEnvFile(".env.local");
++const cloudEnabled = process.env.JOURNAL360_ALLOW_CLOUD_LOCAL === "1";
++if (cloudEnabled && fs.existsSync(".env.local"))
++  process.loadEnvFile(".env.local");
++const port = Number(process.env.JOURNAL360_TEST_PORT || 4173);
+ const headers = JSON.parse(fs.readFileSync("vercel.json", "utf8")).headers[0]
+   .headers;
+ const root = path.resolve("dist");
+@@ -17,6 +20,15 @@ const types = {
+ };
+ http
+   .createServer(async (req, res) => {
++    if (req.url?.startsWith("/api/") && !cloudEnabled) {
++      res.writeHead(503, {
++        "Content-Type": "application/json",
++        "Cache-Control": "no-store",
++      });
++      return res.end(
++        JSON.stringify({ error: "Cloud désactivé pour cette session locale." }),
++      );
++    }
+     if (req.url?.split("?")[0] === "/api/backup") return handler(req, res);
+     if (req.url?.split("?")[0] === "/api/access")
+       return accessHandler(req, res);
+@@ -45,6 +57,6 @@ http
+     );
+     fs.createReadStream(p).pipe(res);
+   })
+-  .listen(4173, "127.0.0.1", () =>
+-    console.log("Journal 360 : http://127.0.0.1:4173"),
++  .listen(port, "127.0.0.1", () =>
++    console.log(`Journal 360 local : http://127.0.0.1:${port}`),
+   );
+diff --git a/src/App.tsx b/src/App.tsx
+index 3f04bf8..2f8e20f 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -1,4 +1,7 @@
+ import { APP_VERSION } from "./config";
++import { Diagnostics, recordDiagnostic } from "./features/diagnostics";
++import { currentEditions, isDayVersion } from "./data/day";
++import { DayCard, DayView } from "./features/DayView";
+ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+ import { liveQuery } from "dexie";
+ import { useRegisterSW } from "virtual:pwa-register/react";
+@@ -111,6 +114,7 @@ export default function App() {
+   const data = useLibrary();
+   const [tab, setTab] = useState<Tab>("today");
+   const [selected, setSelected] = useState<string | null>(null);
++  const [selectedDay, setSelectedDay] = useState<string | null>(null);
+   const [candidates, setCandidates] = useState<Candidate[]>([]);
+   const [restoration, setRestoration] = useState<BackupData | null>(null);
+   const [toast, setToast] = useState("");
+@@ -167,7 +171,11 @@ export default function App() {
+     () => sortEditions(data.editions.filter((e) => !e.deleted)),
+     [data.editions],
+   );
+-  const latest = editions[0];
++  const displayedEditions = useMemo(
++    () => sortEditions(currentEditions(editions)),
++    [editions],
++  );
++  const latest = displayedEditions[0];
+   const current = data.editions.find((e) => e.id === selected);
+   const categories = [...new Set(editions.flatMap((e) => e.categories))].sort();
+   const months = [
+@@ -182,13 +190,14 @@ export default function App() {
+         .then(() => {
+           if (success) setToast(success);
+         })
+-        .catch((e) =>
++        .catch((e) => {
++          void recordDiagnostic("operation-failed");
+           setToast(
+             e instanceof Error
+               ? e.message
+               : "Opération impossible. Vérifiez le stockage et réessayez.",
+-          ),
+-        )
++          );
++        })
+         .finally(() => setBusy(false));
+     },
+     [],
+@@ -294,6 +303,7 @@ export default function App() {
+       setCloudStatus(
+         error instanceof Error ? error.message : "Synchronisation interrompue.",
+       );
++      void recordDiagnostic("sync-failed");
+       throw error;
+     } finally {
+       busyCloud.current = false;
+@@ -384,10 +394,17 @@ export default function App() {
+   }, [tab]);
+   function navigate(next: Tab) {
+     setSelected(null);
++    setSelectedDay(null);
+     setTab(next);
+     window.scrollTo({ top: 0, behavior: "instant" });
+   }
++  function openDay(dayKey: string) {
++    setSelected(null);
++    setSelectedDay(dayKey);
++    window.scrollTo({ top: 0, behavior: "instant" });
++  }
+   function openEdition(id: string) {
++    setSelectedDay(null);
+     setSelected(id);
+     window.scrollTo({ top: 0, behavior: "instant" });
+     run(() => db.reading(id, "edition", { openedAt: now() }));
+@@ -482,7 +499,11 @@ export default function App() {
+       s.read &&
+       editions.some((e) => e.id === s.editionId),
+   ).length;
+-  const articleCount = editions.reduce((sum, e) => sum + e.articles.length, 0);
++  const articleCount = displayedEditions.reduce(
++    (sum, e) =>
++      sum + e.articles.filter((a) => !a.kind || a.kind === "news").length,
++    0,
++  );
+   const favorites = data.states.filter(
+     (s) => s.favorite && editions.some((e) => e.id === s.editionId),
+   );
+@@ -522,6 +543,32 @@ export default function App() {
+       </span>
+     </div>
+   );
++  const renderCards = (rows: Edition[]) => {
++    const seen = new Set<string>();
++    return rows.map((edition, index) => {
++      if (!isDayVersion(edition)) return renderCard(edition, index);
++      if (seen.has(edition.dayKey!)) return null;
++      seen.add(edition.dayKey!);
++      return (
++        <DayCard
++          key={edition.dayKey}
++          versions={data.editions.filter(
++            (e) =>
++              isDayVersion(e) &&
++              e.dayKey === edition.dayKey &&
++              (tab !== "library"
++                ? !e.deleted
++                : libraryMode === "trash"
++                  ? e.deleted
++                  : !e.deleted &&
++                    (libraryMode === "archived" ? e.archived : !e.archived)),
++          )}
++          onOpen={openEdition}
++          onHistory={openDay}
++        />
++      );
++    });
++  };
+   const renderCard = (edition: Edition, index: number) => (
+     <article className="edition-card" key={edition.id}>
+       <button
+@@ -690,7 +737,7 @@ export default function App() {
+             >
+               <t.icon size={20} />
+               <span>{t.label}</span>
+-              {t.id === "library" && <small>{editions.length}</small>}
++              {t.id === "library" && <small>{displayedEditions.length}</small>}
+             </button>
+           ))}
+         </nav>
+@@ -808,8 +855,19 @@ export default function App() {
+               notes={data.notes}
+               onBack={() => navigate("library")}
+               onOpen={openEdition}
++              onDay={openDay}
+               run={run}
+             />
++          ) : selectedDay ? (
++            <DayView
++              key={selectedDay}
++              versions={data.editions.filter(
++                (e) => e.dayKey === selectedDay && !e.independent,
++              )}
++              notes={data.notes}
++              onBack={() => navigate("library")}
++              onOpen={openEdition}
++            />
+           ) : (
+             <>
+               {tab === "today" && (
+@@ -907,7 +965,7 @@ export default function App() {
+                   >
+                     {[
+                       {
+-                        value: editions.length,
++                        value: displayedEditions.length,
+                         label: "Éditions conservées",
+                         icon: Library,
+                       },
+@@ -949,7 +1007,18 @@ export default function App() {
+                   </div>
+                   {editions.length ? (
+                     <div className="edition-grid">
+-                      {editions.slice(0, 3).map(renderCard)}
++                      {renderCards(
++                        displayedEditions
++                          .slice(0, 3)
++                          .flatMap((e) =>
++                            isDayVersion(e)
++                              ? editions.filter(
++                                  (v) =>
++                                    isDayVersion(v) && v.dayKey === e.dayKey,
++                                )
++                              : [e],
++                          ),
++                      )}
+                     </div>
+                   ) : (
+                     <div className="empty-library">
+@@ -1152,15 +1221,13 @@ export default function App() {
+                     </button>
+                   </div>
+                   <p className="muted results-count">
+-                    {filtered.length} édition(s) ·{" "}
++                    {currentEditions(filtered).length} journée(s) / édition(s) ·{" "}
+                     {libraryMode === "trash"
+                       ? "Les originaux sont conservés. Vous pouvez les restaurer."
+                       : "Les dates inconnues sont affichées après les éditions datées."}
+                   </p>
+                   {filtered.length ? (
+-                    <div className="edition-grid">
+-                      {filtered.map(renderCard)}
+-                    </div>
++                    <div className="edition-grid">{renderCards(filtered)}</div>
+                   ) : (
+                     <div className="empty-state">
+                       <Library />
+@@ -1660,6 +1727,13 @@ export default function App() {
+                         textes sont conservés.
+                       </p>
+                     </section>
++                    <Diagnostics
++                      value={
++                        data.preferences.find(
++                          (p) => p.key === "local-diagnostics",
++                        )?.value
++                      }
++                    />
+                     <section className="quiet-panel cloud-panel">
+                       <h2>
+                         <Cloud size={21} /> PC & téléphone · Supabase
+diff --git a/src/config.ts b/src/config.ts
+index e5e15c4..33ea345 100644
+--- a/src/config.ts
++++ b/src/config.ts
+@@ -4,4 +4,4 @@ export const CLOUD_URL =
+ export const CLOUD_KEY =
+   import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+   "sb_publishable_ZoulExB_bKV1a4m_G9ThNw_2tHVT9zC";
+-export const APP_VERSION = "1.1.1";
++export const APP_VERSION = "2.0.0-local.1";
+diff --git a/src/data/db.ts b/src/data/db.ts
+index 1f23b34..ce09717 100644
+--- a/src/data/db.ts
++++ b/src/data/db.ts
+@@ -29,6 +29,10 @@ export class LocalRepository extends Dexie {
+     });
+     this.version(2).stores({ jobs: "id,status,createdAt,ownerId" });
+     this.version(3).stores({ pending: "id,createdAt" });
++    this.version(4).stores({
++      editions:
++        "id,sha256,date,familyId,importedAt,dayKey,externalEditionId,[dayKey+sha256]",
++    });
+   }
+   async saveEdition(edition: Edition, bytes: Uint8Array) {
+     await this.transaction("rw", [this.editions, this.originals], async () => {
+diff --git a/src/data/model.ts b/src/data/model.ts
+index 3bdc50a..d0d6efe 100644
+--- a/src/data/model.ts
++++ b/src/data/model.ts
+@@ -1,4 +1,10 @@
+ import { z } from "zod";
++import {
++  calendarSchema,
++  dayKeySchema,
++  slotSchema,
++  cumulativeSchema,
++} from "./editorial";
+ export const articleSchema = z.object({
+   id: z.string().max(200),
+   eventId: z.string().max(200).optional(),
+@@ -6,7 +12,11 @@ export const articleSchema = z.object({
+   category: z.string().max(200),
+   text: z.string().max(2_000_000),
+   sources: z.array(z.string().max(2048)).max(100),
+-  date: z.string().optional(),
++  date: calendarSchema.optional(),
++  firstSeenSlot: slotSchema.optional(),
++  kind: z
++    .enum(["news", "business", "hypothesis", "technical", "decision"])
++    .optional(),
+ });
+ export const editionSchema = z.object({
+   id: z.uuid(),
+@@ -15,10 +25,7 @@ export const editionSchema = z.object({
+   filename: z.string().max(300),
+   sha256: z.string().regex(/^[a-f0-9]{64}$/),
+   title: z.string().max(1000),
+-  date: z
+-    .string()
+-    .regex(/^\d{4}-\d{2}-\d{2}$/)
+-    .nullable(),
++  date: calendarSchema.nullable(),
+   importedAt: z.iso.datetime(),
+   updatedAt: z.iso.datetime(),
+   size: z
+@@ -35,7 +42,20 @@ export const editionSchema = z.object({
+   archived: z.boolean(),
+   deleted: z.boolean(),
+   sourceVerifiedAt: z.string().optional(),
++  schemaVersion: z.literal(2).optional(),
++  dayKey: dayKeySchema.optional(),
++  externalEditionId: z.string().max(200).optional(),
++  externalRevision: z.number().int().min(1).max(1_000_000).optional(),
++  slotsIncluded: z.array(slotSchema).max(3).optional(),
++  declaredCumulativeStatus: cumulativeSchema.optional(),
++  cumulativeStatus: cumulativeSchema.optional(),
++  missingSlots: z.array(slotSchema).max(3).optional(),
++  retiredEventIds: z.array(z.string().max(200)).max(2000).optional(),
++  independent: z.boolean().optional(),
++  supersedes: z.uuid().optional(),
++  importOrigin: z.enum(["file", "demo", "share", "archive"]).optional(),
+ });
++export { calendarSchema };
+ export const stateSchema = z.object({
+   id: z.string().max(500),
+   editionId: z.uuid(),
+diff --git a/src/features/ImportDialog.tsx b/src/features/ImportDialog.tsx
+index 3a6e1f0..26c64f5 100644
+--- a/src/features/ImportDialog.tsx
++++ b/src/features/ImportDialog.tsx
+@@ -4,6 +4,8 @@ import { useDialogFocus } from "./dialogFocus";
+ import { db } from "../data/db";
+ import { type Edition, dateLabel, sizeLabel } from "../data/model";
+ import { commitImport } from "./import";
++import { recordDiagnostic } from "./diagnostics";
++import { assessVersion, resolveDay } from "../data/day";
+ export interface Candidate {
+   edition: Edition;
+   bytes: Uint8Array;
+@@ -22,7 +24,7 @@ export function ImportDialog({
+   onDone: (message: string) => void;
+ }) {
+   const [choices, setChoices] = useState<
+-    Record<string, "ignore" | "keep" | "version">
++    Record<string, "ignore" | "keep" | "version" | "day">
+   >({});
+   const [parents, setParents] = useState<Record<string, string>>({});
+   const [metadata, setMetadata] = useState<
+@@ -38,34 +40,42 @@ export function ImportDialog({
+     let saved = 0,
+       ignored = 0;
+     try {
+-      for (const c of candidates) {
+-        const choice =
+-          choices[c.edition.id] || (c.duplicate ? "ignore" : "keep");
+-        const edited = metadata[c.edition.id];
+-        const edition = {
+-          ...c.edition,
+-          title: edited?.title.trim() || c.edition.title,
+-          date: edited ? edited.date || null : c.edition.date,
+-        };
+-        const result = await commitImport(
+-          db,
+-          edition,
+-          c.bytes,
+-          choice,
+-          parents[c.edition.id],
+-        );
+-        if (result.duplicate) ignored++;
+-        else saved++;
+-        if (c.pendingId) await db.pending.delete(c.pendingId);
+-      }
++      await db.transaction(
++        "rw",
++        [db.editions, db.originals, db.pending],
++        async () => {
++          for (const c of candidates) {
++            const choice =
++              choices[c.edition.id] ||
++              (c.edition.dayKey ? "day" : c.duplicate ? "ignore" : "keep");
++            const edited = metadata[c.edition.id];
++            const edition = {
++              ...c.edition,
++              title: edited?.title.trim() || c.edition.title,
++              date: edited ? edited.date || null : c.edition.date,
++            };
++            const result = await commitImport(
++              db,
++              edition,
++              c.bytes,
++              choice,
++              parents[c.edition.id],
++            );
++            if (result.duplicate) ignored++;
++            else saved++;
++            if (c.pendingId) await db.pending.delete(c.pendingId);
++          }
++        },
++      );
+       onDone(
+         `${saved} édition${saved > 1 ? "s" : ""} importée${saved > 1 ? "s" : ""}${ignored ? ` · ${ignored} doublon ignoré` : ""}.`,
+       );
+     } catch (e) {
++      void recordDiagnostic("import-failed");
+       setError(
+         e instanceof Error
+           ? e.message
+-          : "Import interrompu. Les éditions déjà enregistrées sont conservées.",
++          : "Import annulé. Aucun fichier de cette sélection n’a été enregistré.",
+       );
+     } finally {
+       setBusy(false);
+@@ -98,7 +108,20 @@ export function ImportDialog({
+           pas exécutés à l’import.
+         </p>
+         <div className="import-list">
+-          {candidates.map((c) => {
++          {candidates.map((c, index) => {
++            const peers = [
++              ...editions,
++              ...candidates.slice(0, index).map((v) => v.edition),
++            ].filter(
++              (e) =>
++                c.edition.dayKey &&
++                e.dayKey === c.edition.dayKey &&
++                !e.independent,
++            );
++            const assessment = c.edition.dayKey
++              ? assessVersion(c.edition, peers)
++              : null;
++            const previous = resolveDay(peers).current;
+             const edited = metadata[c.edition.id] || {
+               title: c.edition.title,
+               date: c.edition.date || "",
+@@ -127,6 +150,7 @@ export function ImportDialog({
+                   Date éditoriale <span className="muted">(facultative)</span>
+                   <input
+                     type="date"
++                    disabled={!!c.edition.dayKey}
+                     value={edited.date}
+                     onChange={(e) =>
+                       setMetadata({
+@@ -142,6 +166,45 @@ export function ImportDialog({
+                     : "HTML générique · lecture intégrale"}{" "}
+                   · {dateLabel(c.edition.date)}
+                 </p>
++                {assessment && (
++                  <div className="day-import-preview">
++                    <strong>
++                      {previous
++                        ? "Mettre à jour la journée"
++                        : "Créer la journée"}{" "}
++                      du {dateLabel(c.edition.date)}
++                    </strong>
++                    <p>
++                      Révision externe{" "}
++                      {c.edition.externalRevision ?? "inconnue"} ·{" "}
++                      {(c.edition.slotsIncluded || []).join(" / ")} ·{" "}
++                      {assessment.status}
++                    </p>
++                    <p>
++                      {assessment.newEvents} nouveaux événements identifiés ·{" "}
++                      {assessment.corrections} corrections textuelles ·{" "}
++                      {assessment.removedEvents} absences
++                    </p>
++                    {previous &&
++                      (c.edition.externalRevision || 0) <
++                        (previous.externalRevision || 0) && (
++                        <p className="warning">
++                          Révision antérieure : conservée dans l’historique ; la
++                          version courante ne sera pas rétrogradée.
++                        </p>
++                      )}
++                    {assessment.issues.map((issue) => (
++                      <p className="warning" key={issue}>
++                        {issue}
++                      </p>
++                    ))}
++                    <p className="small-note">
++                      Le contrôle compare les event_id disponibles, sans
++                      certifier les déclarations éditoriales. L’original ne sera
++                      pas modifié.
++                    </p>
++                  </div>
++                )}
+                 {c.edition.warnings.map((w) => (
+                   <p className="warning" key={w}>
+                     <AlertTriangle size={16} />
+@@ -158,16 +221,29 @@ export function ImportDialog({
+                   Conservation
+                   <select
+                     value={
+-                      choices[c.edition.id] || (c.duplicate ? "ignore" : "keep")
++                      choices[c.edition.id] ||
++                      (c.edition.dayKey
++                        ? "day"
++                        : c.duplicate
++                          ? "ignore"
++                          : "keep")
+                     }
+                     onChange={(e) =>
+                       setChoices({
+                         ...choices,
+                         [c.edition.id]: e.target.value as
+-                          "ignore" | "keep" | "version",
++                          "ignore" | "keep" | "version" | "day",
+                       })
+                     }
+                   >
++                    {c.edition.dayKey && (
++                      <option value="day">
++                        {previous
++                          ? "Mettre à jour la journée"
++                          : "Créer la journée"}{" "}
++                        · historique conservé
++                      </option>
++                    )}
+                     {c.duplicate && (
+                       <option value="ignore">Ignorer le doublon</option>
+                     )}
+diff --git a/src/features/Reader.tsx b/src/features/Reader.tsx
+index 4f8c4fa..602e80c 100644
+--- a/src/features/Reader.tsx
++++ b/src/features/Reader.tsx
+@@ -21,6 +21,11 @@ import { db } from "../data/db";
+ import { isolatedHTML } from "./import";
+ import { useDialogFocus } from "./dialogFocus";
+ import { download } from "./backup";
++import { GoogleAiDialog } from "./GoogleAiDialog";
++import { GOOGLE_AI_ENTRY, readingQuestions } from "./googleAi";
++import { verifiedLabel } from "../data/editorial";
++import { resolveDay } from "../data/day";
++import { validateSourceUrl } from "./sourceUrl";
+ import {
+   parseGoogleAiMessage,
+   validateGoogleAiUrl,
+@@ -28,7 +33,9 @@ import {
+ } from "./googleAi";
+ interface GoogleAiRequest {
+   destination: GoogleAiDestination;
+-  source: Window;
++  source: Window | null;
++  origin: "host" | "frame";
++  mode: "safe" | "interactive" | "text";
+   editionId: string;
+   frameRevision: number;
+ }
+@@ -39,6 +46,7 @@ export function Reader({
+   notes,
+   onBack,
+   onOpen,
++  onDay,
+   run,
+ }: {
+   edition: Edition;
+@@ -47,6 +55,7 @@ export function Reader({
+   notes: Note[];
+   onBack: () => void;
+   onOpen: (id: string) => void;
++  onDay?: (dayKey: string) => void;
+   run: (action: () => Promise<unknown>, success?: string) => void;
+ }) {
+   const surfaceRef = useRef<HTMLDivElement>(null);
+@@ -101,8 +110,15 @@ export function Reader({
+         frameWindow.postMessage(
+           {
+             type: "journal360:google-ai:capability",
+-            version: 1,
++            version: message.version,
+             enabled: true,
++            ...(message.version === 2
++              ? {
++                  actions: ["copy-question", "open-entry"],
++                  entryUrl: GOOGLE_AI_ENTRY,
++                  maxQuestionLength: 2000,
++                }
++              : {}),
+           },
+           "*",
+         );
+@@ -110,6 +126,8 @@ export function Reader({
+         const request = {
+           destination: message.destination,
+           source: frameWindow,
++          origin: "frame" as const,
++          mode,
+           editionId: edition.id,
+           frameRevision,
+         };
+@@ -123,23 +141,43 @@ export function Reader({
+       pendingAiRef.current = null;
+     };
+   }, [edition.id, mode, frameRevision, confirm]);
+-  function openGoogleAi() {
++  function isCurrentGoogleAi() {
+     const request = pendingAiRef.current;
+-    const destination = request && validateGoogleAiUrl(request.destination.url);
+-    if (
+-      !request ||
+-      !destination ||
+-      mode !== "interactive" ||
+-      request.source !== iframeRef.current?.contentWindow ||
+-      request.editionId !== edition.id ||
+-      request.frameRevision !== frameRevision
+-    ) {
+-      dismissGoogleAi();
+-      return;
+-    }
+-    // Direct button gesture, never called by receive() or a promise/timer.
+-    window.open(destination.url, "_blank", "noopener,noreferrer");
+-    dismissGoogleAi();
++    return (
++      !!request &&
++      request.mode === mode &&
++      (request.origin === "host" ||
++        (mode === "interactive" &&
++          request.source === iframeRef.current?.contentWindow)) &&
++      request.editionId === edition.id &&
++      request.frameRevision === frameRevision &&
++      (!!validateGoogleAiUrl(request.destination.url) ||
++        request.destination.url === GOOGLE_AI_ENTRY)
++    );
++  }
++  const day =
++    edition.dayKey && !edition.independent
++      ? resolveDay(
++          editions.filter(
++            (e) => e.dayKey === edition.dayKey && !e.independent && !e.deleted,
++          ),
++        )
++      : null;
++  const questions = useMemo(
++    () => (bytes ? readingQuestions(bytes) : []),
++    [bytes],
++  );
++  function prepareQuestion(question: string) {
++    const request: GoogleAiRequest = {
++      destination: { url: GOOGLE_AI_ENTRY, query: question, entryOnly: true },
++      source: null,
++      origin: "host",
++      mode,
++      editionId: edition.id,
++      frameRevision,
++    };
++    pendingAiRef.current = request;
++    setGoogleAiRequest(request);
+   }
+   const state = states.find(
+     (s) => s.editionId === edition.id && s.articleId === "edition",
+@@ -253,9 +291,33 @@ export function Reader({
+           timeZone: "Europe/Paris",
+         })}
+         {edition.sourceVerifiedAt
+-          ? ` · Sources vérifiées le ${dateLabel(edition.sourceVerifiedAt)}`
++          ? ` · Sources vérifiées le ${verifiedLabel(edition.sourceVerifiedAt)}`
+           : " · Actualité des sources non vérifiée"}
+       </p>
++      {day && (
++        <div className="reader-toolbar">
++          {day.reliable && day.reliable.id !== edition.id && (
++            <button
++              className="secondary"
++              onClick={() => onOpen(day.reliable!.id)}
++            >
++              Dernière version fiable
++            </button>
++          )}
++          <button
++            className="secondary"
++            onClick={() => onDay?.(edition.dayKey!)}
++          >
++            Historique des éditions
++          </button>
++          <span>
++            Cumul{" "}
++            {day.versions.find((v) => v.edition.id === edition.id)?.assessment
++              .status || "UNKNOWN"}{" "}
++            · révision externe {edition.externalRevision ?? "inconnue"}
++          </span>
++        </div>
++      )}
+       <div className="reader-toolbar">
+         <button
+           className={state?.favorite ? "secondary active" : "secondary"}
+@@ -398,6 +460,14 @@ export function Reader({
+               </button>
+             </>
+           )}
++          {expanded && day && (
++            <button
++              className="secondary"
++              onClick={() => onDay?.(edition.dayKey!)}
++            >
++              Historique
++            </button>
++          )}
+           {mode !== "text" && (
+             <div
+               className="reading-zoom"
+@@ -418,8 +488,8 @@ export function Reader({
+               <button
+                 className="icon-button"
+                 aria-label="Zoomer le HTML"
+-                disabled={htmlZoom >= 150}
+-                onClick={() => setHtmlZoom(Math.min(150, htmlZoom + 10))}
++                disabled={htmlZoom >= 200}
++                onClick={() => setHtmlZoom(Math.min(200, htmlZoom + 10))}
+               >
+                 <Plus size={16} />
+               </button>
+@@ -441,6 +511,27 @@ export function Reader({
+             {expanded ? "Réduire la lecture" : "Lecture pleine page"}
+           </button>
+         </div>
++        {mode !== "interactive" && questions.length > 0 && (
++          <details
++            className="parent-google-questions"
++            inert={!!googleAiRequest}
++          >
++            <summary>Questions Google disponibles ({questions.length})</summary>
++            <p>
++              Prévisualiser, corriger et copier une question du fichier, sans
++              activer ses scripts.
++            </p>
++            {questions.map((question, index) => (
++              <button
++                className="secondary"
++                key={question}
++                onClick={() => prepareQuestion(question)}
++              >
++                Préparer la question {index + 1}
++              </button>
++            ))}
++          </details>
++        )}
+         {mode === "text" ? (
+           <div className="text-reader">
+             <div className="font-toolbar">
+@@ -531,17 +622,20 @@ export function Reader({
+                     </div>
+                     {a.sources.length > 0 && (
+                       <ul className="sources">
+-                        {a.sources.map((u) => (
+-                          <li key={u}>
+-                            <a
+-                              href={u}
+-                              target="_blank"
+-                              rel="noopener noreferrer"
+-                            >
+-                              {u}
+-                            </a>
+-                          </li>
+-                        ))}
++                        {a.sources
++                          .map(validateSourceUrl)
++                          .filter((u): u is string => !!u)
++                          .map((u) => (
++                            <li key={u}>
++                              <a
++                                href={u}
++                                target="_blank"
++                                rel="noopener noreferrer"
++                              >
++                                {u}
++                              </a>
++                            </li>
++                          ))}
+                       </ul>
+                     )}
+                   </article>
+@@ -579,34 +673,11 @@ export function Reader({
+           </div>
+         )}
+         {googleAiRequest && (
+-          <div className="modal-backdrop">
+-            <section
+-              role="dialog"
+-              aria-modal="true"
+-              aria-labelledby="google-ai-title"
+-              aria-describedby="google-ai-warning"
+-              className="modal compact google-ai-dialog"
+-            >
+-              <h2 id="google-ai-title">
+-                Ouvrir Google Mode IA dans votre navigateur ?
+-              </h2>
+-              <p id="google-ai-warning">
+-                Le texte de la question sera transmis à Google.
+-              </p>
+-              <p className="eyebrow">QUESTION À TRANSMETTRE</p>
+-              <p className="google-ai-query">
+-                {googleAiRequest.destination.query}
+-              </p>
+-              <div className="modal-actions">
+-                <button className="secondary" onClick={dismissGoogleAi}>
+-                  Annuler
+-                </button>
+-                <button className="primary" onClick={openGoogleAi}>
+-                  Ouvrir
+-                </button>
+-              </div>
+-            </section>
+-          </div>
++          <GoogleAiDialog
++            destination={googleAiRequest.destination}
++            isCurrent={isCurrentGoogleAi}
++            onDismiss={dismissGoogleAi}
++          />
+         )}
+         {confirm && (
+           <div className="modal-backdrop">
+diff --git a/src/features/backup.ts b/src/features/backup.ts
+index 78508b1..0b92f47 100644
+--- a/src/features/backup.ts
++++ b/src/features/backup.ts
+@@ -17,12 +17,12 @@ import {
+ import { LocalRepository } from "../data/db";
+ const manifestSchema = z.object({
+   format: z.literal("journal360"),
+-  formatVersion: z.literal(1),
++  formatVersion: z.union([z.literal(1), z.literal(2)]),
+   appVersion: z.string(),
+   generatedAt: z.iso.datetime(),
+   privacyWarning: z.string(),
+-  editionCount: z.number().int().max(1000),
+-  editions: z.array(editionSchema).max(1000),
++  editionCount: z.number().int().max(4000),
++  editions: z.array(editionSchema).max(4000),
+   states: z.array(stateSchema).max(100_000),
+   notes: z.array(noteSchema).max(10000),
+ });
+@@ -38,11 +38,14 @@ export async function exportBackup(
+ ): Promise<Blob> {
+   const data = snapshot || (await repository.snapshot());
+   const zip = new JSZip();
+-  zip.file(
+-    "manifest.json",
+-    JSON.stringify({
++  const manifest = JSON.stringify(
++    manifestSchema.parse({
+       format: "journal360",
+-      formatVersion: 1,
++      formatVersion: data.editions.some(
++        (e) => e.schemaVersion === 2 || e.dayKey,
++      )
++        ? 2
++        : 1,
+       appVersion: APP_VERSION,
+       generatedAt: now(),
+       privacyWarning:
+@@ -53,6 +56,16 @@ export async function exportBackup(
+       notes: data.notes,
+     }),
+   );
++  const manifestBytes = new TextEncoder().encode(manifest).byteLength;
++  if (
++    manifestBytes > 64 * 1024 * 1024 ||
++    manifestBytes + data.originals.reduce((sum, o) => sum + o.bytes.length, 0) >
++      150 * 1024 * 1024
++  )
++    throw new Error(
++      "Bibliothèque supérieure à la limite de restauration de 150 Mo : archive annulée, données locales conservées.",
++    );
++  zip.file("manifest.json", manifest);
+   for (const e of data.editions) {
+     const o = data.originals.find((f) => f.id === e.id);
+     if (!o) throw new Error("Original manquant : sauvegarde annulée.");
+@@ -74,7 +87,7 @@ export async function inspectBackup(bytes: Uint8Array): Promise<BackupData> {
+     throw new Error("Archive supérieure à 150 Mo.");
+   const zip = await JSZip.loadAsync(bytes, { checkCRC32: false });
+   const entries = Object.values(zip.files);
+-  if (entries.length > 1002)
++  if (entries.length > 4002)
+     throw new Error("Trop de fichiers dans cette archive.");
+   let total = 0;
+   for (const entry of entries) {
+@@ -82,7 +95,10 @@ export async function inspectBackup(bytes: Uint8Array): Promise<BackupData> {
+     const internal = Reflect.get(entry, "_data") as
+       { uncompressedSize?: number } | undefined;
+     const size = internal?.uncompressedSize;
+-    if (typeof size !== "number" || size > 15 * 1024 * 1024)
++    if (
++      typeof size !== "number" ||
++      size > (entry.name === "manifest.json" ? 64 : 10) * 1024 * 1024
++    )
+       throw new Error("Entrée ZIP invalide ou trop volumineuse.");
+     total += size;
+     if (total > 150 * 1024 * 1024)
+@@ -145,15 +161,9 @@ export async function restoreBackup(
+       const mapping = new Map<string, string>();
+       for (const e of data.editions) {
+         const exact = await repository.editions.get(e.id);
+-        const same =
+-          exact?.sha256 === e.sha256
+-            ? exact
+-            : mode === "backup"
+-              ? await repository.editions
+-                  .where("sha256")
+-                  .equals(e.sha256)
+-                  .first()
+-              : undefined;
++        // Archive UUIDs are identities, even for deliberately retained identical
++        // files. A SHA match under another UUID must not erase a historical version.
++        const same = exact?.sha256 === e.sha256 ? exact : undefined;
+         if (same) {
+           mapping.set(e.id, same.id);
+           if (mode === "sync" && newer(e, same))
+@@ -161,9 +171,7 @@ export async function restoreBackup(
+           continue;
+         }
+         const id = exact
+-          ? mode === "sync"
+-            ? await Dexie.waitFor(conflictId(`${e.id}:${e.sha256}`))
+-            : crypto.randomUUID()
++          ? await Dexie.waitFor(conflictId(`${e.id}:${e.sha256}`))
+           : e.id;
+         mapping.set(e.id, id);
+         if (await repository.editions.get(id)) continue;
+@@ -210,6 +218,8 @@ export async function restoreBackup(
+         const existing = await repository.notes.get(note.id);
+         if (
+           existing &&
++          existing.editionId === editionId &&
++          existing.articleId === note.articleId &&
+           existing.body === note.body &&
+           existing.kind === note.kind
+         )
+@@ -221,11 +231,12 @@ export async function restoreBackup(
+           const other = winner === incoming ? existing : incoming;
+           const duplicate = await repository.notes
+             .where("editionId")
+-            .equals(editionId)
++            .equals(other.editionId)
+             .filter(
+               (n) =>
+                 n.body === other.body &&
+                 n.kind === other.kind &&
++                n.articleId === other.articleId &&
+                 !(winner === incoming && n.id === note.id),
+             )
+             .first();
+@@ -234,12 +245,11 @@ export async function restoreBackup(
+           if (!duplicate)
+             await repository.notes.put({
+               ...other,
+-              editionId,
+               id:
+                 mode === "sync"
+                   ? await Dexie.waitFor(
+                       conflictId(
+-                        `${note.id}:${editionId}:${other.kind}:${other.body}`,
++                        `${note.id}:${other.editionId}:${other.articleId || ""}:${other.kind}:${other.body}`,
+                       ),
+                     )
+                   : crypto.randomUUID(),
+diff --git a/src/features/cloud.ts b/src/features/cloud.ts
+index 57b8102..14163ba 100644
+--- a/src/features/cloud.ts
++++ b/src/features/cloud.ts
+@@ -40,16 +40,19 @@ export async function unlockCloud(code: string) {
+   });
+   if (error) throw new Error("Session indisponible. Réessayez.");
+ }
+-async function request(session: Session, body?: object) {
+-  const response = await fetch("/api/backup", {
+-    method: body ? "POST" : "GET",
+-    headers: {
+-      Authorization: `Bearer ${session.access_token}`,
+-      ...(body ? { "Content-Type": "application/json" } : {}),
++async function request(session: Session, body?: object, offset = 0) {
++  const response = await fetch(
++    `/api/backup${offset ? `?offset=${offset}` : ""}`,
++    {
++      method: body ? "POST" : "GET",
++      headers: {
++        Authorization: `Bearer ${session.access_token}`,
++        ...(body ? { "Content-Type": "application/json" } : {}),
++      },
++      body: body ? JSON.stringify(body) : undefined,
++      cache: "no-store",
+     },
+-    body: body ? JSON.stringify(body) : undefined,
+-    cache: "no-store",
+-  });
++  );
+   let data;
+   try {
+     data = await response.json();
+@@ -61,7 +64,40 @@ async function request(session: Session, body?: object) {
+ }
+ export class CloudRepository {
+   async list(session: Session): Promise<Snapshot[]> {
+-    return (await request(session)).snapshots;
++    const snapshots = new Map<string, Snapshot>();
++    let offset = 0;
++    for (let page = 0; page < 51; page++) {
++      const response = await request(session, undefined, offset);
++      if (!Array.isArray(response.snapshots) || response.snapshots.length > 100)
++        throw new Error("Inventaire cloud invalide.");
++      for (const snapshot of response.snapshots as Snapshot[])
++        snapshots.set(snapshot.id, snapshot);
++      if (snapshots.size > 5000)
++        throw new Error(
++          "Inventaire cloud supérieur à 5000 archives : aucune archive supprimée.",
++        );
++      if (
++        response.nextOffset === undefined &&
++        response.snapshots.length === 100
++      )
++        throw new Error(
++          "Serveur cloud ancien : inventaire potentiellement tronqué, mise à jour nécessaire.",
++        );
++      if (response.nextOffset === null || response.nextOffset === undefined)
++        return [...snapshots.values()].sort(
++          (a, b) =>
++            b.createdAt.localeCompare(a.createdAt) || a.id.localeCompare(b.id),
++        );
++      if (
++        !Number.isSafeInteger(response.nextOffset) ||
++        response.nextOffset <= offset
++      )
++        throw new Error("Pagination cloud invalide : inventaire non confirmé.");
++      offset = response.nextOffset;
++    }
++    throw new Error(
++      "Inventaire cloud supérieur à 5000 archives : vérification manuelle nécessaire, aucune archive supprimée.",
++    );
+   }
+   async backup(
+     session: Session,
+diff --git a/src/features/googleAi.ts b/src/features/googleAi.ts
+index 1e4b5f4..5ebccc8 100644
+--- a/src/features/googleAi.ts
++++ b/src/features/googleAi.ts
+@@ -1,6 +1,41 @@
++export const GOOGLE_AI_ENTRY = "https://www.google.com/ai";
++const questionCache = new WeakMap<Uint8Array, string[]>();
++export function rememberReadingQuestions(bytes: Uint8Array, doc: Document) {
++  if (questionCache.has(bytes)) return;
++  const questions = new Set<string>();
++  for (const link of doc.querySelectorAll('[data-ai-link="google-ai-mode"]')) {
++    const question =
++      link.getAttribute("data-ai-question") ||
++      validateGoogleAiUrl(link.getAttribute("href"))?.query;
++    if (validPublicQuestion(question)) questions.add(question);
++    if (questions.size >= 100) break;
++  }
++  questionCache.set(bytes, [...questions]);
++}
++export function readingQuestions(bytes: Uint8Array): string[] {
++  if (!questionCache.has(bytes))
++    rememberReadingQuestions(
++      bytes,
++      new DOMParser().parseFromString(
++        new TextDecoder().decode(bytes),
++        "text/html",
++      ),
++    );
++  return questionCache.get(bytes)!;
++}
++export function validPublicQuestion(value: unknown): value is string {
++  return (
++    typeof value === "string" &&
++    !!value.trim() &&
++    value.length <= 2000 &&
++    !hasControl(value) &&
++    !/[\u202a-\u202e\u2066-\u2069]/u.test(value)
++  );
++}
+ export interface GoogleAiDestination {
+   url: string;
+   query: string;
++  entryOnly?: boolean;
+ }
+ 
+ // Accept a literal Google AI search, never a URL that needs repairing or a
+@@ -67,12 +102,39 @@ function hasControl(value: string) {
+ }
+ 
+ export type GoogleAiMessage =
+-  { type: "capability" } | { type: "open"; destination: GoogleAiDestination };
++  | { type: "capability"; version: 1 | 2 }
++  | { type: "open"; destination: GoogleAiDestination };
+ 
+ export function parseGoogleAiMessage(value: unknown): GoogleAiMessage | null {
+   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+   const data = value as Record<string, unknown>;
+   const keys = Object.keys(data);
++  if (data.version === 2) {
++    if (
++      data.type === "journal360:google-ai:capability-request" &&
++      keys.length === 2 &&
++      keys.includes("type") &&
++      keys.includes("version")
++    )
++      return { type: "capability", version: 2 };
++    if (
++      data.type === "journal360:google-ai:question-request" &&
++      keys.length === 3 &&
++      keys.includes("type") &&
++      keys.includes("version") &&
++      keys.includes("question") &&
++      validPublicQuestion(data.question)
++    )
++      return {
++        type: "open",
++        destination: {
++          url: GOOGLE_AI_ENTRY,
++          query: data.question,
++          entryOnly: true,
++        },
++      };
++    return null;
++  }
+   if (data.version !== 1) return null;
+   if (
+     data.type === "journal360:google-ai:capability-request" &&
+@@ -80,7 +142,7 @@ export function parseGoogleAiMessage(value: unknown): GoogleAiMessage | null {
+     keys.includes("type") &&
+     keys.includes("version")
+   )
+-    return { type: "capability" };
++    return { type: "capability", version: 1 };
+   if (
+     data.type !== "journal360:google-ai:open-request" ||
+     keys.length !== 3 ||
+@@ -89,7 +151,11 @@ export function parseGoogleAiMessage(value: unknown): GoogleAiMessage | null {
+     !keys.includes("version")
+   )
+     return null;
+-  const destination = validateGoogleAiUrl(data.url);
++  const destination =
++    validateGoogleAiUrl(data.url) ||
++    (data.url === GOOGLE_AI_ENTRY
++      ? { url: GOOGLE_AI_ENTRY, query: "", entryOnly: true }
++      : null);
+   return destination ? { type: "open", destination } : null;
+ }
+ 
+@@ -97,14 +163,17 @@ export function parseGoogleAiMessage(value: unknown): GoogleAiMessage | null {
+ // href; capture its click before an imported fallback can navigate/open a tab.
+ // Every request is independently validated and confirmed again by the parent.
+ export const GOOGLE_AI_LINK_BRIDGE = `(()=>{
+-  const selector='a[data-ai-link="google-ai-mode"]';
++  const selector='[data-ai-link="google-ai-mode"]';
+   for(const type of ['click','auxclick']) window.addEventListener(type,event=>{
+     const link=event.target instanceof Element?event.target.closest(selector):null;
+     if(!link)return;
+     event.preventDefault();event.stopImmediatePropagation();
+-    if(type==='click'&&event.button===0)parent.postMessage({
++    if(type==='click'&&event.button===0){
++    const question=link.getAttribute('data-ai-question');
++    if(question!==null){parent.postMessage({type:'journal360:google-ai:question-request',version:2,question},'*');return;}
++    parent.postMessage({
+       type:'journal360:google-ai:open-request',version:1,
+       url:link.getAttribute('data-journal360-google-ai-url')||link.getAttribute('href')
+-    },'*');
++    },'*');}
+   },true);
+ })();`;
+diff --git a/src/features/import.ts b/src/features/import.ts
+index 4c1cc17..8e62a53 100644
+--- a/src/features/import.ts
++++ b/src/features/import.ts
+@@ -6,7 +6,20 @@ import {
+   hash,
+ } from "../data/model";
+ import { LocalRepository } from "../data/db";
+-import { GOOGLE_AI_LINK_BRIDGE, validateGoogleAiUrl } from "./googleAi";
++import {
++  GOOGLE_AI_LINK_BRIDGE,
++  validateGoogleAiUrl,
++  GOOGLE_AI_ENTRY,
++  rememberReadingQuestions,
++} from "./googleAi";
++import Dexie from "dexie";
++import {
++  editorialMetadata,
++  verifiedInstant,
++  validDate,
++} from "../data/editorial";
++import { editorialUUID, assessVersion, resolveDay } from "../data/day";
++import { validateSourceUrl } from "./sourceUrl";
+ const cleanText = (s: string) => s.replace(/\s+/g, " ").trim();
+ const str = (s: unknown) => (typeof s === "string" ? s : "");
+ function plain(s: unknown) {
+@@ -19,10 +32,7 @@ function editorialDate(value: unknown): string | null {
+   const m = s.match(/^\d{4}-\d{2}-\d{2}(?:T.*)?$/);
+   if (!m) return null;
+   const date = s.slice(0, 10);
+-  return !Number.isNaN(Date.parse(date)) &&
+-    new Date(`${date}T12:00:00Z`).toISOString().slice(0, 10) === date
+-    ? date
+-    : null;
++  return validDate(date) ? date : null;
+ }
+ export async function inspectHTML(
+   filename: string,
+@@ -66,12 +76,25 @@ export async function inspectHTML(
+   }
+   const items = Array.isArray(data.items) ? data.items.slice(0, 2000) : [];
+   const articleIds = new Set<string>();
++  let rejectedArticles = 0,
++    duplicateArticles = 0,
++    rejectedSources = 0;
++  if (Array.isArray(data.items) && data.items.length > 2000)
++    warnings.push(
++      "Sommaire limité à 2000 articles ; le HTML original reste intégral.",
++    );
+   const articles = items.flatMap((item: unknown, index) => {
+-    if (!item || typeof item !== "object") return [];
++    if (!item || typeof item !== "object") {
++      rejectedArticles++;
++      return [];
++    }
+     const a = item as Record<string, unknown>;
+     if (!str(a.title)) return [];
+     const id = str(a.id) || `article-${index + 1}`;
+-    if (articleIds.has(id)) return [];
++    if (articleIds.has(id)) {
++      duplicateArticles++;
++      return [];
++    }
+     articleIds.add(id);
+     const sources = Array.isArray(a.sources)
+       ? a.sources.flatMap((s: unknown) => {
+@@ -83,7 +106,9 @@ export async function inspectHTML(
+                 : s && typeof s === "object"
+                   ? str((s as Record<string, unknown>).url)
+                   : "";
+-          return /^https?:\/\//i.test(u) ? [u] : [];
++          const valid = validateSourceUrl(u);
++          if (!valid) rejectedSources++;
++          return valid ? [valid] : [];
+         })
+       : [];
+     const text = [
+@@ -102,9 +127,32 @@ export async function inspectHTML(
+       text,
+       sources,
+       date: editorialDate(a.date) || undefined,
++      firstSeenSlot: ["08:00", "16:00", "21:00"].includes(str(a.firstSeenSlot))
++        ? a.firstSeenSlot
++        : undefined,
++      kind: [
++        "news",
++        "business",
++        "hypothesis",
++        "technical",
++        "decision",
++      ].includes(str(a.kind))
++        ? a.kind
++        : undefined,
+     });
++    if (!parsed.success) rejectedArticles++;
+     return parsed.success ? [parsed.data] : [];
+   });
++  if (rejectedArticles)
++    warnings.push(
++      `${rejectedArticles} article(s) non indexé(s) car invalides ; originaux conservés.`,
++    );
++  if (duplicateArticles)
++    warnings.push(
++      `${duplicateArticles} identifiant(s) d’article répété(s) : premier article conservé dans l’index.`,
++    );
++  if (rejectedSources)
++    warnings.push(`${rejectedSources} URL de source refusée(s) dans l’index.`);
+   if (document.querySelector('script:not([type="application/json"])'))
+     warnings.push("Scripts présents : désactivés en lecture sécurisée.");
+   if (
+@@ -129,6 +177,15 @@ export async function inspectHTML(
+       document.title || document.querySelector("h1")?.textContent || "",
+     ) ||
+     filename.replace(/\.html?$/i, "");
++  const date = editorialDate(
++    data.editionDate ??
++      data.date ??
++      document
++        .querySelector('meta[name="edition-date"]')
++        ?.getAttribute("content"),
++  );
++  const metadata = editorialMetadata(data, date, warnings);
++  const sourceVerifiedAt = verifiedInstant(data.sourceVerifiedAt, warnings);
+   return editionSchema.parse({
+     id,
+     familyId: id,
+@@ -136,13 +193,7 @@ export async function inspectHTML(
+     filename,
+     sha256: await hash(bytes),
+     title,
+-    date: editorialDate(
+-      data.editionDate ??
+-        data.date ??
+-        document
+-          .querySelector('meta[name="edition-date"]')
+-          ?.getAttribute("content"),
+-    ),
++    date,
+     importedAt: now(),
+     updatedAt: now(),
+     size: bytes.length,
+@@ -154,47 +205,103 @@ export async function inspectHTML(
+     demo,
+     archived: false,
+     deleted: false,
+-    sourceVerifiedAt: editorialDate(data.sourceVerifiedAt) || undefined,
++    sourceVerifiedAt,
++    ...metadata,
+   });
+ }
+ export async function commitImport(
+   repository: LocalRepository,
+   edition: Edition,
+   bytes: Uint8Array,
+-  choice: "ignore" | "keep" | "version",
++  choice: "ignore" | "keep" | "version" | "day",
+   parentId?: string,
+ ) {
+-  const existing = await repository.editions
+-    .where("sha256")
+-    .equals(edition.sha256)
+-    .first();
+-  if (existing && choice === "ignore")
+-    return { id: existing.id, duplicate: true };
+-  if (choice === "version" && parentId) {
+-    const parent = await repository.editions.get(parentId);
+-    if (!parent) throw new Error("Édition précédente introuvable.");
+-    edition = {
+-      ...edition,
+-      familyId: parent.familyId,
+-      revision:
+-        Math.max(
+-          ...(
+-            await repository.editions
+-              .where("familyId")
+-              .equals(parent.familyId)
+-              .toArray()
+-          ).map((e) => e.revision),
+-        ) + 1,
+-    };
++  // Derive identities before opening the local transaction; waitFor also keeps
++  // the caller's batch transaction alive without including any network request.
++  if (choice === "day" && edition.dayKey) {
++    const [familyId, id] = await Dexie.waitFor(
++      Promise.all([
++        editorialUUID(`family:${edition.dayKey}`),
++        editorialUUID(`version:${edition.dayKey}:${edition.sha256}`),
++      ]),
++    );
++    edition = { ...edition, familyId, id, independent: false };
+   }
+-  await repository.saveEdition(edition, bytes);
+-  return { id: edition.id, duplicate: false };
++  return repository.transaction(
++    "rw",
++    [repository.editions, repository.originals],
++    async () => {
++      const matching = await repository.editions
++        .where("sha256")
++        .equals(edition.sha256)
++        .toArray();
++      const existing =
++        choice === "day"
++          ? matching.find((e) => e.dayKey === edition.dayKey && !e.independent)
++          : matching[0];
++      if (
++        existing &&
++        (choice === "ignore" ||
++          (choice === "day" &&
++            existing.dayKey === edition.dayKey &&
++            !existing.independent))
++      )
++        return { id: existing.id, duplicate: true };
++      if (choice === "day" && edition.dayKey) {
++        const family = await repository.editions
++          .where("dayKey")
++          .equals(edition.dayKey)
++          .filter((e) => !e.independent)
++          .toArray();
++        const current = resolveDay(family).current;
++        const assessment = assessVersion(edition, family);
++        edition = {
++          ...edition,
++          revision: Math.max(0, ...family.map((e) => e.revision)) + 1,
++          cumulativeStatus: assessment.status,
++          supersedes:
++            current &&
++            assessment.status === "COMPLETE" &&
++            (edition.externalRevision || 0) > (current.externalRevision || 0)
++              ? current.id
++              : undefined,
++        };
++      } else if (choice === "keep" && edition.dayKey)
++        edition = { ...edition, independent: true };
++      if (choice === "version" && parentId) {
++        const parent = await repository.editions.get(parentId);
++        if (!parent) throw new Error("Édition précédente introuvable.");
++        if (parent.dayKey && edition.date !== parent.date)
++          throw new Error(
++            "Le rattachement à une journée exige la même date éditoriale.",
++          );
++        edition = {
++          ...edition,
++          familyId: parent.familyId,
++          dayKey: parent.dayKey,
++          independent: parent.independent,
++          revision:
++            Math.max(
++              ...(
++                await repository.editions
++                  .where("familyId")
++                  .equals(parent.familyId)
++                  .toArray()
++              ).map((e) => e.revision),
++            ) + 1,
++        };
++      }
++      await repository.saveEdition(edition, bytes);
++      return { id: edition.id, duplicate: false };
++    },
++  );
+ }
+ export function isolatedHTML(bytes: Uint8Array, interactive: boolean) {
+   const doc = new DOMParser().parseFromString(
+     new TextDecoder().decode(bytes),
+     "text/html",
+   );
++  rememberReadingQuestions(bytes, doc);
+   // Conserver les contrôles/calculatrices sans autoriser de soumission réseau.
+   doc.querySelectorAll("form").forEach((form) => {
+     const neutral = doc.createElement("div");
+@@ -209,7 +316,10 @@ export function isolatedHTML(bytes: Uint8Array, interactive: boolean) {
+   doc.querySelectorAll("*").forEach((e) => {
+     const googleAi =
+       interactive && e.matches('a[data-ai-link="google-ai-mode"]')
+-        ? validateGoogleAiUrl(e.getAttribute("href"))
++        ? validateGoogleAiUrl(e.getAttribute("href")) ||
++          (e.getAttribute("href") === GOOGLE_AI_ENTRY
++            ? { url: GOOGLE_AI_ENTRY, query: "" }
++            : null)
+         : null;
+     for (const attr of [...e.attributes]) {
+       if (
+diff --git a/src/features/sync.ts b/src/features/sync.ts
+index e03dbe3..2b9e88f 100644
+--- a/src/features/sync.ts
++++ b/src/features/sync.ts
+@@ -55,11 +55,21 @@ export class DeviceSynchronizer {
+       ?.value;
+     let snapshots = await this.cloud.list(session);
+     const pending = snapshots.filter((s) => !seen[s.id]).reverse();
+-    for (const snapshot of pending) {
++    for (const snapshot of pending.slice(0, 10)) {
+       const data = await this.cloud.read(session, snapshot.id);
+       await restoreBackup(this.repository, data, "sync");
+       seen[snapshot.id] = await fingerprint(data);
++      // Persist each successful merge. A later failed download/rate limit must
++      // not force repeated downloads or create an endless recovery loop.
++      await this.repository.preferences.put({
++        key: seenKey,
++        value: JSON.stringify(seen),
++      });
+     }
++    if (pending.length > 10)
++      throw new Error(
++        `Récupération en cours : ${pending.length - 10} archive(s) restantes. Reprise à la prochaine vérification ; aucune synchronisation complète annoncée.`,
++      );
+     // Export this exact data, so an edit made during an upload stays dirty and
+     // will be sent on the next pass. A failed transfer never advances baseline.
+     const data = await this.repository.snapshot();
+diff --git a/src/styles.css b/src/styles.css
+index f80a76a..dab57c0 100644
+--- a/src/styles.css
++++ b/src/styles.css
+@@ -2316,11 +2316,8 @@ textarea {
+ 
+ /* Échelle mobile demandée : davantage de contenu visible sans geste de zoom. */
+ @media (max-width: 767px) {
+-  html {
+-    zoom: 0.7;
+-  }
++  /* Le 70 % reste limité au document, sans réduire le texte du shell. */
+   .reading-surface-expanded {
+-    zoom: calc(1 / 0.7);
+     height: 100dvh;
+   }
+   .reading-surface-expanded .reading-surface-header button {
+@@ -2372,3 +2369,64 @@ textarea {
+   border: 1px solid var(--line);
+   border-radius: 7px;
+ }
++
++.day-card {
++  padding: 22px;
++}
++.day-slots {
++  display: flex;
++  flex-wrap: wrap;
++  gap: 8px;
++  margin: 14px 0;
++}
++.day-slots span {
++  padding: 8px 10px;
++  border: 1px solid var(--line);
++  border-radius: 6px;
++  font-size: 12px;
++}
++.day-slots .included {
++  font-weight: 700;
++}
++.day-status {
++  font-weight: 700;
++}
++.day-history {
++  display: grid;
++  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
++  gap: 16px;
++  margin: 18px 0;
++}
++.day-import-preview {
++  padding: 14px;
++  border: 1px solid var(--line);
++  border-radius: 7px;
++  margin: 12px 0;
++}
++.hash-text {
++  overflow-wrap: anywhere;
++  word-break: break-all;
++}
++.day-view .quiet-panel {
++  margin-bottom: 14px;
++}
++.google-ai-dialog textarea {
++  width: 100%;
++  font-size: 16px;
++}
++
++.parent-google-questions {
++  padding: 10px 16px;
++  max-height: 25vh;
++  overflow: auto;
++  flex-shrink: 0;
++}
++.parent-google-questions summary {
++  cursor: pointer;
++  min-height: 44px;
++  display: flex;
++  align-items: center;
++}
++.parent-google-questions button {
++  margin: 5px;
++}
+diff --git a/tests/data.unit.test.ts b/tests/data.unit.test.ts
+index 96e9a05..e8f2496 100644
+--- a/tests/data.unit.test.ts
++++ b/tests/data.unit.test.ts
+@@ -95,7 +95,7 @@ describe("Import et stockage réel (IndexedDB émulé)", () => {
+     expect((await db.states.get(`${e.id}:edition`))?.favorite).toBe(true);
+     expect((await db.states.get(`${e.id}:edition`))?.read).toBe(true);
+   });
+-  it("migration v1 vers v3 sans perte", async () => {
++  it("migration v1 vers v4 sans perte", async () => {
+     const name = `migration-${crypto.randomUUID()}`;
+     const legacy = new Dexie(name);
+     legacy.version(1).stores({
+diff --git a/tests/e2e/app.spec.ts b/tests/e2e/app.spec.ts
+index 795ac33..31d5bf9 100644
+--- a/tests/e2e/app.spec.ts
++++ b/tests/e2e/app.spec.ts
+@@ -244,7 +244,7 @@ test("sécurité : parent, stockage, fetch, ressources, top et popups bloqués",
+   );
+   expect(await page.locator("body").getAttribute("data-pwned")).toBeNull();
+   expect(network).toEqual([]);
+-  expect(page.url()).toBe("http://127.0.0.1:4173/");
++  expect(page.url()).toBe(`${test.info().project.use.baseURL}/`);
+   expect(page.context().pages()).toHaveLength(1);
+ });
+ test("responsive, thèmes et accessibilité sur six largeurs", async ({
+diff --git a/tests/e2e/google-ai.spec.ts b/tests/e2e/google-ai.spec.ts
+index 9c3e905..ebb6fe4 100644
+--- a/tests/e2e/google-ai.spec.ts
++++ b/tests/e2e/google-ai.spec.ts
+@@ -184,7 +184,10 @@ test("Google IA : mode sûr inchangé, handshake exact, confirmation et annulati
+   ).toBeFocused();
+   await page.keyboard.press("Shift+Tab");
+   await expect(
+-    dialog(page).getByRole("button", { name: "Ouvrir", exact: true }),
++    dialog(page).getByRole("button", {
++      name: "Ouvrir Google Mode IA",
++      exact: true,
++    }),
+   ).toBeFocused();
+   await page.keyboard.press("Tab");
+   await expect(
+@@ -261,7 +264,7 @@ test("Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles
+           );
+         }
+       });
+-      foreign.srcdoc = `<script>window.replies=0;addEventListener('message',()=>window.replies++);parent.postMessage(${JSON.stringify(capability)},'*');parent.postMessage(${JSON.stringify(open)},'*');</script>`;
++      foreign.srcdoc = `<script>window.replies=0;addEventListener('message',()=>window.replies++);parent.postMessage(${JSON.stringify(capability)},'*');parent.postMessage(${JSON.stringify(open)},'*');parent.postMessage({type:'journal360:google-ai:capability-request',version:2},'*');parent.postMessage({type:'journal360:google-ai:question-request',version:2,question:'Texte tiers'},'*');</script>`;
+       document.body.append(foreign);
+       window.postMessage(open, "*");
+     },
+@@ -269,7 +272,7 @@ test("Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles
+   );
+   await expect(page.locator("#foreign-reader")).toHaveAttribute(
+     "data-events",
+-    "2",
++    "4",
+   );
+   expect(
+     await page
+@@ -305,6 +308,22 @@ test("Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles
+     { ...request(), type: "unknown" },
+     { ...request(), extra: true },
+     request({}),
++    {
++      type: "journal360:google-ai:question-request",
++      version: 2,
++      question: "x".repeat(2001),
++    },
++    {
++      type: "journal360:google-ai:question-request",
++      version: 2,
++      question: "Public",
++      url: validUrl,
++    },
++    {
++      type: "journal360:google-ai:question-request",
++      version: 3,
++      question: "Public",
++    },
+     ...invalid.map(request),
+   ]);
+   await expect(dialog(page)).toHaveCount(0);
+diff --git a/tests/googleAi.unit.test.ts b/tests/googleAi.unit.test.ts
+index 9ad7660..a16c2b9 100644
+--- a/tests/googleAi.unit.test.ts
++++ b/tests/googleAi.unit.test.ts
+@@ -76,7 +76,10 @@ describe("Google Mode IA : validation fermée", () => {
+       version: 1,
+       url: base + "test",
+     };
+-    expect(parseGoogleAiMessage(capability)).toEqual({ type: "capability" });
++    expect(parseGoogleAiMessage(capability)).toEqual({
++      type: "capability",
++      version: 1,
++    });
+     expect(parseGoogleAiMessage(open)?.type).toBe("open");
+     for (const value of [
+       null,
+diff --git a/docs/JOURNAL360_V6_CHANGES.md b/docs/JOURNAL360_V6_CHANGES.md
+new file mode 100644
+index 0000000..5c09878
+--- /dev/null
++++ b/docs/JOURNAL360_V6_CHANGES.md
+@@ -0,0 +1,69 @@
++# Audit avant mutation — 14 octobre 2026
++
++Base inspectée : b1fc804, journal360-mobile 1.1.1 ; archive de référence non fournie, comparaison des observations uniquement. Aucun fichier V6 producteur fourni.
++
++| Composant/fichier | Existant inspecté | Contrainte et couverture initiale | Risque | Décision |
++|---|---|---|---|---|
++| package/lock/CI | React 19, Dexie 4, Zod 4, Vite, Workbox, Supabase, tests locaux | Verrou installé, versions réellement listées ; baseline à exécuter | migrations/dépendances | Pas de nouvelle dépendance |
++| model.ts | UUID, familyId, révision locale ; aucun champ V6 | Relations états/notes UUID, tests unitaires | Perte de sémantique V6 | Champs optionnels dédiés |
++| db.ts | schéma Dexie v3 et transactions | Migration v1→v3 déjà couverte | Downgrade impossible sans export | v4 additive, aucun effacement |
++| import.ts | JSON détaché, SHA, générique, sources multi-formes | 10 MiB/20 fichiers/100 MiB ; tests d’intégrité | Timestamp tronqué, métadonnées externes ignorées | Validation V6 et instant conservé |
++| commitImport | famille seulement par choix manuel | Tests de version/doublon, pas de modèle jour | Concurrence, branches, cumul incomplet | Transaction, clé de jour et contrôle pur |
++| ImportDialog | ignore/keep/version, prévisualisation | Par fichier, pas de rollback de lot complet | Import partiel/quotas | Lot atomique, proposition de journée |
++| App.tsx | cartes par version, recherches/notes/favoris | E2E et axe ; états référencés UUID | Double comptage de versions | Journées V6 groupées, legacy inchangé |
++| Reader.tsx | interactif automatique, choix safe persistant, texte/zoom 70–150 % | E2E iframe/zoom/offline | Navigation propre du cadre possible | Conserver sandbox, zoom jusqu’à 200 % |
++| googleAi.ts | protocole v1 search udm=50, source/origin vérifiés, confirmation | 48 cas unitaires et E2E hostiles historiques | Pas de /ai ni question seule | v2 parallèle, copie et entrée officielle |
++| import/iframe | CSP restrictive et sanitization | Aucune permission popup/same-origin/forms | Scripts actifs par défaut | Aucun élargissement ; documenter limite |
++| backup.ts | ZIP non chiffré, checksums, restauration transactionnelle | Tests adversariaux et fusion | Manifeste 15 MiB, 1000 éditions/1002 entrées | Compatibilité V6 additive, limiter clairement |
++| sync.ts | ZIP complet, empreinte et branches inconnues | Serveur simulé, pas de cloud autorisé | 100 snapshots listés, taille/batterie/coûts | Mesures locales 30/180/365 jours ; aucune purge |
++| cloud/API | bucket privé, JWT, signatures, code HMAC | Tests historiques séparés de cette mission | Rate-limit mémoire par instance, secret d’archive | Aucune connexion/procédure distante |
++| sw.ts/PWA | shell offline, share target/file handlers | E2E service worker et mise à jour | Limites OS iOS/Android physiques | Conserver ; physique NON TESTÉ |
++| vercel.json | SPA/headers/CSP ; Git main déploie | Baseline source uniquement | Push déclencherait production | Aucun push/déploiement, branche locale |
++| docs/SECURITY | limites connues et preuves antérieures | Ne certifie pas les tests de cette mission | Confusion historique/actuel | Rapports datés et expurgés distincts |
++| .env.local | Existence connue, fichier ignoré | Aucun contenu affiché/copied ; hors copie de test | Exposition historique du ZIP inconnue | Aucune rotation sans exposition confirmée/accord |
++
++Séparation : tableau = inspection statique ; références Google/MDN/Dexie consultées ; baseline exécutée ensuite en copie sans secrets. Pas de mesure ni d’essai physique implicite.
++
++## Résultat local et décisions
++
++Version locale `2.0.0-local.1`, branche de travail séparée `codex/journal360-v6-local`, base `b1fc804`. Pas de nouvelle dépendance ; lock modifié uniquement pour les versions racine. Pas de refonte globale ni d’écriture dans main.
++
++### P0 réalisé
++
++- `src/data/editorial.ts` (nouveau), `model.ts`, `db.ts` : contrat V6 optionnel, dates réelles, instant ISO intact, UUID distincts, schéma4 additif.
++- `src/data/day.ts` (nouveau) : contrôle pur des cumuls, IDs d’événements, pertes/corrections, branches de même révision, classement déterministe et dernière COMPLETE privilégiée.
++- `src/features/import.ts`, `ImportDialog.tsx` : proposition de journée, avertissements visibles, idempotence SHA/jour, UUID déterministes multiappareil, option indépendante/manuelle et transaction de lot.
++- `src/features/googleAi.ts`, `Reader.tsx`, `GoogleAiDialog.tsx` (nouveau) : v1 préservé, v2 question seule, entrée officielle, correction/copie séparées, confirmation et validation du cadre courant, repli parent sûr sans JS.
++- `src/features/backup.ts` : ZIP2 pour nouvelles données, ZIP1 conservé en lecture, plafonds adaptés aux1095 versions testées ; export vérifie les limites de restauration. Correction de deux pertes reproduites par nouvelles unités : versions legacy volontairement identiques sous UUID différents conservées à la restauration ; collision de notes inter-éditions conserve chaque ancrage. Conflits répétés déterministes au lieu de nouveaux UUID infinis.
++- `src/features/cloud.ts`, `sync.ts`, `api/backup.mjs` : pagination au-delà100, limite5000 explicite, ancienne réponse100 non certifiée complète, reprise enregistrée après chaque ZIP et lot10. Aucun appel cloud réel.
++
++### P1 réalisé
++
++- `src/features/DayView.tsx` (nouveau), `src/App.tsx` : cartes par journée, trois créneaux déclarés, historique, lecture historique/fiable, recherche/rubrique quotidienne, nature d’article si fournie et notes de toutes les versions. Anciennes notes/favoris/recherche longitudinale conservés.
++- `src/features/sourceUrl.ts` (nouveau) : liens source HTTP(S) validés à l’indexation et au rendu parent.
++- `src/features/diagnostics.tsx` (nouveau) : journal technique borné expurgé exportable volontairement dans Réglages ; aucun envoi de télémétrie.
++- `src/styles.css`, Reader : suppression du zoom global70% du shell (lisibilité/focus mobile) ; le HTML garde70% par défaut, réglable jusqu’à200%. Styles des journées, historique, empreintes et dialogue. Tests responsive et axe conservés.
++- `src/config.ts`, package/lock : version locale explicite ; script de mesure dédié `test:performance`.
++- `scripts/serve.mjs`, `playwright.config.ts`, `tests/support/block-network.mjs` : preview sans cloud/secrets par défaut, port isolé4181, proxy bloquant l’externe, Chromium/WebKit/Pixel7 simulé.
++- `tests/helpers/v6.ts`, `v6.unit.test.ts`, `v6-sync.unit.test.ts`, `backup-api.unit.test.ts`, `v6.performance.test.ts`, `vitest.performance.config.ts`, `tests/e2e/v6.spec.ts` : fixtures synthétiques et preuves locales nouvelles.
++- `tests/data.unit.test.ts`, `tests/googleAi.unit.test.ts`, `tests/e2e/app.spec.ts`, `tests/e2e/google-ai.spec.ts` : attentes adaptées au port isolé, schéma4, représentation interne du handshake et nouveaux boutons ; scénarios historiques conservés et tests hostiles v2 ajoutés.
++- `.gitignore` : dépendances partagées ignorées même sous forme de symlink ; preuves expurgées explicitement conservables.
++- Cinq rapports JOURNAL360_V6 et pièces dans docs/evidence/v6 ; anciennes captures de référence restaurées après les tests, nouvelles captures isolées.
++
++### Limites, inconvénients et reports motivés
++
++- Statut de cumul conservateur, pas vérité éditoriale ; pertes déclarées restent à vérifier. Les métadonnées stockées sont une observation à l’import, la décision courante est recalculée.
++- Les notes restent par version, ce qui préserve leur sens mais oblige à ouvrir l’ancienne version pour la modifier. Pas de migration sémantique automatique, ni état workflow supplémentaire pour décisions.
++- Choix de branche lisible, pas de certification manuelle persistante. Pas de calendrier, classement par score non fourni, full-text/virtualisation/worker ou pont de thème superflus. Les onglets internes restent au producteur ; pas de duplication dans le shell.
++- Aperçu d’un lot peut tenir compte des candidats précédents ; un candidat ensuite choisi indépendant peut changer les preuves disponibles. Le contrôle au commit puis au rendu utilise les versions effectivement enregistrées ; vérifier l’historique après import atypique.
++- Snapshots toujours complets et immuables : amplification stockage/réseau et reprise lente d’un appareil neuf. Les mesures annuelles sont favorables en temps local mais lourdes en RAM ; pas validation mobile. Aucun GC/purge, delta-sync ou nouveau service payant.
++- Cap5000 inventaire /4000 éditions /150 MiB décompressé explicite : pas de promesse de conservation cloud illimitée. Le coût exact, les quotas du compte et la latence réseau ne sont pas mesurés.
++- Téléphone/tablette physique, Firefox, Safari iOS manuel, vrai HTML V6 et test cloud réel NON TESTÉS. Chiffrement export absent. Risque de navigation propre du cadre interactif préexistant ouvert.
++- Ingestion depuis un chat/workflow : P2 future uniquement sur demande, après étude auth/replay/quota/XSS/intégrité/confidentialité/coût/rollback. Aucun endpoint public créé, aucune automatisation fictive.
++- Durcissement code partagé/rate limit distribué, rotation/révocation et synchronisation de migration doivent faire l’objet d’une autorisation distante séparée. `.env.local` non affiché/copied/modifié ; exposition éventuelle de l’archive à vérifier par le propriétaire, pas présumée.
++
++## Écarts et corrections pendant validation
++
++Baseline isolée :30/32 E2E passants initialement ; deux assertions de port fixe corrigées dans la copie de test puis les deux scénarios passants. Un premier run étendu a été interrompu après24 succès car le motif mobile sélectionnait le répertoire `v6-worktree` ; matcher limité au nom de fichier ensuite. Première suite V6 :12/15 succès, trois échecs du sélecteur de textarea ; rôle accessible corrigé, reprise3/3 réussie. Un test diagnostic a utilisé une DB fermée : ouverture explicite corrigée. Le test de downgrade supposait un rejet ; constat réel Dexie décrit dans MIGRATION, assertion corrigée sans changer le comportement de l’application. Ces échecs intermédiaires ne sont pas dissimulés dans un PASS de première exécution.
++
++Voir TEST_REPORT pour les résultats finaux et SECURITY_REVIEW pour les limites du modèle de confiance. Aucun commit/push/déploiement ; les autorisations antérieures ont été remplacées pour cette mission par la contrainte locale explicite.
+diff --git a/docs/JOURNAL360_V6_COMPATIBILITY_MATRIX.md b/docs/JOURNAL360_V6_COMPATIBILITY_MATRIX.md
+new file mode 100644
+index 0000000..4a2e964
+--- /dev/null
++++ b/docs/JOURNAL360_V6_COMPATIBILITY_MATRIX.md
+@@ -0,0 +1,67 @@
++# Compatibilité JOURNAL 360 Mobile V2 / éditions V6
++
++Évaluation locale du 14 octobre 2026, base `b1fc804`, version de travail `2.0.0-local.1`. **PARTIAL pour un fichier V6 réel : aucun HTML du producteur ni archive veille(1).zip n’a été fourni.** Les fixtures sont explicitement synthétiques. L’inspection du dépôt 1.1.1 confirme les mécanismes décrits dans la mission ; elle ne prouve pas l’identité de la production.
++
++## Producteur → représentation indexée
++
++| Champ HTML JSON | Importeur / stockage | Validation et limites |
++|---|---|---|
++| `title` | titre de l’édition | texte borné, rendu React échappé |
++| `editionDate` | `date` | journée civile YYYY-MM-DD valide, pas date de téléchargement ; Paris pour affichage |
++| `sourceVerifiedAt` | même chaîne exacte | ISO Z/offset valide ou date legacy ; invalide omis avec avertissement ; affichage Europe/Paris |
++| `schemaVersion:2` | `schemaVersion:2` | optionnel ; autre version ou métadonnées invalides : quarantaine des nouvelles métadonnées seulement |
++| `editionId` | `externalEditionId` | ≤200 caractères ; regroupement automatique uniquement si égal à `journal360-day-` + date exacte |
++| clé logique | `dayKey` | distincte du UUID local, indexée ; aucune fusion automatique legacy par titre/date |
++| `revision` | `externalRevision` | entier 1..1 000 000 ; distinct du compteur local `revision` |
++| `slotsIncluded` | même champ | sous-ensemble unique de 08:00,16:00,21:00, ordre normalisé ; absence ≠ preuve de cumul |
++| `cumulativeStatus` | `declaredCumulativeStatus` | COMPLETE/PARTIAL/UNKNOWN ; `cumulativeStatus` indexé provisoire, contrôle recalculé à l’affichage avec toutes les versions reçues |
++| `missingSlots` | même champ | mêmes créneaux, ≤3 uniques ; ne remplit jamais un trou |
++| `retiredEventIds` | même champ | extension optionnelle ≤2000 IDs ≤200 caractères ; retrait déclaré exige encore vérification |
++| `items[].id` | `articles[].id` | identifiant local de l’article, doublons signalés/ignorés, ≤200 caractères |
++| `items[].event_id` | `eventId` | identifiant explicite de l’événement ; pas d’inférence sémantique |
++| titre/rubrique/date | article indexé | dates calendaires validées ; article invalide omis avec avertissement, original intact |
++| summary/plain/detail/steps | texte indexé | résumé exécutif « En clair » repris ; rien généré par le lecteur |
++| sources URL / paire / objet | URL source indexée | HTTP(S) validée, pas userinfo, hôte local/privé littéral, IPv6 ou port arbitraire ; revalidation au rendu |
++| `kind` | nature optionnelle | news/business/hypothesis/technical/decision ; absence affichée « nature non précisée », jamais comptée comme actualité attestée |
++| `firstSeenSlot` | créneau optionnel | première apparition déclarée seulement, jamais déduite de l’heure d’import |
++| champs inconnus | ignorés par l’index | conservés dans l’original octet pour octet, pas supprimés du HTML |
++
++Le JSON n’est jamais exécuté. L’HTML original n’est jamais injecté dans le DOM parent. Limites inchangées : 10 MiB par HTML, 20 fichiers/100 MiB par sélection, 2000 articles indexés. Dépassement du nombre d’articles produit un avertissement explicite ; aucune fabrication d’article dans un créneau vide.
++
++## Identité et sélection de journée
++
++Chaque version garde un UUID et un original SHA-256. Pour V6 canonique, UUID de famille dérivé de `dayKey`, UUID de version dérivé de `dayKey+SHA` : deux appareils convergent sur la même identité pour les mêmes octets. Même révision + SHA différent = deux branches conservées. L’option indépendante conserve une copie séparée. Les anciennes notes/favoris restent ancrés à leurs UUID/article.id ; aucun transfert implicite entre versions ni jours.
++
++Le contrôle compare les event_id à l’union des révisions antérieures disponibles. Il signale pertes, trous de créneaux/révisions, branches et PARTIAL déclaré. COMPLETE exige des IDs comparables et un cumul déclaré cohérent avec la chaîne reçue. Sans preuves, UNKNOWN. La dernière COMPLETE disponible prime sur une PARTIAL plus récente. Les contrôles portent sur les fichiers reçus, **pas sur la vérité éditoriale**. Le retrait déclaré reste à vérifier. L’arbitrage consiste à consulter chaque branche ; pas de certification manuelle persistante ajoutée.
++
++## Exemple minimal synthétique
++
++```json
++{
++  "schemaVersion": 2,
++  "title": "Fixture du 14 octobre",
++  "editionDate": "2026-10-14",
++  "editionId": "journal360-day-2026-10-14",
++  "revision": 1,
++  "slotsIncluded": ["08:00"],
++  "cumulativeStatus": "COMPLETE",
++  "missingSlots": [],
++  "sourceVerifiedAt": "2026-10-14T08:07:00+02:00",
++  "items": [{"id":"a","event_id":"event-a","title":"Événement fictif","category":"Science","plain":"Texte de test","sources":["https://example.org/test"]}]
++}
++```
++
++Insérer dans `<script id="editionData" type="application/json">`; le reste du document reste autonome. Fixture exécutable : `tests/helpers/v6.ts`. Signature fonctionnelle locale : schéma2 optionnel + UUID séparés + créneaux explicites + originaux SHA conservés + protocole Google v1/v2 simultané.
++
++## Matrice des formats
++
++| Format | État vérifié | Limites |
++|---|---|---|
++| Démonstrations et JSON legacy présents | PASS, unités et E2E | pas de classement automatique par jour sans métadonnées canoniques |
++| HTML générique sans JSON | PASS, original et rendu | aucun article ni date inventé |
++| V1/V4/V5.2/V5.3 producteurs originaux | NON TESTÉ | non fournis ; compatibilité fondée sur contrat legacy et fixture Google existante, pas certification de toutes ces éditions |
++| V6 synthétique 08/16/21 | PASS | données artificielles, huit thèmes internes et sept sections testés |
++| V6 réel, illustrations réalistes | NON TESTÉ | fichier producteur absent ; pixel PNG embarqué décodé hors ligne, charge 32 KiB aléatoires/version mesurée séparément |
++| JSON malformé / métadonnées invalides | PASS pour cas couverts | repli legacy et avertissement ; octets originaux conservés |
++| ZIP historique format1 | PASS | limites originales validées |
++| ZIP avec données V6 format2 | PASS, aller-retour et base vide | clients 1.1.1 ne savent pas lire format2 ; mise à jour de tous les appareils nécessaire avant synchronisation V6 |
+diff --git a/docs/JOURNAL360_V6_MIGRATION_AND_ROLLBACK.md b/docs/JOURNAL360_V6_MIGRATION_AND_ROLLBACK.md
+new file mode 100644
+index 0000000..d998b8b
+--- /dev/null
++++ b/docs/JOURNAL360_V6_MIGRATION_AND_ROLLBACK.md
+@@ -0,0 +1,35 @@
++# Migration et retour arrière V6
++
++Travail **local uniquement**, 14 octobre 2026. Original `journal360-pwa`, branche main, HEAD `b1fc804f9767a97afe789d93323846eb57330df6` conservé. Worktree de développement : `../journal360-v6-worktree`, branche `codex/journal360-v6-local`, même point de départ, modifications non commitées. Pas de production ni de base personnelle ouverte par les tests.
++
++## Avant toute activation réelle
++
++1. Exporter chaque bibliothèque réelle avec le client qui la comprend ; conserver les originaux, notes et favoris dans un emplacement privé. Les ZIP sont non chiffrés. Conserver aussi un export antérieur 1.1.1/format1 pour les données historiques.
++2. Vérifier un export dans une origine/profil séparé avec cette version, nombre d’éditions/notes/états et SHA des originaux. Ne pas vider IndexedDB ni le cache de l’application utilisée quotidiennement.
++3. Tester les HTML du vrai producteur V6, les fichiers illustrés et les appareils physiques. Ces essais restent NON TESTÉS dans cette mission.
++4. Mettre à jour ensemble les appareils avant de produire/synchroniser des ZIP format2. Le vieux client n’en comprend pas les métadonnées et rejette le format2. Ne pas lancer une ancienne PWA sur une bibliothèque V6 active en supposant une compatibilité complète.
++5. Si déploiement ultérieur autorisé, client et API de pagination doivent être coordonnés ; le nouveau client détecte la réponse potentiellement tronquée d’un ancien serveur à100 snapshots et signale une erreur explicite. Pas de purge pour contourner l’erreur.
++
++## Migration additive
++
++Dexie v4 ajoute seulement les index `dayKey`, `externalEditionId`, `[dayKey+sha256]` à editions. Tables v1–v3, UUID et enregistrements inchangés. Aucun rétroclassement automatique des anciennes éditions. La date/titre legacy ne suffit pas à fusionner des journées. Les métadonnées V6 ne sont ajoutées qu’aux nouveaux imports valides, ou rattachement manuel explicite de même date.
++
++Les UUID V6 déterministes ne remplacent pas les UUID historiques. SHA de l’original = identité du contenu ; révision externe = déclaration du producteur ; compteur local = ordre d’ajout. Toute nouvelle version garde ses propres octets. Déclarer une version COMPLETE ne supprime pas ses ancêtres. Le champ `supersedes` est informatif ; la sélection fiable est recalculée, surtout après réception hors ordre.
++
++Import de lot : une transaction IndexedDB couvre éditions/originaux/pending, aucun réseau dedans ; échec simulé au second fichier → zéro écriture du lot. ZIP : inspection complète avant fusion transactionnelle ; collisions conservées et répétitions idempotentes. Migration v1→v4, v3→v4, restauration vide, notes/favoris et1095 originaux vérifiés par les tests locaux.
++
++Archives : format1 toujours lu ; format2 écrit dès présence de métadonnées V6, afin de ne pas perdre silencieusement les champs dans un client ancien. 4000 éditions maximum, pas stockage illimité ; aucune garantie de mémoire mobile à cette limite. Le manifeste64 MiB et total150 MiB sont plafonnés, fichier10 MiB et cloud50 MiB inchangés. Message d’erreur avant export impossible à restaurer.
++
++## Retour du code
++
++La copie main d’origine est le point de retour immédiat : elle n’a reçu aucune modification. Le worktree séparé peut rester pour analyse ; aucun reset, nettoyage global ou réécriture d’historique nécessaire. Les modifications sont documentées dans CHANGES et une pièce `evidence/v6/source-changes.patch` est produite pour revue locale. Son application puis inversion sur une copie temporaire du commit de base sont contrôlées, sans toucher aux fichiers de l’utilisateur.
++
++Pour revenir fonctionnellement après une éventuelle activation future : arrêter les écritures, exporter avec le nouveau lecteur, garder le nouveau lecteur disponible pour restaurer ses ZIP2, revenir au bundle source précédent après autorisation de déploiement, et vérifier le service worker. L’E2E couvre mise à jour du shell avec original/favori conservés ; un aller-retour réel entre ces deux releases sur iOS n’a pas été effectué.
++
++## Retour de la base / des index
++
++**Une réversion du code n’abaisse pas la version native IndexedDB.** Le test a d’abord supposé à tort un VersionError : l’exécution montre que **Dexie4.4.6 réessaie sans version imposée et ouvre la base additive plus récente**. Le test final utilise l’ancien schéma3 sur la base4, lit le dayKey, modifie archived, réouvre le nouveau schéma et vérifie original/nouveaux champs intacts. C’est une compatibilité structurelle testée, pas une compréhension de V6 par l’ancien code.
++
++Ne pas supprimer/recréer l’index ou la base en place pour obtenir v3. Conserver v4 est la voie prudente après rollback du shell. Si un ancien environnement exige réellement v3 : utiliser un profil/origine distinct, restaurer un export format1 pré-migration pour les seules données historiques ; garder le profil v4 et son ZIP2 pour toutes les données V6. Conversion V6→legacy avec conservation de l’index/identités nécessiterait un outil dédié et une validation séparée ; elle n’est pas implémentée ni simulée comme sans perte.
++
++Aucune restauration sur la base personnelle, modification de secrets, RLS, Vercel ou Supabase réel. Autorisation séparée requise pour commit, push, déploiement et opérations distantes ; cette mission ne les réalise pas.
+diff --git a/docs/JOURNAL360_V6_SECURITY_REVIEW.md b/docs/JOURNAL360_V6_SECURITY_REVIEW.md
+new file mode 100644
+index 0000000..a657a91
+--- /dev/null
++++ b/docs/JOURNAL360_V6_SECURITY_REVIEW.md
+@@ -0,0 +1,61 @@
++# Revue de sécurité locale V6
++
++14 octobre 2026. Statut global **PARTIAL** : contrôles locaux exécutés, aucune certification de production ni accès au cloud réel. Architecture conservée : Vercel sert le shell ; IndexedDB garde les originaux privés ; Supabase garde des ZIP privés si l’utilisateur active la synchronisation.
++
++## Frontières de confiance
++
++L’import est non fiable : parsing DOM détaché sans exécution, JSON validé, React échappe les textes, HTML seulement dans `iframe.srcdoc`. Original distinct et intact. Le mode interactif reste le défaut demandé ; mode sûr sans scripts et mode texte restent disponibles. Sandbox **exactement** `allow-scripts` en interactif, vide en sûr. Aucun allow-same-origin, popup, top-navigation ou forms ajouté. `vercel.json`, CSP du shell et directives CSP du cadre inchangés. Ressources distantes/connect/object/frame/form bloqués ; images data/blob conservées.
++
++**Risque préexistant ouvert** : un script importé peut tenter de naviguer son propre cadre. CSP/sandbox ne constituent pas une garantie générale d’interdiction de sa propre navigation ; les messages d’une origine non opaque sont refusés ensuite, mais cela n’annule pas une éventuelle requête externe du cadre. Aucune garantie « HTML hostile sans aucun réseau possible » n’est donnée en interactif. Le mode sûr est recommandé pour les fichiers non fiables. Une suppression/réécriture générale des scripts ou une permission sandbox supplémentaire aurait cassé des interactions ; pas de telle modification ici. Le scénario legacy `location.replace` et cette limite sont documentés dans SECURITY.md ; pas de nouvelle mitigation prétendument universelle.
++
++Les sources sont ouvertes dans l’UI parent sur lien explicite HTTP(S), rel noopener noreferrer, après validation (y compris données anciennes). Ce contrôle d’URL n’est pas une analyse de réputation, ni une protection contre DNS rebinding/redirection servie par une source publique. Le parent ne précharge pas ces liens. Original téléchargé puis ouvert hors PWA : les restrictions du lecteur ne s’y appliquent plus.
++
++## Pont Google
++
++Avant tout parsing : `event.source === iframeRef.current?.contentWindow`, origine opaque `null`, mode interactif courant. Une origine `null` seule n’authentifie rien. Fenêtres étrangères et anciens cadres ignorés. La requête en attente est liée à édition/mode/révision du cadre/WindowProxy et ne peut être remplacée par un deuxième message.
++
++Protocole v1 conservé :
++
++```json
++{"type":"journal360:google-ai:capability-request","version":1}
++{"type":"journal360:google-ai:capability","version":1,"enabled":true}
++{"type":"journal360:google-ai:open-request","version":1,"url":"https://www.google.com/search?hl=fr&udm=50&q=Question"}
++```
++
++URL search littérale ≤4096 caractères, https, hôte www.google.com exact, chemin /search exact, pas userinfo/port/fragment/URL réécrite. Seuls hl=fr optionnel, udm=50 et q non vide ≤2000 sont permis ; duplications, redirects, contrôles, UTF-8/percent encoding invalides, bidi refusés. `/ai` accepté uniquement comme constante exacte sans paramètres. Pas d’URL arbitraire.
++
++Protocole v2 parallèle :
++
++```json
++{"type":"journal360:google-ai:capability-request","version":2}
++{"type":"journal360:google-ai:capability","version":2,"enabled":true,"actions":["copy-question","open-entry"],"entryUrl":"https://www.google.com/ai","maxQuestionLength":2000}
++{"type":"journal360:google-ai:question-request","version":2,"question":"Question publique à vérifier"}
++```
++
++Clés exactes et version numérique exigées. Question simple non vide ≤2000, sans contrôles ni bidi. Réponse `postMessage(...,"*")` uniquement au WindowProxy explicitement vérifié : origine opaque non adressable par origine textuelle ; aucun secret envoyé. Aucun appel externe depuis `message`.
++
++Dialogue parent accessible avec aperçu/modification/Annuler. v1 : bouton Ouvrir transmet uniquement q de la demande validée ; pas de notes ajoutées. v2 : copie et ouverture de l’entrée /ai sont indépendantes et exclusivement sur geste humain. L’entrée ne contient jamais la question dans son URL. Presse-papier indisponible → sélection manuelle ; offline → ouverture refusée ; popup indisponible → lien explicite ; noopener peut renvoyer null même si ouverture réussie, sans faux diagnostic. Double ouverture du bouton neutralisée après demande. Boutons marqués des HTML capturés par le pont ; le marquage « public » n’est pas une preuve : avertissement et correction possibles. En mode sûr/texte, liste de questions extraite statiquement côté parent ; pas d’exécution ni de nouveau privilège.
++
++Aucune donnée PWA n’est assemblée à la question : notes, contacts, architecture, tokens et statistiques absents du pont. Un auteur HTML peut déjà avoir inclus du texte sensible dans sa propre question ; l’UI ne peut classifier sa confidentialité. L’utilisateur la vérifie avant copie/ouverture.
++
++L’aide officielle donne l’entrée /ai, sans contrat de préremplissage udm=50 : [Google Mode IA](https://support.google.com/websearch/answer/16011537?hl=fr-FR). Support du lien historique conservé mais non garanti par Google.
++
++## Stockage, archives et synchronisation
++
++ZIP **non chiffrés**, contenant originaux et notes ; garder les exports privés. SHA-256 vérifie l’intégrité interne, pas l’authenticité d’un producteur (un attaquant peut réécrire manifeste et empreintes). Entrées/tailles/chemins/manifeste/UUID/références contrôlés, restauration transactionnelle, collisions déterministes et notes conflictuelles conservées. Plafonds : 4000 éditions, manifeste64 MiB, original10 MiB, total décompressé150 MiB, upload cloud50 MiB. Échec clair sans suppression automatique. Les diagnostics n’exportent que code whitelisté, UUID, date (200 entrées), jamais message/stack/chemin/note/URL/session ; préférences exclues des snapshots.
++
++API existante : getUser authentifie le JWT ; chemin Storage préfixé par UID vérifié, URLs signées limitées, bucket privé et RLS inchangés. Pagination testée par mocks uniquement. Rate limit existant en mémoire : accès5/min/IP, backups60/min/UID, **non distribué**, remise à zéro possible avec nouvelle instance/éviction de map. Le code partagé peut avoir 1..64 caractères ; sa force effective n’est pas connue. HMAC dérivé avec secret serveur conservé. Aucune prétention de durcissement distribué ou d’audit du compte réel.
++
++Avant production : choisir un code réellement robuste ; évaluer limite distribuée si abus observés ; procédure propriétaire de rotation : inventaire appareils, export vérifié, changer secret/code et mot de passe dérivé de façon coordonnée côté serveur/compte, révoquer sessions serveur, reconnecter appareils, tester refus ancien code et restauration. **Aucune de ces opérations effectuée.** Ne jamais changer uniquement le secret serveur en laissant le compte avec un ancien mot de passe dérivé.
++
++Historique illimité : aucune purge. Inventaire paginé jusqu’à5000, erreur explicite au-delà. Ancien serveur renvoyant exactement100 sans pagination → erreur de compatibilité, jamais faux inventaire complet. Backfill limité10 ZIP/cycle, progression enregistrée après chaque fusion ; pas de succès final si reste du travail. Auth/rate-limit/quota peuvent ralentir la reprise, pas de garantie de temps réel.
++
++Les exports chiffrés sont reportés : concevoir ultérieurement enveloppe versionnée, AES-GCM authentifié, KDF salée, paramètres bornés et récupération documentée ; ni clé intégrée ni chiffrement annoncé aujourd’hui.
++
++## Secrets et production
++
++`.env.local` présent dans le dépôt source mais ignoré, pas dans le worktree ni la copie de baseline ; contenu jamais affiché/copied/modifié. L’archive citée dans la mission pourrait contenir ce fichier ; son exposition n’est pas établie ici. Le propriétaire doit vérifier à qui elle a été partagée ; si exposition confirmée, rotation séparément autorisée. Aucun HTML privé ajouté aux assets publics, aucune ingestion automatique, aucun appel Supabase réel, aucun commit/push/déploiement/configuration distante.
++
++Proxy de tests bloque le réseau externe ; les faux Google sont interceptés localement ; API preview désactivée par défaut. Dépendances production : audit final0 vulnérabilité, sans équivaloir à une preuve d’absence de vulnérabilité. Voir rapport des tests pour les scénarios effectivement exécutés.
++
++Références consultées : [srcdoc](https://developer.mozilla.org/en-US/docs/Web/API/HTMLIFrameElement/srcdoc), [iframe](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe), [éviction du stockage](https://developer.mozilla.org/en-US/docs/Web/API/Storage_API/Storage_quotas_and_eviction_criteria), [Dexie upgrade](https://dexie.org/docs/Version/Version.upgrade/). Le stockage persistant demandé au navigateur n’empêche pas une suppression manuelle ; l’hébergement HTTPS ne sauvegarde pas IndexedDB.
+diff --git a/docs/JOURNAL360_V6_TEST_REPORT.md b/docs/JOURNAL360_V6_TEST_REPORT.md
+new file mode 100644
+index 0000000..dcfa2bc
+--- /dev/null
++++ b/docs/JOURNAL360_V6_TEST_REPORT.md
+@@ -0,0 +1,106 @@
++# Rapport de validation V6 — 14 octobre 2026
++
++**État global : PARTIAL.** L’implémentation locale et les suites exécutées passent ; fichiers du producteur réel, appareils physiques et cloud réel restent non validés. Aucun PASS ci-dessous ne désigne la production. Base `b1fc804`, version locale `2.0.0-local.1`, worktree `journal360-v6-worktree`.
++
++## Environnement et isolation
++
++macOS arm64, Node24.21.0 ; React19.3.0, Dexie4.4.6, Zod4.6.7, Supabase JS2.117.3, Vite8.3.4, Vitest5.0.4, Playwright1.64.0, plugin PWA1.3.0. Dépendances installées réutilisées par symlink, graphe du lock comparé à la base : inchangé. `npm ci` **NON EXÉCUTÉ**, aucune installation nécessaire. Versions dans [environment.txt](evidence/v6/environment.txt).
++
++Copie baseline sans .env.local sur port4180 ; worktree sans .env.local sur4181. Preview cloud désactivé ; proxy bloquant l’externe sur4199 pour la suite finale. Les destinations Google sont interceptées et servies par les tests, aucune recherche réelle. IndexedDB des profils Playwright/fake-indexeddb et bases temporaires uniquement ; aucune bibliothèque personnelle ni session propriétaire.
++
++## Baseline réellement exécutée avant mutation
++
++| Commande | Résultat | Preuve |
++|---|---|---|
++| npm run lint | PASS,1,72s | baseline-lint.log |
++| npm run typecheck | PASS,3,45s | baseline-typecheck.log |
++| npm run build | PASS,4,70s | baseline-build.log |
++| npm test | PASS,73 tests,7,60s durée commande | baseline-unit.log |
++| npm run test:e2e | FAIL initial,30/32,70,73s | baseline-e2e.log |
++| reprise des deux scénarios sécurité | PASS,2/2,5,64s | baseline-e2e-port-retry.log |
++| npm audit --omit=dev | PASS,0 vulnérabilité production | baseline-audit-production-dependencies.log |
++| reproduction métadonnées V6 | PASS (problème confirmé) | baseline-v6-reproduction.log |
++
++Les deux échecs baseline étaient des assertions `localhost:4173` alors que le harnais isolé servait4180 ; assertions du harnais adaptées puis les deux scénarios réexécutés. Pas de prétention de32/32 au premier essai. La reproduction montre : métadonnées V6 ignorées, révision externe3 devenue compteur local1 et instant sourceVerifiedAt tronqué à la date. [Résultats baseline](evidence/v6/baseline-results.json).
++
++## Suites finales
++
++| Commande | Statut réel | Preuve |
++|---|---|---|
++| npm run lint | PASS | [sortie](evidence/v6/final-lint.log) |
++| npm run typecheck | PASS | [sortie](evidence/v6/final-typecheck.log) |
++| npm run build | PASS, bundle et service worker générés | [sortie](evidence/v6/final-build.log) |
++| npm test | PASS,128/128,8 fichiers,7,17s | [sortie](evidence/v6/final-unit.log) |
++| npm run test:e2e | PASS,47/47,3,6min | [sortie](evidence/v6/final-e2e.log), [JSON complet](evidence/v6/final-e2e-results.json) |
++| npx vitest run --config vitest.performance.config.ts | PASS,3 charges,24,22s | [sortie](evidence/v6/performance.log), [mesures](evidence/v6/performance.json) |
++| npm audit --omit=dev --json | PASS,0 vulnérabilité production | [audit](evidence/v6/final-audit.json) |
++| contrôle source/bundle/isolement | PASS pour motif connu, pas preuve de tout secret inconnu | [contrôles](evidence/v6/isolation-checks.json) |
++| patch appliqué puis inversé sur copie temporaire | PASS, fichiers identiques à la base après inversion | [preuve](evidence/v6/rollback-check.json) |
++
++E2E :19 Chromium bureau +19 WebKit bureau +9 Chromium Pixel7 simulé. Firefox indisponible : NON TESTÉ. WebKit Playwright n’équivaut pas à un Safari iOS physique. Les captures ne contiennent que des fixtures synthétiques. Revue visuelle effectuée sur Journée390px et lecteur paysage900px : textes, historique, source, commandes et zoom visibles ; nav basse fixe normale en capture pleine page.
++
++## Couverture d’acceptation
++
++| Scénario | Statut et preuve |
++|---|---|
++| 08→16→21,1 journée/3 versions, octets SHA et téléchargement | PASS unités v6 et E2E v6 scénario1 |
++| répétition même SHA, renommage, choix indépendant, imports simultanés | PASS unités data/v6, pas de perte notes/favoris |
++| 08→21, 21→16→08, conflit même révision/hash différent | PASS unités v6 ; conflit E2E scénario2 |
++| J/J+1 vide, aucune actualité de veille inventée | PASS unités et E2E v6 scénario2 |
++| perte d’event_id, correction, retrait déclaré, PARTIAL/UNKNOWN | PASS unités v6, version fiable préservée |
++| ISO offset conservé, calendrier impossible, DST Paris | PASS unités v6 |
++|2000 articles acceptés,2001 limité avec avertissement, IDs dupliqués | PASS unités v6 |
++|HTML générique, JSON legacy/paires sources, démos, event_id longitudinal | PASS data unités + E2E app |
++|fichiers originaux V1/V4/V5.2/V5.3 et vrai V6 | NON TESTÉ, non fournis ; pas confondre contrat legacy avec toutes les versions producteur |
++|HTML vide, encodage UTF-8 invalide, mauvais format, >10 MiB, JSON malformé | PASS unités data/v6 ; parsing sans exécution |
++|quota/échec deuxième fichier/rollback lot | PASS unités v6, simulation QuotaExceededError ; vrai disque saturé NON TESTÉ |
++|images data embarquées/offline | PASS décodage PNG synthétique E2E ; gros HTML illustré réaliste NON TESTÉ |
++|XSS/iframe/CSP/storage/fetch/top/popup | PASS unités isolation et E2E sécurité ; navigation propre du cadre : risque ouvert décrit dans SECURITY, pas garantie réseau totale en interactif |
++|sans allow-same-origin/popups/forms/navigation, CSP parent et cadre inchangées | PASS assertions E2E + diff statique |
++|Google v1 URL hostile : domaines voisins, userinfo, ports, http/javascript,//, redirects, malformation et longueur | PASS googleAi unités + E2E Google scénario2 |
++|messages fenêtre étrangère, origine opaque, ancien cadre, mauvaise version/type/clés, v2 hostile | PASS E2E Google scénario2 et unités v6 |
++|capability v1 exacte, capability v2 exacte | PASS E2E Google/v6 ; aucun appel externe en réponse |
++|En savoir plus : sept sections synthétiques et lien dynamique | PASS v6 scénario4, Google scénario1 |
++|confirmation/Annuler/Échap/focus/clavier et pas ouverture sur message | PASS E2E Google et axe dialogue |
++|v1 ouverture sur clic actif/noopener/noreferrer, note privée absente | PASS E2E Google scénario3 |
++|v2 question modifiée/copier/ouvrir entrée sans query, double ouverture empêchée | PASS v6 scénario4,3 navigateurs/profils |
++|presse-papier refusé, popup simulée rejetée, hors ligne, lecteur sûr sans JS | PASS v6 scénario5 ; popup native iOS NON TESTÉE |
++|8 combinaisons thème internes, onglets, zoom70→200%, paysage | PASS fixture synthétique v6 scénario3, pas certification CSS réel producteur |
++|320/360/390/430/768/1024/1440/1920 et paysage900×430 | PASS overflow shell/lecteur et contrôles v6 ; legacy6 largeurs aussi ; pas mesure de chaque interaction au clavier virtuel physique |
++|axe bibliothèque/lecteur/dialogue/Journée, focus modal, thème shell | PASS scénarios couverts ; audit manuel complet WCAG/lecteur d’écran physique NON TESTÉ |
++|offline/rechargement/service worker en attente puis update | PASS E2E app/Google/v6/update |
++|Web Share Target et File Handling | PASS API navigateur simulées par E2E ; intégration OS Android/iOS NON TESTÉE |
++|migration v1→v4 et v3→v4, UUID/originaux/notes/états/préférence | PASS unités data/v6 ; aucune base personnelle migrée |
++|ancien schéma v3 sur DB4 additive | PASS : ouverture Dexie réelle, update archived conserve dayKey/original ; ce n’est pas une conversion versv3 |
++|ZIP1 et ZIP2, base vide,1095 originaux, checksum/path adversarial | PASS unités data/v6/performance et E2E restauration |
++|conflits de notes inter-éditions, UUID historique de même SHA, répétitions | PASS unités v6 et sync, conservation des ancrages |
++|2 appareils simulés, branches, offline, file3 échecs/pas faux succès | PASS mocks unités sync/cloud/v6 ; vrai réseau multiappareil NON TESTÉ |
++|inventaire100+ paginé, cycle refusé, ancien serveur100 signalé | PASS mocks client/API ; protocole Storage réel NON TESTÉ |
++|reprise21 archives par10+10+1 sans retélécharger/succès prématuré | PASS v6-sync unités ; latence/rate-limit réels NON TESTÉS |
++|API auth UID/offset invalide/pagination | PASS mocks backup-api, aucun serveur réel ; rate-limit distribué absent/préexistant |
++|diagnostic expurgé borné/absent snapshots | PASS v6-sync, whitelist/code/date/UUID uniquement |
++|stockage estimate/persist | inspection statique : existant préservé ; résultat d’octroi sur appareil réel NON TESTÉ |
++|secrets/RLS/coûts/quotas compte réel/rotation sessions | NON TESTÉ et non autorisé ; aucune configuration distante modifiée |
++|ingestion automatique depuis chat | NON APPLICABLE, aucun canal créé ni promis |
++
++## Mesures30/180/365 jours
++
++Fixture :3 versions par jour,32 KiB aléatoires encodés base64 dans chaque HTML (~49 Ko), JSON synthétique de1/2/3 événements, image pixel intégrée. SHA vérifié pour chaque original, export ZIP, inspection, restauration dans base vide avec note/favori. Ces mesures Node/jsdom/fake-indexeddb ne sont ni un téléphone ni un gros HTML illustré réaliste.
++
++|Jours|Versions|HTML bruts (Mo décimaux)|ZIP (Mo décimaux)|Import total|Groupement|Export|Inspection|Restauration|
++|---:|---:|---:|---:|---:|---:|---:|---:|---:|
++|30|90|4,43|3,24|0,85s|1,42ms|0,29s|0,15s|0,025s|
++|180|540|26,58|19,42|3,60s|5,72ms|1,74s|0,75s|0,144s|
++|365|1095|53,89|39,38|10,58s|14,77ms|3,73s|1,47s|0,297s|
++
++RSS maximum **aux quatre points de contrôle** :456/732/1142 Mo, même processus successif, dépend de GC et des objets de jsdom ; ni pic garanti ni allocation incrémentale par scénario. Un résultat inférieur à50 MiB ZIP ne valide pas la RAM mobile. Premier rendu/FPS/scroll/batterie/latence Internet/RAM réelle mobile : NON TESTÉS. Mesure de groupement seule, pas rendu React d’une bibliothèque365 jours.
++
++Conséquence déduite : à taille de cet exemple,1095 sauvegardes complètes croissant linéairement vers39,38 Mo produiraient environ21,6 Go cumulés (n×taille_finale/2), hors doublons/transferts entre appareils ; projection, **pas consommation mesurée ni facture**. Le modèle reste O(n²) en octets cumulés si une archive suit chaque import, sans purge. À cette taille finale,3 uploads/jour feraient environ118 Mo/jour. Déduplication d’empreinte/absence de modification/sérialisation existantes limitent les uploads inutiles, mais ne remplacent pas un delta.
++
++Inventaire1095 snapshots =11 requêtes GET par liste ; reprise10 téléchargements ajoute10 demandes de signature et10 transferts ZIP par cycle, puis re-list/upload éventuels. Un passage visible toutes30s et limite60 demandes/min/UID peuvent donc ralentir fortement un nouvel appareil et coûter en réseau ; ce sont calculs du protocole, pas tests Supabase. Prochain travail avant usage annuel mobile : mesurer vrai producteur, navigateur et réseau, puis proposer optimisation ciblée avec migration/rollback. Aucun nouveau service ni suppression automatisée introduit.
++
++## Échecs intermédiaires et réserves
++
++Les anomalies de harnais ont été corrigées : port baseline, sélection mobile trop large (run interrompu après24 réussites), sélecteur textarea (12/15 puis reprise3/3), DB de test diagnostic fermée, supposition erronée de VersionError au downgrade. Les sorties finales ci-dessus viennent d’exécutions ultérieures réussies ; ne pas les présenter comme première exécution sans incident. L’avertissement NO_COLOR/FORCE_COLOR des runners est non bloquant.
++
++La référence .env.local de l’archive n’a pas été copiée. Scan local motif Supabase connu et comparaison lock/CSP/SW/CI/main sans afficher de secret ; pas audit exhaustif d’une fuite inconnue. Aucun navigateur physique, Firefox, fichier privé réel, compte Supabase ou Vercel n’a été utilisé. Une validation locale réussie n’autorise pas un déploiement.
+diff --git a/src/data/day.ts b/src/data/day.ts
+new file mode 100644
+index 0000000..2af791f
+--- /dev/null
++++ b/src/data/day.ts
+@@ -0,0 +1,136 @@
++import type { Edition } from "./model";
++import { hash } from "./model";
++import { SLOTS, type Slot } from "./editorial";
++export function isDayVersion(e: Edition) {
++  return !!e.dayKey && !e.independent;
++}
++export interface Assessment {
++  status: "COMPLETE" | "PARTIAL" | "UNKNOWN";
++  issues: string[];
++  missingSlots: Slot[];
++  newEvents: number;
++  corrections: number;
++  removedEvents: number;
++}
++const revision = (e: Edition) => e.externalRevision || 0;
++function events(e: Edition) {
++  return new Map(
++    e.articles.filter((a) => a.eventId).map((a) => [a.eventId!, a]),
++  );
++}
++export function assessVersion(e: Edition, versions: Edition[]): Assessment {
++  const issues: string[] = [];
++  const slots = e.slotsIncluded || [];
++  const lastSlot = Math.max(-1, ...slots.map((s) => SLOTS.indexOf(s)));
++  const missingSlots = [
++    ...new Set([
++      ...(e.missingSlots || []),
++      ...SLOTS.slice(0, lastSlot + 1).filter((s) => !slots.includes(s)),
++    ]),
++  ];
++  const peers = versions.filter((v) => v.id !== e.id && v.sha256 !== e.sha256);
++  const previous = peers
++    .filter((v) => revision(v) < revision(e))
++    .sort((a, b) => revision(b) - revision(a))[0];
++  const before = new Map(
++    peers
++      .filter((v) => revision(v) < revision(e))
++      .sort(
++        (a, b) => revision(a) - revision(b) || a.sha256.localeCompare(b.sha256),
++      )
++      .flatMap((v) => [...events(v)]),
++  );
++  const current = events(e);
++  const removed = [...before.keys()].filter((id) => !current.has(id));
++  if (!revision(e) || !slots.length)
++    issues.push("Révision ou créneaux manquants.");
++  if (missingSlots.length)
++    issues.push(`Créneaux manquants : ${missingSlots.join(", ")}.`);
++  if (peers.some((v) => revision(v) === revision(e)))
++    issues.push(
++      "Même révision externe, contenus différents : branches à arbitrer.",
++    );
++  if (previous && revision(e) > revision(previous) + 1)
++    issues.push("Saut de révision : version intermédiaire non reçue.");
++  if (removed.length) {
++    const declared = removed.filter((id) => e.retiredEventIds?.includes(id));
++    issues.push(
++      `${removed.length} événement(s) antérieur(s) absent(s), dont ${declared.length} retrait(s) déclaré(s) : vérification nécessaire.`,
++    );
++  }
++  if (e.declaredCumulativeStatus === "PARTIAL")
++    issues.push("Le producteur déclare un cumul partiel.");
++  let status: Assessment["status"] = issues.length ? "PARTIAL" : "UNKNOWN";
++  const comparable =
++    !e.articles.some((a) => !a.eventId) &&
++    (!previous || !previous.articles.some((a) => !a.eventId));
++  if (
++    !issues.length &&
++    comparable &&
++    e.declaredCumulativeStatus === "COMPLETE" &&
++    (lastSlot === 0 ||
++      (previous &&
++        versions.some(
++          (v) => revision(v) === 1 && v.slotsIncluded?.includes("08:00"),
++        )))
++  )
++    status = "COMPLETE";
++  const corrections = [...current].filter(
++    ([id, a]) =>
++      before.has(id) && JSON.stringify(before.get(id)) !== JSON.stringify(a),
++  ).length;
++  return {
++    status,
++    issues,
++    missingSlots,
++    newEvents: [...current.keys()].filter((id) => !before.has(id)).length,
++    corrections,
++    removedEvents: removed.length,
++  };
++}
++export function resolveDay(input: Edition[]) {
++  const versions = [...input].sort(
++    (a, b) =>
++      revision(b) - revision(a) ||
++      b.revision - a.revision ||
++      a.sha256.localeCompare(b.sha256) ||
++      a.id.localeCompare(b.id),
++  );
++  const assessed = versions.map((edition) => ({
++    edition,
++    assessment: assessVersion(edition, versions),
++  }));
++  const available = assessed.some((v) => !v.edition.deleted)
++    ? assessed.filter((v) => !v.edition.deleted)
++    : assessed;
++  const reliable = available.find((v) => v.assessment.status === "COMPLETE");
++  const fallback =
++    available.find((v) => !v.assessment.issues.length) || available[0];
++  return {
++    versions: assessed,
++    reliable: reliable?.edition,
++    current: (reliable || fallback)?.edition,
++    status: (reliable || fallback)?.assessment.status || ("UNKNOWN" as const),
++  };
++}
++export function currentEditions(editions: Edition[]) {
++  const result: Edition[] = [];
++  const seen = new Set<string>();
++  for (const edition of editions) {
++    if (!isDayVersion(edition)) {
++      result.push(edition);
++      continue;
++    }
++    if (seen.has(edition.dayKey!)) continue;
++    seen.add(edition.dayKey!);
++    const current = resolveDay(
++      editions.filter((e) => isDayVersion(e) && e.dayKey === edition.dayKey),
++    ).current;
++    if (current) result.push(current);
++  }
++  return result;
++}
++export async function editorialUUID(value: string) {
++  const hex = await hash(new TextEncoder().encode(value));
++  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-4${hex.slice(13, 16)}-8${hex.slice(17, 20)}-${hex.slice(20, 32)}`;
++}
+diff --git a/src/data/editorial.ts b/src/data/editorial.ts
+new file mode 100644
+index 0000000..38d585c
+--- /dev/null
++++ b/src/data/editorial.ts
+@@ -0,0 +1,109 @@
++import { z } from "zod";
++export const SLOTS = ["08:00", "16:00", "21:00"] as const;
++export const slotSchema = z.enum(SLOTS);
++export type Slot = z.infer<typeof slotSchema>;
++export const cumulativeSchema = z.enum(["COMPLETE", "PARTIAL", "UNKNOWN"]);
++export function validDate(value: string) {
++  return (
++    /^\d{4}-\d{2}-\d{2}$/.test(value) &&
++    Number.isFinite(Date.parse(`${value}T12:00:00Z`)) &&
++    new Date(`${value}T12:00:00Z`).toISOString().slice(0, 10) === value
++  );
++}
++export const calendarSchema = z
++  .string()
++  .refine(validDate, "Date calendaire invalide");
++export const dayKeySchema = z
++  .string()
++  .refine(
++    (value) =>
++      value.startsWith("journal360-day-") && validDate(value.slice(15)),
++    "Clé de journée invalide",
++  );
++const uniqueSlots = z
++  .array(slotSchema)
++  .max(3)
++  .refine((a) => new Set(a).size === a.length);
++const metadataSchema = z.object({
++  schemaVersion: z.literal(2),
++  editionDate: calendarSchema.optional(),
++  editionId: z.string().min(1).max(200).optional(),
++  revision: z.number().int().min(1).max(1_000_000).optional(),
++  slotsIncluded: uniqueSlots.optional(),
++  cumulativeStatus: cumulativeSchema.optional(),
++  missingSlots: uniqueSlots.optional(),
++  retiredEventIds: z.array(z.string().min(1).max(200)).max(2000).optional(),
++});
++export function editorialMetadata(
++  data: Record<string, unknown>,
++  date: string | null,
++  warnings: string[],
++) {
++  if (data.schemaVersion === undefined) return {};
++  const result = metadataSchema.safeParse(data);
++  if (!result.success) {
++    warnings.push(
++      "Métadonnées V6 invalides ou version inconnue : classement automatique désactivé, original conservé.",
++    );
++    return {};
++  }
++  const value = result.data;
++  const dayKey =
++    date &&
++    value.editionDate === date &&
++    value.editionId === `journal360-day-${date}`
++      ? value.editionId
++      : undefined;
++  if (!dayKey)
++    warnings.push(
++      "Identifiant éditorial et date incohérents ou absents : rattachement manuel nécessaire.",
++    );
++  const slotsIncluded = [...(value.slotsIncluded || [])].sort() as Slot[];
++  if (!value.revision || !slotsIncluded.length)
++    warnings.push(
++      "Révision externe ou créneaux absents : cumul non vérifiable.",
++    );
++  return {
++    schemaVersion: 2 as const,
++    dayKey,
++    externalEditionId: value.editionId,
++    externalRevision: value.revision,
++    slotsIncluded,
++    declaredCumulativeStatus: value.cumulativeStatus || ("UNKNOWN" as const),
++    cumulativeStatus:
++      value.cumulativeStatus === "PARTIAL"
++        ? ("PARTIAL" as const)
++        : ("UNKNOWN" as const),
++    missingSlots: value.missingSlots || [],
++    retiredEventIds: value.retiredEventIds || [],
++    importOrigin: "file" as const,
++  };
++}
++export function verifiedInstant(value: unknown, warnings: string[]) {
++  if (value === undefined) return undefined;
++  if (
++    typeof value === "string" &&
++    (validDate(value) ||
++      z.iso.datetime({ offset: true }).safeParse(value).success)
++  )
++    return value;
++  warnings.push(
++    "Horodatage de vérification invalide : il n’a pas été inventé ni tronqué.",
++  );
++  return undefined;
++}
++export function verifiedLabel(value: string) {
++  if (validDate(value))
++    return new Intl.DateTimeFormat("fr-FR", {
++      dateStyle: "long",
++      timeZone: "Europe/Paris",
++    }).format(new Date(`${value}T12:00:00Z`));
++  const date = new Date(value);
++  return Number.isFinite(date.getTime())
++    ? new Intl.DateTimeFormat("fr-FR", {
++        dateStyle: "long",
++        timeStyle: "short",
++        timeZone: "Europe/Paris",
++      }).format(date)
++    : "Horodatage inconnu";
++}
+diff --git a/src/features/DayView.tsx b/src/features/DayView.tsx
+new file mode 100644
+index 0000000..f4667ea
+--- /dev/null
++++ b/src/features/DayView.tsx
+@@ -0,0 +1,280 @@
++import { useMemo, useState } from "react";
++import type { Edition, Note } from "../data/model";
++import { dateLabel, sizeLabel } from "../data/model";
++import { resolveDay } from "../data/day";
++import { SLOTS, verifiedLabel } from "../data/editorial";
++import { validateSourceUrl } from "./sourceUrl";
++
++export function DayCard({
++  versions,
++  onOpen,
++  onHistory,
++}: {
++  versions: Edition[];
++  onOpen: (id: string) => void;
++  onHistory: (key: string) => void;
++}) {
++  const day = resolveDay(versions);
++  const current = day.current;
++  if (!current) return null;
++  const currentAssessment = day.versions.find(
++    (v) => v.edition.id === current.id,
++  )!.assessment;
++  return (
++    <article className="edition-card day-card">
++      <p className="eyebrow">JOURNÉE · {dateLabel(current.date)}</p>
++      <h3>{current.title}</h3>
++      <p>
++        {current.articles.filter((a) => a.kind === "news").length} actualités
++        explicitement typées · {current.articles.length} éléments indexés ·{" "}
++        {versions.length} version(s) conservée(s)
++      </p>
++      <p className={`day-status ${day.status !== "COMPLETE" ? "warning" : ""}`}>
++        CUMUL{" "}
++        {day.status === "COMPLETE"
++          ? "COMPLETE"
++          : day.status === "PARTIAL"
++            ? "PARTIAL"
++            : "UNKNOWN"}
++      </p>
++      <div className="day-slots">
++        {SLOTS.map((slot) => (
++          <span
++            key={slot}
++            className={current.slotsIncluded?.includes(slot) ? "included" : ""}
++          >
++            {slot}{" "}
++            {current.slotsIncluded?.includes(slot)
++              ? "inclus déclaré"
++              : "non inclus"}
++          </span>
++        ))}
++      </div>
++      <p className="small-note">
++        {day.reliable
++          ? "Dernière version fiable selon les contrôles disponibles"
++          : "Cumul non vérifié : consultez l’historique"}{" "}
++        · révision externe {current.externalRevision ?? "inconnue"}
++      </p>
++      {day.versions.some((v) => v.assessment.issues.length) && (
++        <p className="warning">
++          Conflit ou version partielle dans l’historique.
++        </p>
++      )}
++      {!!currentAssessment.missingSlots.length && (
++        <p className="warning">
++          Trous : {currentAssessment.missingSlots.join(" / ")}
++        </p>
++      )}
++      <div className="settings-actions">
++        <button
++          className="primary"
++          onClick={() => onOpen(current.id)}
++          aria-label={`Lire ${current.title}`}
++        >
++          Lire la version courante
++        </button>
++        <button
++          className="secondary"
++          onClick={() => onHistory(current.dayKey!)}
++        >
++          Historique des éditions
++        </button>
++      </div>
++    </article>
++  );
++}
++export function DayView({
++  versions,
++  notes,
++  onBack,
++  onOpen,
++}: {
++  versions: Edition[];
++  notes: Note[];
++  onBack: () => void;
++  onOpen: (id: string) => void;
++}) {
++  const day = useMemo(() => resolveDay(versions), [versions]);
++  const [selectedId, setSelectedId] = useState(day.current?.id || "");
++  const [query, setQuery] = useState("");
++  const [category, setCategory] = useState("all");
++  const selected = versions.find((e) => e.id === selectedId) || day.current;
++  if (!selected)
++    return (
++      <section>
++        <h1>Journée indisponible</h1>
++        <button onClick={onBack}>Bibliothèque</button>
++      </section>
++    );
++  const assessment = day.versions.find(
++    (v) => v.edition.id === selected.id,
++  )!.assessment;
++  const categories = [...new Set(selected.articles.map((a) => a.category))];
++  const articles = selected.articles.filter(
++    (a) =>
++      (category === "all" || a.category === category) &&
++      `${a.title} ${a.text}`
++        .toLocaleLowerCase("fr")
++        .includes(query.toLocaleLowerCase("fr")),
++  );
++  const privateNotes = notes.filter((n) =>
++    versions.some((e) => e.id === n.editionId),
++  );
++  return (
++    <section className="day-view">
++      <button className="text-button" onClick={onBack}>
++        Retour à la bibliothèque
++      </button>
++      <p className="eyebrow">JOURNAL 360° · JOURNÉE PRIVÉE</p>
++      <h1>Journée du {dateLabel(selected.date)}</h1>
++      <p>
++        {versions.length} versions · {assessment.status} · {selected.dayKey}
++      </p>
++      <div className="day-slots">
++        {SLOTS.map((slot) => (
++          <span key={slot}>
++            {slot} :{" "}
++            {selected.slotsIncluded?.includes(slot)
++              ? "inclus déclaré"
++              : "non inclus"}
++          </span>
++        ))}
++      </div>
++      <p className="small-note">
++        Les créneaux sont déclarés par le fichier. Le contrôle compare les
++        événements des versions reçues ; il ne certifie pas les actualités.
++      </p>
++      <div className="settings-actions">
++        <button className="primary" onClick={() => onOpen(selected.id)}>
++          Lire cette version
++        </button>
++        {day.reliable && (
++          <button
++            className="secondary"
++            onClick={() => {
++              setSelectedId(day.reliable!.id);
++              onOpen(day.reliable!.id);
++            }}
++          >
++            Dernière version fiable
++          </button>
++        )}
++      </div>
++      <h2>Historique des éditions</h2>
++      <div className="day-history">
++        {day.versions.map(({ edition, assessment: result }) => (
++          <article className="quiet-panel" key={edition.id}>
++            <h3>
++              Révision externe {edition.externalRevision ?? "inconnue"} ·
++              version locale {edition.revision}
++            </h3>
++            <p>
++              {result.status} · {edition.articles.length} éléments indexés ·{" "}
++              {sizeLabel(edition.size)}
++              {edition.deleted
++                ? " · Corbeille"
++                : edition.archived
++                  ? " · Archive"
++                  : ""}
++            </p>
++            <p>
++              {result.newEvents} nouveaux événements identifiés ·{" "}
++              {result.corrections} corrections textuelles ·{" "}
++              {result.removedEvents} absences
++            </p>
++            {result.issues.map((issue) => (
++              <p className="warning" key={issue}>
++                {issue}
++              </p>
++            ))}
++            <p className="small-note">
++              Import {verifiedLabel(edition.importedAt)}
++              {edition.sourceVerifiedAt
++                ? ` · Vérification déclarée ${verifiedLabel(edition.sourceVerifiedAt)}`
++                : ""}
++            </p>
++            <details>
++              <summary>Empreinte de l’original</summary>
++              <code className="hash-text">{edition.sha256}</code>
++            </details>
++            <button
++              className="secondary"
++              aria-pressed={selected.id === edition.id}
++              onClick={() => {
++                setSelectedId(edition.id);
++                setCategory("all");
++              }}
++            >
++              Consulter la révision{" "}
++              {edition.externalRevision ?? edition.revision}
++            </button>
++          </article>
++        ))}
++      </div>
++      <h2>Articles de la version sélectionnée</h2>
++      <div className="filters">
++        <label>
++          Rechercher dans la journée
++          <input value={query} onChange={(e) => setQuery(e.target.value)} />
++        </label>
++        <label>
++          Rubrique du jour
++          <select
++            value={category}
++            onChange={(e) => setCategory(e.target.value)}
++          >
++            <option value="all">Toutes les rubriques</option>
++            {categories.map((c) => (
++              <option key={c}>{c}</option>
++            ))}
++          </select>
++        </label>
++      </div>
++      <p>
++        {articles.length} résultat(s). Aucun article n’a été ajouté par le
++        lecteur.
++      </p>
++      {articles.map((article) => (
++        <article className="quiet-panel" key={article.id}>
++          <p className="eyebrow">
++            {article.category} · {article.kind || "nature non précisée"}
++            {article.firstSeenSlot
++              ? ` · première apparition déclarée ${article.firstSeenSlot}`
++              : ""}
++          </p>
++          <h3>{article.title}</h3>
++          <p className="article-text">{article.text}</p>
++          <ul className="sources">
++            {article.sources
++              .map(validateSourceUrl)
++              .filter((u): u is string => !!u)
++              .map((u) => (
++                <li key={u}>
++                  <a href={u} target="_blank" rel="noopener noreferrer">
++                    Source originale : {u}
++                  </a>
++                </li>
++              ))}
++          </ul>
++        </article>
++      ))}
++      <h2>Notes privées de cette journée</h2>
++      <p>
++        Les notes restent liées à leur version d’origine. Elles ne sont jamais
++        jointes aux demandes Google.
++      </p>
++      {privateNotes.map((note) => (
++        <article className="quiet-panel" key={note.id}>
++          <p>{note.body}</p>
++          <button
++            className="text-button"
++            onClick={() => onOpen(note.editionId)}
++          >
++            Ouvrir la version annotée
++          </button>
++        </article>
++      ))}
++    </section>
++  );
++}
+diff --git a/src/features/GoogleAiDialog.tsx b/src/features/GoogleAiDialog.tsx
+new file mode 100644
+index 0000000..7249b6b
+--- /dev/null
++++ b/src/features/GoogleAiDialog.tsx
+@@ -0,0 +1,163 @@
++import { useRef, useState } from "react";
++import {
++  GOOGLE_AI_ENTRY,
++  validPublicQuestion,
++  validateGoogleAiUrl,
++  type GoogleAiDestination,
++} from "./googleAi";
++export function GoogleAiDialog({
++  destination,
++  isCurrent,
++  onDismiss,
++}: {
++  destination: GoogleAiDestination;
++  isCurrent: () => boolean;
++  onDismiss: () => void;
++}) {
++  const [draft, setDraft] = useState(destination.query);
++  const [editing, setEditing] = useState(!!destination.entryOnly);
++  const [notice, setNotice] = useState("");
++  const [fallback, setFallback] = useState(false);
++  const entrySent = useRef(false);
++  const valid = validPublicQuestion(draft);
++  function open(entry: boolean) {
++    if (entry && entrySent.current) return;
++    if (!isCurrent()) {
++      onDismiss();
++      return;
++    }
++    if (!navigator.onLine) {
++      setNotice(
++        "Hors ligne : copiez la question et ouvrez Google après reconnexion.",
++      );
++      return;
++    }
++    let url = GOOGLE_AI_ENTRY;
++    if (!entry) {
++      if (editing && !valid) return;
++      if (editing) {
++        const candidate = new URL(destination.url);
++        candidate.searchParams.set("q", draft);
++        const checked = validateGoogleAiUrl(candidate.href);
++        if (!checked) return;
++        url = checked.url;
++      } else url = destination.url;
++    }
++    if (entry) entrySent.current = true;
++    try {
++      // Synchronous user gesture. noopener may return null even on success;
++      // do not invent a successful popup or incorrectly report one as blocked.
++      window.open(url, "_blank", "noopener,noreferrer");
++      if (!entry) onDismiss();
++      else {
++        setFallback(true);
++        setNotice(
++          "Ouverture demandée. Si aucun onglet n’apparaît, utilisez le lien direct ci-dessous. Collez ensuite la question dans Google.",
++        );
++      }
++    } catch {
++      setFallback(true);
++      setNotice("Ouverture indisponible : utilisez le lien direct ci-dessous.");
++    }
++  }
++  async function copy() {
++    if (!isCurrent() || !valid) return;
++    try {
++      if (!navigator.clipboard?.writeText)
++        throw new Error("Clipboard unavailable");
++      await navigator.clipboard.writeText(draft);
++      if (isCurrent())
++        setNotice("Question copiée. Aucune recherche n’a été lancée.");
++    } catch {
++      if (isCurrent()) {
++        setEditing(true);
++        setNotice(
++          "Copie indisponible. Sélectionnez la question et utilisez la copie de votre appareil.",
++        );
++      }
++    }
++  }
++  return (
++    <div className="modal-backdrop">
++      <section
++        role="dialog"
++        aria-modal="true"
++        aria-labelledby="google-ai-title"
++        aria-describedby="google-ai-warning"
++        className="modal compact google-ai-dialog"
++      >
++        <h2 id="google-ai-title">
++          Ouvrir Google Mode IA dans votre navigateur ?
++        </h2>
++        <p id="google-ai-warning">
++          {destination.entryOnly
++            ? "Vérifiez cette question : le fichier ne garantit pas qu’elle est publique. Seul le texte que vous copiez puis collez sera transmis à Google."
++            : "Le texte de la question sera transmis à Google."}
++        </p>
++        <p className="eyebrow">QUESTION À TRANSMETTRE</p>
++        {editing ? (
++          <label>
++            Question publique à vérifier
++            <textarea
++              className="google-ai-query"
++              value={draft}
++              maxLength={2000}
++              onChange={(e) => setDraft(e.target.value)}
++              rows={4}
++            />
++          </label>
++        ) : (
++          <p className="google-ai-query">{draft}</p>
++        )}
++        {!destination.entryOnly && (
++          <p className="small-note">
++            Le lien prérempli udm=50 dépend de Google ; son fonctionnement n’est
++            pas garanti. Vous pouvez aussi copier la question puis ouvrir
++            l’entrée officielle.
++          </p>
++        )}
++        {notice && <p role="status">{notice}</p>}
++        <div className="modal-actions">
++          <button className="secondary" onClick={onDismiss}>
++            Annuler
++          </button>
++          {!destination.entryOnly && (
++            <button
++              className="primary"
++              onClick={() => open(false)}
++              disabled={editing && !valid}
++            >
++              Ouvrir
++            </button>
++          )}
++          <button
++            className="secondary"
++            disabled={!valid}
++            onClick={() => void copy()}
++          >
++            Copier la question
++          </button>
++          {!editing && (
++            <button className="secondary" onClick={() => setEditing(true)}>
++              Modifier la question
++            </button>
++          )}
++          <button
++            className="primary"
++            disabled={entrySent.current}
++            onClick={() => open(true)}
++          >
++            Ouvrir Google Mode IA
++          </button>
++        </div>
++        {fallback && (
++          <p>
++            <a href={GOOGLE_AI_ENTRY} target="_blank" rel="noopener noreferrer">
++              Ouvrir directement Google Mode IA
++            </a>
++          </p>
++        )}
++      </section>
++    </div>
++  );
++}
+diff --git a/src/features/diagnostics.tsx b/src/features/diagnostics.tsx
+new file mode 100644
+index 0000000..04c6922
+--- /dev/null
++++ b/src/features/diagnostics.tsx
+@@ -0,0 +1,73 @@
++import { z } from "zod";
++import { db } from "../data/db";
++import { download } from "./backup";
++const code = z.enum(["operation-failed", "import-failed", "sync-failed"]);
++const schema = z
++  .array(z.object({ id: z.uuid(), createdAt: z.iso.datetime(), code }))
++  .max(200);
++export function readDiagnostics(value?: string) {
++  try {
++    const result = schema.safeParse(JSON.parse(value || "[]"));
++    return result.success ? result.data : [];
++  } catch {
++    return [];
++  }
++}
++export async function recordDiagnostic(value: z.infer<typeof code>) {
++  try {
++    await db.transaction("rw", db.preferences, async () => {
++      const previous = readDiagnostics(
++        (await db.preferences.get("local-diagnostics"))?.value,
++      );
++      await db.preferences.put({
++        key: "local-diagnostics",
++        value: JSON.stringify(
++          [
++            ...previous,
++            {
++              id: crypto.randomUUID(),
++              createdAt: new Date().toISOString(),
++              code: value,
++            },
++          ].slice(-200),
++        ),
++      });
++    });
++  } catch {
++    /* An unavailable store cannot record its own failure. No telemetry. */
++  }
++}
++export function Diagnostics({ value }: { value?: string }) {
++  const entries = readDiagnostics(value);
++  return (
++    <section className="quiet-panel">
++      <h2>Diagnostic local</h2>
++      <p>
++        {entries.length} événements techniques conservés sur cet appareil
++        (maximum 200). Aucun texte de note, nom de fichier, URL, code d’accès ou
++        trace technique privée n’est enregistré.
++      </p>
++      <details>
++        <summary>Consulter les événements</summary>
++        {entries.map((entry) => (
++          <p key={entry.id}>
++            {entry.createdAt} · {entry.code}
++          </p>
++        ))}
++      </details>
++      <button
++        className="secondary"
++        onClick={() =>
++          download(
++            new Blob([JSON.stringify(entries, null, 2)], {
++              type: "application/json",
++            }),
++            "journal360-diagnostic-expurge.json",
++          )
++        }
++      >
++        Exporter le diagnostic expurgé
++      </button>
++    </section>
++  );
++}
+diff --git a/src/features/sourceUrl.ts b/src/features/sourceUrl.ts
+new file mode 100644
+index 0000000..deea1d2
+--- /dev/null
++++ b/src/features/sourceUrl.ts
+@@ -0,0 +1,30 @@
++export function validateSourceUrl(value: unknown): string | null {
++  if (
++    typeof value !== "string" ||
++    value.length > 2048 ||
++    !/^https?:\/\//.test(value) ||
++    /[\s\\]/u.test(value)
++  )
++    return null;
++  try {
++    const url = new URL(value);
++    const host = url.hostname.toLowerCase();
++    const privateIP =
++      /^(127\.|10\.|0\.|169\.254\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(
++        host,
++      );
++    if (
++      url.username ||
++      url.password ||
++      url.port ||
++      privateIP ||
++      !host.includes(".") ||
++      /(?:^|\.)(?:localhost|local|internal)$/.test(host) ||
++      host.includes(":")
++    )
++      return null;
++    return url.href;
++  } catch {
++    return null;
++  }
++}
+diff --git a/tests/backup-api.unit.test.ts b/tests/backup-api.unit.test.ts
+new file mode 100644
+index 0000000..3ac102c
+--- /dev/null
++++ b/tests/backup-api.unit.test.ts
+@@ -0,0 +1,74 @@
++// @vitest-environment node
++import { afterEach, beforeEach, expect, it, vi } from "vitest";
++import { Readable } from "node:stream";
++const storageList = vi.hoisted(() => vi.fn());
++const getUser = vi.hoisted(() => vi.fn());
++vi.mock("@supabase/supabase-js", () => ({
++  createClient: () => ({
++    auth: { getUser },
++    storage: { from: () => ({ list: storageList }) },
++  }),
++}));
++// @ts-expect-error Server entry is JavaScript.
++import handler from "../api/backup.mjs";
++beforeEach(() => {
++  vi.stubEnv("SUPABASE_URL", "https://example.supabase.co");
++  vi.stubEnv("SUPABASE_SECRET_KEY", "synthetic-server-key");
++  storageList.mockReset();
++  getUser.mockReset();
++  getUser.mockResolvedValue({
++    data: { user: { id: crypto.randomUUID() } },
++    error: null,
++  });
++});
++afterEach(() => vi.unstubAllEnvs());
++async function request(url: string, authorization = "Bearer synthetic-token") {
++  const req = Object.assign(Readable.from([]), {
++    method: "GET",
++    url,
++    headers: { authorization },
++  });
++  let raw = "";
++  const res = {
++    statusCode: 200,
++    setHeader: vi.fn(),
++    end: (text: string) => {
++      raw = text;
++    },
++  };
++  await handler(req, res);
++  return { status: res.statusCode, body: JSON.parse(raw) };
++}
++it("pagination reste authentifiée et limitée au préfixe UID vérifié", async () => {
++  const uid = crypto.randomUUID();
++  getUser.mockResolvedValue({ data: { user: { id: uid } }, error: null });
++  storageList.mockResolvedValue({ data: [], error: null });
++  const response = await request("/api/backup?offset=100");
++  expect(response.status).toBe(200);
++  expect(response.body.nextOffset).toBeNull();
++  expect(storageList).toHaveBeenCalledWith(
++    uid,
++    expect.objectContaining({ offset: 100, limit: 100 }),
++  );
++  expect((await request("/api/backup?offset=100", "")).status).toBe(401);
++});
++it.each(["-1", "NaN", "100001", "1.5", "../secret"])(
++  "offset hostile %s refusé",
++  async (value) => {
++    expect((await request(`/api/backup?offset=${value}`)).status).toBe(400);
++    expect(storageList).not.toHaveBeenCalled();
++  },
++);
++it("100 objets annoncent la page suivante sans modification de bucket ou RLS", async () => {
++  storageList.mockResolvedValue({
++    data: Array.from({ length: 100 }, () => ({
++      name: `${crypto.randomUUID()}.zip`,
++      created_at: "2026-10-14T00:00:00Z",
++      metadata: { size: 5 },
++    })),
++    error: null,
++  });
++  const result = await request("/api/backup");
++  expect(result.body.snapshots).toHaveLength(100);
++  expect(result.body.nextOffset).toBe(100);
++});
+diff --git a/tests/e2e/v6.spec.ts b/tests/e2e/v6.spec.ts
+new file mode 100644
+index 0000000..45e3623
+--- /dev/null
++++ b/tests/e2e/v6.spec.ts
+@@ -0,0 +1,429 @@
++import { test, expect, type Page } from "@playwright/test";
++import AxeBuilder from "@axe-core/playwright";
++import { readFileSync } from "node:fs";
++import { v6Html } from "../helpers/v6";
++async function nav(page: Page, label = "Bibliothèque") {
++  const back = page.getByRole("button", {
++    name: "Retour à la bibliothèque",
++    exact: true,
++  });
++  if (await back.isVisible()) await back.click();
++  const mobile = await page.locator(".mobile-nav").isVisible();
++  await page
++    .locator(mobile ? ".mobile-nav" : ".sidebar")
++    .getByRole("button", { name: label, exact: true })
++    .click();
++}
++async function importRevision(
++  page: Page,
++  revision: number,
++  extra: Parameters<typeof v6Html>[0] = {},
++) {
++  const html = v6Html({ revision, ...extra });
++  await page.getByLabel("Fichiers HTML à importer").setInputFiles({
++    name: `synthetic-v6-${revision}.html`,
++    mimeType: "text/html",
++    buffer: Buffer.from(html),
++  });
++  await expect(
++    page.getByRole("dialog", { name: "Vérifier l’import" }),
++  ).toBeVisible();
++  await page
++    .getByRole("button", {
++      name: "Enregistrer dans ma bibliothèque",
++      exact: true,
++    })
++    .click();
++  await expect(page.locator(".import-list")).toHaveCount(0);
++  return html;
++}
++async function openCurrent(page: Page) {
++  await page
++    .getByRole("button", {
++      name: "Lire Journal synthétique du 2026-10-14",
++      exact: true,
++    })
++    .click();
++}
++async function dialog(page: Page) {
++  const modal = page.getByRole("dialog", {
++    name: "Ouvrir Google Mode IA dans votre navigateur ?",
++  });
++  await expect(modal).toBeVisible();
++  return modal;
++}
++
++test("V6 : 08→16→21, une carte journée, historique, recherche, original, notes et doublon", async ({
++  page,
++  context,
++}) => {
++  await page.goto("/");
++  const original8 = await importRevision(page, 1);
++  await openCurrent(page);
++  await expect(page.locator("iframe")).toHaveAttribute(
++    "sandbox",
++    "allow-scripts",
++  );
++  await page
++    .getByRole("button", { name: "Réduire la lecture", exact: true })
++    .click();
++  await page
++    .getByRole("button", { name: "Ajouter aux favoris", exact: true })
++    .click();
++  await page
++    .getByLabel("Votre note", { exact: true })
++    .fill("Note privée de la version 08, jamais envoyée à Google");
++  await page
++    .getByRole("button", { name: "Enregistrer la note", exact: true })
++    .click();
++  await expect(page.locator(".note")).toHaveCount(1);
++  await nav(page);
++  await importRevision(page, 2);
++  await importRevision(page, 3);
++  await expect(page.locator(".day-card")).toHaveCount(1);
++  await expect(page.locator(".day-card")).toContainText("3 version(s)");
++  await expect(page.locator(".day-card")).toContainText("CUMUL COMPLETE");
++  await page
++    .getByRole("button", { name: "Historique des éditions", exact: true })
++    .click();
++  await expect(page.locator(".day-history article")).toHaveCount(3);
++  await expect(page.locator(".day-view")).toContainText(
++    "Note privée de la version 08",
++  );
++  await page
++    .getByLabel("Rechercher dans la journée", { exact: true })
++    .fill("Article fictif c");
++  await expect(page.locator(".day-view")).toContainText("1 résultat(s)");
++  await page
++    .getByRole("button", { name: "Consulter la révision 1", exact: true })
++    .click();
++  await page
++    .getByRole("button", { name: "Lire cette version", exact: true })
++    .click();
++  await page
++    .getByRole("button", { name: "Réduire la lecture", exact: true })
++    .click();
++  const download = page.waitForEvent("download");
++  await page
++    .getByRole("button", { name: "Original intact", exact: true })
++    .click();
++  expect(readFileSync((await (await download).path())!, "utf8")).toBe(
++    original8,
++  );
++  await expect(
++    page.getByRole("button", { name: "En favoris", exact: true }),
++  ).toBeVisible();
++  await expect(page.locator(".note")).toHaveCount(1);
++  await page
++    .getByRole("button", { name: "Dernière version fiable", exact: true })
++    .click();
++  await expect(page.locator(".reader")).toContainText("révision externe 3");
++  await nav(page);
++  await importRevision(page, 3);
++  await expect(page.locator(".day-card")).toContainText("3 version(s)");
++  // ZIP export and a completely fresh browser database preserve V6 histories.
++  await nav(page, "Réglages");
++  const zipEvent = page.waitForEvent("download");
++  await page
++    .getByRole("button", { name: "Exporter tout", exact: true })
++    .click();
++  const zip = readFileSync((await (await zipEvent).path())!);
++  const fresh = await context.browser()!.newContext();
++  const clean = await fresh.newPage();
++  await clean.goto(test.info().project.use.baseURL!);
++  await nav(clean, "Réglages");
++  await clean.getByLabel("Archive ZIP à restaurer").setInputFiles({
++    name: "synthetic-v6.zip",
++    mimeType: "application/zip",
++    buffer: zip,
++  });
++  await clean
++    .getByRole("button", { name: "Fusionner la sauvegarde", exact: true })
++    .click();
++  await nav(clean);
++  await expect(clean.locator(".day-card")).toContainText("3 version(s)");
++  await fresh.close();
++});
++
++test("V6 : partiel, révision conflictuelle et nouvelle journée ne détrônent pas la version fiable", async ({
++  page,
++}) => {
++  await page.goto("/");
++  await importRevision(page, 1);
++  await importRevision(page, 2);
++  await importRevision(page, 3, { ids: ["c"] });
++  await expect(page.locator(".day-card")).toContainText("révision externe 2");
++  await expect(page.locator(".day-card")).toContainText(
++    "Conflit ou version partielle",
++  );
++  await importRevision(page, 2, { ids: ["a", "branch"] });
++  await expect(page.locator(".day-card")).toContainText("révision externe 1");
++  await importRevision(page, 1, { date: "2026-10-15", ids: [] });
++  await expect(page.locator(".day-card")).toHaveCount(2);
++  await expect(
++    page.locator(".day-card").filter({ hasText: "2026-10-15" }),
++  ).toContainText("0 éléments indexés");
++});
++
++test("V6 : onglets, huit thèmes, image embarquée, zoom jusqu’à 200 %, offline et neuf largeurs", async ({
++  page,
++  context,
++}) => {
++  test.setTimeout(90000);
++  await page.goto("/");
++  await importRevision(page, 1);
++  await openCurrent(page);
++  const frame = page.frameLocator("iframe");
++  for (const theme of ["light", "dark"])
++    for (const accent of ["red", "blue", "green", "purple"]) {
++      await frame
++        .getByRole("button", { name: `Thème ${theme}`, exact: true })
++        .click();
++      await frame
++        .getByRole("button", { name: `Accent ${accent}`, exact: true })
++        .click();
++      await expect(frame.locator("html")).toHaveAttribute("data-theme", theme);
++      await expect(frame.locator("html")).toHaveAttribute(
++        "data-accent",
++        accent,
++      );
++    }
++  expect(
++    await frame
++      .getByAltText("Pixel de test embarqué")
++      .evaluate(
++        (img: HTMLImageElement) => img.complete && img.naturalWidth > 0,
++      ),
++  ).toBe(true);
++  for (let zoom = 70; zoom < 200; zoom += 10)
++    await page
++      .getByRole("button", { name: "Zoomer le HTML", exact: true })
++      .click();
++  await expect(page.getByLabel("Échelle du HTML", { exact: true })).toHaveText(
++    "200 %",
++  );
++  for (let zoom = 200; zoom > 70; zoom -= 10)
++    await page
++      .getByRole("button", { name: "Dézoomer le HTML", exact: true })
++      .click();
++  for (const width of [320, 360, 390, 430, 768, 1024, 1440, 1920]) {
++    await page.setViewportSize({ width, height: 900 });
++    expect(
++      await page.evaluate(
++        () => document.documentElement.scrollWidth <= innerWidth + 1,
++      ),
++    ).toBe(true);
++    await expect(
++      page.getByRole("button", { name: "Réduire la lecture", exact: true }),
++    ).toBeVisible();
++  }
++  await page.setViewportSize({ width: 900, height: 430 });
++  expect(
++    await page.evaluate(
++      () => document.documentElement.scrollWidth <= innerWidth + 1,
++    ),
++  ).toBe(true);
++  await expect
++    .poll(() => page.evaluate(() => !!navigator.serviceWorker.controller))
++    .toBe(true);
++  await context.setOffline(true);
++  await page.reload();
++  await openCurrent(page);
++  await expect(
++    frame.getByRole("heading", {
++      name: "Journal synthétique du 2026-10-14",
++      exact: true,
++    }),
++  ).toBeVisible();
++  await page.screenshot({
++    path: `test-results/v6-reader-${test.info().project.name}.png`,
++  });
++  await context.setOffline(false);
++  await nav(page);
++  await page
++    .getByRole("button", { name: "Historique des éditions", exact: true })
++    .click();
++  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
++  await page.setViewportSize({
++    width: test.info().project.name === "chromium-mobile" ? 390 : 1440,
++    height: 900,
++  });
++  await page.screenshot({
++    path: `test-results/v6-day-${test.info().project.name}.png`,
++    fullPage: true,
++  });
++});
++
++test("V6 : tous les boutons de section, v2 question seule, copie corrigée et entrée Google sans données privées", async ({
++  page,
++  context,
++}) => {
++  const opens: string[] = [];
++  const copies: string[] = [];
++  await page.exposeFunction("capturePublicCopy", (value: string) =>
++    copies.push(value),
++  );
++  await page.addInitScript(() => {
++    Object.defineProperty(navigator, "clipboard", {
++      configurable: true,
++      value: {
++        writeText: (text: string) =>
++          (
++            window as unknown as {
++              capturePublicCopy: (s: string) => Promise<void>;
++            }
++          ).capturePublicCopy(text),
++      },
++    });
++  });
++  await context.route("https://www.google.com/**", async (route) => {
++    opens.push(route.request().url());
++    await route.fulfill({
++      contentType: "text/html",
++      body: "<title>Entrée Google simulée</title>",
++    });
++  });
++  await page.goto("/");
++  await importRevision(page, 1);
++  await openCurrent(page);
++  const frame = page.frameLocator("iframe");
++  const content = await (await page
++    .locator("iframe")
++    .elementHandle())!.contentFrame();
++  const reply = await content!.evaluate(
++    () =>
++      new Promise((resolve) => {
++        addEventListener("message", function received(event) {
++          if (
++            event.source === parent &&
++            event.data?.type === "journal360:google-ai:capability"
++          ) {
++            removeEventListener("message", received);
++            resolve(event.data);
++          }
++        });
++        parent.postMessage(
++          { type: "journal360:google-ai:capability-request", version: 2 },
++          "*",
++        );
++      }),
++  );
++  expect(reply).toEqual({
++    type: "journal360:google-ai:capability",
++    version: 2,
++    enabled: true,
++    actions: ["copy-question", "open-entry"],
++    entryUrl: "https://www.google.com/ai",
++    maxQuestionLength: 2000,
++  });
++  for (const section of [
++    "À la une",
++    "Articles",
++    "Business",
++    "SENTINEL",
++    "AXDIA",
++    "Mes décisions",
++    "Sources & méthode",
++  ]) {
++    await frame.getByRole("button", { name: section, exact: true }).click();
++    await frame
++      .getByRole("link", { name: "En savoir plus", exact: true })
++      .click();
++    const modal = await dialog(page);
++    await expect(
++      modal.getByRole("textbox", {
++        name: "Question publique à vérifier",
++        exact: true,
++      }),
++    ).toHaveValue(`Question publique fictive pour ${section}`);
++    expect(opens).toEqual([]);
++    await modal.getByRole("button", { name: "Annuler", exact: true }).click();
++  }
++  await frame
++    .getByRole("link", { name: "En savoir plus", exact: true })
++    .click();
++  const modal = await dialog(page);
++  await modal
++    .getByRole("textbox", { name: "Question publique à vérifier", exact: true })
++    .fill("Question publique corrigée");
++  await modal
++    .getByRole("button", { name: "Copier la question", exact: true })
++    .click();
++  await expect(modal).toContainText("Question copiée");
++  expect(copies).toEqual(["Question publique corrigée"]);
++  expect(opens).toEqual([]);
++  const popupEvent = context.waitForEvent("page");
++  await modal
++    .getByRole("button", { name: "Ouvrir Google Mode IA", exact: true })
++    .click();
++  const popup = await popupEvent;
++  await popup.waitForLoadState("domcontentloaded");
++  expect(popup.url()).toBe("https://www.google.com/ai");
++  expect(opens).toEqual(["https://www.google.com/ai"]);
++  expect(
++    await popup.evaluate(
++      () => window.opener === null && document.referrer === "",
++    ),
++  ).toBe(true);
++  await expect(
++    modal.getByRole("button", { name: "Ouvrir Google Mode IA", exact: true }),
++  ).toBeDisabled();
++  await popup.close();
++});
++
++test("V6 : mode sécurisé, presse-papier refusé, popup bloquée et offline ont un repli manuel", async ({
++  page,
++  context,
++}) => {
++  await page.addInitScript(() => {
++    Object.defineProperty(navigator, "clipboard", {
++      configurable: true,
++      value: {
++        writeText: async () => {
++          throw new Error("Permission denied");
++        },
++      },
++    });
++  });
++  await page.goto("/");
++  await importRevision(page, 1);
++  await openCurrent(page);
++  await page
++    .getByRole("button", { name: "Désactiver JS", exact: true })
++    .click();
++  await expect(page.locator("iframe")).toHaveAttribute("sandbox", "");
++  await page
++    .getByText("Questions Google disponibles (7)", { exact: true })
++    .click();
++  await page
++    .getByRole("button", { name: "Préparer la question 1", exact: true })
++    .click();
++  const modal = await dialog(page);
++  await modal
++    .getByRole("button", { name: "Copier la question", exact: true })
++    .click();
++  await expect(modal).toContainText("Copie indisponible");
++  await context.setOffline(true);
++  await modal
++    .getByRole("button", { name: "Ouvrir Google Mode IA", exact: true })
++    .click();
++  await expect(modal).toContainText("Hors ligne");
++  expect(context.pages()).toHaveLength(1);
++  await context.setOffline(false);
++  await page.evaluate(() => {
++    window.open = () => {
++      throw new Error("Popup blocked");
++    };
++  });
++  await modal
++    .getByRole("button", { name: "Ouvrir Google Mode IA", exact: true })
++    .click();
++  await expect(modal).toContainText("Ouverture indisponible");
++  await expect(
++    modal.getByRole("link", {
++      name: "Ouvrir directement Google Mode IA",
++      exact: true,
++    }),
++  ).toHaveAttribute("href", "https://www.google.com/ai");
++  expect(context.pages()).toHaveLength(1);
++});
+diff --git a/tests/helpers/v6.ts b/tests/helpers/v6.ts
+new file mode 100644
+index 0000000..121ed3b
+--- /dev/null
++++ b/tests/helpers/v6.ts
+@@ -0,0 +1,66 @@
++import { SLOTS, type Slot } from "../../src/data/editorial";
++export function v6Html({
++  date = "2026-10-14",
++  revision = 1,
++  ids,
++  slots,
++  status = "COMPLETE",
++  extra = {},
++  padding = "",
++}: {
++  date?: string;
++  revision?: number;
++  ids?: string[];
++  slots?: Slot[];
++  status?: string;
++  extra?: Record<string, unknown>;
++  padding?: string;
++} = {}) {
++  const included = slots || [...SLOTS.slice(0, Math.min(3, revision))];
++  const data = {
++    schemaVersion: 2,
++    title: `Journal synthétique du ${date}`,
++    editionDate: date,
++    editionId: `journal360-day-${date}`,
++    revision,
++    slotsIncluded: included,
++    cumulativeStatus: status,
++    missingSlots: [],
++    sourceVerifiedAt: `${date}T${included.at(-1) || "08:00"}:00+02:00`,
++    items: (ids || ["a", "b", "c"].slice(0, Math.min(3, revision))).map(
++      (id) => ({
++        id: `local-${id}`,
++        event_id: `event-${id}`,
++        title: `Article fictif ${id}`,
++        category: "Science",
++        plain: `En clair : événement synthétique ${id}, révision ${revision}.`,
++        summary: "Fixture de test, non une actualité.",
++        detail: "Détail de test, sans donnée privée.",
++        steps: [],
++        sources: [["Source de test", "https://example.org/test"]],
++      }),
++    ),
++    ...extra,
++  };
++  const sections = [
++    "À la une",
++    "Articles",
++    "Business",
++    "SENTINEL",
++    "AXDIA",
++    "Mes décisions",
++    "Sources & méthode",
++  ];
++  return `<!doctype html><html lang="fr" data-theme="dark" data-accent="green"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${data.title}</title>
++  <style>:root{--bg:#fafafa;--fg:#18241e;--accent:#167040}html[data-theme=dark]{--bg:#14201a;--fg:#f9faf9}html[data-accent=red]{--accent:#e84855}html[data-accent=blue]{--accent:#4385ee}html[data-accent=purple]{--accent:#ad70e7}body{margin:16px;background:var(--bg);color:var(--fg);font:16px system-ui}button,a{display:inline-flex;align-items:center;min-height:44px;margin:3px;padding:4px 10px;color:var(--fg);background:transparent;border:1px solid var(--accent)}nav{display:flex;flex-wrap:wrap}section[hidden]{display:none}img{max-width:100%}</style></head><body><h1>${data.title}</h1>
++  <p>Document synthétique, aucun fait d’actualité.</p>
++  <div>${["light", "dark"].map((v) => `<button data-theme-choice="${v}" onclick="document.documentElement.dataset.theme='${v}'">Thème ${v}</button>`).join("")}
++  ${["red", "blue", "green", "purple"].map((v) => `<button data-accent-choice="${v}" onclick="document.documentElement.dataset.accent='${v}'">Accent ${v}</button>`).join("")}</div>
++  <nav aria-label="Onglets du journal">${sections.map((s, i) => `<button data-section="${i}" onclick="document.querySelectorAll('section[data-panel]').forEach(e=>e.hidden=e.dataset.panel!=='${i}')">${s}</button>`).join("")}</nav>
++  ${sections.map((s, i) => `<section data-panel="${i}" ${i ? "hidden" : ""}><h2>${s}</h2><p>Contenu fictif ${i} de la révision ${revision}.</p><a href="https://www.google.com/ai" data-ai-link="google-ai-mode" data-ai-question="Question publique fictive pour ${s}">En savoir plus</a></section>`).join("")}
++  <img alt="Pixel de test embarqué" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a0LcAAAAASUVORK5CYII=">
++  <script id="editionData" type="application/json">${JSON.stringify(data).replaceAll("<", "\\u003c")}</script>
++  <!-- ${padding} --></body></html>`;
++}
++export const v6Bytes = (options?: Parameters<typeof v6Html>[0]) =>
++  new TextEncoder().encode(v6Html(options));
+diff --git a/tests/support/block-network.mjs b/tests/support/block-network.mjs
+new file mode 100644
+index 0000000..abe39d7
+--- /dev/null
++++ b/tests/support/block-network.mjs
+@@ -0,0 +1,9 @@
++import http from "node:http";
++const server = http.createServer((request, response) => {
++  response.writeHead(403);
++  response.end("External network disabled in local tests");
++});
++server.on("connect", (request, socket) =>
++  socket.end("HTTP/1.1 403 Forbidden\r\n\r\n"),
++);
++server.listen(4199, "127.0.0.1");
+diff --git a/tests/v6-sync.unit.test.ts b/tests/v6-sync.unit.test.ts
+new file mode 100644
+index 0000000..f5d5faf
+--- /dev/null
++++ b/tests/v6-sync.unit.test.ts
+@@ -0,0 +1,126 @@
++import { afterEach, expect, it, vi } from "vitest";
++import type { Session } from "@supabase/supabase-js";
++import { LocalRepository, db } from "../src/data/db";
++import { DeviceSynchronizer } from "../src/features/sync";
++import { CloudRepository } from "../src/features/cloud";
++import { readDiagnostics, recordDiagnostic } from "../src/features/diagnostics";
++const session = {
++  access_token: "synthetic-token",
++  user: { id: "synthetic-owner" },
++} as Session;
++afterEach(async () => {
++  vi.unstubAllGlobals();
++  await db.delete();
++});
++it("pagination client récupère aussi les archives au-delà des 100 premières", async () => {
++  const fetch = vi
++    .fn()
++    .mockResolvedValueOnce(
++      new Response(
++        JSON.stringify({
++          snapshots: [{ id: "a", createdAt: "2026-10-14T10:00:00Z", size: 1 }],
++          nextOffset: 100,
++        }),
++      ),
++    )
++    .mockResolvedValueOnce(
++      new Response(
++        JSON.stringify({
++          snapshots: [{ id: "b", createdAt: "2026-10-13T10:00:00Z", size: 1 }],
++          nextOffset: null,
++        }),
++      ),
++    );
++  vi.stubGlobal("fetch", fetch);
++  expect((await new CloudRepository().list(session)).map((s) => s.id)).toEqual([
++    "a",
++    "b",
++  ]);
++  expect(fetch.mock.calls[1][0]).toBe("/api/backup?offset=100");
++});
++it("pagination cyclique est refusée plutôt que de certifier un inventaire tronqué", async () => {
++  vi.stubGlobal(
++    "fetch",
++    vi
++      .fn()
++      .mockResolvedValue(
++        new Response(JSON.stringify({ snapshots: [], nextOffset: 0 })),
++      ),
++  );
++  await expect(new CloudRepository().list(session)).rejects.toThrow(
++    "Pagination cloud invalide",
++  );
++});
++it("reprise de 21 archives en lots bornés : aucun téléchargement répété et aucun faux succès", async () => {
++  const repository = new LocalRepository(`backfill-${crypto.randomUUID()}`);
++  const snapshots = Array.from({ length: 21 }, () => ({
++    id: crypto.randomUUID(),
++    createdAt: new Date().toISOString(),
++    size: 1,
++  }));
++  const read = vi.fn(async () => ({
++    editions: [],
++    originals: [],
++    states: [],
++    notes: [],
++  }));
++  const remote = {
++    list: async () => snapshots,
++    read,
++    backup: vi.fn(async () => crypto.randomUUID()),
++  };
++  try {
++    await expect(
++      new DeviceSynchronizer(repository, remote).sync(session),
++    ).rejects.toThrow("11 archive(s) restantes");
++    expect(
++      await repository.preferences.get("last-sync-synthetic-owner"),
++    ).toBeUndefined();
++    await expect(
++      new DeviceSynchronizer(repository, remote).sync(session),
++    ).rejects.toThrow("1 archive(s) restantes");
++    await new DeviceSynchronizer(repository, remote).sync(session);
++    expect(read).toHaveBeenCalledTimes(21);
++    expect(remote.backup).not.toHaveBeenCalled();
++    expect(
++      await repository.preferences.get("last-sync-synthetic-owner"),
++    ).toBeDefined();
++  } finally {
++    await repository.delete();
++  }
++});
++it("journal technique local expurgé, borné et absent des snapshots de données", async () => {
++  await db.open();
++  await recordDiagnostic("import-failed");
++  const value = (await db.preferences.get("local-diagnostics"))?.value;
++  expect(readDiagnostics(value)).toHaveLength(1);
++  expect(Object.keys(readDiagnostics(value)[0]).sort()).toEqual([
++    "code",
++    "createdAt",
++    "id",
++  ]);
++  expect(JSON.stringify(await db.snapshot())).not.toContain("import-failed");
++  expect(readDiagnostics('{"private":"secret"}')).toEqual([]);
++});
++
++it("ancien serveur limité à 100 signale le besoin de mise à jour", async () => {
++  vi.stubGlobal(
++    "fetch",
++    vi
++      .fn()
++      .mockResolvedValue(
++        new Response(
++          JSON.stringify({
++            snapshots: Array.from({ length: 100 }, (_, i) => ({
++              id: String(i),
++              createdAt: "2026-10-14T10:00:00Z",
++              size: 1,
++            })),
++          }),
++        ),
++      ),
++  );
++  await expect(new CloudRepository().list(session)).rejects.toThrow(
++    "Serveur cloud ancien",
++  );
++});
+diff --git a/tests/v6.performance.test.ts b/tests/v6.performance.test.ts
+new file mode 100644
+index 0000000..b9b1928
+--- /dev/null
++++ b/tests/v6.performance.test.ts
+@@ -0,0 +1,105 @@
++import { expect, it } from "vitest";
++import { randomBytes } from "node:crypto";
++import { writeFileSync } from "node:fs";
++import { performance } from "node:perf_hooks";
++import { LocalRepository } from "../src/data/db";
++import { currentEditions } from "../src/data/day";
++import { inspectHTML, commitImport } from "../src/features/import";
++import {
++  exportBackup,
++  inspectBackup,
++  restoreBackup,
++} from "../src/features/backup";
++import { v6Bytes } from "./helpers/v6";
++const measurements: object[] = [];
++for (const days of [30, 180, 365])
++  it(`charge synthétique ${days} jours × 3 versions, ZIP et restauration vide`, async () => {
++    const repository = new LocalRepository(`perf-${crypto.randomUUID()}`);
++    const fresh = new LocalRepository(`perf-restore-${crypto.randomUUID()}`);
++    const start = performance.now();
++    const checkpoints: number[] = [process.memoryUsage().rss];
++    let rawBytes = 0;
++    try {
++      for (let day = 0; day < days; day++) {
++        const date = new Date(Date.UTC(2025, 0, day + 1))
++          .toISOString()
++          .slice(0, 10);
++        for (const revision of [1, 2, 3]) {
++          // Incompressible synthetic load. No real journal, photo or private data.
++          const bytes = v6Bytes({
++            date,
++            revision,
++            padding: randomBytes(32 * 1024).toString("base64"),
++          });
++          rawBytes += bytes.length;
++          await commitImport(
++            repository,
++            await inspectHTML("synthetic.html", bytes),
++            bytes,
++            "day",
++          );
++        }
++      }
++      const imported = performance.now();
++      checkpoints.push(process.memoryUsage().rss);
++      const snapshot = await repository.snapshot();
++      const viewStart = performance.now();
++      expect(currentEditions(snapshot.editions)).toHaveLength(days);
++      const viewMs = performance.now() - viewStart;
++      await repository.reading(snapshot.editions[0].id, "edition", {
++        favorite: true,
++      });
++      await repository.notes.add({
++        id: crypto.randomUUID(),
++        editionId: snapshot.editions[0].id,
++        kind: "note",
++        body: "Note synthétique",
++        createdAt: new Date().toISOString(),
++        updatedAt: new Date().toISOString(),
++      });
++      const zipStart = performance.now();
++      const zip = await exportBackup(repository);
++      const zipDone = performance.now();
++      checkpoints.push(process.memoryUsage().rss);
++      const parsed = await inspectBackup(
++        new Uint8Array(await zip.arrayBuffer()),
++      );
++      const inspected = performance.now();
++      await restoreBackup(fresh, parsed);
++      const restored = performance.now();
++      checkpoints.push(process.memoryUsage().rss);
++      expect(await fresh.editions.count()).toBe(days * 3);
++      expect(await fresh.originals.count()).toBe(days * 3);
++      expect(await fresh.notes.count()).toBe(1);
++      expect((await fresh.states.toArray())[0].favorite).toBe(true);
++      // inspectBackup has checked every original byte count and SHA-256.
++      measurements.push({
++        days,
++        versions: days * 3,
++        rawBytes,
++        zipBytes: zip.size,
++        importMs: imported - start,
++        groupingMs: viewMs,
++        exportMs: zipDone - zipStart,
++        inspectMs: inspected - zipDone,
++        restoreMs: restored - inspected,
++        maxCheckpointRssBytes: Math.max(...checkpoints),
++        checkpointsRssBytes: checkpoints,
++      });
++      writeFileSync(
++        "docs/evidence/v6/performance.json",
++        JSON.stringify(
++          {
++            environment:
++              "Node + jsdom + fake-indexeddb; RAM aux points de contrôle, pas pic garanti ni appareil mobile; remplissage aléatoire 32 KiB/version",
++            measurements,
++          },
++          null,
++          2,
++        ),
++      );
++    } finally {
++      await repository.delete();
++      await fresh.delete();
++    }
++  });
+diff --git a/tests/v6.unit.test.ts b/tests/v6.unit.test.ts
+new file mode 100644
+index 0000000..cac48bf
+--- /dev/null
++++ b/tests/v6.unit.test.ts
+@@ -0,0 +1,506 @@
++import { afterEach, beforeEach, expect, it, vi } from "vitest";
++import Dexie from "dexie";
++import JSZip from "jszip";
++import type { Session } from "@supabase/supabase-js";
++import { LocalRepository } from "../src/data/db";
++import { assessVersion, currentEditions, resolveDay } from "../src/data/day";
++import { inspectHTML, commitImport } from "../src/features/import";
++import {
++  exportBackup,
++  inspectBackup,
++  restoreBackup,
++} from "../src/features/backup";
++import { DeviceSynchronizer } from "../src/features/sync";
++import {
++  parseGoogleAiMessage,
++  validPublicQuestion,
++  GOOGLE_AI_ENTRY,
++  readingQuestions,
++} from "../src/features/googleAi";
++import { validDate, verifiedLabel } from "../src/data/editorial";
++import { validateSourceUrl } from "../src/features/sourceUrl";
++import { v6Bytes } from "./helpers/v6";
++let db: LocalRepository;
++beforeEach(() => {
++  db = new LocalRepository(`v6-${crypto.randomUUID()}`);
++});
++afterEach(async () => {
++  await db.delete();
++});
++async function add(revision = 1, extra: Parameters<typeof v6Bytes>[0] = {}) {
++  const bytes = v6Bytes({ revision, ...extra });
++  const e = await inspectHTML("fixture.html", bytes);
++  const result = await commitImport(db, e, bytes, "day");
++  return (await db.editions.get(result.id))!;
++}
++it("V6 conserve ISO avec décalage et distingue ID externe, UUID, révisions locale/externe", async () => {
++  const e = await add(3);
++  expect(e.dayKey).toBe("journal360-day-2026-10-14");
++  expect(e.externalEditionId).toBe(e.dayKey);
++  expect(e.externalRevision).toBe(3);
++  expect(e.revision).toBe(1);
++  expect(e.id).toMatch(/^[a-f0-9-]{36}$/);
++  expect(e.familyId).not.toBe(e.dayKey);
++  expect(e.sourceVerifiedAt).toBe("2026-10-14T21:00:00+02:00");
++  expect(verifiedLabel(e.sourceVerifiedAt!)).toContain("21:00");
++});
++it("08→16→21 : une journée, trois octets originaux intacts, meilleure version finale", async () => {
++  const versions = [await add(1), await add(2), await add(3)];
++  expect(new Set(versions.map((v) => v.familyId)).size).toBe(1);
++  expect(currentEditions(versions)).toHaveLength(1);
++  const day = resolveDay(versions);
++  expect(day.current?.externalRevision).toBe(3);
++  expect(day.status).toBe("COMPLETE");
++  for (const e of versions)
++    expect((await db.originals.get(e.id))?.bytes).toEqual(
++      v6Bytes({ revision: e.externalRevision }),
++    );
++});
++it("idempotence, notes et favoris conservés ; option indépendante reste possible", async () => {
++  const e = await add(1);
++  await db.reading(e.id, "edition", { favorite: true });
++  await db.notes.add({
++    id: crypto.randomUUID(),
++    editionId: e.id,
++    body: "Note privée",
++    kind: "note",
++    createdAt: e.importedAt,
++    updatedAt: e.importedAt,
++  });
++  await add(1);
++  expect(await db.editions.count()).toBe(1);
++  expect(await db.notes.count()).toBe(1);
++  expect((await db.states.toArray())[0].favorite).toBe(true);
++  const bytes = v6Bytes();
++  await commitImport(db, await inspectHTML("copie.html", bytes), bytes, "keep");
++  expect(await db.editions.count()).toBe(2);
++  expect(currentEditions(await db.editions.toArray())).toHaveLength(2);
++  await add(1);
++  expect(await db.editions.count()).toBe(2);
++});
++it("imports concurrents de même hash ne créent pas deux versions", async () => {
++  const bytes = v6Bytes();
++  await Promise.all(
++    [1, 2].map(async () =>
++      commitImport(db, await inspectHTML("x.html", bytes), bytes, "day"),
++    ),
++  );
++  expect(await db.editions.count()).toBe(1);
++});
++it("même révision / hash différent : garde les branches sans détrôner 08 fiable", async () => {
++  const first = await add(1);
++  await add(2);
++  await add(2, { ids: ["a", "different"] });
++  const day = resolveDay(await db.editions.toArray());
++  expect(day.current?.id).toBe(first.id);
++  expect(
++    day.versions.filter((v) =>
++      v.assessment.issues.some((s) => s.includes("branches")),
++    ),
++  ).toHaveLength(2);
++  expect(await db.originals.count()).toBe(3);
++});
++it("08→21 avec saut : signalé et ne remplace pas la version fiable", async () => {
++  const first = await add(1);
++  await add(3);
++  const day = resolveDay(await db.editions.toArray());
++  expect(day.current?.id).toBe(first.id);
++  expect(day.versions[0].assessment.status).toBe("PARTIAL");
++});
++it("21→16→08 : le rang de téléchargement ne décide pas de la version courante", async () => {
++  await add(3);
++  await add(2);
++  await add(1);
++  expect(
++    resolveDay(await db.editions.toArray()).current?.externalRevision,
++  ).toBe(3);
++});
++it("J puis J+1 et créneau sans nouvelle : aucun article inventé ni report de la veille", async () => {
++  await add(1);
++  const next = await add(1, { date: "2026-10-15", ids: [] });
++  expect(currentEditions(await db.editions.toArray())).toHaveLength(2);
++  expect(next.articles).toEqual([]);
++  const late = await add(2, { date: "2026-10-15", ids: [] });
++  expect(assessVersion(late, [next]).status).toBe("COMPLETE");
++  expect(late.articles).toHaveLength(0);
++});
++it("correction du même event_id permise, disparition déclarée complète devient PARTIAL", async () => {
++  const first = await add(1);
++  const second = await add(2);
++  expect(assessVersion(second, [first]).corrections).toBe(1);
++  const bad = await add(3, { ids: ["c"] });
++  const status = assessVersion(bad, [first, second]);
++  expect(status.status).toBe("PARTIAL");
++  expect(status.removedEvents).toBe(2);
++  expect(resolveDay([first, second, bad]).current?.id).toBe(second.id);
++});
++it("retrait déclaré et PARTIAL restent transparents, sans certification automatique", async () => {
++  const first = await add(1);
++  const partial = await add(2, {
++    ids: ["b"],
++    status: "PARTIAL",
++    extra: { retiredEventIds: ["event-a"] },
++  });
++  expect(assessVersion(partial, [first]).issues.join(" ")).toContain(
++    "retrait(s) déclaré(s)",
++  );
++  expect(resolveDay([first, partial]).current?.id).toBe(first.id);
++});
++it.each(["2026-02-30", "2026-13-01", "2026-00-00", "not-a-date"])(
++  "date impossible %s : pas de regroupement aveugle",
++  async (date) => {
++    const e = await inspectHTML("x.html", v6Bytes({ date }));
++    expect(e.date).toBeNull();
++    expect(e.dayKey).toBeUndefined();
++  },
++);
++it.each(["2026-03-29", "2026-10-25", "2024-02-29"])(
++  "calendrier/DST %s : date éditoriale préservée",
++  async (date) => {
++    const e = await inspectHTML("x.html", v6Bytes({ date }));
++    expect(e.date).toBe(date);
++    expect(e.dayKey).toBe(`journal360-day-${date}`);
++    expect(validDate(date)).toBe(true);
++  },
++);
++it.each([
++  { revision: 0 },
++  { revision: Infinity },
++  { slotsIncluded: ["08:00", "08:00"] },
++  { slotsIncluded: ["23:00"] },
++  { schemaVersion: 99 },
++  { editionDate: "2026-10-14Tinvalid" },
++])(
++  "métadonnée invalide : quarantaine de l’index V6, HTML intact %j",
++  async (extra) => {
++    const bytes = v6Bytes({ extra });
++    const e = await inspectHTML("x.html", bytes);
++    expect(e.dayKey).toBeUndefined();
++    expect(e.articles.length).toBeGreaterThan(0);
++    expect(e.warnings.length).toBeGreaterThan(0);
++  },
++);
++it("champs inconnus tolérés ; horodatage invalide et identifiant incohérent signalés", async () => {
++  const e = await inspectHTML(
++    "x.html",
++    v6Bytes({
++      extra: {
++        future: { anything: true },
++        editionId: "autre-jour",
++        sourceVerifiedAt: "2026-02-30T21:00:00+02:00",
++      },
++    }),
++  );
++  expect(e.dayKey).toBeUndefined();
++  expect(e.sourceVerifiedAt).toBeUndefined();
++  expect(e.warnings.length).toBeGreaterThan(0);
++});
++it("2000 articles, doublons d’IDs, URL hostile : limite explicite sans faux article", async () => {
++  const item = {
++    id: "same",
++    event_id: "x",
++    title: "Fictif",
++    sources: ["javascript:alert(1)", "https://user@evil.example/"],
++  };
++  const e = await inspectHTML(
++    "x.html",
++    v6Bytes({ extra: { items: Array.from({ length: 2001 }, () => item) } }),
++  );
++  expect(e.articles).toHaveLength(1);
++  expect(e.articles[0].sources).toEqual([]);
++  expect(e.warnings.join(" ")).toContain("2000");
++});
++it("transaction de lot annulée intégralement si quota après premier fichier", async () => {
++  const bytes1 = v6Bytes();
++  const bytes2 = v6Bytes({ revision: 2 });
++  const a = await inspectHTML("a.html", bytes1);
++  const b = await inspectHTML("b.html", bytes2);
++  const original = db.originals.add.bind(db.originals);
++  let calls = 0;
++  vi.spyOn(db.originals, "add").mockImplementation((...args) => {
++    if (++calls === 2)
++      return Dexie.Promise.reject(
++        new DOMException("Quota", "QuotaExceededError"),
++      );
++    return original(...args);
++  });
++  await expect(
++    db.transaction("rw", [db.editions, db.originals], async () => {
++      await commitImport(db, a, bytes1, "day");
++      await commitImport(db, b, bytes2, "day");
++    }),
++  ).rejects.toThrow("Quota");
++  expect(await db.editions.count()).toBe(0);
++  expect(await db.originals.count()).toBe(0);
++});
++it("migration v3→v4 sans toucher aux anciennes notes, UUID ou originaux", async () => {
++  const name = `migration-v6-${crypto.randomUUID()}`;
++  const legacy = new Dexie(name);
++  legacy.version(3).stores({
++    editions: "id,sha256,date,familyId,importedAt",
++    originals: "id",
++    states: "id,editionId",
++    notes: "id,editionId,updatedAt",
++    preferences: "key",
++    jobs: "id,status,createdAt,ownerId",
++    pending: "id,createdAt",
++  });
++  const bytes = v6Bytes();
++  const e = await inspectHTML("x.html", bytes);
++  await legacy.table("editions").add(e);
++  await legacy.table("originals").add({ id: e.id, bytes });
++  const note = {
++    id: crypto.randomUUID(),
++    editionId: e.id,
++    body: "Note historique",
++    kind: "note",
++    createdAt: e.importedAt,
++    updatedAt: e.updatedAt,
++  };
++  const state = {
++    id: `${e.id}:edition`,
++    editionId: e.id,
++    articleId: "edition",
++    favorite: true,
++    read: true,
++    openedAt: null,
++    updatedAt: e.updatedAt,
++  };
++  await legacy.table("notes").add(note);
++  await legacy.table("states").add(state);
++  await legacy.table("preferences").put({ key: "reader-mode", value: "safe" });
++  legacy.close();
++  const migrated = new LocalRepository(name);
++  expect((await migrated.editions.get(e.id))?.id).toBe(e.id);
++  expect((await migrated.originals.get(e.id))?.bytes).toEqual(bytes);
++  expect(migrated.verno).toBe(4);
++  expect(await migrated.notes.get(note.id)).toEqual(note);
++  expect(await migrated.states.get(state.id)).toEqual(state);
++  expect((await migrated.preferences.get("reader-mode"))?.value).toBe("safe");
++  await migrated.delete();
++});
++it("ZIP format 2 V6 puis restauration sur base vide, ZIP historique 1 toujours accepté", async () => {
++  await add(1);
++  await add(2);
++  await add(3);
++  const blob = await exportBackup(db);
++  const bytes = new Uint8Array(await blob.arrayBuffer());
++  const zip = await JSZip.loadAsync(bytes);
++  expect(
++    JSON.parse(await zip.file("manifest.json")!.async("string")).formatVersion,
++  ).toBe(2);
++  const fresh = new LocalRepository(`restore-v6-${crypto.randomUUID()}`);
++  try {
++    await restoreBackup(fresh, await inspectBackup(bytes));
++    expect(await fresh.snapshot()).toEqual(await db.snapshot());
++    expect(
++      resolveDay(await fresh.editions.toArray()).current?.externalRevision,
++    ).toBe(3);
++  } finally {
++    await fresh.delete();
++  }
++});
++it("identités identiques entre deux appareils ; branches distinctes conservées au retour sync simulé", async () => {
++  const phone = new LocalRepository(`phone-v6-${crypto.randomUUID()}`);
++  const files = new Map<
++    string,
++    Awaited<ReturnType<LocalRepository["snapshot"]>>
++  >();
++  const session = { user: { id: "synthetic-owner" } } as Session;
++  const remote = {
++    list: async () =>
++      [...files.keys()]
++        .reverse()
++        .map((id) => ({ id, createdAt: new Date().toISOString(), size: 1 })),
++    read: async (_s: Session, id: string) => structuredClone(files.get(id)!),
++    backup: async (
++      _s: Session,
++      _db: LocalRepository,
++      data: Awaited<ReturnType<LocalRepository["snapshot"]>>,
++    ) => {
++      const id = crypto.randomUUID();
++      files.set(id, structuredClone(data));
++      return id;
++    },
++  };
++  try {
++    const first = await add(1);
++    await restoreBackup(phone, await db.snapshot(), "sync");
++    await add(2);
++    const bytes = v6Bytes({ revision: 2, ids: ["a", "phone"] });
++    await commitImport(
++      phone,
++      await inspectHTML("phone.html", bytes),
++      bytes,
++      "day",
++    );
++    const a = new DeviceSynchronizer(db, remote);
++    const b = new DeviceSynchronizer(phone, remote);
++    await a.sync(session);
++    await b.sync(session);
++    await a.sync(session);
++    expect(await db.editions.count()).toBe(3);
++    expect(await phone.editions.count()).toBe(3);
++    expect(resolveDay(await db.editions.toArray()).current?.id).toBe(first.id);
++  } finally {
++    await phone.delete();
++  }
++});
++it("protocole question v2 fermé, v1 intact et entrée officielle exacte uniquement", () => {
++  expect(
++    parseGoogleAiMessage({
++      type: "journal360:google-ai:question-request",
++      version: 2,
++      question: "Question publique",
++    }),
++  ).toMatchObject({
++    type: "open",
++    destination: {
++      url: GOOGLE_AI_ENTRY,
++      query: "Question publique",
++      entryOnly: true,
++    },
++  });
++  for (const value of [null, " ", "x".repeat(2001), "ligne\nsecrète"])
++    expect(validPublicQuestion(value)).toBe(false);
++  for (const url of [
++    GOOGLE_AI_ENTRY + "?q=x",
++    GOOGLE_AI_ENTRY + "/",
++    "https://www.google.com.evil.example/ai",
++    "http://www.google.com/ai",
++  ])
++    expect(
++      parseGoogleAiMessage({
++        type: "journal360:google-ai:open-request",
++        version: 1,
++        url,
++      }),
++    ).toBeNull();
++  expect(
++    parseGoogleAiMessage({
++      type: "journal360:google-ai:open-request",
++      version: 1,
++      url: GOOGLE_AI_ENTRY,
++    })?.type,
++  ).toBe("open");
++  expect(
++    parseGoogleAiMessage({
++      type: "journal360:google-ai:question-request",
++      version: 2,
++      question: "Q",
++      url: "https://evil.example",
++    }),
++  ).toBeNull();
++  expect(readingQuestions(v6Bytes()).length).toBe(7);
++});
++it.each([
++  "javascript:alert(1)",
++  "file:///secret",
++  "https://user:pass@example.org/",
++  "https://127.1/x",
++  "https://192.168.1.1/x",
++  "http://localhost/x",
++  "https://private.local/x",
++  "https://example.org:444/",
++])("source parent hostile refusée %s", (url) => {
++  expect(validateSourceUrl(url)).toBeNull();
++});
++
++it("restauration garde deux versions legacy de hash identique et leurs UUID", async () => {
++  const bytes = new TextEncoder().encode(
++    "<html><head><title>Legacy</title></head><body>Original intact</body></html>",
++  );
++  const first = await inspectHTML("one.html", bytes);
++  const second = await inspectHTML("two.html", bytes);
++  await commitImport(db, first, bytes, "keep");
++  await commitImport(db, second, bytes, "version", first.id);
++  const fresh = new LocalRepository(`legacy-versions-${crypto.randomUUID()}`);
++  try {
++    const data = await inspectBackup(
++      new Uint8Array(await (await exportBackup(db)).arrayBuffer()),
++    );
++    await restoreBackup(fresh, data);
++    await restoreBackup(fresh, data);
++    expect(await fresh.editions.count()).toBe(2);
++    expect((await fresh.editions.toArray()).map((e) => e.id).sort()).toEqual(
++      [first.id, second.id].sort(),
++    );
++  } finally {
++    await fresh.delete();
++  }
++});
++it("collision de note entre éditions conserve les deux ancrages, sans boucle de duplication", async () => {
++  const a = await add(1);
++  const b = await add(1, { date: "2026-10-15" });
++  const id = crypto.randomUUID();
++  const note = {
++    id,
++    editionId: a.id,
++    body: "Même texte",
++    kind: "note" as const,
++    createdAt: "2026-10-14T10:00:00.000Z",
++    updatedAt: "2026-10-14T10:00:00.000Z",
++  };
++  await db.notes.add(note);
++  const data = await db.snapshot();
++  data.notes = [
++    { ...note, editionId: b.id, updatedAt: "2026-10-15T10:00:00.000Z" },
++  ];
++  await restoreBackup(db, data, "sync");
++  await restoreBackup(db, data, "sync");
++  expect(await db.notes.count()).toBe(2);
++  expect(new Set((await db.notes.toArray()).map((n) => n.editionId))).toEqual(
++    new Set([a.id, b.id]),
++  );
++});
++it("2000 articles uniques réellement acceptés", async () => {
++  const items = Array.from({ length: 2000 }, (_, i) => ({
++    id: `a-${i}`,
++    event_id: `event-${i}`,
++    title: `Fixture ${i}`,
++    summary: "Texte fictif",
++  }));
++  const e = await inspectHTML("limit.html", v6Bytes({ extra: { items } }));
++  expect(e.articles).toHaveLength(2000);
++});
++
++it("ancien schéma v3 ouvre la DB v4 additive via Dexie sans supprimer les nouveaux champs", async () => {
++  const e = await add(1);
++  const name = db.name;
++  db.close();
++  const old = new Dexie(name);
++  old.version(3).stores({
++    editions: "id,sha256,date,familyId,importedAt",
++    originals: "id",
++    states: "id,editionId",
++    notes: "id,editionId,updatedAt",
++    preferences: "key",
++    jobs: "id,status,createdAt,ownerId",
++    pending: "id,createdAt",
++  });
++  try {
++    await old.open();
++    expect(old.backendDB().version).toBe(40);
++    const record = await old.table("editions").get(e.id);
++    expect(record.dayKey).toBe(e.dayKey);
++    await old.table("editions").update(e.id, { archived: true });
++  } finally {
++    old.close();
++  }
++  await db.open();
++  expect(await db.editions.get(e.id)).toEqual({ ...e, archived: true });
++  expect(await db.originals.get(e.id)).toBeDefined();
++});
++
++it("HTML vide refusé, JSON malformé sans exécution ni article inventé", async () => {
++  await expect(inspectHTML("empty.html", new Uint8Array())).rejects.toThrow();
++  const bytes = new TextEncoder().encode(
++    '<html><body><h1>Fixture</h1><script id="editionData" type="application/json">{invalid}</script><script>window.importExecuted=true</script></body></html>',
++  );
++  const e = await inspectHTML("bad-json.html", bytes);
++  expect(e.articles).toEqual([]);
++  expect(e.warnings.length).toBeGreaterThan(0);
++  expect(
++    (window as unknown as Record<string, unknown>).importExecuted,
++  ).toBeUndefined();
++});
+diff --git a/vitest.performance.config.ts b/vitest.performance.config.ts
+new file mode 100644
+index 0000000..3d5c9ed
+--- /dev/null
++++ b/vitest.performance.config.ts
+@@ -0,0 +1,10 @@
++import { defineConfig } from "vitest/config";
++export default defineConfig({
++  test: {
++    environment: "jsdom",
++    setupFiles: ["tests/setup.ts"],
++    include: ["tests/v6.performance.test.ts"],
++    testTimeout: 180000,
++    fileParallelism: false,
++  },
++});

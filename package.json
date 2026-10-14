@@ -1,7 +1,7 @@
 {
   "name": "journal360-mobile",
   "private": true,
-  "version": "1.1.1",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
@@ -11,6 +11,7 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:performance": "vitest run --config vitest.performance.config.ts",
     "check": "npm run lint && npm run build && npm test && npm run test:e2e"
   },
   "dependencies": {

@@ -76,7 +76,10 @@ describe("Google Mode IA : validation fermée", () => {
       version: 1,
       url: base + "test",
     };
-    expect(parseGoogleAiMessage(capability)).toEqual({ type: "capability" });
+    expect(parseGoogleAiMessage(capability)).toEqual({
+      type: "capability",
+      version: 1,
+    });
     expect(parseGoogleAiMessage(open)?.type).toBe("open");
     for (const value of [
       null,

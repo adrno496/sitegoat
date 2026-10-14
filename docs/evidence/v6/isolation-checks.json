@@ -1,0 +1,10 @@
+{
+  "secretPatternScan": "PASS",
+  "checkedTextFiles": 138,
+  "failedPaths": [],
+  "limitations": "Motif Supabase connu seulement ; absence de secret inconnu non prouv\u00e9e. Aucun contenu .env consult\u00e9.",
+  "originalMainClean": true,
+  "worktreeWithoutEnv": true,
+  "cspSwCiUnchanged": true,
+  "dependencyGraphUnchanged": true
+}

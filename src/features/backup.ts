@@ -17,12 +17,12 @@ import {
 import { LocalRepository } from "../data/db";
 const manifestSchema = z.object({
   format: z.literal("journal360"),
-  formatVersion: z.literal(1),
+  formatVersion: z.union([z.literal(1), z.literal(2)]),
   appVersion: z.string(),
   generatedAt: z.iso.datetime(),
   privacyWarning: z.string(),
-  editionCount: z.number().int().max(1000),
-  editions: z.array(editionSchema).max(1000),
+  editionCount: z.number().int().max(4000),
+  editions: z.array(editionSchema).max(4000),
   states: z.array(stateSchema).max(100_000),
   notes: z.array(noteSchema).max(10000),
 });
@@ -38,11 +38,14 @@ export async function exportBackup(
 ): Promise<Blob> {
   const data = snapshot || (await repository.snapshot());
   const zip = new JSZip();
-  zip.file(
-    "manifest.json",
-    JSON.stringify({
+  const manifest = JSON.stringify(
+    manifestSchema.parse({
       format: "journal360",
-      formatVersion: 1,
+      formatVersion: data.editions.some(
+        (e) => e.schemaVersion === 2 || e.dayKey,
+      )
+        ? 2
+        : 1,
       appVersion: APP_VERSION,
       generatedAt: now(),
       privacyWarning:
@@ -53,6 +56,16 @@ export async function exportBackup(
       notes: data.notes,
     }),
   );
+  const manifestBytes = new TextEncoder().encode(manifest).byteLength;
+  if (
+    manifestBytes > 64 * 1024 * 1024 ||
+    manifestBytes + data.originals.reduce((sum, o) => sum + o.bytes.length, 0) >
+      150 * 1024 * 1024
+  )
+    throw new Error(
+      "Bibliothèque supérieure à la limite de restauration de 150 Mo : archive annulée, données locales conservées.",
+    );
+  zip.file("manifest.json", manifest);
   for (const e of data.editions) {
     const o = data.originals.find((f) => f.id === e.id);
     if (!o) throw new Error("Original manquant : sauvegarde annulée.");
@@ -74,7 +87,7 @@ export async function inspectBackup(bytes: Uint8Array): Promise<BackupData> {
     throw new Error("Archive supérieure à 150 Mo.");
   const zip = await JSZip.loadAsync(bytes, { checkCRC32: false });
   const entries = Object.values(zip.files);
-  if (entries.length > 1002)
+  if (entries.length > 4002)
     throw new Error("Trop de fichiers dans cette archive.");
   let total = 0;
   for (const entry of entries) {
@@ -82,7 +95,10 @@ export async function inspectBackup(bytes: Uint8Array): Promise<BackupData> {
     const internal = Reflect.get(entry, "_data") as
       { uncompressedSize?: number } | undefined;
     const size = internal?.uncompressedSize;
-    if (typeof size !== "number" || size > 15 * 1024 * 1024)
+    if (
+      typeof size !== "number" ||
+      size > (entry.name === "manifest.json" ? 64 : 10) * 1024 * 1024
+    )
       throw new Error("Entrée ZIP invalide ou trop volumineuse.");
     total += size;
     if (total > 150 * 1024 * 1024)
@@ -145,15 +161,9 @@ export async function restoreBackup(
       const mapping = new Map<string, string>();
       for (const e of data.editions) {
         const exact = await repository.editions.get(e.id);
-        const same =
-          exact?.sha256 === e.sha256
-            ? exact
-            : mode === "backup"
-              ? await repository.editions
-                  .where("sha256")
-                  .equals(e.sha256)
-                  .first()
-              : undefined;
+        // Archive UUIDs are identities, even for deliberately retained identical
+        // files. A SHA match under another UUID must not erase a historical version.
+        const same = exact?.sha256 === e.sha256 ? exact : undefined;
         if (same) {
           mapping.set(e.id, same.id);
           if (mode === "sync" && newer(e, same))
@@ -161,9 +171,7 @@ export async function restoreBackup(
           continue;
         }
         const id = exact
-          ? mode === "sync"
-            ? await Dexie.waitFor(conflictId(`${e.id}:${e.sha256}`))
-            : crypto.randomUUID()
+          ? await Dexie.waitFor(conflictId(`${e.id}:${e.sha256}`))
           : e.id;
         mapping.set(e.id, id);
         if (await repository.editions.get(id)) continue;
@@ -210,6 +218,8 @@ export async function restoreBackup(
         const existing = await repository.notes.get(note.id);
         if (
           existing &&
+          existing.editionId === editionId &&
+          existing.articleId === note.articleId &&
           existing.body === note.body &&
           existing.kind === note.kind
         )
@@ -221,11 +231,12 @@ export async function restoreBackup(
           const other = winner === incoming ? existing : incoming;
           const duplicate = await repository.notes
             .where("editionId")
-            .equals(editionId)
+            .equals(other.editionId)
             .filter(
               (n) =>
                 n.body === other.body &&
                 n.kind === other.kind &&
+                n.articleId === other.articleId &&
                 !(winner === incoming && n.id === note.id),
             )
             .first();
@@ -234,12 +245,11 @@ export async function restoreBackup(
           if (!duplicate)
             await repository.notes.put({
               ...other,
-              editionId,
               id:
                 mode === "sync"
                   ? await Dexie.waitFor(
                       conflictId(
-                        `${note.id}:${editionId}:${other.kind}:${other.body}`,
+                        `${note.id}:${other.editionId}:${other.articleId || ""}:${other.kind}:${other.body}`,
                       ),
                     )
                   : crypto.randomUUID(),

@@ -29,6 +29,10 @@ export class LocalRepository extends Dexie {
     });
     this.version(2).stores({ jobs: "id,status,createdAt,ownerId" });
     this.version(3).stores({ pending: "id,createdAt" });
+    this.version(4).stores({
+      editions:
+        "id,sha256,date,familyId,importedAt,dayKey,externalEditionId,[dayKey+sha256]",
+    });
   }
   async saveEdition(edition: Edition, bytes: Uint8Array) {
     await this.transaction("rw", [this.editions, this.originals], async () => {

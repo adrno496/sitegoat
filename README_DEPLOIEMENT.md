@@ -43,3 +43,9 @@ Aucun domaine personnalisé, abonnement, plan Supabase ou DNS n’a été modifi
 ## Publication après revue Google IA
 
 Le commit/push et la publication Vercel ont été autorisés séparément après la revue locale. La protection temporaire empêchant le déploiement automatique de `main` a été retirée après autorisation de publication : le comportement Git/Vercel initial est rétabli. Les pushes sur `main` déclenchent donc à nouveau le déploiement Vercel. Les CSP et en-têtes ne changent pas.
+
+## Publication V2 / éditions V6
+
+La publication de la version2.0.0 a été autorisée séparément le14 octobre2026. État et preuves dans [JOURNAL360_V6_RELEASE](docs/JOURNAL360_V6_RELEASE.md) ; les cinq rapports V6 antérieurs décrivent la phase locale, avant cette autorisation.
+
+Aucune migration SQL nécessaire : l’application réutilise le bucket privé existant et les fonctions Vercel publient la pagination. Le changement IndexedDB v4 est local et additif. Les snapshots V6 utilisent ZIP2, que l’ancien client1.1.1 ne comprend pas ; mettre à jour chaque appareil via l’avis de mise à jour PWA, sans effacer les données. Garder un export avant activation des nouveaux imports. Revenir au bundle précédent ne reconvertit pas les nouveaux ZIP2 ; voir le plan de migration/rollback V6.

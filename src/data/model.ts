@@ -1,4 +1,10 @@
 import { z } from "zod";
+import {
+  calendarSchema,
+  dayKeySchema,
+  slotSchema,
+  cumulativeSchema,
+} from "./editorial";
 export const articleSchema = z.object({
   id: z.string().max(200),
   eventId: z.string().max(200).optional(),
@@ -6,7 +12,11 @@ export const articleSchema = z.object({
   category: z.string().max(200),
   text: z.string().max(2_000_000),
   sources: z.array(z.string().max(2048)).max(100),
-  date: z.string().optional(),
+  date: calendarSchema.optional(),
+  firstSeenSlot: slotSchema.optional(),
+  kind: z
+    .enum(["news", "business", "hypothesis", "technical", "decision"])
+    .optional(),
 });
 export const editionSchema = z.object({
   id: z.uuid(),
@@ -15,10 +25,7 @@ export const editionSchema = z.object({
   filename: z.string().max(300),
   sha256: z.string().regex(/^[a-f0-9]{64}$/),
   title: z.string().max(1000),
-  date: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/)
-    .nullable(),
+  date: calendarSchema.nullable(),
   importedAt: z.iso.datetime(),
   updatedAt: z.iso.datetime(),
   size: z
@@ -35,7 +42,20 @@ export const editionSchema = z.object({
   archived: z.boolean(),
   deleted: z.boolean(),
   sourceVerifiedAt: z.string().optional(),
+  schemaVersion: z.literal(2).optional(),
+  dayKey: dayKeySchema.optional(),
+  externalEditionId: z.string().max(200).optional(),
+  externalRevision: z.number().int().min(1).max(1_000_000).optional(),
+  slotsIncluded: z.array(slotSchema).max(3).optional(),
+  declaredCumulativeStatus: cumulativeSchema.optional(),
+  cumulativeStatus: cumulativeSchema.optional(),
+  missingSlots: z.array(slotSchema).max(3).optional(),
+  retiredEventIds: z.array(z.string().max(200)).max(2000).optional(),
+  independent: z.boolean().optional(),
+  supersedes: z.uuid().optional(),
+  importOrigin: z.enum(["file", "demo", "share", "archive"]).optional(),
 });
+export { calendarSchema };
 export const stateSchema = z.object({
   id: z.string().max(500),
   editionId: z.uuid(),

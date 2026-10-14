@@ -95,7 +95,7 @@ describe("Import et stockage réel (IndexedDB émulé)", () => {
     expect((await db.states.get(`${e.id}:edition`))?.favorite).toBe(true);
     expect((await db.states.get(`${e.id}:edition`))?.read).toBe(true);
   });
-  it("migration v1 vers v3 sans perte", async () => {
+  it("migration v1 vers v4 sans perte", async () => {
     const name = `migration-${crypto.randomUUID()}`;
     const legacy = new Dexie(name);
     legacy.version(1).stores({

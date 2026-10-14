@@ -4,6 +4,8 @@ import { useDialogFocus } from "./dialogFocus";
 import { db } from "../data/db";
 import { type Edition, dateLabel, sizeLabel } from "../data/model";
 import { commitImport } from "./import";
+import { recordDiagnostic } from "./diagnostics";
+import { assessVersion, resolveDay } from "../data/day";
 export interface Candidate {
   edition: Edition;
   bytes: Uint8Array;
@@ -22,7 +24,7 @@ export function ImportDialog({
   onDone: (message: string) => void;
 }) {
   const [choices, setChoices] = useState<
-    Record<string, "ignore" | "keep" | "version">
+    Record<string, "ignore" | "keep" | "version" | "day">
   >({});
   const [parents, setParents] = useState<Record<string, string>>({});
   const [metadata, setMetadata] = useState<
@@ -38,34 +40,42 @@ export function ImportDialog({
     let saved = 0,
       ignored = 0;
     try {
-      for (const c of candidates) {
-        const choice =
-          choices[c.edition.id] || (c.duplicate ? "ignore" : "keep");
-        const edited = metadata[c.edition.id];
-        const edition = {
-          ...c.edition,
-          title: edited?.title.trim() || c.edition.title,
-          date: edited ? edited.date || null : c.edition.date,
-        };
-        const result = await commitImport(
-          db,
-          edition,
-          c.bytes,
-          choice,
-          parents[c.edition.id],
-        );
-        if (result.duplicate) ignored++;
-        else saved++;
-        if (c.pendingId) await db.pending.delete(c.pendingId);
-      }
+      await db.transaction(
+        "rw",
+        [db.editions, db.originals, db.pending],
+        async () => {
+          for (const c of candidates) {
+            const choice =
+              choices[c.edition.id] ||
+              (c.edition.dayKey ? "day" : c.duplicate ? "ignore" : "keep");
+            const edited = metadata[c.edition.id];
+            const edition = {
+              ...c.edition,
+              title: edited?.title.trim() || c.edition.title,
+              date: edited ? edited.date || null : c.edition.date,
+            };
+            const result = await commitImport(
+              db,
+              edition,
+              c.bytes,
+              choice,
+              parents[c.edition.id],
+            );
+            if (result.duplicate) ignored++;
+            else saved++;
+            if (c.pendingId) await db.pending.delete(c.pendingId);
+          }
+        },
+      );
       onDone(
         `${saved} édition${saved > 1 ? "s" : ""} importée${saved > 1 ? "s" : ""}${ignored ? ` · ${ignored} doublon ignoré` : ""}.`,
       );
     } catch (e) {
+      void recordDiagnostic("import-failed");
       setError(
         e instanceof Error
           ? e.message
-          : "Import interrompu. Les éditions déjà enregistrées sont conservées.",
+          : "Import annulé. Aucun fichier de cette sélection n’a été enregistré.",
       );
     } finally {
       setBusy(false);
@@ -98,7 +108,20 @@ export function ImportDialog({
           pas exécutés à l’import.
         </p>
         <div className="import-list">
-          {candidates.map((c) => {
+          {candidates.map((c, index) => {
+            const peers = [
+              ...editions,
+              ...candidates.slice(0, index).map((v) => v.edition),
+            ].filter(
+              (e) =>
+                c.edition.dayKey &&
+                e.dayKey === c.edition.dayKey &&
+                !e.independent,
+            );
+            const assessment = c.edition.dayKey
+              ? assessVersion(c.edition, peers)
+              : null;
+            const previous = resolveDay(peers).current;
             const edited = metadata[c.edition.id] || {
               title: c.edition.title,
               date: c.edition.date || "",
@@ -127,6 +150,7 @@ export function ImportDialog({
                   Date éditoriale <span className="muted">(facultative)</span>
                   <input
                     type="date"
+                    disabled={!!c.edition.dayKey}
                     value={edited.date}
                     onChange={(e) =>
                       setMetadata({
@@ -142,6 +166,45 @@ export function ImportDialog({
                     : "HTML générique · lecture intégrale"}{" "}
                   · {dateLabel(c.edition.date)}
                 </p>
+                {assessment && (
+                  <div className="day-import-preview">
+                    <strong>
+                      {previous
+                        ? "Mettre à jour la journée"
+                        : "Créer la journée"}{" "}
+                      du {dateLabel(c.edition.date)}
+                    </strong>
+                    <p>
+                      Révision externe{" "}
+                      {c.edition.externalRevision ?? "inconnue"} ·{" "}
+                      {(c.edition.slotsIncluded || []).join(" / ")} ·{" "}
+                      {assessment.status}
+                    </p>
+                    <p>
+                      {assessment.newEvents} nouveaux événements identifiés ·{" "}
+                      {assessment.corrections} corrections textuelles ·{" "}
+                      {assessment.removedEvents} absences
+                    </p>
+                    {previous &&
+                      (c.edition.externalRevision || 0) <
+                        (previous.externalRevision || 0) && (
+                        <p className="warning">
+                          Révision antérieure : conservée dans l’historique ; la
+                          version courante ne sera pas rétrogradée.
+                        </p>
+                      )}
+                    {assessment.issues.map((issue) => (
+                      <p className="warning" key={issue}>
+                        {issue}
+                      </p>
+                    ))}
+                    <p className="small-note">
+                      Le contrôle compare les event_id disponibles, sans
+                      certifier les déclarations éditoriales. L’original ne sera
+                      pas modifié.
+                    </p>
+                  </div>
+                )}
                 {c.edition.warnings.map((w) => (
                   <p className="warning" key={w}>
                     <AlertTriangle size={16} />
@@ -158,16 +221,29 @@ export function ImportDialog({
                   Conservation
                   <select
                     value={
-                      choices[c.edition.id] || (c.duplicate ? "ignore" : "keep")
+                      choices[c.edition.id] ||
+                      (c.edition.dayKey
+                        ? "day"
+                        : c.duplicate
+                          ? "ignore"
+                          : "keep")
                     }
                     onChange={(e) =>
                       setChoices({
                         ...choices,
                         [c.edition.id]: e.target.value as
-                          "ignore" | "keep" | "version",
+                          "ignore" | "keep" | "version" | "day",
                       })
                     }
                   >
+                    {c.edition.dayKey && (
+                      <option value="day">
+                        {previous
+                          ? "Mettre à jour la journée"
+                          : "Créer la journée"}{" "}
+                        · historique conservé
+                      </option>
+                    )}
                     {c.duplicate && (
                       <option value="ignore">Ignorer le doublon</option>
                     )}

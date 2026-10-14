@@ -1,0 +1,45 @@
+[
+  {
+    "check": "lint",
+    "status": "PASS",
+    "exitCode": 0,
+    "durationSeconds": 1.72
+  },
+  {
+    "check": "typecheck",
+    "status": "PASS",
+    "exitCode": 0,
+    "durationSeconds": 3.45
+  },
+  {
+    "check": "build",
+    "status": "PASS",
+    "exitCode": 0,
+    "durationSeconds": 4.7
+  },
+  {
+    "check": "unit",
+    "status": "PASS",
+    "exitCode": 0,
+    "durationSeconds": 7.6
+  },
+  {
+    "check": "e2e",
+    "status": "FAIL",
+    "exitCode": 1,
+    "durationSeconds": 70.73
+  },
+  {
+    "check": "audit-production-dependencies",
+    "status": "PASS",
+    "exitCode": 0,
+    "durationSeconds": 0.7
+  },
+  {
+    "check": "e2e-security-port-retry",
+    "status": "PASS",
+    "exitCode": 0,
+    "durationSeconds": 5.64,
+    "note": "Initial 30/32 passed; two assertions captured old hardcoded port before isolated harness adaptation. Retry runs the two unchanged security scenarios against isolated port."
+  }
+]
