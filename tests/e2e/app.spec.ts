@@ -45,6 +45,9 @@ test("parcours complet : import, lecture, notes, favori, recherche, offline, exp
     .getByRole("button", { name: "Lire Journal générique", exact: true })
     .click();
   await page
+    .getByRole("button", { name: "Désactiver JS", exact: true })
+    .click();
+  await page
     .getByRole("button", { name: "Réduire la lecture", exact: true })
     .click();
   await expect(page.locator("iframe")).toHaveAttribute("sandbox", "");
@@ -141,6 +144,15 @@ test("démonstrations, interaction explicite et mémoire basée sur event_id", a
     })
     .click();
   const frame = page.frameLocator("iframe");
+  await expect(
+    page.getByRole("button", { name: "Désactiver JS", exact: true }),
+  ).toBeVisible();
+  await expect(page.locator("#trust-title")).toHaveCount(0);
+  await frame.getByRole("button", { name: "Tester l’interaction" }).click();
+  await expect(frame.locator("#counter")).toHaveText("1");
+  await page
+    .getByRole("button", { name: "Désactiver JS", exact: true })
+    .click();
   await frame.getByRole("button", { name: "Tester l’interaction" }).click();
   await expect(frame.locator("#counter")).toHaveText("0");
   await page.getByRole("button", { name: "Interactif", exact: true }).click();
@@ -212,6 +224,9 @@ test("sécurité : parent, stockage, fetch, ressources, top et popups bloqués",
   await expect(
     page.frameLocator("iframe").getByRole("heading", { name: "Test hostile" }),
   ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Désactiver JS", exact: true })
+    .click();
   await page
     .frameLocator("iframe")
     .getByText("Lien externe", { exact: true })
@@ -369,10 +384,10 @@ test("lecture pleine page : tout le viewport, interactions conservées et retour
       exact: true,
     })
     .click();
-  await page.getByRole("button", { name: "Interactif", exact: true }).click();
-  await page
-    .getByRole("button", { name: "Je fais confiance à ce fichier" })
-    .click();
+  await expect(
+    page.getByRole("button", { name: "Désactiver JS", exact: true }),
+  ).toBeVisible();
+  await expect(page.locator("#trust-title")).toHaveCount(0);
   const frame = page.frameLocator("iframe");
   await frame.getByRole("button", { name: "Tester l’interaction" }).click();
   await expect(frame.locator("#counter")).toHaveText("1");
@@ -453,4 +468,58 @@ test("lecture pleine page : tout le viewport, interactions conservées et retour
   await expect(
     page.getByRole("button", { name: "Désactiver JS", exact: true }),
   ).toBeVisible();
+});
+
+test("mode interactif automatique, choix sécurisé conservé après rechargement et nouvelle édition interactive", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await demo(page);
+  await page
+    .getByRole("button", {
+      name: "Lire Observer. Comprendre. Agir.",
+      exact: true,
+    })
+    .click();
+  await expect(page.locator("iframe")).toHaveAttribute(
+    "sandbox",
+    "allow-scripts",
+  );
+  await expect(page.locator("#trust-title")).toHaveCount(0);
+  await page
+    .frameLocator("iframe")
+    .getByRole("button", { name: "Tester l’interaction" })
+    .click();
+  await expect(page.frameLocator("iframe").locator("#counter")).toHaveText("1");
+  await page
+    .getByRole("button", { name: "Désactiver JS", exact: true })
+    .click();
+  await expect(page.locator("iframe")).toHaveAttribute("sandbox", "");
+  await page.reload();
+  await page
+    .getByRole("button", {
+      name: "Lire Observer. Comprendre. Agir.",
+      exact: true,
+    })
+    .click();
+  await expect(page.locator("iframe")).toHaveAttribute("sandbox", "");
+  await page
+    .frameLocator("iframe")
+    .getByRole("button", { name: "Tester l’interaction" })
+    .click();
+  await expect(page.frameLocator("iframe").locator("#counter")).toHaveText("0");
+  await page
+    .getByRole("button", { name: "Retour à la bibliothèque", exact: true })
+    .click();
+  await page
+    .getByRole("button", {
+      name: "Lire Les idées passent. Gardez le fil.",
+      exact: true,
+    })
+    .click();
+  await expect(page.locator("iframe")).toHaveAttribute(
+    "sandbox",
+    "allow-scripts",
+  );
+  await expect(page.locator("#trust-title")).toHaveCount(0);
 });

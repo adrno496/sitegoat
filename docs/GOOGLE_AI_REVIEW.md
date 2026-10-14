@@ -2,6 +2,8 @@
 
 Date : 14 octobre 2026, Europe/Paris. Validation effectuée localement, sans déploiement, accès de test au compte propriétaire ni changement de production. Le commit/push, puis la publication Vercel ont été autorisés séparément après cette revue.
 
+Évolution après cette revue : à la demande explicite suivante, la version 1.1.1 ouvre les éditions en interactif par défaut. Désactiver JS reste mémorisé par édition. La confirmation Google et le sandbox strict sont conservés. Les descriptions de défaut sécurisé et les résultats ci-dessous correspondent à la revue initiale ; le retour arrière du pont doit tenir compte du commit ultérieur sur le mode par défaut.
+
 ## Inventaire effectué avant modification
 
 - `src/features/Reader.tsx` existe : iframe srcdoc recréée par édition/mode/révision, zoom 70 %, mode sécurisé sans scripts, mode interactif après confirmation et préférence de confiance locale. Aucun ref d’iframe ni listener de messages d’édition existant.

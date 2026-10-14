@@ -4,7 +4,7 @@
 
 | Menace | Protection | Limite |
 |---|---|---|
-| Script HTML accédant au parent/session | Iframe origine opaque, sandbox sans same-origin | Interactif réservé aux fichiers de confiance ; JS peut monopoliser le CPU |
+| Script HTML accédant au parent/session | Iframe origine opaque, sandbox sans same-origin | Scripts inline actifs par défaut sur demande ; JS peut monopoliser le CPU |
 | Exfiltration réseau | CSP du cadre, ressources et liens externes retirés, connect-src none | Un script peut naviguer son propre cadre ; absence d’exfiltration totale non garantie en interactif |
 | XSS du shell | React rend les données comme texte ; aucun dangerouslySetInnerHTML | CSP du parent autorise inline pour permettre les scripts du srcdoc : cette défense seule ne suffit pas |
 | Accès au cloud d’autrui | JWT vérifié côté serveur, UID forcé, UUID validé, RLS restrictive et bucket privé | Clé serveur très privilégiée : uniquement dans environnement serveur |
@@ -31,7 +31,7 @@ Le parent autorise les scripts de son origine et inline pour le lecteur interact
 
 Les tests ne prouvent pas la sécurité de tout JavaScript possible. Pas d’audit indépendant, de test physique téléphone, ni de garantie d’absence de faille inconnue. En cas de doute, utiliser le mode sécurisé ou le texte indexé.
 
-Les formulaires sont remplacés dans la copie de lecture par des conteneurs conservant les IDs et contrôles ; les actions de soumission sont retirées. Sandbox sans allow-forms et form-action none restent actifs. La navigation par fragments reste dans le cadre opaque, sans pont avec l’application. La confiance est mémorisée seulement après confirmation explicite, localement pour un ID d’édition immutable ; toute nouvelle édition reste sûre par défaut.
+Les formulaires sont remplacés dans la copie de lecture par des conteneurs conservant les IDs et contrôles ; les actions de soumission sont retirées. Sandbox sans allow-forms et form-action none restent actifs. La navigation par fragments reste dans le cadre opaque, sans pont avec l’application. À la demande explicite de l’utilisateur, toute nouvelle édition s’ouvre automatiquement en mode interactif. Le choix Désactiver JS est mémorisé localement pour cet ID d’édition et conservé aux prochaines ouvertures. Réactiver manuellement le mode interactif après ce choix conserve la confirmation de confiance. Le sandbox reste limité à allow-scripts en interactif, sans autre permission.
 
 ## Pont Google Mode IA (local, non publié)
 

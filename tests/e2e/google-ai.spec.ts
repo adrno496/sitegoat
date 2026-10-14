@@ -72,7 +72,27 @@ async function setup(page: Page, interactive = true) {
       .frameLocator(".edition-frame")
       .getByRole("heading", { name: "Journal Google IA" }),
   ).toBeVisible();
-  if (interactive) await enable(page);
+  await expect(page.locator(".edition-frame")).toHaveAttribute(
+    "sandbox",
+    "allow-scripts",
+  );
+  await expect(page.locator("#trust-title")).toHaveCount(0);
+  if (interactive) {
+    await expect(
+      page.frameLocator(".edition-frame").locator("#capability"),
+    ).toHaveText(
+      JSON.stringify({
+        type: "journal360:google-ai:capability",
+        version: 1,
+        enabled: true,
+      }),
+    );
+  } else {
+    await page
+      .getByRole("button", { name: "Désactiver JS", exact: true })
+      .click();
+    await expect(page.locator(".edition-frame")).toHaveAttribute("sandbox", "");
+  }
 }
 async function enable(page: Page) {
   await page.getByRole("button", { name: "Interactif", exact: true }).click();

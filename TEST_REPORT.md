@@ -2,6 +2,10 @@
 
 Date : 13 octobre 2026, Europe/Paris. Environnement réel : macOS sur Mac ARM64, Node 24.21.0 / npm 11.19.0. Chromium Playwright 156 et WebKit 27.2. **Pas d’iPhone ou Android physique utilisé. Le HTML réel fourni (104 507 octets) a été vérifié localement sans publication de son contenu.**
 
+## Mode interactif par défaut — 1.1.1
+
+Sur demande explicite du 14 octobre 2026, les éditions s’ouvrent directement en interactif, sans confirmation initiale. Le choix Désactiver JS est conservé par édition/appareil. `npm run check` : lint/build PASS, 73 tests unitaires et 32 parcours navigateur PASS. Les deux nouveaux parcours Chromium/WebKit vérifient l’activation immédiate, l’absence de confirmation, le rechargement d’une édition explicitement désactivée et l’ouverture interactive d’une autre édition. Les 12 tests Google IA passent aussi avec le nouveau défaut ; aucune permission de sandbox supplémentaire et aucune dépendance modifiée. [Preuve](docs/evidence/interactive-default.json). Safari iOS physique reste NON TESTÉ.
+
 ## Commandes et preuves
 
 | Contrôle | Commande / preuve | Statut |

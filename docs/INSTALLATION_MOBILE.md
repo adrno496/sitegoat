@@ -29,7 +29,7 @@ Safari iOS ne propose pas aujourd’hui File Handling pour cette PWA ni la réce
 3. Lancer Journal 360 depuis son icône.
 4. Depuis l’app Fichiers, sélectionner un `.html`, puis **Partager → Journal 360** si proposé. Le fichier arrive dans la prévisualisation d’import, sans exécuter ses scripts.
 5. Sinon ouvrir Journal 360, toucher **Importer** et choisir le fichier local.
-6. Lire en mode sécurisé, ajouter un favori ou une note, puis exporter une sauvegarde.
+6. Lire directement en mode interactif, ajouter un favori ou une note, puis exporter une sauvegarde. Le bouton Désactiver JS permet de revenir au mode sécurisé.
 
 Le partage dépend du navigateur, de l’installation, du MIME choisi par l’application qui partage et du système. Le manifeste accepte text/html et les extensions .html/.htm, sans accepter arbitrairement tous les types de fichiers.
 

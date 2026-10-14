@@ -1,5 +1,9 @@
 # Versions
 
+## 1.1.1 — 14 octobre 2026
+
+Lecture interactive automatique dès l’ouverture des éditions, sans confirmation initiale de confiance, sur demande explicite. Désactiver JS garde un repli sécurisé mémorisé par édition et appareil. Le sandbox et les confirmations Google Mode IA restent inchangés.
+
 ## 1.1.0 — 14 octobre 2026
 
 Synchronisation automatique privée Supabase entre PC et smartphone avec le même code d’accès. Récupération à la connexion, envoi après les modifications, vérification toutes les 30 secondes et reprise après coupure réseau. Éditions, originaux, notes, favoris, lectures, archives et corbeille partagés. Notes concurrentes conservées sans duplication ; changements de favoris et d’archivage propagés. Suspension par appareil et bouton Synchroniser maintenant. Sauvegardes manuelles et ZIP conservés.

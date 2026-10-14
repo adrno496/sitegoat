@@ -56,7 +56,9 @@ export function Reader({
     useState<GoogleAiRequest | null>(null);
   const [expanded, setExpanded] = useState(true);
   const [bytes, setBytes] = useState<Uint8Array>();
-  const [mode, setMode] = useState<"safe" | "interactive" | "text">("safe");
+  const [mode, setMode] = useState<"safe" | "interactive" | "text">(
+    "interactive",
+  );
   const [confirm, setConfirm] = useState(false);
   const [font, setFont] = useState(18);
   const [note, setNote] = useState("");
@@ -146,7 +148,7 @@ export function Reader({
   useEffect(() => {
     setExpanded(true);
     setBytes(undefined);
-    setMode("safe");
+    setMode("interactive");
     setNote("");
     setLoadError("");
     let canceled = false;
@@ -158,7 +160,7 @@ export function Reader({
         if (!canceled) {
           if (o) {
             setBytes(o.bytes);
-            if (trust?.value === "interactive") setMode("interactive");
+            setMode(trust?.value === "safe" ? "safe" : "interactive");
           } else
             setLoadError(
               "Original manquant. La lecture textuelle reste disponible.",

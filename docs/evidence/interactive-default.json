@@ -1,0 +1,27 @@
+{
+  "verifiedAt": "2026-10-14T20:07:53.356241+00:00",
+  "appVersion": "1.1.1",
+  "commands": {
+    "npm run check": "PASS",
+    "unitTests": 73,
+    "e2eTests": 32
+  },
+  "readerDefault": "interactive",
+  "explicitSafeChoice": "Persisted per edition/device; verified after reload",
+  "sandbox": {
+    "interactive": "allow-scripts",
+    "safe": "",
+    "additionalPermissions": false
+  },
+  "googleConfirmation": "Required; 12 Google IA browser tests pass",
+  "dependencyChanges": false,
+  "stats": {
+    "startTime": "2026-10-14T20:06:05.541Z",
+    "duration": 77307.661,
+    "expected": 32,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "physicalSafariIOS": "NON TESTÉ"
+}

@@ -30,10 +30,9 @@ for (const [engine, browserType] of Object.entries({ chromium, webkit })) {
       .getByRole("button", { name: "Lire Édition réelle de test", exact: true })
       .click();
     await page.getByRole("dialog").waitFor();
-    await page.getByRole("button", { name: "Interactif", exact: true }).click();
-    await page
-      .getByRole("button", { name: "Je fais confiance à ce fichier" })
-      .click();
+    await page.getByRole("button", { name: "Désactiver JS", exact: true }).waitFor();
+    if ((await page.locator("iframe").getAttribute("sandbox")) !== "allow-scripts")
+      throw new Error("Le lecteur n’est pas interactif par défaut.");
     const frame = page.frameLocator("iframe");
     async function clickInFrame(locator) {
       await locator.click();

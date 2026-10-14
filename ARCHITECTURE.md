@@ -24,7 +24,7 @@ Les graphiques comptent les vraies éditions connues. Les sujets communs utilise
 
 Analyse par DOMParser détaché, sans exécution de scripts. JSON `#editionData[type=application/json]` validé ; aucune tentative d’évaluer `DATA.items` dans du JavaScript. HTML générique : texte intégral et zéro article inventé. L’original est préservé.
 
-Le lecteur utilise `srcdoc` dans une iframe sandboxée. Sans scripts par défaut ; `allow-scripts` seul après action explicite. Jamais `allow-same-origin`, popups, téléchargement par le cadre ou navigation top. CSP restrictive injectée avant le contenu et nettoyage des ressources externes / bases / redirections et neutralisation des formulaires en conservant leurs contrôles. Le téléchargement intact passe par la PWA comme pièce jointe Blob. Les liens sources validés sont présentés dans la lecture textuelle, ouverts sur action de l’utilisateur.
+Le lecteur utilise `srcdoc` dans une iframe sandboxée. Mode interactif par défaut à la demande de l’utilisateur ; `allow-scripts` seul, sans autre permission. Le choix explicite de désactiver JS reste mémorisé localement par édition. Jamais `allow-same-origin`, popups, téléchargement par le cadre ou navigation top. CSP restrictive injectée avant le contenu et nettoyage des ressources externes / bases / redirections et neutralisation des formulaires en conservant leurs contrôles. Le téléchargement intact passe par la PWA comme pièce jointe Blob. Les liens sources validés sont présentés dans la lecture textuelle, ouverts sur action de l’utilisateur.
 
 ## Cloud
 
