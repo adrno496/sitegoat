@@ -1,6 +1,6 @@
 # Revue locale — Google Mode IA dans Journal 360
 
-Date : 14 octobre 2026, Europe/Paris. Validation effectuée localement, sans déploiement, accès de test au compte propriétaire ni changement de production. Le commit et le push ont été autorisés séparément après cette revue.
+Date : 14 octobre 2026, Europe/Paris. Validation effectuée localement, sans déploiement, accès de test au compte propriétaire ni changement de production. Le commit/push, puis la publication Vercel ont été autorisés séparément après cette revue.
 
 ## Inventaire effectué avant modification
 
@@ -47,7 +47,7 @@ Le pont nécessite le mode interactif. Il ne remplace pas la confirmation de con
 - `SECURITY.md` : contrat et limites du pont.
 - `docs/GOOGLE_AI_REVIEW.md`, `docs/evidence/google-ai.json`, `docs/evidence/google-ai-change.patch`, captures `docs/screenshots/google-ai-confirm-*.png` : revue et preuves.
 
-Les modifications Supabase préexistantes restent séparées ; elles ne sont pas incluses dans le patch de ce travail. Après autorisation du commit/push, `vercel.json` a reçu uniquement `git.deploymentEnabled.main: false` pour empêcher la mise en production automatique liée au push ; ses CSP et en-têtes restent inchangés. Cette règle de publication est distincte du pont et de son patch de retour arrière. Aucune version applicative Google IA n’est publiée.
+Les modifications Supabase préexistantes restent séparées ; elles ne sont pas incluses dans le patch de ce travail. Le push initial a été protégé contre une publication non autorisée. Après autorisation explicite du déploiement Vercel, la protection temporaire a été retirée : le fonctionnement Git/Vercel initial est rétabli, avec publication automatique des pushes sur main. Les CSP et en-têtes restent inchangés. La validation locale et ses limites ci-dessus restent les preuves antérieures à la publication.
 
 ## Retour arrière
 

@@ -39,10 +39,5 @@
       "source": "/((?!api/|demo/|assets/|sw.js|workbox-|manifest.webmanifest|icon-|favicon.svg).*)",
       "destination": "/index.html"
     }
-  ],
-  "git": {
-    "deploymentEnabled": {
-      "main": false
-    }
-  }
+  ]
 }

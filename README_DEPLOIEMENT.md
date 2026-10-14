@@ -40,6 +40,6 @@ L’ancien site reste dans le commit `2345801` et dans l’archive locale extér
 
 Aucun domaine personnalisé, abonnement, plan Supabase ou DNS n’a été modifié. Limite actuelle du bucket : 50 Mo par sauvegarde ; coût et quotas globaux du compte non audités, aucun coût chiffré supposé.
 
-## Push Git sans mise en production
+## Publication après revue Google IA
 
-Le commit/push a été demandé séparément après la revue Google IA, sans autorisation de déploiement. Le projet Vercel étant connecté à GitHub avec `main` comme branche de production, `vercel.json` désactive les déploiements Git automatiques de `main` via `git.deploymentEnabled.main: false`. Les CSP et en-têtes ne changent pas. La mise en production reste une action distincte à autoriser explicitement ; les déploiements manuels Vercel restent disponibles. [Configuration Git Vercel](https://vercel.com/docs/project-configuration/git-configuration).
+Le commit/push et la publication Vercel ont été autorisés séparément après la revue locale. La protection temporaire empêchant le déploiement automatique de `main` a été retirée après autorisation de publication : le comportement Git/Vercel initial est rétabli. Les pushes sur `main` déclenchent donc à nouveau le déploiement Vercel. Les CSP et en-têtes ne changent pas.
