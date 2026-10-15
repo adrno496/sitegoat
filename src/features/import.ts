@@ -20,6 +20,7 @@ import {
 } from "../data/editorial";
 import { editorialUUID, assessVersion, resolveDay } from "../data/day";
 import { validateSourceUrl } from "./sourceUrl";
+import { LOCAL_FRAGMENT_LINK_BRIDGE } from "./frameNavigation";
 const cleanText = (s: string) => s.replace(/\s+/g, " ").trim();
 const str = (s: unknown) => (typeof s === "string" ? s : "");
 function plain(s: unknown) {
@@ -348,6 +349,13 @@ export function isolatedHTML(bytes: Uint8Array, interactive: boolean) {
       e.setAttribute("href", "#");
     }
   });
+  // srcdoc inherits the parent's base URL. A bare #fragment would load the
+  // PWA inside the frame instead of navigating within the imported document.
+  // This also works in safe mode without scripts or a permissive <base>.
+  if (!interactive)
+    doc.querySelectorAll('a[href^="#"],area[href^="#"]').forEach((link) => {
+      link.setAttribute("href", `about:srcdoc${link.getAttribute("href")}`);
+    });
   if (!interactive) doc.querySelectorAll("script").forEach((e) => e.remove());
   else doc.querySelectorAll("script[src]").forEach((e) => e.remove());
   const csp = doc.createElement("meta");
@@ -360,7 +368,9 @@ export function isolatedHTML(bytes: Uint8Array, interactive: boolean) {
     csp.after(googleAi);
     const routing = doc.createElement("script");
     // about:srcdoc à origine opaque refuse pushState ; les fragments restent locaux au cadre.
-    routing.textContent = `(()=>{for(const method of ['pushState','replaceState']){const original=history[method].bind(history);history[method]=function(state,unused,url){try{return original(state,unused,url)}catch(error){if(error.name==='SecurityError'&&typeof url==='string'&&url.startsWith('#')){location.hash=url;return}throw error}}}})();`;
+    routing.textContent =
+      LOCAL_FRAGMENT_LINK_BRIDGE +
+      `(()=>{for(const method of ['pushState','replaceState']){const original=history[method].bind(history);history[method]=function(state,unused,url){try{return original(state,unused,url)}catch(error){if(error.name==='SecurityError'&&typeof url==='string'&&url.startsWith('#')){location.hash=url;return}throw error}}}})();`;
     csp.after(routing);
   }
   return "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;

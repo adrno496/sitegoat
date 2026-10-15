@@ -65,3 +65,7 @@ Insérer dans `<script id="editionData" type="application/json">`; le reste du d
 | JSON malformé / métadonnées invalides | PASS pour cas couverts | repli legacy et avertissement ; octets originaux conservés |
 | ZIP historique format1 | PASS | limites originales validées |
 | ZIP avec données V6 format2 | PASS, aller-retour et base vide | clients 1.1.1 ne savent pas lire format2 ; mise à jour de tous les appareils nécessaire avant synchronisation V6 |
+
+## Complément du15 octobre2026 —2.0.1
+
+Un fichier producteur V6.1 a été fourni après la validation initiale ci-dessus. Sa valeur exacte schemaVersion="6.1" est désormais acceptée comme alias du schéma interne2. Ses contrôles réels ont été testés en Chromium/WebKit, bureau et viewport mobile, sans publication de l’original. [Résultats et périmètre précis](JOURNAL360_V61_COMPATIBILITY_FIX.md). Les statuts NON TESTÉ de ce document initial restent historiques pour les autres fichiers/producteurs et les appareils physiques.

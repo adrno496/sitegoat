@@ -1,0 +1,79 @@
+{
+  "description": "Copie initiale2.0.0, fichier r\u00e9el local, r\u00e9seau externe bloqu\u00e9, aucune question enregistr\u00e9e",
+  "results": [
+    {
+      "engine": "chromium",
+      "sandbox": "allow-scripts",
+      "errors": [],
+      "theme": "dark",
+      "accent": "purple",
+      "density": "Texte 94 %",
+      "searchCount": "0 r\u00e9sultat(s)",
+      "dialogOpen": true,
+      "dialogBox": {
+        "x": 11.96875,
+        "y": 234.203125,
+        "width": 365.953125,
+        "height": 536.78125
+      },
+      "openDestination": {
+        "host": "www.google.com",
+        "path": "/search",
+        "keys": [
+          "hl",
+          "q"
+        ]
+      },
+      "markedLinks": 0,
+      "parentGoogleDialog": 0,
+      "documentMetrics": {
+        "width": 557,
+        "scrollWidth": 557,
+        "height": 976,
+        "scrollHeight": 11789
+      },
+      "afterNavigation": {
+        "url": "about:srcdoc",
+        "sourceJSON": 0,
+        "isPwa": 0
+      }
+    },
+    {
+      "engine": "webkit",
+      "sandbox": "allow-scripts",
+      "errors": [],
+      "theme": "dark",
+      "accent": "purple",
+      "density": "Texte 94 %",
+      "searchCount": "0 r\u00e9sultat(s)",
+      "dialogOpen": true,
+      "dialogBox": {
+        "x": 11.965624809265137,
+        "y": 234.19375610351562,
+        "width": 365.95780658721924,
+        "height": 536.8015441894531
+      },
+      "openDestination": {
+        "host": "www.google.com",
+        "path": "/search",
+        "keys": [
+          "hl",
+          "q"
+        ]
+      },
+      "markedLinks": 0,
+      "parentGoogleDialog": 0,
+      "documentMetrics": {
+        "width": 557,
+        "scrollWidth": 557,
+        "height": 976,
+        "scrollHeight": 11743
+      },
+      "afterNavigation": {
+        "url": "http://127.0.0.1:4186/#articles",
+        "sourceJSON": 0,
+        "isPwa": 0
+      }
+    }
+  ]
+}

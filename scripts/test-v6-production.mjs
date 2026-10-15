@@ -7,6 +7,9 @@ import { createClient } from "@supabase/supabase-js";
 import JSZip from "jszip";
 import { chromium, webkit, devices } from "playwright";
 import { expect } from "@playwright/test";
+const expectedVersion = JSON.parse(
+  fs.readFileSync(new URL("../package.json", import.meta.url), "utf8"),
+).version;
 const baseURL = process.env.JOURNAL360_BASE_URL;
 if (baseURL !== "https://sitegoat.vercel.app")
   throw new Error("Specify the approved production URL explicitly.");
@@ -68,16 +71,14 @@ function html(revision) {
     cumulativeStatus: "COMPLETE",
     missingSlots: [],
     sourceVerifiedAt: `2026-10-14T${["08:00", "16:00", "21:00"][revision - 1]}:00+02:00`,
-    items: ["a", "b", "c"]
-      .slice(0, revision)
-      .map((id) => ({
-        id,
-        event_id: `synthetic-${id}`,
-        title: `Fixture ${id}`,
-        category: "Test",
-        plain: "Données synthétiques de publication",
-        sources: ["https://example.org/test"],
-      })),
+    items: ["a", "b", "c"].slice(0, revision).map((id) => ({
+      id,
+      event_id: `synthetic-${id}`,
+      title: `Fixture ${id}`,
+      category: "Test",
+      plain: "Données synthétiques de publication",
+      sources: ["https://example.org/test"],
+    })),
   };
   return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>${data.title}</title></head><body><h1>${data.title}</h1><p>Révision synthétique ${revision}</p><a href="https://www.google.com/ai" data-ai-link="google-ai-mode" data-ai-question="Question publique synthétique de vérification">En savoir plus</a><script id="editionData" type="application/json">${JSON.stringify(data)}</script></body></html>`;
 }
@@ -133,7 +134,7 @@ try {
   const pcContext = await makeContext(desktop, false);
   const pc = await pcContext.newPage();
   await pc.goto("/");
-  await expect(pc.locator(".sidebar")).toContainText("v2.0.0");
+  await expect(pc.locator(".sidebar")).toContainText(`v${expectedVersion}`);
   const files = [1, 2, 3].map((revision) => {
     const value = html(revision);
     originals.set(revision, value);
@@ -156,7 +157,7 @@ try {
   await nav(pc, "Réglages");
   await pc.locator(".snapshot").first().waitFor({ timeout: 45000 });
   passed(
-    "Production 2.0.0 : import 08/16/21 regroupé et envoyé automatiquement à Supabase",
+    `Production ${expectedVersion} : import 08/16/21 regroupé et envoyé automatiquement à Supabase`,
   );
   const phoneContext = await makeContext(mobile, true);
   const phone = await phoneContext.newPage();
@@ -302,7 +303,7 @@ try {
       {
         testedAt: new Date().toISOString(),
         baseURL,
-        version: "2.0.0",
+        version: expectedVersion,
         realSupabase: true,
         ownerAccountUsed: false,
         privateUserContentUploaded: false,

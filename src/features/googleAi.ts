@@ -1,6 +1,7 @@
 export const GOOGLE_AI_ENTRY = "https://www.google.com/ai";
 const questionCache = new WeakMap<Uint8Array, string[]>();
 export function rememberReadingQuestions(bytes: Uint8Array, doc: Document) {
+  adaptV61QuestionButtons(doc);
   if (questionCache.has(bytes)) return;
   const questions = new Set<string>();
   for (const link of doc.querySelectorAll('[data-ai-link="google-ai-mode"]')) {
@@ -11,6 +12,62 @@ export function rememberReadingQuestions(bytes: Uint8Array, doc: Document) {
     if (questions.size >= 100) break;
   }
   questionCache.set(bytes, [...questions]);
+}
+// V6.1's standalone buttons open a native dialog and a plain Google search.
+// Adapt only its explicit question fields in the display DOM; never infer a
+// question from article text, private notes or arbitrary destinations.
+function adaptV61QuestionButtons(doc: Document) {
+  let data: unknown;
+  try {
+    data = JSON.parse(
+      doc.querySelector('script#editionData[type="application/json"]')
+        ?.textContent || "null",
+    );
+  } catch {
+    return;
+  }
+  if (!data || typeof data !== "object" || Array.isArray(data)) return;
+  const value = data as Record<string, unknown>;
+  if (
+    value.schemaVersion !== "6.1" ||
+    !Array.isArray(value.items) ||
+    !doc.querySelector("dialog#googleDialog textarea#question") ||
+    !doc.querySelector("dialog#googleDialog a#openGoogle")
+  )
+    return;
+  const byId = new Map<string, unknown>();
+  for (const item of value.items.slice(0, 2000)) {
+    if (!item || typeof item !== "object" || Array.isArray(item)) continue;
+    const article = item as Record<string, unknown>;
+    if (
+      typeof article.id === "string" &&
+      article.id.length <= 200 &&
+      !byId.has(article.id)
+    )
+      byId.set(article.id, article.aiQuestion);
+  }
+  for (const button of doc.querySelectorAll(
+    "button[data-article],button[data-topic]",
+  )) {
+    if (button.hasAttribute("data-ai-link")) continue;
+    const id = button.getAttribute("data-article");
+    const topic = button.getAttribute("data-topic");
+    const raw =
+      id !== null
+        ? byId.get(id)
+        : topic === "sentinel" || topic === "axdia"
+          ? doc.getElementById(`public-${topic}`)?.textContent
+          : undefined;
+    // Plain line wrapping is layout, not a command. Other controls/bidi and
+    // overlong questions remain rejected by the existing parent validator.
+    const question =
+      typeof raw === "string"
+        ? raw.replace(/[ \t\r\n]+/g, " ").trim()
+        : undefined;
+    if (!validPublicQuestion(question)) continue;
+    button.setAttribute("data-ai-link", "google-ai-mode");
+    button.setAttribute("data-ai-question", question);
+  }
 }
 export function readingQuestions(bytes: Uint8Array): string[] {
   if (!questionCache.has(bytes))

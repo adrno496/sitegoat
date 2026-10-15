@@ -25,7 +25,9 @@ const uniqueSlots = z
   .max(3)
   .refine((a) => new Set(a).size === a.length);
 const metadataSchema = z.object({
-  schemaVersion: z.literal(2),
+  // The producer V6.1 uses its editorial version here; normalize it to our
+  // internal schema 2 after the same validation of every other field.
+  schemaVersion: z.union([z.literal(2), z.literal("6.1")]),
   editionDate: calendarSchema.optional(),
   editionId: z.string().min(1).max(200).optional(),
   revision: z.number().int().min(1).max(1_000_000).optional(),

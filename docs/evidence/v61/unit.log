@@ -1,0 +1,13 @@
+
+> journal360-mobile@2.0.1 test
+> vitest run
+
+
+ RUN  v5.0.4 /Users/dreano/Downloads/veille/journal360-v6-worktree
+
+
+ Test Files  9 passed (9)
+      Tests  140 passed (140)
+   Start at  09:16:53
+   Duration  7.99s (tests 57%, environment 31%, import 8%, setup 2%, transform 1%)
+

@@ -12,3 +12,5 @@ playwright-report/
 
 # Preuves locales expurgées de la mission V6
 !docs/evidence/v6/*.log
+
+!docs/evidence/v61/*.log
