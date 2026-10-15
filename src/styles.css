@@ -2580,4 +2580,5 @@ textarea {
    where WebKit does not reliably retain capture across frame boundaries. */
 .reader-back-gesture-active {
   width: 100%;
+  z-index: 5;
 }

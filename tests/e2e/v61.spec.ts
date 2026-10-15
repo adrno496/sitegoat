@@ -119,6 +119,10 @@ test("V6.1 : onze boutons sans ancien marquage demandent confirmation, copie et 
   await expect(buttons).toHaveCount(11);
   for (let i = 0; i < 11; i++) {
     const question = await buttons.nth(i).getAttribute("data-ai-question");
+    // Scroll to a visible reading position, clear of floating host controls.
+    await buttons
+      .nth(i)
+      .evaluate((element) => element.scrollIntoView({ block: "center" }));
     await buttons.nth(i).click();
     await expect(dialog(page)).toBeVisible();
     await expect(dialog(page).getByRole("textbox")).toHaveValue(question!);

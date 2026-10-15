@@ -41,7 +41,7 @@ async function drag(
 ) {
   await page.mouse.move(x, y);
   await page.mouse.down();
-  await page.mouse.move(toX, toY, { steps: 8 });
+  await page.mouse.move(toX, toY, { steps: 3 });
   await page.mouse.up();
 }
 test("HTML seul : deux petits contrôles, pleine hauteur, réduction et historique navigateur sans perte", async ({
@@ -123,8 +123,45 @@ test("geste réservé au bord gauche : retour horizontal, mouvements verticaux e
   await expect(
     page.frameLocator(".edition-frame").locator("#counter"),
   ).toHaveText("1");
+  await page.evaluate(() => {
+    const events: unknown[] = [];
+    (window as unknown as { edgeEvents: unknown[] }).edgeEvents = events;
+    for (const type of [
+      "pointerdown",
+      "pointermove",
+      "pointerup",
+      "lostpointercapture",
+      "pointercancel",
+      "blur",
+    ])
+      window.addEventListener(
+        type,
+        (event) => {
+          if (events.length >= 30) return;
+          const e = event as PointerEvent;
+          events.push({
+            type,
+            time: Math.round(performance.now()),
+            x: e.clientX,
+            y: e.clientY,
+            primary: e.isPrimary,
+            pointerType: e.pointerType,
+            target:
+              event.target instanceof Element
+                ? event.target.className
+                : "window",
+          });
+        },
+        true,
+      );
+  });
   await drag(page, 5, height / 2, 140, height / 2 + 5);
-  await expect(page.locator(".reader")).toHaveCount(0);
+  const inputTrace = await page.evaluate(
+    () => (window as unknown as { edgeEvents: unknown[] }).edgeEvents,
+  );
+  await expect(page.locator(".reader"), JSON.stringify(inputTrace)).toHaveCount(
+    0,
+  );
   await open(page);
   await page
     .getByRole("button", { name: "Réduire la lecture", exact: true })

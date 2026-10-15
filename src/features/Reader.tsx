@@ -99,9 +99,12 @@ export function Reader({
       setBackGestureActive(false);
     };
     reset();
-    window.addEventListener("blur", reset);
-    return () => window.removeEventListener("blur", reset);
-  }, [expanded]);
+    const blur = () => {
+      if (!document.hasFocus()) reset();
+    };
+    window.addEventListener("blur", blur);
+    return () => window.removeEventListener("blur", blur);
+  }, [expanded, googleAiRequest, confirm]);
   useDialogFocus(confirm, () => setConfirm(false));
   function dismissGoogleAi() {
     pendingAiRef.current = null;
@@ -683,6 +686,7 @@ export function Reader({
               referrerPolicy="no-referrer"
               srcDoc={srcDoc}
               style={{
+                pointerEvents: backGestureActive ? "none" : undefined,
                 width: `${10000 / htmlZoom}%`,
                 height: `${10000 / htmlZoom}%`,
                 transform: `scale(${htmlZoom / 100})`,
@@ -707,17 +711,14 @@ export function Reader({
             onPointerDown={(event) => {
               swipe.current = null;
               if (
-                !event.isPrimary ||
+                (event.pointerType !== "mouse" && !event.isPrimary) ||
                 event.button !== 0 ||
                 googleAiRequest ||
                 confirm
               )
                 return;
-              try {
-                event.currentTarget.setPointerCapture(event.pointerId);
-              } catch {
-                return;
-              }
+              // Keep input in the parent: GTK WebKit can stop forwarding
+              // captured mouse events when they cross an opaque iframe.
               setBackGestureActive(true);
               swipe.current = {
                 id: event.pointerId,
@@ -737,11 +738,11 @@ export function Reader({
                 setBackGestureActive(false);
               }
             }}
-            onPointerCancel={() => {
+            onPointerLeave={() => {
               setBackGestureActive(false);
               swipe.current = null;
             }}
-            onLostPointerCapture={() => {
+            onPointerCancel={() => {
               setBackGestureActive(false);
               swipe.current = null;
             }}

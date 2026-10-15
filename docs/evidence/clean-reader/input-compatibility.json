@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "scope": "Reader input compatibility follow-up; no Google navigation changes",
+  "macOS": {
+    "startTime": "2026-10-15T17:02:21.002Z",
+    "duration": 53163.657,
+    "expected": 23,
+    "skipped": 1,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "linuxContainer": {
+    "stats": {
+      "startTime": "2026-10-15T17:02:27.833Z",
+      "duration": 62906.82,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "image": "mcr.microsoft.com/playwright:v1.64.0-noble",
+    "architecture": "linux/amd64 emulated on macOS arm64",
+    "scenario": "WebKit reserved edge gesture",
+    "physicalDevice": false
+  },
+  "lint": "PASS",
+  "build": "PASS",
+  "sandboxChanged": false,
+  "cspChanged": false,
+  "physicalSafariIOS": "NON TESTÉ",
+  "physicalAndroid": "NON TESTÉ",
+  "previousCI": {
+    "38768042501": "FAIL: WebKit gesture",
+    "38770865246": "FAIL: WebKit gesture and automated click obscured by floating control"
+  }
+}
