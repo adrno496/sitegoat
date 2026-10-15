@@ -1,7 +1,7 @@
 export const GOOGLE_AI_ENTRY = "https://www.google.com/ai";
 const questionCache = new WeakMap<Uint8Array, string[]>();
 export function rememberReadingQuestions(bytes: Uint8Array, doc: Document) {
-  adaptV61QuestionButtons(doc);
+  adaptV6QuestionControls(doc);
   if (questionCache.has(bytes)) return;
   const questions = new Set<string>();
   for (const link of doc.querySelectorAll(
@@ -17,10 +17,11 @@ export function rememberReadingQuestions(bytes: Uint8Array, doc: Document) {
   }
   questionCache.set(bytes, [...questions]);
 }
-// V6.1's standalone buttons open a native dialog and a plain Google search.
-// Adapt only its explicit question fields in the display DOM; never infer a
-// question from article text, private notes or arbitrary destinations.
-function adaptV61QuestionButtons(doc: Document) {
+// Known V6 producers (6.1, 6.4) expose explicit public questions: items[].aiQuestion
+// for article buttons and #public-<topic> for the two dossier buttons. Adapt
+// only these explicit fields in the display DOM; never infer a question from
+// article text, private notes or arbitrary destinations.
+function adaptV6QuestionControls(doc: Document) {
   let data: unknown;
   try {
     data = JSON.parse(
@@ -33,10 +34,8 @@ function adaptV61QuestionButtons(doc: Document) {
   if (!data || typeof data !== "object" || Array.isArray(data)) return;
   const value = data as Record<string, unknown>;
   if (
-    value.schemaVersion !== "6.1" ||
-    !Array.isArray(value.items) ||
-    !doc.querySelector("dialog#googleDialog textarea#question") ||
-    !doc.querySelector("dialog#googleDialog a#openGoogle")
+    (value.schemaVersion !== "6.1" && value.schemaVersion !== "6.4") ||
+    !Array.isArray(value.items)
   )
     return;
   const byId = new Map<string, unknown>();
@@ -50,10 +49,7 @@ function adaptV61QuestionButtons(doc: Document) {
     )
       byId.set(article.id, article.aiQuestion);
   }
-  for (const button of doc.querySelectorAll(
-    "button[data-article],button[data-topic]",
-  )) {
-    if (button.hasAttribute("data-ai-link")) continue;
+  function questionOf(button: Element) {
     const id = button.getAttribute("data-article");
     const topic = button.getAttribute("data-topic");
     const raw =
@@ -68,9 +64,37 @@ function adaptV61QuestionButtons(doc: Document) {
       typeof raw === "string"
         ? raw.replace(/[ \t\r\n]+/g, " ").trim()
         : undefined;
-    if (!validPublicQuestion(question)) continue;
-    button.setAttribute("data-ai-link", "google-ai-mode");
-    button.setAttribute("data-ai-question", question);
+    return validPublicQuestion(question) ? question : null;
+  }
+  // 6.1 and 6.4.1 buttons open the producer's own dialog, whose clipboard and
+  // search link cannot work in the isolated frame: route them to the parent.
+  if (
+    doc.querySelector("dialog#googleDialog textarea#question") &&
+    doc.querySelector("dialog#googleDialog a#openGoogle")
+  )
+    for (const button of doc.querySelectorAll(
+      "button[data-article],button[data-topic]",
+    )) {
+      if (button.hasAttribute("data-ai-link")) continue;
+      const question = questionOf(button);
+      if (!question) continue;
+      button.setAttribute("data-ai-link", "google-ai-mode");
+      button.setAttribute("data-ai-question", question);
+    }
+  // 6.4.3 keeps « En savoir plus » local and places a plain /ai link beside
+  // it: give that link the explicit question of its sibling button.
+  for (const link of doc.querySelectorAll("a[href]")) {
+    const href = link.getAttribute("href");
+    if (
+      (href !== GOOGLE_AI_ENTRY && href !== GOOGLE_AI_ENTRY + "?hl=fr") ||
+      link.hasAttribute("data-ai-question")
+    )
+      continue;
+    const button = [...(link.parentElement?.children || [])].find((e) =>
+      e.matches("button[data-article],button[data-topic]"),
+    );
+    const question = button && questionOf(button);
+    if (question) link.setAttribute("data-ai-question", question);
   }
 }
 export function readingQuestions(bytes: Uint8Array): string[] {
@@ -294,10 +318,13 @@ export function googleAiLinkBridge(parentOrigin: string) {
     if(!marked&&!(url?.startsWith('https://www.google.com/search?')||url==='https://www.google.com/ai'||url==='https://www.google.com/ai?hl=fr'))return;
     event.preventDefault();event.stopImmediatePropagation();
     if(type!=='click'||event.button!==0)return;
-    const editor=link.closest('dialog')?.querySelector('textarea#question,textarea[data-ai-question]');
+    const editor=link.closest('dialog,section,article')?.querySelector('textarea#question,textarea#deepQuestion,textarea[data-ai-question]');
     const isEntry=url==='https://www.google.com/ai'||url==='https://www.google.com/ai?hl=fr'||link.getAttribute('data-journal360-google-ai-url')==='https://www.google.com/ai';
-    const question=(marked?link.getAttribute('data-ai-question'):null)??(isEntry&&editor instanceof HTMLTextAreaElement?editor.value:null);
-    pending=question!==null?{type:'journal360:google-ai:question-request',question}:{type:'journal360:google-ai:open-request',url:link.getAttribute('data-journal360-google-ai-url')||url};
+    const raw=(marked?link.getAttribute('data-ai-question'):null)??(isEntry&&editor instanceof HTMLTextAreaElement?editor.value:null);
+    // Line wrapping is layout. An empty or invalid question falls back to the
+    // bare request: the parent still opens its dialog instead of staying silent.
+    const question=typeof raw==='string'?raw.replace(/[ \\t\\r\\n]+/g,' ').trim():'';
+    pending=question&&question.length<=2000&&!/[\\u0000-\\u001f\\u007f\\u202a-\\u202e\\u2066-\\u2069]/u.test(question)?{type:'journal360:google-ai:question-request',question}:{type:'journal360:google-ai:open-request',url:link.getAttribute('data-journal360-google-ai-url')||url};
     parent.postMessage({type:'journal360:google-ai:capability-request',version:3},hostOrigin);
   },true);
 })();`;

@@ -102,6 +102,10 @@ Le bandeau affiche le mode local, le hors-ligne, les transferts, les erreurs ave
 
 Le HTML occupe tout le viewport, avec seulement Retour et **Réduire la lecture**. Glissement depuis le bord gauche, historique navigateur et outils après réduction. [Vérifications et limites](docs/JOURNAL360_CLEAN_READER.md).
 
-### Candidat local 2.0.6 — ouverture Google contrôlée (non publié)
+### Version 2.0.6 — ouverture Google contrôlée (publiée avec la 2.0.7)
 
 Les liens **Recherche Google avec la question** affichent la confirmation de la PWA et ouvrent une recherche classique avec le texte exact. **Ouvrir Google Mode IA** ouvre seulement l’entrée Google : copier puis coller la question, sans promesse de préremplissage IA. Le dialogue conserve modification, copie et lien de repli. Session par cadre, protection contre le rejeu et blocage de marqueurs sensibles connus ; sandbox/CSP inchangés. Ce candidat remplace le parcours historique 2.0.2 uniquement après une publication autorisée. [Diagnostic, tests et décision HOLD](docs/JOURNAL360_GOOGLE_NAVIGATION.md).
+
+### Version 2.0.7 — boutons Google des journaux V6.4 et doublons
+
+Dans les journaux V6.4.3, chaque **Ouvrir Google Mode IA ↗** ouvre la confirmation de la PWA avec la question de l’article, du dossier ou de l’approfondissement : **Rechercher sur Google** (recherche classique avec la question exacte) ou **Ouvrir Google Mode IA** (entrée Google, question à coller). Dans les V6.4.1, « En savoir plus » passe directement par cette confirmation, où la copie fonctionne. Un doublon exact importé remplace désormais l’ancienne copie, même archivée ou à la corbeille, en conservant notes et favoris ; « Ignorer le doublon » reste disponible. Sandbox, CSP et permissions inchangés. [Diagnostic, tests et retour arrière](docs/JOURNAL360_GOOGLE_BUTTONS_V64.md).

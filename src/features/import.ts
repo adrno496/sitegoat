@@ -223,7 +223,7 @@ export async function commitImport(
   repository: LocalRepository,
   edition: Edition,
   bytes: Uint8Array,
-  choice: "ignore" | "keep" | "version" | "day",
+  choice: "ignore" | "keep" | "version" | "day" | "replace",
   parentId?: string,
 ) {
   const key = dayKeyOf(edition);
@@ -259,12 +259,25 @@ export async function commitImport(
         choice === "day"
           ? matching.find((e) => dayKeyOf(e) === edition.dayKey)
           : matching[0];
-      if (
-        existing &&
-        (choice === "ignore" ||
-          (choice === "day" && dayKeyOf(existing) === edition.dayKey))
-      )
-        return { id: existing.id, duplicate: true };
+      if (existing && choice === "ignore")
+        return { id: existing.id, duplicate: true, replaced: false };
+      // An exact duplicate (same SHA-256) is no longer ignored: the last import
+      // replaces the previous one in place. Same bytes, so the record keeps its
+      // ID, notes and favourites; it is dated by this import (latest version of
+      // its slot) and shown again even if it was archived or in the trash. The
+      // existing filename is kept: it may carry the edition hour used to order.
+      if (existing && (choice === "replace" || choice === "day")) {
+        const at = now();
+        await repository.editions.update(existing.id, {
+          importedAt: at,
+          updatedAt: at,
+          archived: false,
+          deleted: false,
+        });
+        if (!(await repository.originals.get(existing.id)))
+          await repository.originals.put({ id: existing.id, bytes });
+        return { id: existing.id, duplicate: true, replaced: true };
+      }
       if (choice === "day" && edition.dayKey) {
         const family = (await repository.editions.toArray()).filter(
           (e) => dayKeyOf(e) === edition.dayKey,
@@ -306,7 +319,7 @@ export async function commitImport(
         };
       }
       await repository.saveEdition(edition, bytes);
-      return { id: edition.id, duplicate: false };
+      return { id: edition.id, duplicate: false, replaced: false };
     },
   );
 }

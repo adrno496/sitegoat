@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   GOOGLE_AI_ENTRY,
   googleAiQuestionDestination,
@@ -18,6 +18,7 @@ export function GoogleAiDialog({
   const [draft, setDraft] = useState(destination.query);
   const [notice, setNotice] = useState("");
   const [fallback, setFallback] = useState<"entry" | "question" | null>(null);
+  const query = useRef<HTMLTextAreaElement>(null);
   const valid = validPublicQuestion(draft);
   const privacyIssue = publicQuestionIssue(draft);
   const launch =
@@ -28,7 +29,9 @@ export function GoogleAiDialog({
       onDismiss();
       return;
     }
-    if (privacyIssue || !valid || (!entry && !launch)) return;
+    // The Mode IA entry carries no text: an empty question must not block it.
+    // A private marker still blocks both buttons until it is rephrased.
+    if (privacyIssue || (!entry && (!valid || !launch))) return;
     if (!navigator.onLine) {
       setNotice(
         "Hors ligne : copiez la question et ouvrez Google après reconnexion.",
@@ -62,10 +65,13 @@ export function GoogleAiDialog({
       if (isCurrent())
         setNotice("Question copiée. Aucune recherche n’a été lancée.");
     } catch {
-      if (isCurrent())
+      if (isCurrent()) {
         setNotice(
-          "Copie indisponible. Sélectionnez la question et utilisez la copie de votre appareil.",
+          "Copie indisponible. La question est sélectionnée : utilisez la copie de votre appareil.",
         );
+        query.current?.focus();
+        query.current?.select();
+      }
     }
   }
   return (
@@ -86,6 +92,7 @@ export function GoogleAiDialog({
         <label>
           Question publique à vérifier
           <textarea
+            ref={query}
             className="google-ai-query"
             value={draft}
             maxLength={2000}
@@ -129,33 +136,36 @@ export function GoogleAiDialog({
           </button>
           <button
             className="secondary"
-            disabled={!valid || !!privacyIssue}
+            disabled={!!privacyIssue}
             onClick={() => open(true)}
           >
             Ouvrir Google Mode IA
           </button>
         </div>
-        {fallback && fallbackUrl && valid && !privacyIssue && (
-          <p>
-            <a
-              href={fallbackUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(event) => {
-                if (
-                  !isCurrent() ||
-                  !navigator.onLine ||
-                  publicQuestionIssue(draft)
-                )
-                  event.preventDefault();
-              }}
-            >
-              {fallback === "entry"
-                ? "Ouvrir directement Google Mode IA"
-                : "Recherche Google avec la question ↗"}
-            </a>
-          </p>
-        )}
+        {fallback &&
+          fallbackUrl &&
+          !privacyIssue &&
+          (fallback === "entry" || valid) && (
+            <p>
+              <a
+                href={fallbackUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(event) => {
+                  if (
+                    !isCurrent() ||
+                    !navigator.onLine ||
+                    publicQuestionIssue(draft)
+                  )
+                    event.preventDefault();
+                }}
+              >
+                {fallback === "entry"
+                  ? "Ouvrir directement Google Mode IA"
+                  : "Recherche Google avec la question ↗"}
+              </a>
+            </p>
+          )}
       </section>
     </div>
   );

@@ -24,7 +24,7 @@ export function ImportDialog({
   onDone: (message: string) => void;
 }) {
   const [choices, setChoices] = useState<
-    Record<string, "ignore" | "keep" | "version" | "day">
+    Record<string, "ignore" | "keep" | "version" | "day" | "replace">
   >({});
   const [parents, setParents] = useState<Record<string, string>>({});
   const [metadata, setMetadata] = useState<
@@ -38,6 +38,7 @@ export function ImportDialog({
   async function commit() {
     setBusy(true);
     let saved = 0,
+      replaced = 0,
       ignored = 0;
     try {
       await db.transaction(
@@ -56,7 +57,7 @@ export function ImportDialog({
                 ? "ignore"
                 : dayKeyOf(edition)
                   ? "day"
-                  : choices[c.edition.id] || (c.duplicate ? "ignore" : "keep");
+                  : choices[c.edition.id] || (c.duplicate ? "replace" : "keep");
             const result = await commitImport(
               db,
               edition,
@@ -64,14 +65,15 @@ export function ImportDialog({
               choice,
               parents[c.edition.id],
             );
-            if (result.duplicate) ignored++;
+            if (result.replaced) replaced++;
+            if (result.duplicate && !result.replaced) ignored++;
             else saved++;
             if (c.pendingId) await db.pending.delete(c.pendingId);
           }
         },
       );
       onDone(
-        `${saved} édition${saved > 1 ? "s" : ""} importée${saved > 1 ? "s" : ""}${ignored ? ` · ${ignored} doublon ignoré` : ""}.`,
+        `${saved} édition${saved > 1 ? "s" : ""} importée${saved > 1 ? "s" : ""}${replaced ? ` · ${replaced} ancienne${replaced > 1 ? "s" : ""} copie${replaced > 1 ? "s" : ""} remplacée${replaced > 1 ? "s" : ""}` : ""}${ignored ? ` · ${ignored} doublon ignoré` : ""}.`,
       );
     } catch (e) {
       void recordDiagnostic("import-failed");
@@ -129,7 +131,7 @@ export function ImportDialog({
                 ? "ignore"
                 : key
                   ? "day"
-                  : choices[c.edition.id] || (c.duplicate ? "ignore" : "keep");
+                  : choices[c.edition.id] || (c.duplicate ? "replace" : "keep");
             const older =
               previous &&
               resolveDay([...peers, preview]).current?.id !== preview.id;
@@ -225,6 +227,8 @@ export function ImportDialog({
                   <p className="warning">
                     <Check size={16} />
                     Doublon exact détecté, même si le nom est différent.
+                    {(choice === "day" || choice === "replace") &&
+                      " Ce dernier import remplacera l’ancienne copie, même archivée ou dans la corbeille ; notes et favoris sont conservés."}
                   </p>
                 )}
                 <label>
@@ -235,16 +239,20 @@ export function ImportDialog({
                       setChoices({
                         ...choices,
                         [c.edition.id]: e.target.value as
-                          "ignore" | "keep" | "version" | "day",
+                          "ignore" | "keep" | "version" | "day" | "replace",
                       })
                     }
                   >
                     {key && (
                       <option value="day">
-                        {previous
-                          ? "Mettre à jour la journée"
-                          : "Créer la journée"}{" "}
-                        · historique conservé
+                        {c.duplicate
+                          ? "Remplacer l’ancienne copie par ce dernier import"
+                          : `${previous ? "Mettre à jour la journée" : "Créer la journée"} · historique conservé`}
+                      </option>
+                    )}
+                    {!key && c.duplicate && (
+                      <option value="replace">
+                        Remplacer l’ancienne copie par ce dernier import
                       </option>
                     )}
                     {c.duplicate && (
