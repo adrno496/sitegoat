@@ -1,0 +1,155 @@
+{
+  "testedAt": "2026-10-15T18:34:05.772334+00:00",
+  "verdict": "HOLD for publication: explicit approval and validation on target installed PWA required",
+  "localStatus": "PASS",
+  "productionGoogleCandidate": "NOT DEPLOYED / NOT PUSHED",
+  "baseCommit": "7a000d52d6f2dc08973a5f0d775d55c202d4679e",
+  "version": "2.0.6",
+  "environment": {
+    "os": "macOS arm64",
+    "node": "24",
+    "browsers": "Playwright Chromium/WebKit; desktop/mobile simulation",
+    "physicalDevices": "NON TESTÉ"
+  },
+  "lint": "PASS",
+  "build": "PASS",
+  "units": {
+    "command": "npm test -- --maxWorkers=1 --testTimeout=60000 --reporter=json --outputFile=/tmp/j360-google-unit-final.json",
+    "status": "PASS",
+    "passed": 194,
+    "failed": 0,
+    "suites": 18,
+    "success": true
+  },
+  "e2e": {
+    "command": "npm run test:e2e -- --workers=3",
+    "stats": {
+      "startTime": "2026-10-15T18:26:56.093Z",
+      "duration": 249329.587,
+      "expected": 100,
+      "skipped": 1,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "byProject": {
+      "chromium": {
+        "passed": 37
+      },
+      "webkit": {
+        "passed": 36,
+        "skipped": 1
+      },
+      "chromium-mobile": {
+        "passed": 27
+      }
+    },
+    "skipReason": "CDP touch dispatch is Chromium-only; WebKit pointer cases executed"
+  },
+  "policy": {
+    "parentCspUnchanged": true,
+    "iframeCspUnchanged": true,
+    "sandboxUnchanged": true,
+    "workerUnchanged": true,
+    "databaseUnchanged": true
+  },
+  "syntheticPreview": {
+    "testedAt": "2026-10-15T18:33:19.308Z",
+    "baseURL": "http://127.0.0.1:4192",
+    "version": "2.0.6",
+    "bundleSha256": "d26bf1da643caba3b6a8fe36806cd7fc9a46b38e5929765968094011ccdf491a",
+    "bundleMatchesLocal": true,
+    "parentCspUnchanged": true,
+    "privateHtmlUsed": false,
+    "googleSimulated": true,
+    "supabaseWrites": 0,
+    "physicalDevices": "NON TESTÉS",
+    "results": [
+      {
+        "engine": "chromium",
+        "viewport": "desktop",
+        "status": "PASS",
+        "confirmedPrefilledLaunches": 11,
+        "navigationAnchors": 13
+      },
+      {
+        "engine": "chromium",
+        "viewport": "mobile simulated",
+        "status": "PASS",
+        "confirmedPrefilledLaunches": 11,
+        "navigationAnchors": 13
+      },
+      {
+        "engine": "webkit",
+        "viewport": "desktop",
+        "status": "PASS",
+        "confirmedPrefilledLaunches": 11,
+        "navigationAnchors": 13
+      },
+      {
+        "engine": "webkit",
+        "viewport": "mobile simulated",
+        "status": "PASS",
+        "confirmedPrefilledLaunches": 11,
+        "navigationAnchors": 13
+      }
+    ]
+  },
+  "realHtmlLocal": "PASS on four profiles; original bytes identical; external requests sent: 0",
+  "realGoogle": "PARTIAL: exact standard question opens; CAPTCHA; /ai entry opens without question; no answer verified",
+  "supabase": "NON APPLICABLE; no API/schema/storage changes",
+  "readerPublishedCommit": "7a000d52d6f2dc08973a5f0d775d55c202d4679e",
+  "readerProductionSmoke": "PASS four profiles; exact bundle/CSP; no Supabase writes",
+  "readerLinuxGesture": "PASS official Playwright v1.64.0-noble linux/amd64 emulation",
+  "readerCI": {
+    "url": "https://github.com/adrno496/sitegoat/actions/runs/38785632415",
+    "status": "PASS",
+    "commit": "7a000d52d6f2dc08973a5f0d775d55c202d4679e",
+    "unitsPassed": 168,
+    "e2ePassed": 88,
+    "e2eSkipped": 1,
+    "jobDuration": "9m5s",
+    "e2eDuration": "7.8m",
+    "lint": "PASS",
+    "build": "PASS"
+  },
+  "rollback": "git switch --detach 7a000d52d6f2dc08973a5f0d775d55c202d4679e; npm run build; no data deletion",
+  "privateHtmlCommitted": false,
+  "privateQuestionsRecorded": false,
+  "sourceArchiveChanged": false,
+  "changedFiles": [
+    "README.md",
+    "SECURITY.md",
+    "docs/JOURNAL360_GOOGLE_NAVIGATION.md",
+    "docs/evidence/google-navigation/baseline-production.json",
+    "docs/evidence/google-navigation/confirmation-desktop.png",
+    "docs/evidence/google-navigation/confirmation-mobile.png",
+    "docs/evidence/google-navigation/google-live.json",
+    "docs/evidence/google-navigation/policy.json",
+    "docs/evidence/google-navigation/preview.json",
+    "docs/evidence/google-navigation/reader-production.json",
+    "docs/evidence/google-navigation/real-html.json",
+    "docs/evidence/google-navigation/real-standalone.json",
+    "docs/evidence/google-navigation/supplied-link.json",
+    "docs/evidence/google-navigation/unit-summary.json",
+    "docs/evidence/google-navigation/verification.json",
+    "package-lock.json",
+    "package.json",
+    "scripts/test-google-ai-release.mjs",
+    "scripts/test-v61-html.mjs",
+    "src/config.ts",
+    "src/features/GoogleAiDialog.tsx",
+    "src/features/Reader.tsx",
+    "src/features/googleAi.ts",
+    "src/features/googleAiSession.ts",
+    "src/features/import.ts",
+    "tests/e2e/google-ai.spec.ts",
+    "tests/e2e/v6-google-navigation.spec.ts",
+    "tests/e2e/v6.spec.ts",
+    "tests/e2e/v61.spec.ts",
+    "tests/googleAi.unit.test.ts",
+    "tests/googleAiSession.unit.test.ts",
+    "tests/helpers/v6.ts",
+    "tests/helpers/v61.ts",
+    "tests/v61.unit.test.ts"
+  ]
+}

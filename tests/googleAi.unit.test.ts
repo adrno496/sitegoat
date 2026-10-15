@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   validateGoogleAiUrl,
+  validateGoogleDestination,
   parseGoogleAiMessage,
   googleAiQuestionDestination,
 } from "../src/features/googleAi";
@@ -9,7 +10,7 @@ import { hash } from "../src/data/model";
 
 const base = "https://www.google.com/search?hl=fr&udm=50&q=";
 describe("Google Mode IA : validation fermée", () => {
-  it("construit le lien Mode IA depuis le seul texte et conserve accents, ponctuation et emoji", () => {
+  it("construit le lien Google classique depuis le seul texte et conserve accents, ponctuation et emoji", () => {
     const query =
       "Pourquoi le ciel est-il bleu ? + & % # @ 🙂 $(commande) https://example.com/?redirect=x";
     const destination = googleAiQuestionDestination(query)!;
@@ -18,10 +19,9 @@ describe("Google Mode IA : validation fermée", () => {
     expect(url.origin + url.pathname).toBe("https://www.google.com/search");
     expect([...url.searchParams]).toEqual([
       ["hl", "fr"],
-      ["udm", "50"],
       ["q", query],
     ]);
-    expect(validateGoogleAiUrl(destination.url)).toEqual(destination);
+    expect(validateGoogleDestination(destination.url)).toEqual(destination);
   });
   it.each([
     null,

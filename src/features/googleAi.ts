@@ -4,10 +4,14 @@ export function rememberReadingQuestions(bytes: Uint8Array, doc: Document) {
   adaptV61QuestionButtons(doc);
   if (questionCache.has(bytes)) return;
   const questions = new Set<string>();
-  for (const link of doc.querySelectorAll('[data-ai-link="google-ai-mode"]')) {
+  for (const link of doc.querySelectorAll(
+    '[data-ai-link="google-ai-mode"],a[href]',
+  )) {
+    const destination = validateGoogleDestination(link.getAttribute("href"));
+    if (!link.matches('[data-ai-link="google-ai-mode"]') && !destination)
+      continue;
     const question =
-      link.getAttribute("data-ai-question") ||
-      validateGoogleAiUrl(link.getAttribute("href"))?.query;
+      link.getAttribute("data-ai-question") || destination?.query;
     if (validPublicQuestion(question)) questions.add(question);
     if (questions.size >= 100) break;
   }
@@ -95,11 +99,13 @@ export interface GoogleAiDestination {
   entryOnly?: boolean;
 }
 
-// Accept a literal Google AI search, never a URL that needs repairing or a
+// Accept a literal allowed Google destination, never a URL that needs repairing or a
 // redirect. Keep the question as text; it is not evaluated or enriched by PWA data.
-export function validateGoogleAiUrl(
+export function validateGoogleDestination(
   value: unknown,
 ): GoogleAiDestination | null {
+  if (value === GOOGLE_AI_ENTRY || value === GOOGLE_AI_ENTRY + "?hl=fr")
+    return { url: GOOGLE_AI_ENTRY, query: "", entryOnly: true };
   if (
     typeof value !== "string" ||
     value.length > 4096 ||
@@ -127,7 +133,7 @@ export function validateGoogleAiUrl(
     if (
       parameters.some(([key]) => !allowed.has(key)) ||
       new Set(parameters.map(([key]) => key)).size !== parameters.length ||
-      url.searchParams.get("udm") !== "50" ||
+      (url.searchParams.has("udm") && url.searchParams.get("udm") !== "50") ||
       (url.searchParams.has("hl") && url.searchParams.get("hl") !== "fr")
     )
       return null;
@@ -151,19 +157,52 @@ export function validateGoogleAiUrl(
     return null;
   }
 }
+// Legacy udm=50 inputs are read as public text, never opened automatically.
+export function validateGoogleAiUrl(
+  value: unknown,
+): GoogleAiDestination | null {
+  const checked = validateGoogleDestination(value);
+  return checked &&
+    !checked.entryOnly &&
+    new URL(checked.url).searchParams.get("udm") === "50"
+    ? checked
+    : null;
+}
+export function publicQuestionIssue(question: string): string | null {
+  question = question.normalize("NFKC").replace(/\p{Cf}/gu, "");
+  if (/\b(?:axdia|sentinel)\b/iu.test(question))
+    return "Reformulez ce sujet interne en problème technologique public et générique.";
+  if (
+    /-----BEGIN[ A-Z]*PRIVATE KEY-----|\b(?:sk_live_|sk-proj-|sb_secret_)[\w-]+|\beyJ[\w-]{10,}\.[\w-]+\.[\w-]+/u.test(
+      question,
+    ) ||
+    /\b(?:password|mot de passe|api[_ -]?key|token|secret)\s*[:=]\s*\S+/iu.test(
+      question,
+    ) ||
+    /[\w.+-]+@[\w.-]+\.[a-z]{2,}/iu.test(question) ||
+    /\bclient\s*[:=]\s*\S+/iu.test(question) ||
+    /(?:\/Users\/|\/home\/|[A-Z]:\\Users\\)/iu.test(question) ||
+    /\b(?:10\.\d{1,3}|192\.168|172\.(?:1[6-9]|2\d|3[01]))\.\d{1,3}\.\d{1,3}\b/u.test(
+      question,
+    ) ||
+    /\b[A-Z]{2}\d{2}(?: ?[A-Z0-9]){11,30}\b/u.test(question)
+  )
+    return "Donnée potentiellement privée détectée. Retirez-la et reformulez une question publique avant toute ouverture.";
+  return null;
+}
 // The parent builds this URL from the confirmed question alone. It never
 // accepts a producer-supplied destination or silently truncates/repairs text.
 export function googleAiQuestionDestination(
   question: unknown,
 ): GoogleAiDestination | null {
-  if (!validPublicQuestion(question)) return null;
+  if (!validPublicQuestion(question) || publicQuestionIssue(question))
+    return null;
   const url = new URL("https://www.google.com/search");
   url.search = new URLSearchParams({
     hl: "fr",
-    udm: "50",
     q: question,
   }).toString();
-  const checked = validateGoogleAiUrl(url.href);
+  const checked = validateGoogleDestination(url.href);
   return checked?.query === question ? checked : null;
 }
 function hasControl(value: string) {
@@ -224,7 +263,7 @@ export function parseGoogleAiMessage(value: unknown): GoogleAiMessage | null {
   )
     return null;
   const destination =
-    validateGoogleAiUrl(data.url) ||
+    validateGoogleDestination(data.url) ||
     (data.url === GOOGLE_AI_ENTRY
       ? { url: GOOGLE_AI_ENTRY, query: "", entryOnly: true }
       : null);
@@ -234,18 +273,32 @@ export function parseGoogleAiMessage(value: unknown): GoogleAiMessage | null {
 // Runs only in an interactive, opaque iframe. The copied anchor has a local
 // href; capture its click before an imported fallback can navigate/open a tab.
 // Every request is independently validated and confirmed again by the parent.
-export const GOOGLE_AI_LINK_BRIDGE = `(()=>{
+export function googleAiLinkBridge(parentOrigin: string) {
+  return `(()=>{
+  const hostOrigin=${JSON.stringify(parentOrigin)};
   const selector='[data-ai-link="google-ai-mode"]';
+  let pending=null;
+  addEventListener('message',event=>{
+    const data=event.data;
+    if(event.source!==parent||event.origin!==hostOrigin||!data||data.type!=='journal360:google-ai:capability'||data.version!==3||data.enabled!==true||typeof data.nonce!=='string'||!/^[0-9a-f-]{36}$/i.test(data.nonce)||!Number.isSafeInteger(data.expiresAt)||data.expiresAt<=Date.now()||!pending)return;
+    const request=pending;pending=null;
+    const requestId=[...crypto.getRandomValues(new Uint8Array(16))].map(n=>n.toString(16).padStart(2,'0')).join('');
+    parent.postMessage({...request,version:3,nonce:data.nonce,requestId},hostOrigin);
+  });
   for(const type of ['click','auxclick']) window.addEventListener(type,event=>{
-    const link=event.target instanceof Element?event.target.closest(selector):null;
+    const element=event.target instanceof Element?event.target:null;
+    const link=element?.closest(selector)||element?.closest('a[href]');
     if(!link)return;
+    const marked=link.matches(selector);
+    const url=link.getAttribute('href');
+    if(!marked&&!(url?.startsWith('https://www.google.com/search?')||url==='https://www.google.com/ai'||url==='https://www.google.com/ai?hl=fr'))return;
     event.preventDefault();event.stopImmediatePropagation();
-    if(type==='click'&&event.button===0){
-    const question=link.getAttribute('data-ai-question');
-    if(question!==null){parent.postMessage({type:'journal360:google-ai:question-request',version:2,question},'*');return;}
-    parent.postMessage({
-      type:'journal360:google-ai:open-request',version:1,
-      url:link.getAttribute('data-journal360-google-ai-url')||link.getAttribute('href')
-    },'*');}
+    if(type!=='click'||event.button!==0)return;
+    const editor=link.closest('dialog')?.querySelector('textarea#question,textarea[data-ai-question]');
+    const isEntry=url==='https://www.google.com/ai'||url==='https://www.google.com/ai?hl=fr'||link.getAttribute('data-journal360-google-ai-url')==='https://www.google.com/ai';
+    const question=(marked?link.getAttribute('data-ai-question'):null)??(isEntry&&editor instanceof HTMLTextAreaElement?editor.value:null);
+    pending=question!==null?{type:'journal360:google-ai:question-request',question}:{type:'journal360:google-ai:open-request',url:link.getAttribute('data-journal360-google-ai-url')||url};
+    parent.postMessage({type:'journal360:google-ai:capability-request',version:3},hostOrigin);
   },true);
 })();`;
+}

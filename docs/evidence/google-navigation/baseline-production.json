@@ -1,0 +1,25 @@
+{
+  "testedAt": "2026-10-15T16:16:42.223Z",
+  "syntheticOnly": true,
+  "externalGoogleSimulated": true,
+  "evidence": [
+    {
+      "engine": "chromium",
+      "standaloneOpens": true,
+      "pwaNewTab": false,
+      "pwaConfirmation": 0,
+      "parentCspBlocked": true,
+      "sandbox": "allow-scripts",
+      "privateContent": false
+    },
+    {
+      "engine": "webkit",
+      "standaloneOpens": true,
+      "pwaNewTab": false,
+      "pwaConfirmation": 0,
+      "parentCspBlocked": true,
+      "sandbox": "allow-scripts",
+      "privateContent": false
+    }
+  ]
+}

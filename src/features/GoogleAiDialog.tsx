@@ -1,9 +1,9 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import {
   GOOGLE_AI_ENTRY,
   googleAiQuestionDestination,
+  publicQuestionIssue,
   validPublicQuestion,
-  validateGoogleAiUrl,
   type GoogleAiDestination,
 } from "./googleAi";
 export function GoogleAiDialog({
@@ -16,44 +16,41 @@ export function GoogleAiDialog({
   onDismiss: () => void;
 }) {
   const [draft, setDraft] = useState(destination.query);
-  const [editing, setEditing] = useState(!!destination.entryOnly);
   const [notice, setNotice] = useState("");
   const [fallback, setFallback] = useState<"entry" | "question" | null>(null);
-  const entrySent = useRef(false);
   const valid = validPublicQuestion(draft);
-  const launch = editing
-    ? googleAiQuestionDestination(draft)
-    : validateGoogleAiUrl(destination.url);
+  const privacyIssue = publicQuestionIssue(draft);
+  const launch =
+    valid && !privacyIssue ? googleAiQuestionDestination(draft) : null;
   const fallbackUrl = fallback === "entry" ? GOOGLE_AI_ENTRY : launch?.url;
   function open(entry: boolean) {
-    if (entry && entrySent.current) return;
     if (!isCurrent()) {
       onDismiss();
       return;
     }
+    if (privacyIssue || !valid || (!entry && !launch)) return;
     if (!navigator.onLine) {
       setNotice(
         "Hors ligne : copiez la question et ouvrez Google après reconnexion.",
       );
       return;
     }
-    if (!entry && !launch) return;
-    const url = entry ? GOOGLE_AI_ENTRY : launch!.url;
-    if (entry) entrySent.current = true;
+    setFallback(entry ? "entry" : "question");
     try {
-      // Synchronous user gesture. noopener may return null even on success;
-      // do not invent a successful popup or incorrectly report one as blocked.
-      window.open(url, "_blank", "noopener,noreferrer");
-      if (!entry) onDismiss();
-      else {
-        setFallback("entry");
-        setNotice(
-          "Ouverture demandée. Si aucun onglet n’apparaît, utilisez le lien direct ci-dessous. Collez ensuite la question dans Google.",
-        );
-      }
+      // Direct user gesture only. noopener can return null on success as well
+      // as when blocked; never infer an actual opening from this return value.
+      window.open(
+        entry ? GOOGLE_AI_ENTRY : launch!.url,
+        "_blank",
+        "noopener,noreferrer",
+      );
+      setNotice(
+        "Ouverture demandée. Si aucun onglet n’apparaît, utilisez le lien direct ci-dessous. Pour le Mode IA, collez la question vous-même.",
+      );
     } catch {
-      setFallback(entry ? "entry" : "question");
-      setNotice("Ouverture indisponible : utilisez le lien direct ci-dessous.");
+      setNotice(
+        "Ouverture indisponible : utilisez le lien direct ci-dessous, ou copiez la question pour votre navigateur.",
+      );
     }
   }
   async function copy() {
@@ -65,12 +62,10 @@ export function GoogleAiDialog({
       if (isCurrent())
         setNotice("Question copiée. Aucune recherche n’a été lancée.");
     } catch {
-      if (isCurrent()) {
-        setEditing(true);
+      if (isCurrent())
         setNotice(
           "Copie indisponible. Sélectionnez la question et utilisez la copie de votre appareil.",
         );
-      }
     }
   }
   return (
@@ -82,35 +77,32 @@ export function GoogleAiDialog({
         aria-describedby="google-ai-warning"
         className="modal compact google-ai-dialog"
       >
-        <h2 id="google-ai-title">
-          Ouvrir Google Mode IA dans votre navigateur ?
-        </h2>
+        <h2 id="google-ai-title">Ouvrir Google dans votre navigateur ?</h2>
         <p id="google-ai-warning">
-          Le texte de la question sera transmis à Google.
-          {destination.entryOnly &&
-            " Vérifiez cette question : le fichier ne garantit pas qu’elle est publique."}
+          Le texte de la question sera transmis à Google si vous lancez la
+          recherche classique. Le Mode IA s’ouvre sans question : copiez-la puis
+          collez-la.
         </p>
-        <p className="eyebrow">QUESTION À TRANSMETTRE</p>
-        {editing ? (
-          <label>
-            Question publique à vérifier
-            <textarea
-              className="google-ai-query"
-              value={draft}
-              maxLength={2000}
-              onChange={(e) => setDraft(e.target.value)}
-              rows={4}
-            />
-          </label>
-        ) : (
-          <p className="google-ai-query">{draft}</p>
-        )}
+        <label>
+          Question publique à vérifier
+          <textarea
+            className="google-ai-query"
+            value={draft}
+            maxLength={2000}
+            rows={4}
+            onChange={(e) => {
+              setDraft(e.target.value);
+              setNotice("");
+            }}
+          />
+        </label>
         <p className="small-note">
-          Le lancement prérempli dépend de Google. Si Google demande une
-          connexion ou un CAPTCHA, vous pouvez aussi copier la question puis
-          ouvrir l’entrée du Mode IA.
+          Vérifiez que la question est publique et ne contient aucune donnée
+          privée. La détection automatique est limitée. L’accès au Mode IA
+          dépend de Google, de votre compte et de votre navigateur.
         </p>
-        {valid && !launch && (
+        {privacyIssue && <p role="alert">{privacyIssue}</p>}
+        {valid && !privacyIssue && !launch && (
           <p role="status">
             Cette question ne peut pas être transmise dans un lien prérempli.
             Raccourcissez-la ou utilisez la copie.
@@ -123,10 +115,10 @@ export function GoogleAiDialog({
           </button>
           <button
             className="primary"
-            onClick={() => open(false)}
             disabled={!launch}
+            onClick={() => open(false)}
           >
-            {destination.entryOnly ? "Lancer la question" : "Ouvrir"}
+            Rechercher sur Google
           </button>
           <button
             className="secondary"
@@ -135,32 +127,32 @@ export function GoogleAiDialog({
           >
             Copier la question
           </button>
-          {!editing && (
-            <button className="secondary" onClick={() => setEditing(true)}>
-              Modifier la question
-            </button>
-          )}
           <button
             className="secondary"
-            disabled={entrySent.current}
+            disabled={!valid || !!privacyIssue}
             onClick={() => open(true)}
           >
             Ouvrir Google Mode IA
           </button>
         </div>
-        {fallback && fallbackUrl && (
+        {fallback && fallbackUrl && valid && !privacyIssue && (
           <p>
             <a
               href={fallbackUrl}
               target="_blank"
               rel="noopener noreferrer"
               onClick={(event) => {
-                if (!isCurrent() || !navigator.onLine) event.preventDefault();
+                if (
+                  !isCurrent() ||
+                  !navigator.onLine ||
+                  publicQuestionIssue(draft)
+                )
+                  event.preventDefault();
               }}
             >
               {fallback === "entry"
                 ? "Ouvrir directement Google Mode IA"
-                : "Ouvrir directement la question dans Google Mode IA"}
+                : "Recherche Google avec la question ↗"}
             </a>
           </p>
         )}

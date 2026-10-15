@@ -48,7 +48,7 @@ async function openCurrent(page: Page) {
 }
 async function dialog(page: Page) {
   const modal = page.getByRole("dialog", {
-    name: "Ouvrir Google Mode IA dans votre navigateur ?",
+    name: "Ouvrir Google dans votre navigateur ?",
   });
   await expect(modal).toBeVisible();
   return modal;
@@ -332,7 +332,9 @@ test("V6 : tous les boutons de section, v2 question seule, copie corrigée et en
         name: "Question publique à vérifier",
         exact: true,
       }),
-    ).toHaveValue(`Question publique fictive pour ${section}`);
+    ).toHaveValue(
+      `Question publique fictive pour ${section === "SENTINEL" ? "la sécurité logicielle" : section === "AXDIA" ? "les assistants locaux" : section}`,
+    );
     expect(opens).toEqual([]);
     await modal.getByRole("button", { name: "Annuler", exact: true }).click();
   }
@@ -364,7 +366,7 @@ test("V6 : tous les boutons de section, v2 question seule, copie corrigée et en
   ).toBe(true);
   await expect(
     modal.getByRole("button", { name: "Ouvrir Google Mode IA", exact: true }),
-  ).toBeDisabled();
+  ).toBeEnabled();
   await popup.close();
 });
 

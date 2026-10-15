@@ -1,0 +1,44 @@
+{
+  "testedAt": "2026-10-15T16:30:23.627Z",
+  "context": "localhost production build, fresh Chromium fr-FR",
+  "installedPwa": false,
+  "physicalDevice": false,
+  "syntheticQuestionOnly": true,
+  "privateHtmlUsed": false,
+  "googleAnswerVerified": false,
+  "steps": [
+    {
+      "action": "standard",
+      "openedPage": true,
+      "firstGoogleNavigation": {
+        "path": "/search",
+        "queryExact": true,
+        "hasQuestion": true,
+        "hasAiParameter": false
+      },
+      "loaded": true,
+      "bodyVisible": true,
+      "challenge": true,
+      "consent": false,
+      "parentQuestionPreserved": true,
+      "openerNull": true
+    },
+    {
+      "action": "ai-entry",
+      "openedPage": true,
+      "firstGoogleNavigation": {
+        "path": "/ai",
+        "queryExact": false,
+        "hasQuestion": false,
+        "hasAiParameter": false
+      },
+      "loaded": true,
+      "bodyVisible": true,
+      "challenge": false,
+      "consent": false,
+      "parentQuestionPreserved": true,
+      "openerNull": true
+    }
+  ],
+  "status": "PARTIAL"
+}

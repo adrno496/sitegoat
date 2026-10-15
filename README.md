@@ -84,9 +84,9 @@ Les sauvegardes V6 utilisent le format ZIP2 : **mettre à jour tous les appareil
 
 Les liens de rubriques restent dans le journal au lieu de vider le cadre. Le format producteur `schemaVersion:"6.1"` est reconnu pour les nouveaux imports ; ses boutons d’approfondissement utilisent le dialogue parent pour copier une question et ouvrir Google Mode IA. Le lecteur reste interactif par défaut et isolé. Après mise à jour de la PWA, rouvrir le journal existant suffit pour bénéficier du correctif des boutons. [Validation sur le fichier réel, sans publier son contenu](docs/JOURNAL360_V61_COMPATIBILITY_FIX.md).
 
-### Correctif2.0.2 — lancer la question dans Google Mode IA
+### Historique 2.0.2 — ancien lancement de question Mode IA
 
-Après prévisualisation/modification et confirmation, **Lancer la question** ouvre le lien Mode IA avec le texte exact dans `q` et `udm=50`, y compris pour les boutons V6.1 et les questions préparées en mode sûr. Copie et entrée sans texte restent disponibles en repli. Aucune ouverture automatique depuis un message, aucune permission supplémentaire dans le cadre. [Tests et limites Google](docs/JOURNAL360_GOOGLE_AI_PREFILL.md).
+Dans la version historique 2.0.2, après prévisualisation/modification et confirmation, **Lancer la question** ouvre le lien Mode IA avec le texte exact dans `q` et `udm=50`, y compris pour les boutons V6.1 et les questions préparées en mode sûr. Copie et entrée sans texte restent disponibles en repli. Aucune ouverture automatique depuis un message, aucune permission supplémentaire dans le cadre. [Tests et limites Google](docs/JOURNAL360_GOOGLE_AI_PREFILL.md).
 
 ### Version 2.0.3 — une seule édition par jour
 
@@ -101,3 +101,7 @@ Le bandeau affiche le mode local, le hors-ligne, les transferts, les erreurs ave
 ### Version 2.0.5 — lecture épurée
 
 Le HTML occupe tout le viewport, avec seulement Retour et **Réduire la lecture**. Glissement depuis le bord gauche, historique navigateur et outils après réduction. [Vérifications et limites](docs/JOURNAL360_CLEAN_READER.md).
+
+### Candidat local 2.0.6 — ouverture Google contrôlée (non publié)
+
+Les liens **Recherche Google avec la question** affichent la confirmation de la PWA et ouvrent une recherche classique avec le texte exact. **Ouvrir Google Mode IA** ouvre seulement l’entrée Google : copier puis coller la question, sans promesse de préremplissage IA. Le dialogue conserve modification, copie et lien de repli. Session par cadre, protection contre le rejeu et blocage de marqueurs sensibles connus ; sandbox/CSP inchangés. Ce candidat remplace le parcours historique 2.0.2 uniquement après une publication autorisée. [Diagnostic, tests et décision HOLD](docs/JOURNAL360_GOOGLE_NAVIGATION.md).

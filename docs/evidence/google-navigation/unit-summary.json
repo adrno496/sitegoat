@@ -1,0 +1,8 @@
+{
+  "command": "npm test -- --maxWorkers=1 --testTimeout=60000 --reporter=json --outputFile=/tmp/j360-google-unit-final.json",
+  "status": "PASS",
+  "passed": 194,
+  "failed": 0,
+  "suites": 18,
+  "success": true
+}

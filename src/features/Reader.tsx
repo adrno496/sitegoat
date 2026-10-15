@@ -23,6 +23,7 @@ import { db } from "../data/db";
 import { isolatedHTML } from "./import";
 import { useDialogFocus } from "./dialogFocus";
 import { download } from "./backup";
+import { GoogleAiSession } from "./googleAiSession";
 import { GoogleAiDialog } from "./GoogleAiDialog";
 import { GOOGLE_AI_ENTRY, readingQuestions } from "./googleAi";
 import { verifiedLabel } from "../data/editorial";
@@ -30,7 +31,7 @@ import { resolveDay, dayKeyOf } from "../data/day";
 import { validateSourceUrl } from "./sourceUrl";
 import {
   parseGoogleAiMessage,
-  validateGoogleAiUrl,
+  validateGoogleDestination,
   type GoogleAiDestination,
 } from "./googleAi";
 interface GoogleAiRequest {
@@ -40,6 +41,7 @@ interface GoogleAiRequest {
   mode: "safe" | "interactive" | "text";
   editionId: string;
   frameRevision: number;
+  nonce?: string;
 }
 export function Reader({
   edition,
@@ -70,6 +72,7 @@ export function Reader({
     y: number;
     time: number;
   } | null>(null);
+  const aiSession = useRef<GoogleAiSession | null>(null);
   const [backGestureActive, setBackGestureActive] = useState(false);
   const pendingAiRef = useRef<GoogleAiRequest | null>(null);
   const [googleAiRequest, setGoogleAiRequest] =
@@ -116,6 +119,8 @@ export function Reader({
   useLayoutEffect(() => {
     pendingAiRef.current = null;
     setGoogleAiRequest(null);
+    const session = new GoogleAiSession();
+    aiSession.current = session;
     const receive = (event: MessageEvent<unknown>) => {
       const frameWindow = iframeRef.current?.contentWindow;
       // "null" alone does not authenticate an opaque sandbox. Always check the
@@ -127,7 +132,26 @@ export function Reader({
         mode !== "interactive"
       )
         return;
-      const message = parseGoogleAiMessage(event.data);
+      const data = event.data as Record<string, unknown> | null;
+      if (
+        data &&
+        typeof data === "object" &&
+        !Array.isArray(data) &&
+        Object.keys(data).length === 2 &&
+        Object.hasOwn(data, "type") &&
+        Object.hasOwn(data, "version") &&
+        data.type === "journal360:google-ai:capability-request" &&
+        data.version === 3
+      ) {
+        // The verified current iframe has an opaque origin: only this public
+        // freshness capability is sent with "*", never any PWA data or secret.
+        frameWindow.postMessage(session.capability(), "*");
+        return;
+      }
+      const legacy = parseGoogleAiMessage(event.data);
+      const verified = session.accept(event.data);
+      const message =
+        legacy?.type === "capability" ? legacy : verified?.message;
       if (!message) return;
       if (message.type === "capability") {
         // Opaque origins cannot be addressed by an origin string. "*" is used
@@ -155,6 +179,7 @@ export function Reader({
           mode,
           editionId: edition.id,
           frameRevision,
+          nonce: verified!.nonce,
         };
         pendingAiRef.current = request;
         setGoogleAiRequest(request);
@@ -165,7 +190,7 @@ export function Reader({
       window.removeEventListener("message", receive);
       pendingAiRef.current = null;
     };
-  }, [edition.id, mode, frameRevision, confirm]);
+  }, [edition.id, mode, frameRevision, confirm, bytes]);
   function isCurrentGoogleAi() {
     const request = pendingAiRef.current;
     return (
@@ -173,10 +198,12 @@ export function Reader({
       request.mode === mode &&
       (request.origin === "host" ||
         (mode === "interactive" &&
-          request.source === iframeRef.current?.contentWindow)) &&
+          request.source === iframeRef.current?.contentWindow &&
+          !!request.nonce &&
+          !!aiSession.current?.current(request.nonce))) &&
       request.editionId === edition.id &&
       request.frameRevision === frameRevision &&
-      (!!validateGoogleAiUrl(request.destination.url) ||
+      (!!validateGoogleDestination(request.destination.url) ||
         request.destination.url === GOOGLE_AI_ENTRY)
     );
   }
@@ -540,7 +567,7 @@ export function Reader({
         >
           {changes && <ReadingUpdates changes={changes} />}
         </div>
-        {mode !== "interactive" && questions.length > 0 && (
+        {questions.length > 0 && (
           <details
             className="parent-google-questions"
             hidden={expanded}

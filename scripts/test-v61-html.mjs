@@ -80,9 +80,10 @@ for (const [engine, type] of [
         if (
           candidate.origin === "https://www.google.com" &&
           candidate.pathname === "/search" &&
-          candidate.searchParams.get("udm") === "50"
+          !candidate.searchParams.has("udm") &&
+          candidate.searchParams.has("q")
         ) {
-          external.push("google-prefilled-question-simulated");
+          external.push("google-standard-question-simulated");
           return route.fulfill({
             contentType: "text/html",
             body: "<title>Google simulated</title>",
@@ -136,10 +137,9 @@ for (const [engine, type] of [
             await frame.locator("body").evaluate(() => window.__readerProbe),
             "alive",
           );
-          assert.equal(
-            await frame.locator("body").evaluate(() => location.href),
-            `about:srcdoc${fragment}`,
-          );
+          await expect
+            .poll(() => frame.locator("body").evaluate(() => location.href))
+            .toBe(`about:srcdoc${fragment}`);
         }
         step = "article-index-links";
         const articleLinks = frame.locator('#index a[href^="#"]');
@@ -152,10 +152,9 @@ for (const [engine, type] of [
             await frame.locator("body").evaluate(() => window.__readerProbe),
             "alive",
           );
-          assert.equal(
-            await frame.locator("body").evaluate(() => location.href),
-            new URL(`about:srcdoc${fragment}`).href,
-          );
+          await expect
+            .poll(() => frame.locator("body").evaluate(() => location.href))
+            .toBe(new URL(`about:srcdoc${fragment}`).href);
         }
         step = "eight-themes-and-filters";
         for (const mode of ["light", "dark"])
@@ -219,7 +218,7 @@ for (const [engine, type] of [
         for (let i = 0; i < expectedQuestions.length; i++) {
           await buttons.nth(i).click();
           const modal = page.getByRole("dialog", {
-            name: "Ouvrir Google Mode IA dans votre navigateur ?",
+            name: "Ouvrir Google dans votre navigateur ?",
           });
           await expect(modal).toBeVisible();
           assert.equal(
@@ -241,7 +240,7 @@ for (const [engine, type] of [
           assert.equal(external.length, i);
           const next = context.waitForEvent("page");
           await modal
-            .getByRole("button", { name: "Lancer la question", exact: true })
+            .getByRole("button", { name: "Rechercher sur Google", exact: true })
             .click();
           const popup = await next;
           await popup.waitForLoadState("domcontentloaded");
@@ -254,7 +253,6 @@ for (const [engine, type] of [
             [...destination.searchParams],
             [
               ["hl", "fr"],
-              ["udm", "50"],
               ["q", expectedQuestions[i]],
             ],
           );
@@ -264,7 +262,10 @@ for (const [engine, type] of [
             ),
           );
           await popup.close();
-          await expect(modal).toHaveCount(0);
+          await expect(modal).toBeVisible();
+          await modal
+            .getByRole("button", { name: "Annuler", exact: true })
+            .click();
         }
         step = "safe-mode-and-return";
         await readerControl(page, "Désactiver JS");
@@ -279,10 +280,9 @@ for (const [engine, type] of [
             .first()
             .click();
           await expect(frame.locator("#index")).toHaveCount(1);
-          assert.equal(
-            await frame.locator("body").evaluate(() => location.href),
-            `about:srcdoc${fragment}`,
-          );
+          await expect
+            .poll(() => frame.locator("body").evaluate(() => location.href))
+            .toBe(`about:srcdoc${fragment}`);
         }
         await readerTools(page);
         await page
@@ -313,7 +313,7 @@ for (const [engine, type] of [
           await frame.locator("[data-article]").first().click();
           await expect(
             page.getByRole("dialog", {
-              name: "Ouvrir Google Mode IA dans votre navigateur ?",
+              name: "Ouvrir Google dans votre navigateur ?",
             }),
           ).toBeVisible();
           await page
@@ -339,12 +339,12 @@ for (const [engine, type] of [
         await frame.locator("[data-article]").first().click();
         await expect(
           page.getByRole("dialog", {
-            name: "Ouvrir Google Mode IA dans votre navigateur ?",
+            name: "Ouvrir Google dans votre navigateur ?",
           }),
         ).toBeVisible();
         await page
           .getByRole("dialog")
-          .getByRole("button", { name: "Lancer la question", exact: true })
+          .getByRole("button", { name: "Rechercher sur Google", exact: true })
           .click();
         await expect(page.getByRole("dialog")).toContainText("Hors ligne");
         await page
@@ -364,7 +364,7 @@ for (const [engine, type] of [
         assert.deepEqual(errors, []);
         assert.deepEqual(
           external,
-          expectedQuestions.map(() => "google-prefilled-question-simulated"),
+          expectedQuestions.map(() => "google-standard-question-simulated"),
         );
         results.push({
           engine,
@@ -387,6 +387,10 @@ for (const [engine, type] of [
           viewport: mobile ? "mobile" : "desktop",
           status: "FAIL",
           step,
+          readerStillExpanded: await page
+            .locator(".reading-surface-expanded")
+            .count(),
+          readerStillPresent: await page.locator(".edition-frame").count(),
           errorType: error.name,
         });
         process.exitCode = 1;

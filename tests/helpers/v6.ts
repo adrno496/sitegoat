@@ -57,7 +57,7 @@ export function v6Html({
   <div>${["light", "dark"].map((v) => `<button data-theme-choice="${v}" onclick="document.documentElement.dataset.theme='${v}'">Thème ${v}</button>`).join("")}
   ${["red", "blue", "green", "purple"].map((v) => `<button data-accent-choice="${v}" onclick="document.documentElement.dataset.accent='${v}'">Accent ${v}</button>`).join("")}</div>
   <nav aria-label="Onglets du journal">${sections.map((s, i) => `<button data-section="${i}" onclick="document.querySelectorAll('section[data-panel]').forEach(e=>e.hidden=e.dataset.panel!=='${i}')">${s}</button>`).join("")}</nav>
-  ${sections.map((s, i) => `<section data-panel="${i}" ${i ? "hidden" : ""}><h2>${s}</h2><p>Contenu fictif ${i} de la révision ${revision}.</p><a href="https://www.google.com/ai" data-ai-link="google-ai-mode" data-ai-question="Question publique fictive pour ${s}">En savoir plus</a></section>`).join("")}
+  ${sections.map((s, i) => `<section data-panel="${i}" ${i ? "hidden" : ""}><h2>${s}</h2><p>Contenu fictif ${i} de la révision ${revision}.</p><a href="https://www.google.com/ai" data-ai-link="google-ai-mode" data-ai-question="Question publique fictive pour ${s === "SENTINEL" ? "la sécurité logicielle" : s === "AXDIA" ? "les assistants locaux" : s}">En savoir plus</a></section>`).join("")}
   <img alt="Pixel de test embarqué" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a0LcAAAAASUVORK5CYII=">
   <script id="editionData" type="application/json">${JSON.stringify(data).replaceAll("<", "\\u003c")}</script>
   <!-- ${padding} --></body></html>`;

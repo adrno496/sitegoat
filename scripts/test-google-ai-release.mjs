@@ -96,9 +96,12 @@ for (const [engine, type] of [
         const buttons = frame.locator("[data-article],[data-topic]");
         await expect(buttons).toHaveCount(11);
         for (let i = 0; i < 11; i++) {
+          await buttons.nth(i).evaluate((element) =>
+            element.scrollIntoView({ block: "center" }),
+          );
           await buttons.nth(i).click();
           const modal = page.getByRole("dialog", {
-            name: "Ouvrir Google Mode IA dans votre navigateur ?",
+            name: "Ouvrir Google dans votre navigateur ?",
           });
           const question =
             i === 0
@@ -108,7 +111,7 @@ for (const [engine, type] of [
           assert.equal(calls.length, i);
           const next = context.waitForEvent("page");
           await modal
-            .getByRole("button", { name: "Lancer la question", exact: true })
+            .getByRole("button", { name: "Rechercher sur Google", exact: true })
             .click();
           const popup = await next;
           await popup.waitForLoadState("domcontentloaded");
@@ -121,7 +124,6 @@ for (const [engine, type] of [
             [...url.searchParams],
             [
               ["hl", "fr"],
-              ["udm", "50"],
               ["q", question],
             ],
           );
@@ -131,7 +133,10 @@ for (const [engine, type] of [
             ),
           );
           await popup.close();
-          await expect(modal).toHaveCount(0);
+          await expect(modal).toBeVisible();
+          await modal
+            .getByRole("button", { name: "Annuler", exact: true })
+            .click();
         }
         assert.equal(calls.length, 11);
         assert.deepEqual(blocked, []);

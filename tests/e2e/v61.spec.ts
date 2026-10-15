@@ -32,7 +32,7 @@ async function setup(page: Page) {
 }
 const dialog = (page: Page) =>
   page.getByRole("dialog", {
-    name: "Ouvrir Google Mode IA dans votre navigateur ?",
+    name: "Ouvrir Google dans votre navigateur ?",
   });
 test("V6.1 : les treize ancres conservent le document, le JS, les thèmes et les filtres", async ({
   page,
@@ -146,7 +146,7 @@ test("V6.1 : onze boutons sans ancien marquage demandent confirmation, copie et 
     await dialog(page).getByRole("textbox").fill(query);
     const next = context.waitForEvent("page");
     await dialog(page)
-      .getByRole("button", { name: "Lancer la question", exact: true })
+      .getByRole("button", { name: "Rechercher sur Google", exact: true })
       .click();
     const launched = await next;
     await launched.waitForLoadState("domcontentloaded");
@@ -154,7 +154,6 @@ test("V6.1 : onze boutons sans ancien marquage demandent confirmation, copie et 
     expect(url.origin + url.pathname).toBe("https://www.google.com/search");
     expect([...url.searchParams]).toEqual([
       ["hl", "fr"],
-      ["udm", "50"],
       ["q", query],
     ]);
     expect(outgoing).toHaveLength(i + 1);
@@ -163,7 +162,10 @@ test("V6.1 : onze boutons sans ancien marquage demandent confirmation, copie et 
         () => opener === null && document.referrer === "",
       ),
     ).toBe(true);
-    await expect(dialog(page)).toHaveCount(0);
+    await expect(dialog(page)).toBeVisible();
+    await dialog(page)
+      .getByRole("button", { name: "Annuler", exact: true })
+      .click();
     await launched.close();
   }
   const calls = await page.evaluate(
@@ -263,7 +265,7 @@ test("V6.1 : préremplissage borné, offline et lien de repli conservent la ques
   const modal = dialog(page);
   const input = modal.getByRole("textbox");
   const launch = modal.getByRole("button", {
-    name: "Lancer la question",
+    name: "Rechercher sur Google",
     exact: true,
   });
   await input.fill("é".repeat(1000));
@@ -287,7 +289,7 @@ test("V6.1 : préremplissage borné, offline et lien de repli conservent la ques
   await launch.click();
   await expect(modal).toContainText("Ouverture indisponible");
   const link = modal.getByRole("link", {
-    name: "Ouvrir directement la question dans Google Mode IA",
+    name: "Recherche Google avec la question ↗",
     exact: true,
   });
   const query = "Question corrigée & + % # 🙂";
@@ -295,7 +297,6 @@ test("V6.1 : préremplissage borné, offline et lien de repli conservent la ques
   const expected = new URL("https://www.google.com/search");
   expected.search = new URLSearchParams({
     hl: "fr",
-    udm: "50",
     q: query,
   }).toString();
   await expect(link).toHaveAttribute("href", expected.href);

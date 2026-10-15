@@ -1,0 +1,68 @@
+{
+  "testedAt": "2026-10-15T18:32:37.060Z",
+  "sourceBytes": 87438,
+  "sourceChecksum": "15cde7fc0af60d0f158f0417018135893a48bdba6ab16c61f423c54e7a372742",
+  "sourceChanged": false,
+  "userContentRecorded": false,
+  "cloudUsed": false,
+  "realGoogleUsed": false,
+  "physicalDevices": "NON TESTÉS",
+  "results": [
+    {
+      "engine": "chromium",
+      "viewport": "1440x900 desktop",
+      "status": "PASS",
+      "fragments": 13,
+      "articleLinks": 9,
+      "googleButtons": 11,
+      "confirmedPrefilledLaunches": 11,
+      "themes": 8,
+      "safeMode": true,
+      "offlineReader": true,
+      "originalByteIdentical": true,
+      "externalRequestsSent": 0
+    },
+    {
+      "engine": "chromium",
+      "viewport": "390x844 mobile simulated",
+      "status": "PASS",
+      "fragments": 13,
+      "articleLinks": 9,
+      "googleButtons": 11,
+      "confirmedPrefilledLaunches": 11,
+      "themes": 8,
+      "safeMode": true,
+      "offlineReader": true,
+      "originalByteIdentical": true,
+      "externalRequestsSent": 0
+    },
+    {
+      "engine": "webkit",
+      "viewport": "1440x900 desktop",
+      "status": "PASS",
+      "fragments": 13,
+      "articleLinks": 9,
+      "googleButtons": 11,
+      "confirmedPrefilledLaunches": 11,
+      "themes": 8,
+      "safeMode": true,
+      "offlineReader": true,
+      "originalByteIdentical": true,
+      "externalRequestsSent": 0
+    },
+    {
+      "engine": "webkit",
+      "viewport": "390x844 mobile simulated",
+      "status": "PASS",
+      "fragments": 13,
+      "articleLinks": 9,
+      "googleButtons": 11,
+      "confirmedPrefilledLaunches": 11,
+      "themes": 8,
+      "safeMode": true,
+      "offlineReader": true,
+      "originalByteIdentical": true,
+      "externalRequestsSent": 0
+    }
+  ]
+}

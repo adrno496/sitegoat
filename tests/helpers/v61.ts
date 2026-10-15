@@ -49,7 +49,7 @@ export function v61HTML(extra: Record<string, unknown> = {}) {
     .slice(2)
     .map(
       (id) =>
-        `<section id="${id}"><h2>${id}</h2>${["sentinel", "axdia"].includes(id) ? `<div id="public-${id}">Question publique\n synthétique ${id}</div><button data-topic="${id}">En savoir plus ${id}</button>` : ""}</section>`,
+        `<section id="${id}"><h2>${id}</h2>${["sentinel", "axdia"].includes(id) ? `<div id="public-${id}">Question publique\n synthétique sur ${id === "sentinel" ? "la sécurité logicielle" : "les assistants locaux"}</div><button data-topic="${id}">En savoir plus ${id}</button>` : ""}</section>`,
     )
     .join("")}
   <dialog id="googleDialog"><h2 id="modalTitle">Recherche</h2><textarea id="question"></textarea><a id="openGoogle" href="https://www.google.com/search?hl=fr" target="_blank">Ouvrir Google</a><a href="https://www.google.com/ai" target="_blank">Entrée IA</a><button id="close">Fermer</button><button id="copyQuestion">Copier question</button><button id="copyLink">Copier lien</button><input id="googleLink"><p id="feedback"></p></dialog>

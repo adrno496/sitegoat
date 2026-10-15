@@ -7,8 +7,8 @@ import {
 } from "../data/model";
 import { LocalRepository } from "../data/db";
 import {
-  GOOGLE_AI_LINK_BRIDGE,
-  validateGoogleAiUrl,
+  googleAiLinkBridge,
+  validateGoogleDestination,
   GOOGLE_AI_ENTRY,
   rememberReadingQuestions,
 } from "./googleAi";
@@ -329,8 +329,8 @@ export function isolatedHTML(bytes: Uint8Array, interactive: boolean) {
     .forEach((e) => e.remove());
   doc.querySelectorAll("*").forEach((e) => {
     const googleAi =
-      interactive && e.matches('a[data-ai-link="google-ai-mode"]')
-        ? validateGoogleAiUrl(e.getAttribute("href")) ||
+      interactive && e.matches("a[href]")
+        ? validateGoogleDestination(e.getAttribute("href")) ||
           (e.getAttribute("href") === GOOGLE_AI_ENTRY
             ? { url: GOOGLE_AI_ENTRY, query: "" }
             : null)
@@ -358,6 +358,7 @@ export function isolatedHTML(bytes: Uint8Array, interactive: boolean) {
         e.removeAttribute(attr.name);
     }
     if (googleAi) {
+      e.setAttribute("data-ai-link", "google-ai-mode");
       e.setAttribute("data-journal360-google-ai-url", googleAi.url);
       e.setAttribute("href", "#");
     }
@@ -377,7 +378,7 @@ export function isolatedHTML(bytes: Uint8Array, interactive: boolean) {
   doc.head.prepend(csp);
   if (interactive) {
     const googleAi = doc.createElement("script");
-    googleAi.textContent = GOOGLE_AI_LINK_BRIDGE;
+    googleAi.textContent = googleAiLinkBridge(location.origin);
     csp.after(googleAi);
     const routing = doc.createElement("script");
     // about:srcdoc à origine opaque refuse pushState ; les fragments restent locaux au cadre.

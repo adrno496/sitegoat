@@ -1,0 +1,30 @@
+{
+  "userContentRecorded": false,
+  "originalChanged": false,
+  "googleSimulated": true,
+  "physicalDevices": "NON TESTÉS",
+  "results": [
+    {
+      "engine": "chromium",
+      "status": "PASS",
+      "standardOpens": true,
+      "questionExact": true,
+      "noopenerNoreferrer": true,
+      "aiEntryWithoutQuestion": true,
+      "simulatedGoogleNavigations": 2,
+      "otherExternalBlocked": 0,
+      "externalRequestsSent": 0
+    },
+    {
+      "engine": "webkit",
+      "status": "PASS",
+      "standardOpens": true,
+      "questionExact": true,
+      "noopenerNoreferrer": true,
+      "aiEntryWithoutQuestion": true,
+      "simulatedGoogleNavigations": 2,
+      "otherExternalBlocked": 0,
+      "externalRequestsSent": 0
+    }
+  ]
+}

@@ -44,7 +44,7 @@ it("adapte seulement les questions explicites des 9 articles et 2 thèmes, même
       d
         .querySelector('[data-topic="sentinel"]')
         ?.getAttribute("data-ai-question"),
-    ).toBe("Question publique synthétique sentinel");
+    ).toBe("Question publique synthétique sur la sécurité logicielle");
     expect(
       JSON.parse(d.getElementById("editionData")?.textContent || "{}")
         .schemaVersion,

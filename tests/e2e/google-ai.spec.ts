@@ -7,6 +7,9 @@ const question = "Comprendre les aurores boréales";
 const validUrl =
   "https://www.google.com/search?hl=fr&udm=50&q=" +
   encodeURIComponent(question);
+const standardUrl =
+  "https://www.google.com/search?" +
+  new URLSearchParams({ hl: "fr", q: question }).toString();
 const request = (url: unknown = validUrl) => ({
   type: "journal360:google-ai:open-request",
   version: 1,
@@ -18,7 +21,7 @@ const capability = {
 };
 const dialog = (page: Page) =>
   page.getByRole("dialog", {
-    name: "Ouvrir Google Mode IA dans votre navigateur ?",
+    name: "Ouvrir Google dans votre navigateur ?",
   });
 const policy = (interactive: boolean) =>
   `default-src 'none'; script-src ${interactive ? "'unsafe-inline'" : "'none'"}; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; media-src data: blob:; connect-src 'none'; object-src 'none'; frame-src 'none'; form-action 'none'; base-uri 'none'`;
@@ -124,6 +127,23 @@ async function currentFrame(page: Page): Promise<Frame> {
 async function send(page: Page, payloads: unknown[]) {
   const frame = await currentFrame(page);
   await frame.evaluate(async (payloads) => {
+    const session = await new Promise<{ nonce: string }>((resolve) => {
+      const receive = (event: MessageEvent) => {
+        if (
+          event.source === parent &&
+          event.data?.type === "journal360:google-ai:capability" &&
+          event.data.version === 3
+        ) {
+          removeEventListener("message", receive);
+          resolve(event.data);
+        }
+      };
+      addEventListener("message", receive);
+      parent.postMessage(
+        { type: "journal360:google-ai:capability-request", version: 3 },
+        "*",
+      );
+    });
     await new Promise<void>((resolve) => {
       const acknowledge = (event: MessageEvent) => {
         if (
@@ -135,7 +155,26 @@ async function send(page: Page, payloads: unknown[]) {
         }
       };
       addEventListener("message", acknowledge);
-      for (const payload of payloads) parent.postMessage(payload, "*");
+      for (const payload of payloads) {
+        const data = payload as Record<string, unknown> | null;
+        const compatible =
+          data &&
+          ((data.version === 1 &&
+            data.type === "journal360:google-ai:open-request") ||
+            (data.version === 2 &&
+              data.type === "journal360:google-ai:question-request"));
+        parent.postMessage(
+          compatible
+            ? {
+                ...data,
+                version: 3,
+                nonce: session.nonce,
+                requestId: crypto.randomUUID().replaceAll("-", ""),
+              }
+            : payload,
+          "*",
+        );
+      }
       parent.postMessage(
         { type: "journal360:google-ai:capability-request", version: 1 },
         "*",
@@ -177,12 +216,10 @@ test("Google IA : mode sûr inchangé, handshake exact, confirmation et annulati
     .click();
   await expect(dialog(page)).toBeVisible();
   await expect(dialog(page)).toContainText(
-    "Le texte de la question sera transmis à Google.",
+    "Le texte de la question sera transmis à Google si vous lancez la recherche classique.",
   );
-  await expect(dialog(page).locator(".google-ai-query")).toHaveText(question);
-  await expect(
-    dialog(page).getByRole("button", { name: "Annuler", exact: true }),
-  ).toBeFocused();
+  await expect(dialog(page).locator(".google-ai-query")).toHaveValue(question);
+  await expect(dialog(page).getByRole("textbox")).toBeFocused();
   await page.keyboard.press("Shift+Tab");
   await expect(
     dialog(page).getByRole("button", {
@@ -191,9 +228,7 @@ test("Google IA : mode sûr inchangé, handshake exact, confirmation et annulati
     }),
   ).toBeFocused();
   await page.keyboard.press("Tab");
-  await expect(
-    dialog(page).getByRole("button", { name: "Annuler", exact: true }),
-  ).toBeFocused();
+  await expect(dialog(page).getByRole("textbox")).toBeFocused();
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   expect(external).toEqual([]);
   expect(await page.evaluate(() => window.googleAiOpenCalls)).toEqual([]);
@@ -231,7 +266,7 @@ test("Google IA : mode sûr inchangé, handshake exact, confirmation et annulati
     .getByRole("link", { name: "Lien IA dynamique", exact: true })
     .click();
   await expect(dialog(page)).toBeVisible();
-  await expect(dialog(page).locator(".google-ai-query")).toHaveText(question);
+  await expect(dialog(page).locator(".google-ai-query")).toHaveValue(question);
   await dialog(page)
     .getByRole("button", { name: "Annuler", exact: true })
     .click();
@@ -318,7 +353,7 @@ test("Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles 
       type: "journal360:google-ai:question-request",
       version: 2,
       question: "Public",
-      url: validUrl,
+      url: standardUrl,
     },
     {
       type: "journal360:google-ai:question-request",
@@ -411,28 +446,28 @@ test("Google IA : seule la confirmation ouvre la question affichée, sans opener
   await send(page, [
     request("https://www.google.com/search?udm=50&q=Question-remplac%C3%A9e"),
   ]);
-  await expect(dialog(page).locator(".google-ai-query")).toHaveText(question);
+  await expect(dialog(page).locator(".google-ai-query")).toHaveValue(question);
   expect(requests).toEqual([]);
   expect(await page.evaluate(() => window.googleAiOpenCalls)).toEqual([]);
   const popupEvent = context.waitForEvent("page");
   await dialog(page)
-    .getByRole("button", { name: "Ouvrir", exact: true })
+    .getByRole("button", { name: "Rechercher sur Google", exact: true })
     .click();
   const popup = await popupEvent;
   await popup.waitForLoadState("domcontentloaded");
-  expect(popup.url()).toBe(validUrl);
+  expect(popup.url()).toBe(standardUrl);
   expect(await popup.evaluate(() => window.opener === null)).toBe(true);
   expect(await popup.evaluate(() => document.referrer)).toBe("");
   expect(await page.evaluate(() => window.googleAiOpenCalls)).toEqual([
     {
-      url: validUrl,
+      url: standardUrl,
       target: "_blank",
       features: "noopener,noreferrer",
       active: true,
     },
   ]);
-  expect(requests).toEqual([validUrl]);
-  await expect(dialog(page)).toHaveCount(0);
+  expect(requests).toEqual([standardUrl]);
+  await expect(dialog(page)).toBeVisible();
   await expect(page.locator(".edition-frame")).toHaveAttribute(
     "sandbox",
     "allow-scripts",
