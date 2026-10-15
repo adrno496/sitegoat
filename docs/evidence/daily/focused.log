@@ -1,0 +1,27 @@
+[WebServer] (node:67811) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:67815) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 12 tests using 1 worker
+
+(node:67818) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/v6-daily.spec.ts:64:1 › un HTML par jour : quatre imports successifs remplacent la carte, JS/offline et annotations restent disponibles (24.5s)
+  ✓   2 [chromium] › tests/e2e/v6-daily.spec.ts:121:1 › lot désordonné, doublon renommé et nouvelle journée : la dernière édition reste seule, recherche limitée au HTML courant (15.9s)
+  ✓   3 [chromium] › tests/e2e/v6-daily.spec.ts:150:1 › mise à jour des anciens imports indépendants : regroupement immédiat sans migration des UUID ni réimport (1.5s)
+  ✓   4 [chromium] › tests/e2e/v6-daily.spec.ts:217:1 › archiver, corbeille et restaurer une journée ne font pas réapparaître une ancienne carte (1.5s)
+(node:68275) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   5 [webkit] › tests/e2e/v6-daily.spec.ts:64:1 › un HTML par jour : quatre imports successifs remplacent la carte, JS/offline et annotations restent disponibles (26.9s)
+  ✓   6 [webkit] › tests/e2e/v6-daily.spec.ts:121:1 › lot désordonné, doublon renommé et nouvelle journée : la dernière édition reste seule, recherche limitée au HTML courant (15.7s)
+  ✓   7 [webkit] › tests/e2e/v6-daily.spec.ts:150:1 › mise à jour des anciens imports indépendants : regroupement immédiat sans migration des UUID ni réimport (2.3s)
+  ✓   8 [webkit] › tests/e2e/v6-daily.spec.ts:217:1 › archiver, corbeille et restaurer une journée ne font pas réapparaître une ancienne carte (2.5s)
+(node:68801) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 [chromium-mobile] › tests/e2e/v6-daily.spec.ts:64:1 › un HTML par jour : quatre imports successifs remplacent la carte, JS/offline et annotations restent disponibles (3.4s)
+  ✓  10 [chromium-mobile] › tests/e2e/v6-daily.spec.ts:121:1 › lot désordonné, doublon renommé et nouvelle journée : la dernière édition reste seule, recherche limitée au HTML courant (1.4s)
+  ✓  11 [chromium-mobile] › tests/e2e/v6-daily.spec.ts:150:1 › mise à jour des anciens imports indépendants : regroupement immédiat sans migration des UUID ni réimport (1.7s)
+  ✓  12 [chromium-mobile] › tests/e2e/v6-daily.spec.ts:217:1 › archiver, corbeille et restaurer une journée ne font pas réapparaître une ancienne carte (1.6s)
+
+  12 passed (1.8m)

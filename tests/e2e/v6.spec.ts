@@ -145,19 +145,19 @@ test("V6 : 08→16→21, une carte journée, historique, recherche, original, no
   await fresh.close();
 });
 
-test("V6 : partiel, révision conflictuelle et nouvelle journée ne détrônent pas la version fiable", async ({
+test("V6 : dernière édition affichée malgré les avertissements, historique fiable et nouvelle journée conservés", async ({
   page,
 }) => {
   await page.goto("/");
   await importRevision(page, 1);
   await importRevision(page, 2);
   await importRevision(page, 3, { ids: ["c"] });
-  await expect(page.locator(".day-card")).toContainText("révision externe 2");
+  await expect(page.locator(".day-card")).toContainText("révision externe 3");
   await expect(page.locator(".day-card")).toContainText(
     "Conflit ou version partielle",
   );
   await importRevision(page, 2, { ids: ["a", "branch"] });
-  await expect(page.locator(".day-card")).toContainText("révision externe 1");
+  await expect(page.locator(".day-card")).toContainText("révision externe 3");
   await importRevision(page, 1, { date: "2026-10-15", ids: [] });
   await expect(page.locator(".day-card")).toHaveCount(2);
   await expect(

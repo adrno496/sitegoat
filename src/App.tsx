@@ -1,6 +1,6 @@
 import { APP_VERSION } from "./config";
 import { Diagnostics, recordDiagnostic } from "./features/diagnostics";
-import { currentEditions, isDayVersion } from "./data/day";
+import { currentEditions, dayKeyOf } from "./data/day";
 import { DayCard, DayView } from "./features/DayView";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { liveQuery } from "dexie";
@@ -112,6 +112,14 @@ function Orbital() {
 }
 export default function App() {
   const data = useLibrary();
+  const allEditions = useMemo(
+    () =>
+      data.editions.map((edition) => {
+        const key = dayKeyOf(edition);
+        return key ? { ...edition, date: key.slice(15), dayKey: key } : edition;
+      }),
+    [data.editions],
+  );
   const [tab, setTab] = useState<Tab>("today");
   const [selected, setSelected] = useState<string | null>(null);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
@@ -168,15 +176,16 @@ export default function App() {
       ),
   });
   const editions = useMemo(
-    () => sortEditions(data.editions.filter((e) => !e.deleted)),
-    [data.editions],
+    () => sortEditions(allEditions.filter((e) => !e.deleted)),
+    [allEditions],
   );
   const displayedEditions = useMemo(
-    () => sortEditions(currentEditions(editions)),
+    () => sortEditions(currentEditions(editions.filter((e) => !e.archived))),
     [editions],
   );
   const latest = displayedEditions[0];
-  const current = data.editions.find((e) => e.id === selected);
+  const searchableEditions = currentEditions(editions);
+  const current = allEditions.find((e) => e.id === selected);
   const categories = [...new Set(editions.flatMap((e) => e.categories))].sort();
   const months = [
     ...new Set(editions.flatMap((e) => (e.date ? [e.date.slice(0, 7)] : []))),
@@ -470,29 +479,29 @@ export default function App() {
   }
   const filtered = useMemo(() => {
     const q = normalize(query);
-    let list = data.editions
-      .filter((e) =>
+    let list = currentEditions(
+      allEditions.filter((e) =>
         libraryMode === "trash"
           ? e.deleted
           : !e.deleted &&
             (libraryMode === "archived" ? e.archived : !e.archived),
-      )
-      .filter(
-        (e) =>
-          (category === "all" || e.categories.includes(category)) &&
-          (month === "all" || e.date?.startsWith(month)) &&
-          (!q ||
-            normalize(
-              e.title + " " + e.text + " " + e.categories.join(" "),
-            ).includes(q)),
-      );
+      ),
+    ).filter(
+      (e) =>
+        (category === "all" || e.categories.includes(category)) &&
+        (month === "all" || e.date?.startsWith(month)) &&
+        (!q ||
+          normalize(
+            e.title + " " + e.text + " " + e.categories.join(" "),
+          ).includes(q)),
+    );
     if (sort === "title")
       list = [...list].sort((a, b) => a.title.localeCompare(b.title, "fr"));
     else if (sort === "import")
       list = [...list].sort((a, b) => b.importedAt.localeCompare(a.importedAt));
     else list = sortEditions(list);
     return list;
-  }, [data.editions, query, category, month, sort, libraryMode]);
+  }, [allEditions, query, category, month, sort, libraryMode]);
   const readCount = data.states.filter(
     (s) =>
       s.articleId === "edition" &&
@@ -515,6 +524,16 @@ export default function App() {
         editions.some((e) => e.id === s.editionId),
     )
     .sort((a, b) => (b.openedAt || "").localeCompare(a.openedAt || ""))[0];
+  const recentOriginal = editions.find((e) => e.id === recent?.editionId);
+  const resumeEdition = recentOriginal
+    ? currentEditions(
+        editions.filter((e) =>
+          dayKeyOf(recentOriginal)
+            ? dayKeyOf(e) === dayKeyOf(recentOriginal)
+            : e.id === recentOriginal.id,
+        ),
+      )[0]
+    : undefined;
   const eventGroups = useMemo(() => {
     const map = new Map<
       string,
@@ -546,18 +565,18 @@ export default function App() {
   const renderCards = (rows: Edition[]) => {
     const seen = new Set<string>();
     return rows.map((edition, index) => {
-      if (!isDayVersion(edition)) return renderCard(edition, index);
+      if (!edition.dayKey) return renderCard(edition, index);
       if (seen.has(edition.dayKey!)) return null;
       seen.add(edition.dayKey!);
       return (
         <DayCard
           key={edition.dayKey}
-          versions={data.editions.filter(
+          versions={allEditions.filter(
             (e) =>
-              isDayVersion(e) &&
+              e.dayKey &&
               e.dayKey === edition.dayKey &&
               (tab !== "library"
-                ? !e.deleted
+                ? !e.deleted && !e.archived
                 : libraryMode === "trash"
                   ? e.deleted
                   : !e.deleted &&
@@ -565,6 +584,37 @@ export default function App() {
           )}
           onOpen={openEdition}
           onHistory={openDay}
+          favoriteIds={data.states
+            .filter((s) => s.favorite && s.articleId === "edition")
+            .map((s) => s.editionId)}
+          onFavorite={(id) =>
+            run(() =>
+              db.reading(id, "edition", {
+                favorite: !data.states.some(
+                  (s) =>
+                    s.editionId === id &&
+                    s.articleId === "edition" &&
+                    s.favorite,
+                ),
+              }),
+            )
+          }
+          onMove={
+            tab === "library"
+              ? (ids, deleted) =>
+                  run(
+                    () =>
+                      db.transaction("rw", db.editions, async () => {
+                        const updatedAt = now();
+                        for (const id of ids)
+                          await db.editions.update(id, { deleted, updatedAt });
+                      }),
+                    deleted
+                      ? "Journée déplacée dans la corbeille."
+                      : "Journée restaurée.",
+                  )
+              : undefined
+          }
         />
       );
     });
@@ -861,9 +911,7 @@ export default function App() {
           ) : selectedDay ? (
             <DayView
               key={selectedDay}
-              versions={data.editions.filter(
-                (e) => e.dayKey === selectedDay && !e.independent,
-              )}
+              versions={allEditions.filter((e) => e.dayKey === selectedDay)}
               notes={data.notes}
               onBack={() => navigate("library")}
               onOpen={openEdition}
@@ -1005,16 +1053,18 @@ export default function App() {
                       <ArrowRight size={17} />
                     </button>
                   </div>
-                  {editions.length ? (
+                  {displayedEditions.length ? (
                     <div className="edition-grid">
                       {renderCards(
                         displayedEditions
                           .slice(0, 3)
                           .flatMap((e) =>
-                            isDayVersion(e)
+                            e.dayKey
                               ? editions.filter(
                                   (v) =>
-                                    isDayVersion(v) && v.dayKey === e.dayKey,
+                                    v.dayKey &&
+                                    v.dayKey === e.dayKey &&
+                                    !v.archived,
                                 )
                               : [e],
                           ),
@@ -1081,15 +1131,12 @@ export default function App() {
                             Dernière ouverture enregistrée, sans estimation
                             fictive de progression.
                           </p>
-                          <h3>
-                            {
-                              editions.find((e) => e.id === recent.editionId)
-                                ?.title
-                            }
-                          </h3>
+                          <h3>{resumeEdition?.title}</h3>
                           <button
                             className="secondary"
-                            onClick={() => openEdition(recent.editionId)}
+                            onClick={() =>
+                              resumeEdition && openEdition(resumeEdition.id)
+                            }
                           >
                             Reprendre
                             <ArrowRight size={16} />
@@ -1144,7 +1191,7 @@ export default function App() {
                   {libraryHeading(
                     "Votre bibliothèque",
                     "LES ÉDITIONS RESTENT",
-                    "Vos journaux, leurs versions et vos lectures.",
+                    "Une seule édition par jour : la dernière mise à jour remplace la précédente.",
                   )}
                   <div className="filters">
                     <label className="search-field">
@@ -1292,7 +1339,7 @@ export default function App() {
                     </div>
                   ) : (
                     <div className="search-results">
-                      {editions
+                      {searchableEditions
                         .filter((e) =>
                           normalize(
                             e.title +
@@ -1321,7 +1368,7 @@ export default function App() {
                             <ArrowUpRight size={19} />
                           </button>
                         ))}
-                      {editions.flatMap((e) =>
+                      {searchableEditions.flatMap((e) =>
                         e.articles
                           .filter((a) =>
                             normalize(
@@ -1368,7 +1415,7 @@ export default function App() {
                             <ArrowUpRight size={19} />
                           </button>
                         ))}
-                      {!editions.some((e) =>
+                      {!searchableEditions.some((e) =>
                         normalize(
                           e.title +
                             " " +
@@ -2113,6 +2160,8 @@ export default function App() {
           }}
           onDone={(message) => {
             setCandidates([]);
+            setSelected(null);
+            setSelectedDay(null);
             setToast(message);
             setTab("library");
           }}

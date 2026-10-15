@@ -45,7 +45,7 @@ export function editorialMetadata(
   const result = metadataSchema.safeParse(data);
   if (!result.success) {
     warnings.push(
-      "Métadonnées V6 invalides ou version inconnue : classement automatique désactivé, original conservé.",
+      "Métadonnées V6 invalides ou version inconnue : cumul non vérifiable, original conservé.",
     );
     return {};
   }
@@ -58,7 +58,7 @@ export function editorialMetadata(
       : undefined;
   if (!dayKey)
     warnings.push(
-      "Identifiant éditorial et date incohérents ou absents : rattachement manuel nécessaire.",
+      "Identifiant éditorial et date incohérents ou absents : cumul non vérifiable, classement par date uniquement.",
     );
   const slotsIncluded = [...(value.slotsIncluded || [])].sort() as Slot[];
   if (!value.revision || !slotsIncluded.length)

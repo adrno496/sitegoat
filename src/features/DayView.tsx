@@ -4,15 +4,22 @@ import { dateLabel, sizeLabel } from "../data/model";
 import { resolveDay } from "../data/day";
 import { SLOTS, verifiedLabel } from "../data/editorial";
 import { validateSourceUrl } from "./sourceUrl";
+import { Star } from "lucide-react";
 
 export function DayCard({
   versions,
   onOpen,
   onHistory,
+  favoriteIds = [],
+  onFavorite,
+  onMove,
 }: {
   versions: Edition[];
   onOpen: (id: string) => void;
   onHistory: (key: string) => void;
+  favoriteIds?: string[];
+  onFavorite?: (id: string) => void;
+  onMove?: (ids: string[], deleted: boolean) => void;
 }) {
   const day = resolveDay(versions);
   const current = day.current;
@@ -27,7 +34,8 @@ export function DayCard({
       <p>
         {current.articles.filter((a) => a.kind === "news").length} actualités
         explicitement typées · {current.articles.length} éléments indexés ·{" "}
-        {versions.length} version(s) conservée(s)
+        {versions.length} version(s) dans l’historique · une seule édition
+        affichée
       </p>
       <p className={`day-status ${day.status !== "COMPLETE" ? "warning" : ""}`}>
         CUMUL{" "}
@@ -37,24 +45,26 @@ export function DayCard({
             ? "PARTIAL"
             : "UNKNOWN"}
       </p>
-      <div className="day-slots">
-        {SLOTS.map((slot) => (
-          <span
-            key={slot}
-            className={current.slotsIncluded?.includes(slot) ? "included" : ""}
-          >
-            {slot}{" "}
-            {current.slotsIncluded?.includes(slot)
-              ? "inclus déclaré"
-              : "non inclus"}
-          </span>
-        ))}
-      </div>
+      {!!current.slotsIncluded?.length && (
+        <div className="day-slots">
+          {SLOTS.map((slot) => (
+            <span
+              key={slot}
+              className={
+                current.slotsIncluded?.includes(slot) ? "included" : ""
+              }
+            >
+              {slot}{" "}
+              {current.slotsIncluded?.includes(slot)
+                ? "inclus déclaré"
+                : "non inclus"}
+            </span>
+          ))}
+        </div>
+      )}
       <p className="small-note">
-        {day.reliable
-          ? "Dernière version fiable selon les contrôles disponibles"
-          : "Cumul non vérifié : consultez l’historique"}{" "}
-        · révision externe {current.externalRevision ?? "inconnue"}
+        Dernière édition du jour · révision externe{" "}
+        {current.externalRevision ?? "inconnue"}
       </p>
       {day.versions.some((v) => v.assessment.issues.length) && (
         <p className="warning">
@@ -72,7 +82,7 @@ export function DayCard({
           onClick={() => onOpen(current.id)}
           aria-label={`Lire ${current.title}`}
         >
-          Lire la version courante
+          Lire la dernière édition
         </button>
         <button
           className="secondary"
@@ -80,6 +90,31 @@ export function DayCard({
         >
           Historique des éditions
         </button>
+        {onFavorite && (
+          <button
+            className="icon-button"
+            aria-label={`${favoriteIds.includes(current.id) ? "Retirer des" : "Ajouter aux"} favoris ${current.title}`}
+            onClick={() => onFavorite(current.id)}
+          >
+            <Star
+              size={18}
+              fill={favoriteIds.includes(current.id) ? "currentColor" : "none"}
+            />
+          </button>
+        )}
+        {onMove && (
+          <button
+            className="text-button"
+            onClick={() =>
+              onMove(
+                versions.map((e) => e.id),
+                !current.deleted,
+              )
+            }
+          >
+            {current.deleted ? "Restaurer" : "Corbeille"}
+          </button>
+        )}
       </div>
     </article>
   );

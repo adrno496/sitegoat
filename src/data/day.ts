@@ -1,8 +1,37 @@
 import type { Edition } from "./model";
 import { hash } from "./model";
-import { SLOTS, type Slot } from "./editorial";
+import { SLOTS, validDate, type Slot } from "./editorial";
+export function journalFilenameDate(filename: string): string | undefined {
+  const date = filename.match(
+    /^(?:LE[_ -])?JOURNAL[_ -]?360[_ -](\d{4}-\d{2}-\d{2})(?:[_ .-]|$)/i,
+  )?.[1];
+  return date && validDate(date) ? date : undefined;
+}
+// Group existing records too, including older/quarantined/independent imports.
+// A missing date is never replaced with today's date or the import date.
+export function dayKeyOf(e: Edition): string | undefined {
+  const date =
+    e.date && validDate(e.date) ? e.date : journalFilenameDate(e.filename);
+  if (date) return `journal360-day-${date}`;
+  return e.dayKey &&
+    validDate(e.dayKey.slice(15)) &&
+    e.dayKey.startsWith("journal360-day-")
+    ? e.dayKey
+    : undefined;
+}
 export function isDayVersion(e: Edition) {
-  return !!e.dayKey && !e.independent;
+  return !!dayKeyOf(e);
+}
+function publicationMinute(e: Edition) {
+  const clock = e.filename.match(
+    /(?:^|[_ -])EDITION[_ -](\d{2})H(\d{2})?(?=[_ .-]|$)/i,
+  );
+  if (clock && +clock[1] < 24 && +(clock[2] || 0) < 60)
+    return +clock[1] * 60 + +(clock[2] || 0);
+  return Math.max(
+    -1,
+    ...(e.slotsIncluded || []).map((s) => +s.slice(0, 2) * 60 + +s.slice(3)),
+  );
 }
 export interface Assessment {
   status: "COMPLETE" | "PARTIAL" | "UNKNOWN";
@@ -46,7 +75,7 @@ export function assessVersion(e: Edition, versions: Edition[]): Assessment {
     issues.push("Révision ou créneaux manquants.");
   if (missingSlots.length)
     issues.push(`Créneaux manquants : ${missingSlots.join(", ")}.`);
-  if (peers.some((v) => revision(v) === revision(e)))
+  if (revision(e) && peers.some((v) => revision(v) === revision(e)))
     issues.push(
       "Même révision externe, contenus différents : branches à arbitrer.",
     );
@@ -89,10 +118,12 @@ export function assessVersion(e: Edition, versions: Edition[]): Assessment {
   };
 }
 export function resolveDay(input: Edition[]) {
+  const minutes = new Map(input.map((e) => [e, publicationMinute(e)]));
   const versions = [...input].sort(
     (a, b) =>
+      minutes.get(b)! - minutes.get(a)! ||
       revision(b) - revision(a) ||
-      b.revision - a.revision ||
+      b.importedAt.localeCompare(a.importedAt) ||
       a.sha256.localeCompare(b.sha256) ||
       a.id.localeCompare(b.id),
   );
@@ -104,28 +135,31 @@ export function resolveDay(input: Edition[]) {
     ? assessed.filter((v) => !v.edition.deleted)
     : assessed;
   const reliable = available.find((v) => v.assessment.status === "COMPLETE");
-  const fallback =
-    available.find((v) => !v.assessment.issues.length) || available[0];
+  // Completeness remains a warning, not a reason to keep opening an earlier
+  // intraday version. Originals/annotations stay in the explicit history.
+  const current = available[0];
   return {
     versions: assessed,
     reliable: reliable?.edition,
-    current: (reliable || fallback)?.edition,
-    status: (reliable || fallback)?.assessment.status || ("UNKNOWN" as const),
+    current: current?.edition,
+    status: current?.assessment.status || ("UNKNOWN" as const),
   };
 }
 export function currentEditions(editions: Edition[]) {
   const result: Edition[] = [];
-  const seen = new Set<string>();
+  const groups = new Map<string, Edition[]>();
   for (const edition of editions) {
-    if (!isDayVersion(edition)) {
+    const key = dayKeyOf(edition);
+    if (!key) {
       result.push(edition);
       continue;
     }
-    if (seen.has(edition.dayKey!)) continue;
-    seen.add(edition.dayKey!);
-    const current = resolveDay(
-      editions.filter((e) => isDayVersion(e) && e.dayKey === edition.dayKey),
-    ).current;
+    const group = groups.get(key) || [];
+    group.push(edition);
+    groups.set(key, group);
+  }
+  for (const group of groups.values()) {
+    const current = resolveDay(group).current;
     if (current) result.push(current);
   }
   return result;

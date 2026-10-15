@@ -18,7 +18,13 @@ import {
   verifiedInstant,
   validDate,
 } from "../data/editorial";
-import { editorialUUID, assessVersion, resolveDay } from "../data/day";
+import {
+  editorialUUID,
+  assessVersion,
+  resolveDay,
+  dayKeyOf,
+  journalFilenameDate,
+} from "../data/day";
 import { validateSourceUrl } from "./sourceUrl";
 import { LOCAL_FRAGMENT_LINK_BRIDGE } from "./frameNavigation";
 const cleanText = (s: string) => s.replace(/\s+/g, " ").trim();
@@ -178,13 +184,16 @@ export async function inspectHTML(
       document.title || document.querySelector("h1")?.textContent || "",
     ) ||
     filename.replace(/\.html?$/i, "");
-  const date = editorialDate(
-    data.editionDate ??
-      data.date ??
-      document
-        .querySelector('meta[name="edition-date"]')
-        ?.getAttribute("content"),
-  );
+  const date =
+    editorialDate(
+      data.editionDate ??
+        data.date ??
+        document
+          .querySelector('meta[name="edition-date"]')
+          ?.getAttribute("content"),
+    ) ||
+    journalFilenameDate(filename) ||
+    null;
   const metadata = editorialMetadata(data, date, warnings);
   const sourceVerifiedAt = verifiedInstant(data.sourceVerifiedAt, warnings);
   return editionSchema.parse({
@@ -217,6 +226,16 @@ export async function commitImport(
   choice: "ignore" | "keep" | "version" | "day",
   parentId?: string,
 ) {
+  const key = dayKeyOf(edition);
+  if (key && choice !== "ignore") {
+    edition = {
+      ...edition,
+      date: key.slice(15),
+      dayKey: key,
+      independent: false,
+    };
+    choice = "day";
+  }
   // Derive identities before opening the local transaction; waitFor also keeps
   // the caller's batch transaction alive without including any network request.
   if (choice === "day" && edition.dayKey) {
@@ -238,22 +257,18 @@ export async function commitImport(
         .toArray();
       const existing =
         choice === "day"
-          ? matching.find((e) => e.dayKey === edition.dayKey && !e.independent)
+          ? matching.find((e) => dayKeyOf(e) === edition.dayKey)
           : matching[0];
       if (
         existing &&
         (choice === "ignore" ||
-          (choice === "day" &&
-            existing.dayKey === edition.dayKey &&
-            !existing.independent))
+          (choice === "day" && dayKeyOf(existing) === edition.dayKey))
       )
         return { id: existing.id, duplicate: true };
       if (choice === "day" && edition.dayKey) {
-        const family = await repository.editions
-          .where("dayKey")
-          .equals(edition.dayKey)
-          .filter((e) => !e.independent)
-          .toArray();
+        const family = (await repository.editions.toArray()).filter(
+          (e) => dayKeyOf(e) === edition.dayKey,
+        );
         const current = resolveDay(family).current;
         const assessment = assessVersion(edition, family);
         edition = {
@@ -262,13 +277,11 @@ export async function commitImport(
           cumulativeStatus: assessment.status,
           supersedes:
             current &&
-            assessment.status === "COMPLETE" &&
-            (edition.externalRevision || 0) > (current.externalRevision || 0)
+            resolveDay([...family, edition]).current?.id === edition.id
               ? current.id
               : undefined,
         };
-      } else if (choice === "keep" && edition.dayKey)
-        edition = { ...edition, independent: true };
+      }
       if (choice === "version" && parentId) {
         const parent = await repository.editions.get(parentId);
         if (!parent) throw new Error("Édition précédente introuvable.");

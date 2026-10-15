@@ -1,0 +1,5 @@
+PASS chromium desktop
+PASS chromium mobile simulated
+PASS webkit desktop
+PASS webkit mobile simulated
+PASS release 2.0.3: one current HTML per day on four profiles, history/notes/offline intact.

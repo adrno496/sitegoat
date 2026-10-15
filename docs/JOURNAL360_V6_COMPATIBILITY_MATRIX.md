@@ -69,3 +69,7 @@ Insérer dans `<script id="editionData" type="application/json">`; le reste du d
 ## Complément du15 octobre2026 —2.0.1
 
 Un fichier producteur V6.1 a été fourni après la validation initiale ci-dessus. Sa valeur exacte schemaVersion="6.1" est désormais acceptée comme alias du schéma interne2. Ses contrôles réels ont été testés en Chromium/WebKit, bureau et viewport mobile, sans publication de l’original. [Résultats et périmètre précis](JOURNAL360_V61_COMPATIBILITY_FIX.md). Les statuts NON TESTÉ de ce document initial restent historiques pour les autres fichiers/producteurs et les appareils physiques.
+
+## Complément du 15 octobre 2026 — 2.0.3
+
+À la demande de l’utilisateur, une seule édition par date est maintenant affichée : les imports datés sans schéma V6 et les anciens records indépendants sont également regroupés. La dernière édition est courante même en présence d’un avertissement de cumul ; la version dite fiable reste un choix explicite dans l’historique. Ce changement remplace la politique de sélection automatique décrite pour 2.0.0. [Rapport et règles 2.0.3](JOURNAL360_ONE_HTML_PER_DAY.md).

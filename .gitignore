@@ -14,3 +14,5 @@ playwright-report/
 !docs/evidence/v6/*.log
 
 !docs/evidence/v61/*.log
+
+!docs/evidence/daily/*.log

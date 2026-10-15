@@ -5,7 +5,7 @@ import { db } from "../data/db";
 import { type Edition, dateLabel, sizeLabel } from "../data/model";
 import { commitImport } from "./import";
 import { recordDiagnostic } from "./diagnostics";
-import { assessVersion, resolveDay } from "../data/day";
+import { assessVersion, resolveDay, dayKeyOf } from "../data/day";
 export interface Candidate {
   edition: Edition;
   bytes: Uint8Array;
@@ -45,15 +45,18 @@ export function ImportDialog({
         [db.editions, db.originals, db.pending],
         async () => {
           for (const c of candidates) {
-            const choice =
-              choices[c.edition.id] ||
-              (c.edition.dayKey ? "day" : c.duplicate ? "ignore" : "keep");
             const edited = metadata[c.edition.id];
             const edition = {
               ...c.edition,
               title: edited?.title.trim() || c.edition.title,
               date: edited ? edited.date || null : c.edition.date,
             };
+            const choice =
+              choices[c.edition.id] === "ignore"
+                ? "ignore"
+                : dayKeyOf(edition)
+                  ? "day"
+                  : choices[c.edition.id] || (c.duplicate ? "ignore" : "keep");
             const result = await commitImport(
               db,
               edition,
@@ -109,23 +112,27 @@ export function ImportDialog({
         </p>
         <div className="import-list">
           {candidates.map((c, index) => {
-            const peers = [
-              ...editions,
-              ...candidates.slice(0, index).map((v) => v.edition),
-            ].filter(
-              (e) =>
-                c.edition.dayKey &&
-                e.dayKey === c.edition.dayKey &&
-                !e.independent,
-            );
-            const assessment = c.edition.dayKey
-              ? assessVersion(c.edition, peers)
-              : null;
-            const previous = resolveDay(peers).current;
             const edited = metadata[c.edition.id] || {
               title: c.edition.title,
               date: c.edition.date || "",
             };
+            const preview = { ...c.edition, date: edited.date || null };
+            const key = dayKeyOf(preview);
+            const peers = [
+              ...editions,
+              ...candidates.slice(0, index).map((v) => v.edition),
+            ].filter((e) => key && dayKeyOf(e) === key);
+            const assessment = key ? assessVersion(preview, peers) : null;
+            const previous = resolveDay(peers).current;
+            const choice =
+              choices[c.edition.id] === "ignore"
+                ? "ignore"
+                : key
+                  ? "day"
+                  : choices[c.edition.id] || (c.duplicate ? "ignore" : "keep");
+            const older =
+              previous &&
+              resolveDay([...peers, preview]).current?.id !== preview.id;
             return (
               <div className="import-item" key={c.edition.id}>
                 <div className="file-heading">
@@ -168,6 +175,11 @@ export function ImportDialog({
                 </p>
                 {assessment && (
                   <div className="day-import-preview">
+                    <p>
+                      Une seule édition par jour. La dernière remplace les
+                      anciennes dans la bibliothèque ; leurs originaux et
+                      annotations restent dans l’historique.
+                    </p>
                     <strong>
                       {previous
                         ? "Mettre à jour la journée"
@@ -185,14 +197,12 @@ export function ImportDialog({
                       {assessment.corrections} corrections textuelles ·{" "}
                       {assessment.removedEvents} absences
                     </p>
-                    {previous &&
-                      (c.edition.externalRevision || 0) <
-                        (previous.externalRevision || 0) && (
-                        <p className="warning">
-                          Révision antérieure : conservée dans l’historique ; la
-                          version courante ne sera pas rétrogradée.
-                        </p>
-                      )}
+                    {older && (
+                      <p className="warning">
+                        Édition antérieure : conservée dans l’historique ; la
+                        dernière édition restera affichée.
+                      </p>
+                    )}
                     {assessment.issues.map((issue) => (
                       <p className="warning" key={issue}>
                         {issue}
@@ -220,14 +230,7 @@ export function ImportDialog({
                 <label>
                   Conservation
                   <select
-                    value={
-                      choices[c.edition.id] ||
-                      (c.edition.dayKey
-                        ? "day"
-                        : c.duplicate
-                          ? "ignore"
-                          : "keep")
-                    }
+                    value={choice}
                     onChange={(e) =>
                       setChoices({
                         ...choices,
@@ -236,7 +239,7 @@ export function ImportDialog({
                       })
                     }
                   >
-                    {c.edition.dayKey && (
+                    {key && (
                       <option value="day">
                         {previous
                           ? "Mettre à jour la journée"
@@ -247,17 +250,19 @@ export function ImportDialog({
                     {c.duplicate && (
                       <option value="ignore">Ignorer le doublon</option>
                     )}
-                    <option value="keep">
-                      Conserver comme édition indépendante
-                    </option>
-                    {editions.length > 0 && (
+                    {!key && (
+                      <option value="keep">
+                        Conserver comme édition indépendante
+                      </option>
+                    )}
+                    {!key && editions.length > 0 && (
                       <option value="version">
                         Ajouter une version à une édition
                       </option>
                     )}
                   </select>
                 </label>
-                {choices[c.edition.id] === "version" && (
+                {choice === "version" && (
                   <label>
                     Édition précédente
                     <select
@@ -298,7 +303,14 @@ export function ImportDialog({
               busy ||
               candidates.some(
                 (c) =>
-                  choices[c.edition.id] === "version" && !parents[c.edition.id],
+                  !dayKeyOf({
+                    ...c.edition,
+                    date: metadata[c.edition.id]
+                      ? metadata[c.edition.id].date || null
+                      : c.edition.date,
+                  }) &&
+                  choices[c.edition.id] === "version" &&
+                  !parents[c.edition.id],
               )
             }
             onClick={() => void commit()}

@@ -87,3 +87,7 @@ Les liens de rubriques restent dans le journal au lieu de vider le cadre. Le for
 ### Correctif2.0.2 — lancer la question dans Google Mode IA
 
 Après prévisualisation/modification et confirmation, **Lancer la question** ouvre le lien Mode IA avec le texte exact dans `q` et `udm=50`, y compris pour les boutons V6.1 et les questions préparées en mode sûr. Copie et entrée sans texte restent disponibles en repli. Aucune ouverture automatique depuis un message, aucune permission supplémentaire dans le cadre. [Tests et limites Google](docs/JOURNAL360_GOOGLE_AI_PREFILL.md).
+
+### Version 2.0.3 — une seule édition par jour
+
+Chaque nouvel HTML daté met automatiquement à jour sa journée. La bibliothèque, l’accueil, la reprise et les résultats HTML de recherche utilisent la dernière édition du jour ; les anciennes quittent l’affichage courant et restent accessibles dans l’historique avec leurs notes et favoris. Quatre mises à jour quotidiennes ou davantage sont possibles, même sans métadonnées V6. Les imports déjà présents sont regroupés après mise à jour, sans réimport. Mettre à jour le PC et le smartphone. [Règles de classement, tests et retour arrière](docs/JOURNAL360_ONE_HTML_PER_DAY.md).

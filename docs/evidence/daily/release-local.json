@@ -1,0 +1,57 @@
+{
+  "testedAt": "2026-10-15T11:12:30.367Z",
+  "baseURL": "http://127.0.0.1:54984",
+  "version": "2.0.3",
+  "bundleSha256": "8f3efa01aae60d82a3861f371645e31f1c7434a7f475ce26abdd84eb0a91cde6",
+  "bundleMatchesLocal": true,
+  "parentCspUnchanged": true,
+  "privateHtmlUsed": false,
+  "supabaseWrites": 0,
+  "physicalDevices": "NON TESTÉS",
+  "results": [
+    {
+      "engine": "chromium",
+      "viewport": "desktop",
+      "status": "PASS",
+      "dailyImports": 4,
+      "visibleEditions": 1,
+      "currentRelease": "21h",
+      "historyVersions": 4,
+      "privateNotesPreserved": true,
+      "offline": true
+    },
+    {
+      "engine": "chromium",
+      "viewport": "mobile simulated",
+      "status": "PASS",
+      "dailyImports": 4,
+      "visibleEditions": 1,
+      "currentRelease": "21h",
+      "historyVersions": 4,
+      "privateNotesPreserved": true,
+      "offline": true
+    },
+    {
+      "engine": "webkit",
+      "viewport": "desktop",
+      "status": "PASS",
+      "dailyImports": 4,
+      "visibleEditions": 1,
+      "currentRelease": "21h",
+      "historyVersions": 4,
+      "privateNotesPreserved": true,
+      "offline": true
+    },
+    {
+      "engine": "webkit",
+      "viewport": "mobile simulated",
+      "status": "PASS",
+      "dailyImports": 4,
+      "visibleEditions": 1,
+      "currentRelease": "21h",
+      "historyVersions": 4,
+      "privateNotesPreserved": true,
+      "offline": true
+    }
+  ]
+}

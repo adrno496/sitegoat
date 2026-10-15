@@ -56,7 +56,7 @@ it("08→16→21 : une journée, trois octets originaux intacts, meilleure versi
       v6Bytes({ revision: e.externalRevision }),
     );
 });
-it("idempotence, notes et favoris conservés ; option indépendante reste possible", async () => {
+it("idempotence, notes et favoris conservés ; un doublon daté ne crée plus une carte indépendante", async () => {
   const e = await add(1);
   await db.reading(e.id, "edition", { favorite: true });
   await db.notes.add({
@@ -73,10 +73,10 @@ it("idempotence, notes et favoris conservés ; option indépendante reste possib
   expect((await db.states.toArray())[0].favorite).toBe(true);
   const bytes = v6Bytes();
   await commitImport(db, await inspectHTML("copie.html", bytes), bytes, "keep");
-  expect(await db.editions.count()).toBe(2);
-  expect(currentEditions(await db.editions.toArray())).toHaveLength(2);
+  expect(await db.editions.count()).toBe(1);
+  expect(currentEditions(await db.editions.toArray())).toHaveLength(1);
   await add(1);
-  expect(await db.editions.count()).toBe(2);
+  expect(await db.editions.count()).toBe(1);
 });
 it("imports concurrents de même hash ne créent pas deux versions", async () => {
   const bytes = v6Bytes();
@@ -87,12 +87,13 @@ it("imports concurrents de même hash ne créent pas deux versions", async () =>
   );
   expect(await db.editions.count()).toBe(1);
 });
-it("même révision / hash différent : garde les branches sans détrôner 08 fiable", async () => {
+it("même révision / hash différent : dernière édition courante, branche fiable conservée", async () => {
   const first = await add(1);
   await add(2);
-  await add(2, { ids: ["a", "different"] });
+  const branch = await add(2, { ids: ["a", "different"] });
   const day = resolveDay(await db.editions.toArray());
-  expect(day.current?.id).toBe(first.id);
+  expect(day.current?.id).toBe(branch.id);
+  expect(day.reliable?.id).toBe(first.id);
   expect(
     day.versions.filter((v) =>
       v.assessment.issues.some((s) => s.includes("branches")),
@@ -100,11 +101,12 @@ it("même révision / hash différent : garde les branches sans détrôner 08 fi
   ).toHaveLength(2);
   expect(await db.originals.count()).toBe(3);
 });
-it("08→21 avec saut : signalé et ne remplace pas la version fiable", async () => {
+it("08→21 avec saut : dernière édition affichée, avertissement et ancienne fiable conservés", async () => {
   const first = await add(1);
-  await add(3);
+  const last = await add(3);
   const day = resolveDay(await db.editions.toArray());
-  expect(day.current?.id).toBe(first.id);
+  expect(day.current?.id).toBe(last.id);
+  expect(day.reliable?.id).toBe(first.id);
   expect(day.versions[0].assessment.status).toBe("PARTIAL");
 });
 it("21→16→08 : le rang de téléchargement ne décide pas de la version courante", async () => {
@@ -132,7 +134,8 @@ it("correction du même event_id permise, disparition déclarée complète devie
   const status = assessVersion(bad, [first, second]);
   expect(status.status).toBe("PARTIAL");
   expect(status.removedEvents).toBe(2);
-  expect(resolveDay([first, second, bad]).current?.id).toBe(second.id);
+  expect(resolveDay([first, second, bad]).current?.id).toBe(bad.id);
+  expect(resolveDay([first, second, bad]).reliable?.id).toBe(second.id);
 });
 it("retrait déclaré et PARTIAL restent transparents, sans certification automatique", async () => {
   const first = await add(1);
@@ -144,7 +147,8 @@ it("retrait déclaré et PARTIAL restent transparents, sans certification automa
   expect(assessVersion(partial, [first]).issues.join(" ")).toContain(
     "retrait(s) déclaré(s)",
   );
-  expect(resolveDay([first, partial]).current?.id).toBe(first.id);
+  expect(resolveDay([first, partial]).current?.id).toBe(partial.id);
+  expect(resolveDay([first, partial]).reliable?.id).toBe(first.id);
 });
 it.each(["2026-02-30", "2026-13-01", "2026-00-00", "not-a-date"])(
   "date impossible %s : pas de regroupement aveugle",
@@ -341,7 +345,11 @@ it("identités identiques entre deux appareils ; branches distinctes conservées
     await a.sync(session);
     expect(await db.editions.count()).toBe(3);
     expect(await phone.editions.count()).toBe(3);
-    expect(resolveDay(await db.editions.toArray()).current?.id).toBe(first.id);
+    const pcDay = resolveDay(await db.editions.toArray());
+    const phoneDay = resolveDay(await phone.editions.toArray());
+    expect(pcDay.current?.externalRevision).toBe(2);
+    expect(pcDay.current?.id).toBe(phoneDay.current?.id);
+    expect(pcDay.reliable?.id).toBe(first.id);
   } finally {
     await phone.delete();
   }

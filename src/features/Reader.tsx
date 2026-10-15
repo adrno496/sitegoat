@@ -24,7 +24,7 @@ import { download } from "./backup";
 import { GoogleAiDialog } from "./GoogleAiDialog";
 import { GOOGLE_AI_ENTRY, readingQuestions } from "./googleAi";
 import { verifiedLabel } from "../data/editorial";
-import { resolveDay } from "../data/day";
+import { resolveDay, dayKeyOf } from "../data/day";
 import { validateSourceUrl } from "./sourceUrl";
 import {
   parseGoogleAiMessage,
@@ -157,14 +157,11 @@ export function Reader({
         request.destination.url === GOOGLE_AI_ENTRY)
     );
   }
-  const day =
-    edition.dayKey && !edition.independent
-      ? resolveDay(
-          editions.filter(
-            (e) => e.dayKey === edition.dayKey && !e.independent && !e.deleted,
-          ),
-        )
-      : null;
+  const day = dayKeyOf(edition)
+    ? resolveDay(
+        editions.filter((e) => dayKeyOf(e) === dayKeyOf(edition) && !e.deleted),
+      )
+    : null;
   const questions = useMemo(
     () => (bytes ? readingQuestions(bytes) : []),
     [bytes],
@@ -308,7 +305,7 @@ export function Reader({
           )}
           <button
             className="secondary"
-            onClick={() => onDay?.(edition.dayKey!)}
+            onClick={() => onDay?.(dayKeyOf(edition)!)}
           >
             Historique des éditions
           </button>
@@ -354,9 +351,16 @@ export function Reader({
           onClick={() =>
             run(
               () =>
-                db.editions.update(edition.id, {
-                  archived: !edition.archived,
-                  updatedAt: now(),
+                db.transaction("rw", db.editions, async () => {
+                  const ids = day
+                    ? day.versions.map((v) => v.edition.id)
+                    : [edition.id];
+                  const updatedAt = now();
+                  for (const id of ids)
+                    await db.editions.update(id, {
+                      archived: !edition.archived,
+                      updatedAt,
+                    });
                 }),
               edition.archived ? "Édition désarchivée." : "Édition archivée.",
             )
@@ -465,7 +469,7 @@ export function Reader({
           {expanded && day && (
             <button
               className="secondary"
-              onClick={() => onDay?.(edition.dayKey!)}
+              onClick={() => onDay?.(dayKeyOf(edition)!)}
             >
               Historique
             </button>
