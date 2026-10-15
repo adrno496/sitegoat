@@ -1,3 +1,4 @@
+import { readerControl, readerTools } from "../helpers/reader";
 import { test, expect, type Page, type Frame } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { readFileSync } from "node:fs";
@@ -88,13 +89,12 @@ async function setup(page: Page, interactive = true) {
       }),
     );
   } else {
-    await page
-      .getByRole("button", { name: "Désactiver JS", exact: true })
-      .click();
+    await readerControl(page, "Désactiver JS");
     await expect(page.locator(".edition-frame")).toHaveAttribute("sandbox", "");
   }
 }
 async function enable(page: Page) {
+  await readerTools(page);
   await page.getByRole("button", { name: "Interactif", exact: true }).click();
   await page
     .getByRole("button", {
@@ -111,6 +111,9 @@ async function enable(page: Page) {
       enabled: true,
     }),
   );
+  await page
+    .getByRole("button", { name: "Lecture pleine page", exact: true })
+    .click();
 }
 async function currentFrame(page: Page): Promise<Frame> {
   const handle = await page.locator(".edition-frame").elementHandle();
@@ -168,9 +171,7 @@ test("Google IA : mode sûr inchangé, handshake exact, confirmation et annulati
     policy(true),
   );
   await frame.getByRole("button", { name: "Tester l’interaction" }).click();
-  await page
-    .getByRole("button", { name: "Dézoomer le HTML", exact: true })
-    .click();
+  await readerControl(page, "Dézoomer le HTML");
   await frame
     .getByRole("link", { name: "En savoir plus", exact: true })
     .click();
@@ -338,7 +339,7 @@ test("Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles 
   });
   // Simulate a host-driven reload while its header is inert under the dialog.
   await page
-    .getByRole("button", { name: "Recharger le HTML", exact: true })
+    .locator('button[aria-label="Recharger le HTML"]')
     .evaluate((button: HTMLButtonElement) => button.click());
   await expect(dialog(page)).toHaveCount(0);
   await expect(
@@ -355,9 +356,7 @@ test("Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles 
   }, request());
   await send(page, []);
   await expect(dialog(page)).toHaveCount(0);
-  await page
-    .getByRole("button", { name: "Désactiver JS", exact: true })
-    .click();
+  await readerControl(page, "Désactiver JS");
   await expect(page.locator(".edition-frame")).toHaveAttribute("sandbox", "");
   await (
     await currentFrame(page)

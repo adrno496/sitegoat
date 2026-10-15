@@ -1,3 +1,4 @@
+import { readerControl, readerTools } from "../helpers/reader";
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { readFileSync } from "node:fs";
@@ -44,9 +45,7 @@ test("parcours complet : import, lecture, notes, favori, recherche, offline, exp
   await page
     .getByRole("button", { name: "Lire Journal générique", exact: true })
     .click();
-  await page
-    .getByRole("button", { name: "Désactiver JS", exact: true })
-    .click();
+  await readerControl(page, "Désactiver JS");
   await page
     .getByRole("button", { name: "Réduire la lecture", exact: true })
     .click();
@@ -146,15 +145,14 @@ test("démonstrations, interaction explicite et mémoire basée sur event_id", a
   const frame = page.frameLocator("iframe");
   await expect(
     page.getByRole("button", { name: "Désactiver JS", exact: true }),
-  ).toBeVisible();
+  ).toBeHidden();
   await expect(page.locator("#trust-title")).toHaveCount(0);
   await frame.getByRole("button", { name: "Tester l’interaction" }).click();
   await expect(frame.locator("#counter")).toHaveText("1");
-  await page
-    .getByRole("button", { name: "Désactiver JS", exact: true })
-    .click();
+  await readerControl(page, "Désactiver JS");
   await frame.getByRole("button", { name: "Tester l’interaction" }).click();
   await expect(frame.locator("#counter")).toHaveText("0");
+  await readerTools(page);
   await page.getByRole("button", { name: "Interactif", exact: true }).click();
   await page
     .getByRole("button", { name: "Je fais confiance à ce fichier" })
@@ -224,14 +222,13 @@ test("sécurité : parent, stockage, fetch, ressources, top et popups bloqués",
   await expect(
     page.frameLocator("iframe").getByRole("heading", { name: "Test hostile" }),
   ).toBeVisible();
-  await page
-    .getByRole("button", { name: "Désactiver JS", exact: true })
-    .click();
+  await readerControl(page, "Désactiver JS");
   await page
     .frameLocator("iframe")
     .getByText("Lien externe", { exact: true })
     .click();
   expect(network).toEqual([]);
+  await readerTools(page);
   await page.getByRole("button", { name: "Interactif", exact: true }).click();
   await page
     .getByRole("button", { name: "Je fais confiance à ce fichier" })
@@ -386,7 +383,7 @@ test("lecture pleine page : tout le viewport, interactions conservées et retour
     .click();
   await expect(
     page.getByRole("button", { name: "Désactiver JS", exact: true }),
-  ).toBeVisible();
+  ).toBeHidden();
   await expect(page.locator("#trust-title")).toHaveCount(0);
   const frame = page.frameLocator("iframe");
   await frame.getByRole("button", { name: "Tester l’interaction" }).click();
@@ -408,16 +405,12 @@ test("lecture pleine page : tout le viewport, interactions conservées et retour
     await expect(
       page.getByLabel("Échelle du HTML", { exact: true }),
     ).toHaveText("70 %");
-    await page
-      .getByRole("button", { name: "Dézoomer le HTML", exact: true })
-      .click();
+    await readerControl(page, "Dézoomer le HTML");
     await expect(
       page.getByLabel("Échelle du HTML", { exact: true }),
     ).toHaveText("60 %");
     await expect(frame.locator("#counter")).toHaveText("1");
-    await page
-      .getByRole("button", { name: "Zoomer le HTML", exact: true })
-      .click();
+    await readerControl(page, "Zoomer le HTML");
     await expect(page.locator("iframe")).toHaveAttribute(
       "sandbox",
       "allow-scripts",
@@ -452,22 +445,20 @@ test("lecture pleine page : tout le viewport, interactions conservées et retour
     .click();
   await expect(
     page.getByRole("button", { name: "Désactiver JS", exact: true }),
-  ).toBeVisible();
+  ).toBeHidden();
   await frame.getByRole("button", { name: "Tester l’interaction" }).click();
   await expect(frame.locator("#counter")).toHaveText("1");
   expect(
     await page.locator("html").getAttribute("data-empty-reader-frame"),
   ).toBeNull();
-  await page
-    .getByRole("button", { name: "Recharger le HTML", exact: true })
-    .click();
+  await readerControl(page, "Recharger le HTML");
   await expect(frame.locator("#counter")).toHaveText("0");
   await expect(page.getByLabel("Échelle du HTML", { exact: true })).toHaveText(
     "70 %",
   );
   await expect(
     page.getByRole("button", { name: "Désactiver JS", exact: true }),
-  ).toBeVisible();
+  ).toBeHidden();
 });
 
 test("mode interactif automatique, choix sécurisé conservé après rechargement et nouvelle édition interactive", async ({
@@ -491,9 +482,7 @@ test("mode interactif automatique, choix sécurisé conservé après rechargemen
     .getByRole("button", { name: "Tester l’interaction" })
     .click();
   await expect(page.frameLocator("iframe").locator("#counter")).toHaveText("1");
-  await page
-    .getByRole("button", { name: "Désactiver JS", exact: true })
-    .click();
+  await readerControl(page, "Désactiver JS");
   await expect(page.locator("iframe")).toHaveAttribute("sandbox", "");
   await page.reload();
   await page

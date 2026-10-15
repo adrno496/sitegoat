@@ -34,16 +34,23 @@ async function back(page: Page) {
     .getByRole("button", { name: "Retour à la bibliothèque", exact: true })
     .click();
 }
-test("nouveautés visibles en carte et en lecture pleine page, repère conservé au rechargement et hors ligne", async ({
+test("nouveautés en carte et dans les options, HTML épuré, repère conservé au rechargement et hors ligne", async ({
   page,
   context,
 }) => {
   await page.goto("/");
   await upload(page, "08");
   await open(page, "08");
+  await expect(page.locator(".reading-context")).toBeHidden();
+  await page
+    .getByRole("button", { name: "Réduire la lecture", exact: true })
+    .click();
   await expect(page.locator(".reading-updates summary")).toHaveText(
     "Première lecture de cette journée",
   );
+  await page
+    .getByRole("button", { name: "Lecture pleine page", exact: true })
+    .click();
   await back(page);
   await upload(page, "12");
   await upload(page, "21");
@@ -59,30 +66,36 @@ test("nouveautés visibles en carte et en lecture pleine page, repère conservé
     .getByRole("button", { name: "Bibliothèque", exact: true })
     .click();
   await open(page, "21");
+  await expect(page.locator(".reading-context")).toBeHidden();
+  await page
+    .getByRole("button", { name: "Réduire la lecture", exact: true })
+    .click();
   await expect(page.locator(".reading-updates summary")).toHaveText(
     "3 nouveautés · 0 mise à jour",
   );
   await page.locator(".reading-updates summary").click();
   await expect(page.locator(".reading-updates article")).toHaveCount(3);
-  await page.screenshot({ path: test.info().outputPath("reader-updates.png") });
-  // State updates from recording the open must not erase the frozen comparison.
-  await expect(
-    page.frameLocator(".edition-frame").locator("#release"),
-  ).toContainText("21h");
-  await page.locator(".reading-updates summary").click();
+  await page
+    .getByRole("button", { name: "Lecture pleine page", exact: true })
+    .click();
   await page.frameLocator(".edition-frame").locator("#counter").click();
-  await page.locator(".reading-updates summary").click();
+  await expect(
+    page.frameLocator(".edition-frame").locator("#counter"),
+  ).toHaveText("1");
+  await page
+    .getByRole("button", { name: "Réduire la lecture", exact: true })
+    .click();
   await expect(page.locator(".reading-updates article")).toHaveCount(3);
-  await expect(page.locator(".reading-sync .sync-indicator")).toContainText(
-    "Mode local",
-  );
   await expect
     .poll(() => page.evaluate(() => !!navigator.serviceWorker.controller))
     .toBe(true);
   await context.setOffline(true);
-  await expect(page.locator(".reading-sync .sync-indicator")).toContainText(
+  await expect(page.locator(".topbar .sync-indicator")).toContainText(
     "Hors ligne",
   );
+  await page
+    .getByRole("button", { name: "Lecture pleine page", exact: true })
+    .click();
   await back(page);
   await open(page, "21");
   await expect(page.locator(".reading-updates")).toHaveCount(0);

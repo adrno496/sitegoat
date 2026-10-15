@@ -1,0 +1,110 @@
+{
+  "version": "2.0.5",
+  "status": "PASS",
+  "lint": "PASS",
+  "build": "PASS",
+  "unit": {
+    "command": "npm test -- --maxWorkers=1 --testTimeout=60000",
+    "passed": 168,
+    "failed": 0
+  },
+  "e2e": {
+    "command": "npm run test:e2e",
+    "stats": {
+      "startTime": "2026-10-15T16:11:31.254Z",
+      "duration": 464795.27,
+      "expected": 85,
+      "skipped": 1,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "profiles": [
+      "Chromium desktop",
+      "WebKit desktop",
+      "Chromium Pixel 7 simulated"
+    ],
+    "intentionalSkip": "WebKit has no Chromium CDP touch injection; pointer and browser navigation tests passed."
+  },
+  "releaseProbe": {
+    "testedAt": "2026-10-15T16:17:56.139Z",
+    "baseURL": "http://127.0.0.1:4181",
+    "version": "2.0.5",
+    "bundleSha256": "2b82f5ead16884982bf806cf39966b131d0fbdc80453b1d131e6d173764df3bf",
+    "bundleMatchesLocal": true,
+    "parentCspUnchanged": true,
+    "privateHtmlUsed": false,
+    "supabaseWrites": 0,
+    "physicalDevices": "NON TESTÉS",
+    "results": [
+      {
+        "engine": "chromium",
+        "viewport": "desktop",
+        "status": "PASS",
+        "dailyImports": 4,
+        "visibleEditions": 1,
+        "currentRelease": "21h",
+        "historyVersions": 4,
+        "privateNotesPreserved": true,
+        "readingUpdates": true,
+        "cleanReaderControls": true,
+        "cleanReaderBackGesture": true,
+        "nativeBackForward": true,
+        "visibleSyncStatus": true,
+        "offline": true
+      },
+      {
+        "engine": "chromium",
+        "viewport": "mobile simulated",
+        "status": "PASS",
+        "dailyImports": 4,
+        "visibleEditions": 1,
+        "currentRelease": "21h",
+        "historyVersions": 4,
+        "privateNotesPreserved": true,
+        "readingUpdates": true,
+        "cleanReaderControls": true,
+        "cleanReaderBackGesture": true,
+        "nativeBackForward": true,
+        "visibleSyncStatus": true,
+        "offline": true
+      },
+      {
+        "engine": "webkit",
+        "viewport": "desktop",
+        "status": "PASS",
+        "dailyImports": 4,
+        "visibleEditions": 1,
+        "currentRelease": "21h",
+        "historyVersions": 4,
+        "privateNotesPreserved": true,
+        "readingUpdates": true,
+        "cleanReaderControls": true,
+        "cleanReaderBackGesture": true,
+        "nativeBackForward": true,
+        "visibleSyncStatus": true,
+        "offline": true
+      },
+      {
+        "engine": "webkit",
+        "viewport": "mobile simulated",
+        "status": "PASS",
+        "dailyImports": 4,
+        "visibleEditions": 1,
+        "currentRelease": "21h",
+        "historyVersions": 4,
+        "privateNotesPreserved": true,
+        "readingUpdates": true,
+        "cleanReaderControls": true,
+        "cleanReaderBackGesture": true,
+        "nativeBackForward": true,
+        "visibleSyncStatus": true,
+        "offline": true
+      }
+    ]
+  },
+  "sandboxUnchanged": true,
+  "cspUnchanged": true,
+  "supabaseChanges": false,
+  "physicalIosAndroid": "NON TESTÉS",
+  "privateHtmlIncluded": false
+}

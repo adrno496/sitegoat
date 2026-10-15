@@ -1,3 +1,4 @@
+import { readerControl, readerTools } from "../helpers/reader";
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { readFileSync } from "node:fs";
@@ -196,16 +197,12 @@ test("V6 : onglets, huit thèmes, image embarquée, zoom jusqu’à 200 %, offli
       ),
   ).toBe(true);
   for (let zoom = 70; zoom < 200; zoom += 10)
-    await page
-      .getByRole("button", { name: "Zoomer le HTML", exact: true })
-      .click();
+    await readerControl(page, "Zoomer le HTML");
   await expect(page.getByLabel("Échelle du HTML", { exact: true })).toHaveText(
     "200 %",
   );
   for (let zoom = 200; zoom > 70; zoom -= 10)
-    await page
-      .getByRole("button", { name: "Dézoomer le HTML", exact: true })
-      .click();
+    await readerControl(page, "Dézoomer le HTML");
   for (const width of [320, 360, 390, 430, 768, 1024, 1440, 1920]) {
     await page.setViewportSize({ width, height: 900 });
     expect(
@@ -388,10 +385,9 @@ test("V6 : mode sécurisé, presse-papier refusé, popup bloquée et offline ont
   await page.goto("/");
   await importRevision(page, 1);
   await openCurrent(page);
-  await page
-    .getByRole("button", { name: "Désactiver JS", exact: true })
-    .click();
+  await readerControl(page, "Désactiver JS");
   await expect(page.locator("iframe")).toHaveAttribute("sandbox", "");
+  await readerTools(page);
   await page
     .getByText("Questions Google disponibles (7)", { exact: true })
     .click();

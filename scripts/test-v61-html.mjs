@@ -1,3 +1,4 @@
+import { readerControl, readerTools } from "./reader-controls.mjs";
 // Local-only compatibility checks. User HTML is never copied into the repo,
 // screenshots, logs, cloud or prompts. Only counts/check results are recorded.
 import fs from "node:fs";
@@ -266,9 +267,7 @@ for (const [engine, type] of [
           await expect(modal).toHaveCount(0);
         }
         step = "safe-mode-and-return";
-        await page
-          .getByRole("button", { name: "Désactiver JS", exact: true })
-          .click();
+        await readerControl(page, "Désactiver JS");
         await expect(page.locator(".edition-frame")).toHaveAttribute(
           "sandbox",
           "",
@@ -285,6 +284,7 @@ for (const [engine, type] of [
             `about:srcdoc${fragment}`,
           );
         }
+        await readerTools(page);
         await page
           .getByText(
             `Questions Google disponibles (${expectedQuestions.length})`,
@@ -298,6 +298,7 @@ for (const [engine, type] of [
           .getByRole("dialog")
           .getByRole("button", { name: "Annuler", exact: true })
           .click();
+        await readerTools(page);
         await page
           .getByRole("button", { name: "Interactif", exact: true })
           .click();
@@ -319,10 +320,7 @@ for (const [engine, type] of [
             .getByRole("dialog")
             .getByRole("button", { name: "Annuler", exact: true })
             .click();
-          if (i === 0)
-            await page
-              .getByRole("button", { name: "Recharger le HTML", exact: true })
-              .click();
+          if (i === 0) await readerControl(page, "Recharger le HTML");
         }
         step = "offline-reader";
         await expect

@@ -15,7 +15,6 @@ import {
   Minimize,
   RefreshCw,
 } from "lucide-react";
-import type { ReactNode } from "react";
 import type { ReadingChanges } from "../data/readingChanges";
 import { ReadingUpdates } from "./ReadingUpdates";
 import type { Edition, ReadingState, Note } from "../data/model";
@@ -45,7 +44,6 @@ interface GoogleAiRequest {
 export function Reader({
   edition,
   changes,
-  syncIndicator,
   editions,
   states,
   notes,
@@ -56,7 +54,6 @@ export function Reader({
 }: {
   edition: Edition;
   changes?: ReadingChanges;
-  syncIndicator?: ReactNode;
   editions: Edition[];
   states: ReadingState[];
   notes: Note[];
@@ -67,6 +64,12 @@ export function Reader({
 }) {
   const surfaceRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const swipe = useRef<{
+    id: number;
+    x: number;
+    y: number;
+    time: number;
+  } | null>(null);
   const pendingAiRef = useRef<GoogleAiRequest | null>(null);
   const [googleAiRequest, setGoogleAiRequest] =
     useState<GoogleAiRequest | null>(null);
@@ -444,15 +447,16 @@ export function Reader({
       >
         <div className="reading-surface-header" inert={!!googleAiRequest}>
           {expanded && (
-            <>
-              <button
-                className="icon-button"
-                aria-label="Retour à la bibliothèque"
-                onClick={onBack}
-              >
-                <ArrowLeft size={18} />
-              </button>
-              <span>{edition.title}</span>
+            <button
+              className="icon-button reader-back"
+              aria-label="Retour à la bibliothèque"
+              onClick={onBack}
+            >
+              <ArrowLeft size={18} />
+            </button>
+          )}
+          <div className="reading-options" hidden={expanded}>
+            {mode === "interactive" && (
               <button
                 className="secondary"
                 aria-pressed={mode === "interactive"}
@@ -471,52 +475,44 @@ export function Reader({
                 <Code size={16} />
                 {mode === "interactive" ? "Désactiver JS" : "Interactif"}
               </button>
-            </>
-          )}
-          {expanded && day && (
-            <button
-              className="secondary"
-              onClick={() => onDay?.(dayKeyOf(edition)!)}
-            >
-              Historique
-            </button>
-          )}
-          {mode !== "text" && (
-            <div
-              className="reading-zoom"
-              role="group"
-              aria-label="Zoom du HTML"
-            >
-              <button
-                className="icon-button"
-                aria-label="Dézoomer le HTML"
-                disabled={htmlZoom <= 40}
-                onClick={() => setHtmlZoom(Math.max(40, htmlZoom - 10))}
+            )}
+            {mode !== "text" && (
+              <div
+                className="reading-zoom"
+                role="group"
+                aria-label="Zoom du HTML"
               >
-                <Minus size={16} />
-              </button>
-              <output aria-live="polite" aria-label="Échelle du HTML">
-                {htmlZoom} %
-              </output>
-              <button
-                className="icon-button"
-                aria-label="Zoomer le HTML"
-                disabled={htmlZoom >= 200}
-                onClick={() => setHtmlZoom(Math.min(200, htmlZoom + 10))}
-              >
-                <Plus size={16} />
-              </button>
-              <button
-                className="icon-button"
-                aria-label="Recharger le HTML"
-                onClick={() => setFrameRevision((revision) => revision + 1)}
-              >
-                <RefreshCw size={16} />
-              </button>
-            </div>
-          )}
+                <button
+                  className="icon-button"
+                  aria-label="Dézoomer le HTML"
+                  disabled={htmlZoom <= 40}
+                  onClick={() => setHtmlZoom(Math.max(40, htmlZoom - 10))}
+                >
+                  <Minus size={16} />
+                </button>
+                <output aria-live="polite" aria-label="Échelle du HTML">
+                  {htmlZoom} %
+                </output>
+                <button
+                  className="icon-button"
+                  aria-label="Zoomer le HTML"
+                  disabled={htmlZoom >= 200}
+                  onClick={() => setHtmlZoom(Math.min(200, htmlZoom + 10))}
+                >
+                  <Plus size={16} />
+                </button>
+                <button
+                  className="icon-button"
+                  aria-label="Recharger le HTML"
+                  onClick={() => setFrameRevision((revision) => revision + 1)}
+                >
+                  <RefreshCw size={16} />
+                </button>
+              </div>
+            )}
+          </div>
           <button
-            className="secondary"
+            className="secondary reader-reduce"
             aria-expanded={expanded}
             onClick={() => setExpanded(!expanded)}
           >
@@ -524,13 +520,17 @@ export function Reader({
             {expanded ? "Réduire la lecture" : "Lecture pleine page"}
           </button>
         </div>
-        <div className="reading-context" inert={!!googleAiRequest}>
-          {expanded && <div className="reading-sync">{syncIndicator}</div>}
+        <div
+          className="reading-context"
+          hidden={expanded}
+          inert={!!googleAiRequest}
+        >
           {changes && <ReadingUpdates changes={changes} />}
         </div>
         {mode !== "interactive" && questions.length > 0 && (
           <details
             className="parent-google-questions"
+            hidden={expanded}
             inert={!!googleAiRequest}
           >
             <summary>Questions Google disponibles ({questions.length})</summary>
@@ -688,6 +688,69 @@ export function Reader({
               </button>
             )}
           </div>
+        )}
+        {expanded && (
+          <div
+            className="reader-back-gesture"
+            aria-hidden="true"
+            inert={!!googleAiRequest || confirm}
+            onPointerDown={(event) => {
+              swipe.current = null;
+              if (
+                !event.isPrimary ||
+                event.button !== 0 ||
+                googleAiRequest ||
+                confirm
+              )
+                return;
+              try {
+                event.currentTarget.setPointerCapture(event.pointerId);
+              } catch {
+                return;
+              }
+              swipe.current = {
+                id: event.pointerId,
+                x: event.clientX,
+                y: event.clientY,
+                time: performance.now(),
+              };
+            }}
+            onPointerMove={(event) => {
+              const start = swipe.current;
+              if (
+                start &&
+                (event.clientX < start.x - 12 ||
+                  Math.abs(event.clientY - start.y) > 60)
+              )
+                swipe.current = null;
+            }}
+            onPointerCancel={() => {
+              swipe.current = null;
+            }}
+            onLostPointerCapture={() => {
+              swipe.current = null;
+            }}
+            onPointerUp={(event) => {
+              const start = swipe.current;
+              swipe.current = null;
+              if (
+                !start ||
+                start.id !== event.pointerId ||
+                googleAiRequest ||
+                confirm
+              )
+                return;
+              const dx = event.clientX - start.x,
+                dy = Math.abs(event.clientY - start.y);
+              if (
+                dx >= 85 &&
+                dy <= 45 &&
+                dx >= dy * 2 &&
+                performance.now() - start.time <= 1200
+              )
+                onBack();
+            }}
+          />
         )}
         {googleAiRequest && (
           <GoogleAiDialog

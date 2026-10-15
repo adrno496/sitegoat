@@ -102,14 +102,24 @@ for (const [engine, type] of [
             "sandbox",
             "allow-scripts",
           );
+          await expect(
+            page.locator(".reading-surface-expanded button:visible"),
+          ).toHaveCount(2);
+          await expect(page.locator(".reading-context")).toBeHidden();
+          await page
+            .getByRole("button", { name: "Réduire la lecture", exact: true })
+            .click();
           await expect(page.locator(".reading-updates summary")).toHaveText(
             hour === "08"
               ? "Première lecture de cette journée"
               : "1 nouveauté · 0 mise à jour",
           );
-          await expect(
-            page.locator(".reading-sync .sync-indicator"),
-          ).toContainText("Mode local");
+          await expect(page.locator(".topbar .sync-indicator")).toContainText(
+            "Mode local",
+          );
+          await page
+            .getByRole("button", { name: "Lecture pleine page", exact: true })
+            .click();
           const frame = page.frameLocator(".edition-frame");
           await expect(frame.locator("#release")).toContainText(
             `Édition ${hour}h`,
@@ -130,6 +140,20 @@ for (const [engine, type] of [
               .getByRole("button", { name: "Enregistrer la note", exact: true })
               .click();
             await expect(page.locator(".note")).toHaveCount(1);
+          }
+          if (hour === "21") {
+            await page.evaluate(() => history.back());
+            await expect(page.locator(".reader")).toHaveCount(0);
+            await page.evaluate(() => history.forward());
+            await expect(
+              page.locator(".reading-surface-expanded"),
+            ).toBeVisible();
+            const y = await page.evaluate(() => innerHeight / 2);
+            await page.mouse.move(5, y);
+            await page.mouse.down();
+            await page.mouse.move(140, y + 4, { steps: 8 });
+            await page.mouse.up();
+            await expect(page.locator(".reader")).toHaveCount(0);
           }
           await library(page);
         }
@@ -167,6 +191,9 @@ for (const [engine, type] of [
           historyVersions: 4,
           privateNotesPreserved: true,
           readingUpdates: true,
+          cleanReaderControls: true,
+          cleanReaderBackGesture: true,
+          nativeBackForward: true,
           visibleSyncStatus: true,
           offline: true,
         });

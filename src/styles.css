@@ -2520,55 +2520,51 @@ textarea {
     max-width: 100%;
   }
 }
-/* Keep the journal viewport tall; update details open over the document. */
-.reading-surface-expanded .reading-context {
-  display: flex;
-  position: relative;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 8px;
-  border-bottom: 1px solid var(--line);
-}
-.reading-surface-expanded .reading-sync {
-  padding: 0;
-  border: 0;
-  min-width: 0;
-  flex: 0 1 170px;
-}
-.reading-surface-expanded .sync-indicator {
-  padding: 4px 6px;
-  font-size: 10px;
-}
-.reading-surface-expanded .sync-indicator small {
-  font-size: 9px;
-}
-.reading-surface-expanded .reading-updates {
-  flex: 1;
-  min-width: 0;
-  min-height: 44px;
-  align-content: center;
-  padding: 0 6px;
-  max-height: none;
-  overflow: visible;
-  border: 0;
-}
-.reading-surface-expanded .reading-updates summary {
-  font-size: 11px;
-  line-height: 1.2;
-  min-height: 44px;
-  align-content: center;
-}
-.reading-surface-expanded .reading-updates-content {
+/* Two floating controls; the imported document uses the whole viewport. */
+.reading-surface-expanded .reading-surface-header {
   position: absolute;
-  top: 100%;
+  top: max(8px, env(safe-area-inset-top));
+  left: max(8px, env(safe-area-inset-left));
+  right: max(8px, env(safe-area-inset-right));
+  z-index: 4;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  pointer-events: none;
+}
+.reading-surface-expanded .reading-surface-header button {
+  pointer-events: auto;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: 0 2px 8px #0001;
+}
+.reading-surface-expanded .reader-back {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+}
+.reading-surface-expanded .reader-reduce {
+  font-size: 11px;
+  min-height: 44px;
+  padding: 8px 10px;
+}
+.reader-back-gesture {
+  position: absolute;
+  top: 0;
+  bottom: 0;
   left: 0;
-  right: 0;
+  width: 8px;
   z-index: 3;
-  padding: 12px 16px;
-  max-height: 45vh;
-  overflow: auto;
-  overscroll-behavior: contain;
-  background: var(--soft);
-  border-bottom: 1px solid var(--line);
-  box-shadow: 0 8px 16px #0002;
+  touch-action: pan-y pinch-zoom;
+}
+
+.reading-options {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
 }

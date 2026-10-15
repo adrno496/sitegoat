@@ -53,6 +53,7 @@ import { useLibrary } from "./hooks";
 import { inspectHTML } from "./features/import";
 import { ImportDialog, type Candidate } from "./features/ImportDialog";
 import { Reader } from "./features/Reader";
+import { useReaderHistory } from "./features/readerHistory";
 import {
   exportBackup,
   inspectBackup,
@@ -420,19 +421,40 @@ export default function App() {
         .then(([estimate, persisted]) => setStorage({ ...estimate, persisted }))
         .catch(() => {});
   }, [tab]);
+  const readerHistory = useReaderHistory((id) => {
+    const edition = allEditions.find((e) => e.id === id);
+    setSelectedDay(null);
+    setSelected(edition?.id || null);
+    if (edition) {
+      setReadingUpdates(readingChanges(edition, allEditions, data.states));
+      run(() => db.reading(edition.id, "edition", { openedAt: now() }));
+    } else setTab("library");
+    window.scrollTo({ top: 0, behavior: "instant" });
+  });
+  function backFromReader() {
+    readerHistory.back();
+    setSelected(null);
+    setSelectedDay(null);
+    setTab("library");
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }
   function navigate(next: Tab) {
+    readerHistory.reset();
     setSelected(null);
     setSelectedDay(null);
     setTab(next);
     window.scrollTo({ top: 0, behavior: "instant" });
   }
   function openDay(dayKey: string) {
+    readerHistory.reset();
     setSelected(null);
     setSelectedDay(dayKey);
     window.scrollTo({ top: 0, behavior: "instant" });
   }
   function openEdition(id: string) {
     const edition = allEditions.find((e) => e.id === id);
+    if (!edition) return;
+    readerHistory.open(id);
     setReadingUpdates(
       edition ? readingChanges(edition, allEditions, data.states) : undefined,
     );
@@ -922,12 +944,11 @@ export default function App() {
             <Reader
               key={current.id}
               changes={readingUpdates}
-              syncIndicator={syncIndicator}
               edition={current}
               editions={editions}
               states={data.states}
               notes={data.notes}
-              onBack={() => navigate("library")}
+              onBack={backFromReader}
               onOpen={openEdition}
               onDay={openDay}
               run={run}

@@ -1,3 +1,4 @@
+import { readerControl, readerTools } from "../helpers/reader";
 import { test, expect, type Page } from "@playwright/test";
 import { v61HTML, v61Sections } from "../helpers/v61";
 async function setup(page: Page) {
@@ -194,9 +195,7 @@ test("V6.1 : ancres sans JS, questions parent puis retour interactif et recharge
   page,
 }) => {
   let frame = await setup(page);
-  await page
-    .getByRole("button", { name: "Désactiver JS", exact: true })
-    .click();
+  await readerControl(page, "Désactiver JS");
   await expect(page.locator(".edition-frame")).toHaveAttribute("sandbox", "");
   await expect(frame.locator("script")).toHaveCount(0);
   for (const id of ["articles", "sentinel", "method"]) {
@@ -206,6 +205,7 @@ test("V6.1 : ancres sans JS, questions parent puis retour interactif et recharge
       `about:srcdoc#${id}`,
     );
   }
+  await readerTools(page);
   await page
     .getByText("Questions Google disponibles (11)", { exact: true })
     .click();
@@ -216,6 +216,7 @@ test("V6.1 : ancres sans JS, questions parent puis retour interactif et recharge
   await dialog(page)
     .getByRole("button", { name: "Annuler", exact: true })
     .click();
+  await readerTools(page);
   await page.getByRole("button", { name: "Interactif", exact: true }).click();
   await page
     .getByRole("button", {
@@ -227,6 +228,9 @@ test("V6.1 : ancres sans JS, questions parent puis retour interactif et recharge
     "sandbox",
     "allow-scripts",
   );
+  await page
+    .getByRole("button", { name: "Lecture pleine page", exact: true })
+    .click();
   for (let i = 0; i < 2; i++) {
     frame = page.frameLocator(".edition-frame");
     await frame.locator("[data-article]").first().click();
@@ -234,10 +238,7 @@ test("V6.1 : ancres sans JS, questions parent puis retour interactif et recharge
     await dialog(page)
       .getByRole("button", { name: "Annuler", exact: true })
       .click();
-    if (i === 0)
-      await page
-        .getByRole("button", { name: "Recharger le HTML", exact: true })
-        .click();
+    if (i === 0) await readerControl(page, "Recharger le HTML");
   }
 });
 

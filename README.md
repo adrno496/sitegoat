@@ -28,8 +28,8 @@ Ouvrir `http://127.0.0.1:4173`. `npm run dev` sert l’interface ; il ne lance p
 
 1. **Importer** un ou plusieurs `.html` / `.htm` UTF-8 (10 Mo par fichier, 20 fichiers et 100 Mo par sélection).
 2. Vérifier titre, date, avertissements et conservation des doublons. Enregistrer. Un même hash peut être ignoré, conservé séparément ou ajouté comme version.
-3. Ouvrir l’édition : elle occupe directement toute la page. Le HTML est affiché à 70 % ; les boutons −/+ ajustent ce zoom sans perdre la navigation. Les onglets et simulateurs fonctionnent automatiquement : le lecteur démarre en **mode interactif**, dans son cadre isolé. **Désactiver JS** passe au mode sécurisé ; ce choix explicite reste mémorisé pour cette édition sur cet appareil. Google Mode IA demande toujours une confirmation avant toute ouverture externe.
-4. Toucher **Réduire la lecture** pour accéder au mode texte et aux annotations. Garder un favori, marquer une lecture, enregistrer notes et décisions. Tous ces états sont dans IndexedDB, séparément du HTML original.
+3. Ouvrir l’édition : elle occupe directement toute la page. Le HTML est affiché à 70 % ; après réduction, les boutons −/+ ajustent ce zoom sans perdre la navigation. Les onglets et simulateurs fonctionnent automatiquement : le lecteur démarre en **mode interactif**, dans son cadre isolé. **Désactiver JS** passe au mode sécurisé ; ce choix explicite reste mémorisé pour cette édition sur cet appareil. Google Mode IA demande toujours une confirmation avant toute ouverture externe.
+4. Deux contrôles restent visibles sur le HTML : une petite flèche de retour et **Réduire la lecture**. Glisser vers la droite depuis le bord gauche revient à la bibliothèque. Toucher **Réduire la lecture** pour accéder au zoom, au réglage JS, à l’historique, au mode texte et aux annotations. Garder un favori, marquer une lecture, enregistrer notes et décisions. Tous ces états sont dans IndexedDB, séparément du HTML original.
 5. Dans **Réglages**, exporter un ZIP et le conserver hors du navigateur. Restaurer un ZIP vérifie les fichiers SHA-256 avant toute écriture et fusionne sans effacement.
 6. Pour retrouver la même bibliothèque sur PC et smartphone, ouvrir [sitegoat.vercel.app](https://sitegoat.vercel.app) et saisir le même code d’accès privé dans **Réglages** sur chaque appareil. La synchronisation Supabase est activée par défaut : les éditions, notes, favoris, lectures, archives et corbeille sont récupérés automatiquement. Les modifications partent après deux secondes de repos ; les nouveautés sont vérifiées toutes les 30 secondes, au retour du réseau et au retour dans l’application. **Synchroniser maintenant** permet de forcer une vérification. Une case permet de suspendre la synchronisation de cet appareil.
 
@@ -97,3 +97,7 @@ Chaque nouvel HTML daté met automatiquement à jour sa journée. La bibliothèq
 La carte du jour affiche les ajouts et mises à jour par rapport à l’édition la plus récente déjà ouverte. Le détail reste consultable dans le lecteur pleine page, sans modifier le HTML original. Les fichiers sans identifiants d’événements fiables affichent une nouvelle édition sans inventer de comparaison. Ouvrir une édition ne la marque pas comme lue.
 
 Le bandeau affiche le mode local, le hors-ligne, les transferts, les erreurs avec reprise et les modifications en attente, ainsi que la date du dernier succès. Il reste accessible en lecture pleine page. [Fonctionnement, tests et limites](docs/JOURNAL360_READING_SYNC_STATUS.md).
+
+### Version 2.0.5 — lecture épurée
+
+Le HTML occupe tout le viewport, avec seulement Retour et **Réduire la lecture**. Glissement depuis le bord gauche, historique navigateur et outils après réduction. [Vérifications et limites](docs/JOURNAL360_CLEAN_READER.md).

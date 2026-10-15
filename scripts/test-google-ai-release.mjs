@@ -67,13 +67,11 @@ for (const [engine, type] of [
         await expect(
           page.getByText(`JOURNAL 360 MOBILE · v${version}`, { exact: true }),
         ).toHaveCount(1);
-        await page
-          .getByLabel("Fichiers HTML à importer")
-          .setInputFiles({
-            name: "synthetic-release.html",
-            mimeType: "text/html",
-            buffer: Buffer.from(v61HTML()),
-          });
+        await page.getByLabel("Fichiers HTML à importer").setInputFiles({
+          name: "synthetic-release.html",
+          mimeType: "text/html",
+          buffer: Buffer.from(v61HTML()),
+        });
         await page
           .getByRole("button", {
             name: "Enregistrer dans ma bibliothèque",
