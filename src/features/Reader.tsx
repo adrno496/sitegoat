@@ -15,6 +15,9 @@ import {
   Minimize,
   RefreshCw,
 } from "lucide-react";
+import type { ReactNode } from "react";
+import type { ReadingChanges } from "../data/readingChanges";
+import { ReadingUpdates } from "./ReadingUpdates";
 import type { Edition, ReadingState, Note } from "../data/model";
 import { blobOf, dateLabel, now } from "../data/model";
 import { db } from "../data/db";
@@ -41,6 +44,8 @@ interface GoogleAiRequest {
 }
 export function Reader({
   edition,
+  changes,
+  syncIndicator,
   editions,
   states,
   notes,
@@ -50,6 +55,8 @@ export function Reader({
   run,
 }: {
   edition: Edition;
+  changes?: ReadingChanges;
+  syncIndicator?: ReactNode;
   editions: Edition[];
   states: ReadingState[];
   notes: Note[];
@@ -516,6 +523,10 @@ export function Reader({
             {expanded ? <Minimize size={18} /> : <Maximize size={18} />}
             {expanded ? "Réduire la lecture" : "Lecture pleine page"}
           </button>
+        </div>
+        <div className="reading-context" inert={!!googleAiRequest}>
+          {expanded && <div className="reading-sync">{syncIndicator}</div>}
+          {changes && <ReadingUpdates changes={changes} />}
         </div>
         {mode !== "interactive" && questions.length > 0 && (
           <details

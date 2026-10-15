@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import type { Edition, Note } from "../data/model";
+import { readingChanges, changesLabel } from "../data/readingChanges";
+import type { Edition, Note, ReadingState } from "../data/model";
 import { dateLabel, sizeLabel } from "../data/model";
 import { resolveDay } from "../data/day";
 import { SLOTS, verifiedLabel } from "../data/editorial";
@@ -8,6 +9,7 @@ import { Star } from "lucide-react";
 
 export function DayCard({
   versions,
+  states = [],
   onOpen,
   onHistory,
   favoriteIds = [],
@@ -15,6 +17,7 @@ export function DayCard({
   onMove,
 }: {
   versions: Edition[];
+  states?: ReadingState[];
   onOpen: (id: string) => void;
   onHistory: (key: string) => void;
   favoriteIds?: string[];
@@ -24,6 +27,7 @@ export function DayCard({
   const day = resolveDay(versions);
   const current = day.current;
   if (!current) return null;
+  const changes = readingChanges(current, versions, states);
   const currentAssessment = day.versions.find(
     (v) => v.edition.id === current.id,
   )!.assessment;
@@ -31,6 +35,14 @@ export function DayCard({
     <article className="edition-card day-card">
       <p className="eyebrow">JOURNÉE · {dateLabel(current.date)}</p>
       <h3>{current.title}</h3>
+      {changes.kind === "compared" && (
+        <p className="update-badge">{changesLabel(changes)}</p>
+      )}
+      {changes.kind === "unavailable" && (
+        <p className="update-badge">
+          Nouvelle édition depuis votre dernière ouverture
+        </p>
+      )}
       <p>
         {current.articles.filter((a) => a.kind === "news").length} actualités
         explicitement typées · {current.articles.length} éléments indexés ·{" "}

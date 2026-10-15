@@ -77,13 +77,11 @@ for (const [engine, type] of [
         ).toHaveCount(1);
         for (const hour of ["08", "12", "16", "21"]) {
           const file = dailyFile(hour);
-          await page
-            .getByLabel("Fichiers HTML à importer")
-            .setInputFiles({
-              name: file.name,
-              mimeType: "text/html",
-              buffer: Buffer.from(file.html),
-            });
+          await page.getByLabel("Fichiers HTML à importer").setInputFiles({
+            name: file.name,
+            mimeType: "text/html",
+            buffer: Buffer.from(file.html),
+          });
           await page
             .getByRole("button", {
               name: "Enregistrer dans ma bibliothèque",
@@ -104,6 +102,14 @@ for (const [engine, type] of [
             "sandbox",
             "allow-scripts",
           );
+          await expect(page.locator(".reading-updates summary")).toHaveText(
+            hour === "08"
+              ? "Première lecture de cette journée"
+              : "1 nouveauté · 0 mise à jour",
+          );
+          await expect(
+            page.locator(".reading-sync .sync-indicator"),
+          ).toContainText("Mode local");
           const frame = page.frameLocator(".edition-frame");
           await expect(frame.locator("#release")).toContainText(
             `Édition ${hour}h`,
@@ -147,6 +153,9 @@ for (const [engine, type] of [
         await expect(page.locator(".day-card h3")).toHaveText(
           "Journal synthétique 2026-10-15 21h",
         );
+        await expect(page.locator(".topbar .sync-indicator")).toContainText(
+          "Hors ligne",
+        );
         assert.deepEqual(blocked, []);
         results.push({
           engine,
@@ -157,6 +166,8 @@ for (const [engine, type] of [
           currentRelease: "21h",
           historyVersions: 4,
           privateNotesPreserved: true,
+          readingUpdates: true,
+          visibleSyncStatus: true,
           offline: true,
         });
         console.log("PASS", engine, mobile ? "mobile simulated" : "desktop");

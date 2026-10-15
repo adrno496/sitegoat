@@ -91,3 +91,9 @@ Après prévisualisation/modification et confirmation, **Lancer la question** ou
 ### Version 2.0.3 — une seule édition par jour
 
 Chaque nouvel HTML daté met automatiquement à jour sa journée. La bibliothèque, l’accueil, la reprise et les résultats HTML de recherche utilisent la dernière édition du jour ; les anciennes quittent l’affichage courant et restent accessibles dans l’historique avec leurs notes et favoris. Quatre mises à jour quotidiennes ou davantage sont possibles, même sans métadonnées V6. Les imports déjà présents sont regroupés après mise à jour, sans réimport. Mettre à jour le PC et le smartphone. [Règles de classement, tests et retour arrière](docs/JOURNAL360_ONE_HTML_PER_DAY.md).
+
+### Version 2.0.4 — nouveautés et synchronisation visible
+
+La carte du jour affiche les ajouts et mises à jour par rapport à l’édition la plus récente déjà ouverte. Le détail reste consultable dans le lecteur pleine page, sans modifier le HTML original. Les fichiers sans identifiants d’événements fiables affichent une nouvelle édition sans inventer de comparaison. Ouvrir une édition ne la marque pas comme lue.
+
+Le bandeau affiche le mode local, le hors-ligne, les transferts, les erreurs avec reprise et les modifications en attente, ainsi que la date du dernier succès. Il reste accessible en lecture pleine page. [Fonctionnement, tests et limites](docs/JOURNAL360_READING_SYNC_STATUS.md).

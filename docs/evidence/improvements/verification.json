@@ -1,0 +1,41 @@
+{
+  "version": "2.0.4",
+  "baseCommit": "d9e7e98fd484b62226afc201c09f3a428278882a",
+  "unit": {
+    "status": "PASS",
+    "command": "npm test -- --maxWorkers=1 --testTimeout=60000 --reporter=json --outputFile=/tmp/j360-improvements-unit.json",
+    "total": 168,
+    "passed": 168,
+    "failed": 0,
+    "note": "Le cas existant de 2000 articles dépasse les 15 s locales ; budget explicite de 60 s, assertions inchangées."
+  },
+  "e2e": {
+    "status": "PASS",
+    "command": "npm run test:e2e",
+    "stats": {
+      "startTime": "2026-10-15T14:24:54.400Z",
+      "duration": 809989.111,
+      "expected": 77,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "projects": [
+      "chromium",
+      "webkit",
+      "chromium-mobile"
+    ]
+  },
+  "lint": "PASS",
+  "build": "PASS",
+  "securityFilesUnchanged": true,
+  "bundle": {
+    "file": "index-Byg8uUA_.js",
+    "sha256": "12915173209d6c2f602b2807cb67c5af13b46add86d2d13a5664b4cd8661e4ce"
+  },
+  "physicalSafariIOS": "NON TESTÉ",
+  "physicalAndroid": "NON TESTÉ",
+  "liveGoogleAIAnswer": "PARTIAL — CAPTCHA constaté lors de la validation précédente",
+  "authenticatedProductionCloudThisStep": "NON TESTÉ — simulations de panne/reprise et dépôt de synchronisation en mémoire",
+  "privateHtmlInTests": false
+}

@@ -1,6 +1,12 @@
 import { APP_VERSION } from "./config";
 import { Diagnostics, recordDiagnostic } from "./features/diagnostics";
 import { currentEditions, dayKeyOf } from "./data/day";
+import { readingChanges, type ReadingChanges } from "./data/readingChanges";
+import {
+  SyncIndicator,
+  useSyncPending,
+  type SyncActivity,
+} from "./features/SyncIndicator";
 import { DayCard, DayView } from "./features/DayView";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { liveQuery } from "dexie";
@@ -122,6 +128,8 @@ export default function App() {
   );
   const [tab, setTab] = useState<Tab>("today");
   const [selected, setSelected] = useState<string | null>(null);
+  const [readingUpdates, setReadingUpdates] = useState<ReadingChanges>();
+  const [syncActivity, setSyncActivity] = useState<SyncActivity>();
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [restoration, setRestoration] = useState<BackupData | null>(null);
@@ -165,6 +173,7 @@ export default function App() {
   const lastSync = data.preferences.find(
     (p) => p.key === `last-sync-${session?.user.id}`,
   )?.value;
+  const syncPending = useSyncPending(session?.user.id);
   useDialogFocus(!!restoration, () => setRestoration(null));
   const {
     needRefresh: [needRefresh],
@@ -304,11 +313,21 @@ export default function App() {
     if (busyCloud.current) return;
     busyCloud.current = true;
     setCloudStatus("Synchronisation avec Supabase…");
+    setSyncActivity({ owner: session.user.id, phase: "syncing" });
     try {
       await coordinator.flush(session);
       setSnapshots(await synchronizer.sync(session));
       setCloudStatus("Bibliothèque synchronisée sur vos appareils");
+      setSyncActivity({ owner: session.user.id, phase: "idle" });
     } catch (error) {
+      setSyncActivity({
+        owner: session.user.id,
+        phase: "error",
+        error:
+          error instanceof Error
+            ? error.message
+            : "Synchronisation interrompue",
+      });
       setCloudStatus(
         error instanceof Error ? error.message : "Synchronisation interrompue.",
       );
@@ -413,6 +432,10 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: "instant" });
   }
   function openEdition(id: string) {
+    const edition = allEditions.find((e) => e.id === id);
+    setReadingUpdates(
+      edition ? readingChanges(edition, allEditions, data.states) : undefined,
+    );
     setSelectedDay(null);
     setSelected(id);
     window.scrollTo({ top: 0, behavior: "instant" });
@@ -562,6 +585,18 @@ export default function App() {
       </span>
     </div>
   );
+  const syncIndicator = (
+    <SyncIndicator
+      owner={session?.user.id}
+      online={online}
+      autoSync={autoSync}
+      pending={syncPending}
+      activity={syncActivity}
+      lastSync={lastSync}
+      onSync={() => run(syncDevices)}
+      onSettings={() => navigate("settings")}
+    />
+  );
   const renderCards = (rows: Edition[]) => {
     const seen = new Set<string>();
     return rows.map((edition, index) => {
@@ -582,6 +617,7 @@ export default function App() {
                   : !e.deleted &&
                     (libraryMode === "archived" ? e.archived : !e.archived)),
           )}
+          states={data.states}
           onOpen={openEdition}
           onHistory={openDay}
           favoriteIds={data.states
@@ -830,22 +866,7 @@ export default function App() {
             JOURNAL <b>360°</b>
           </button>
           <div className="topbar-actions">
-            <span className="status-chip">
-              {!online ? (
-                <WifiOff size={14} />
-              ) : session ? (
-                <Cloud size={14} />
-              ) : (
-                <HardDrive size={14} />
-              )}
-              <span>
-                {!online
-                  ? "Hors ligne"
-                  : session
-                    ? "Compte connecté"
-                    : "Mode local"}
-              </span>
-            </span>
+            {syncIndicator}
             <button
               className="icon-button"
               aria-label={
@@ -899,6 +920,9 @@ export default function App() {
             <p>Ouverture de votre bibliothèque…</p>
           ) : current ? (
             <Reader
+              key={current.id}
+              changes={readingUpdates}
+              syncIndicator={syncIndicator}
               edition={current}
               editions={editions}
               states={data.states}
