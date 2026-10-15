@@ -2,12 +2,39 @@ import { describe, expect, it } from "vitest";
 import {
   validateGoogleAiUrl,
   parseGoogleAiMessage,
+  googleAiQuestionDestination,
 } from "../src/features/googleAi";
 import { isolatedHTML, inspectHTML } from "../src/features/import";
 import { hash } from "../src/data/model";
 
 const base = "https://www.google.com/search?hl=fr&udm=50&q=";
 describe("Google Mode IA : validation fermée", () => {
+  it("construit le lien Mode IA depuis le seul texte et conserve accents, ponctuation et emoji", () => {
+    const query =
+      "Pourquoi le ciel est-il bleu ? + & % # @ 🙂 $(commande) https://example.com/?redirect=x";
+    const destination = googleAiQuestionDestination(query)!;
+    expect(destination.query).toBe(query);
+    const url = new URL(destination.url);
+    expect(url.origin + url.pathname).toBe("https://www.google.com/search");
+    expect([...url.searchParams]).toEqual([
+      ["hl", "fr"],
+      ["udm", "50"],
+      ["q", query],
+    ]);
+    expect(validateGoogleAiUrl(destination.url)).toEqual(destination);
+  });
+  it.each([
+    null,
+    "",
+    "x".repeat(2001),
+    "é".repeat(1000),
+    "a\nsecret",
+    "a\u202esecret",
+    "\ud800",
+  ])(
+    "ne tronque ni ne répare une question impropre au préremplissage : cas %#",
+    (question) => expect(googleAiQuestionDestination(question)).toBeNull(),
+  );
   it("accepte une question publique encodée sans l’exécuter ni la compléter", () => {
     const query = "Comprendre le climat & $(commande) <script> # @";
     const url = base + encodeURIComponent(query);

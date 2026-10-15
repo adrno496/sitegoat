@@ -1,0 +1,42 @@
+{
+  "testedAt": "2026-10-15T07:48:40.597Z",
+  "baseURL": "http://127.0.0.1:49169",
+  "version": "2.0.2",
+  "bundleSha256": "3eeb6e1c1fdfecfacb51c5bb5ac431078dc6415d296e1de3caee92add34e17b1",
+  "bundleMatchesLocal": true,
+  "parentCspUnchanged": true,
+  "privateHtmlUsed": false,
+  "googleSimulated": true,
+  "supabaseWrites": 0,
+  "physicalDevices": "NON TESTÉS",
+  "results": [
+    {
+      "engine": "chromium",
+      "viewport": "desktop",
+      "status": "PASS",
+      "confirmedPrefilledLaunches": 11,
+      "navigationAnchors": 13
+    },
+    {
+      "engine": "chromium",
+      "viewport": "mobile simulated",
+      "status": "PASS",
+      "confirmedPrefilledLaunches": 11,
+      "navigationAnchors": 13
+    },
+    {
+      "engine": "webkit",
+      "viewport": "desktop",
+      "status": "PASS",
+      "confirmedPrefilledLaunches": 11,
+      "navigationAnchors": 13
+    },
+    {
+      "engine": "webkit",
+      "viewport": "mobile simulated",
+      "status": "PASS",
+      "confirmedPrefilledLaunches": 11,
+      "navigationAnchors": 13
+    }
+  ]
+}

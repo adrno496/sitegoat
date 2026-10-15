@@ -116,7 +116,7 @@ export function Reader({
             enabled: true,
             ...(message.version === 2
               ? {
-                  actions: ["copy-question", "open-entry"],
+                  actions: ["copy-question", "open-entry", "open-question"],
                   entryUrl: GOOGLE_AI_ENTRY,
                   maxQuestionLength: 2000,
                 }

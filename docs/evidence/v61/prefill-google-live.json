@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-15",
+  "status": "PARTIAL",
+  "browser": "Chromium, contexte neuf fr-FR",
+  "questionKind": "publique fictive, sans contenu du journal",
+  "requested": "https://www.google.com/search?hl=fr&udm=50&q=Pourquoi+le+ciel+est-il+bleu+%3F",
+  "httpStatus": 200,
+  "finalOriginPath": "https://www.google.com/sorry/index",
+  "captchaObserved": true,
+  "questionPresentInContinueUrl": true,
+  "aiAnswerObserved": false,
+  "captchaBypassAttempted": false,
+  "privateJournalContentSent": false,
+  "limitation": "Le CAPTCHA Google empêche de vérifier une réponse IA effective depuis ce réseau."
+}

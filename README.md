@@ -83,3 +83,7 @@ Les sauvegardes V6 utilisent le format ZIP2 : **mettre à jour tous les appareil
 ### Correctif2.0.1 — HTML V6.1
 
 Les liens de rubriques restent dans le journal au lieu de vider le cadre. Le format producteur `schemaVersion:"6.1"` est reconnu pour les nouveaux imports ; ses boutons d’approfondissement utilisent le dialogue parent pour copier une question et ouvrir Google Mode IA. Le lecteur reste interactif par défaut et isolé. Après mise à jour de la PWA, rouvrir le journal existant suffit pour bénéficier du correctif des boutons. [Validation sur le fichier réel, sans publier son contenu](docs/JOURNAL360_V61_COMPATIBILITY_FIX.md).
+
+### Correctif2.0.2 — lancer la question dans Google Mode IA
+
+Après prévisualisation/modification et confirmation, **Lancer la question** ouvre le lien Mode IA avec le texte exact dans `q` et `udm=50`, y compris pour les boutons V6.1 et les questions préparées en mode sûr. Copie et entrée sans texte restent disponibles en repli. Aucune ouverture automatique depuis un message, aucune permission supplémentaire dans le cadre. [Tests et limites Google](docs/JOURNAL360_GOOGLE_AI_PREFILL.md).

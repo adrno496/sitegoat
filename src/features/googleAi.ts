@@ -151,6 +151,21 @@ export function validateGoogleAiUrl(
     return null;
   }
 }
+// The parent builds this URL from the confirmed question alone. It never
+// accepts a producer-supplied destination or silently truncates/repairs text.
+export function googleAiQuestionDestination(
+  question: unknown,
+): GoogleAiDestination | null {
+  if (!validPublicQuestion(question)) return null;
+  const url = new URL("https://www.google.com/search");
+  url.search = new URLSearchParams({
+    hl: "fr",
+    udm: "50",
+    q: question,
+  }).toString();
+  const checked = validateGoogleAiUrl(url.href);
+  return checked?.query === question ? checked : null;
+}
 function hasControl(value: string) {
   return [...value].some((character) => {
     const code = character.charCodeAt(0);

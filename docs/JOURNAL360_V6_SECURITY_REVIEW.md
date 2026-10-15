@@ -59,3 +59,7 @@ Les exports chiffrés sont reportés : concevoir ultérieurement enveloppe versi
 Proxy de tests bloque le réseau externe ; les faux Google sont interceptés localement ; API preview désactivée par défaut. Dépendances production : audit final0 vulnérabilité, sans équivaloir à une preuve d’absence de vulnérabilité. Voir rapport des tests pour les scénarios effectivement exécutés.
 
 Références consultées : [srcdoc](https://developer.mozilla.org/en-US/docs/Web/API/HTMLIFrameElement/srcdoc), [iframe](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe), [éviction du stockage](https://developer.mozilla.org/en-US/docs/Web/API/Storage_API/Storage_quotas_and_eviction_criteria), [Dexie upgrade](https://dexie.org/docs/Version/Version.upgrade/). Le stockage persistant demandé au navigateur n’empêche pas une suppression manuelle ; l’hébergement HTTPS ne sauvegarde pas IndexedDB.
+
+## Complément2.0.2 —15 octobre2026
+
+Le comportement v2 décrit ci-dessus pour2.0.0/2.0.1 est enrichi : l’action annoncée `open-question` construit un lien prérempli strict côté parent depuis la question confirmée. Les actions `copy-question` et `open-entry` restent inchangées. La validation v1, les limites URL/texte, le contrôle de la source et le geste humain restent obligatoires. Aucun paramètre de redirection ni nouvelle destination accepté. Voir [rapport2.0.2](JOURNAL360_GOOGLE_AI_PREFILL.md).

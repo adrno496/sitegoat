@@ -78,11 +78,24 @@ test("V6.1 : les treize ancres conservent le document, le JS, les thèmes et les
     "allow-scripts",
   );
 });
-test("V6.1 : onze boutons sans ancien marquage demandent confirmation, copie et entrée Google seule", async ({
+test("V6.1 : onze boutons sans ancien marquage demandent confirmation, copie et lancement des onze questions", async ({
   page,
   context,
 }) => {
   const outgoing: string[] = [];
+  await page.addInitScript(() => {
+    const calls: { url: string; active: boolean; features?: string }[] = [];
+    (window as unknown as { launchCalls: typeof calls }).launchCalls = calls;
+    const original = window.open.bind(window);
+    window.open = (url, target, features) => {
+      calls.push({
+        url: String(url),
+        active: navigator.userActivation.isActive,
+        features,
+      });
+      return original(url, target, features);
+    };
+  });
   await page.addInitScript(() =>
     Object.defineProperty(navigator, "clipboard", {
       configurable: true,
@@ -113,7 +126,7 @@ test("V6.1 : onze boutons sans ancien marquage demandent confirmation, copie et 
         .locator("#googleDialog")
         .evaluate((e: HTMLDialogElement) => e.open),
     ).toBe(false);
-    expect(outgoing).toEqual([]);
+    expect(outgoing).toHaveLength(i);
     await dialog(page)
       .getByRole("button", { name: "Copier la question", exact: true })
       .click();
@@ -123,10 +136,45 @@ test("V6.1 : onze boutons sans ancien marquage demandent confirmation, copie et 
         () => (window as unknown as { copied: string }).copied,
       ),
     ).toBe(question);
+    const query =
+      i === 0 ? "Pourquoi le ciel est-il bleu ? + & % # @ 🙂" : question!;
+    await dialog(page).getByRole("textbox").fill(query);
+    const next = context.waitForEvent("page");
     await dialog(page)
-      .getByRole("button", { name: "Annuler", exact: true })
+      .getByRole("button", { name: "Lancer la question", exact: true })
       .click();
+    const launched = await next;
+    await launched.waitForLoadState("domcontentloaded");
+    const url = new URL(launched.url());
+    expect(url.origin + url.pathname).toBe("https://www.google.com/search");
+    expect([...url.searchParams]).toEqual([
+      ["hl", "fr"],
+      ["udm", "50"],
+      ["q", query],
+    ]);
+    expect(outgoing).toHaveLength(i + 1);
+    expect(
+      await launched.evaluate(
+        () => opener === null && document.referrer === "",
+      ),
+    ).toBe(true);
+    await expect(dialog(page)).toHaveCount(0);
+    await launched.close();
   }
+  const calls = await page.evaluate(
+    () =>
+      (
+        window as unknown as {
+          launchCalls: { url: string; active: boolean; features?: string }[];
+        }
+      ).launchCalls,
+  );
+  expect(calls).toHaveLength(11);
+  expect(
+    calls.every(
+      (call) => call.active && call.features === "noopener,noreferrer",
+    ),
+  ).toBe(true);
   await buttons.first().click();
   const popup = context.waitForEvent("page");
   await dialog(page)
@@ -135,7 +183,8 @@ test("V6.1 : onze boutons sans ancien marquage demandent confirmation, copie et 
   const opened = await popup;
   await opened.waitForLoadState("domcontentloaded");
   expect(opened.url()).toBe("https://www.google.com/ai");
-  expect(outgoing).toEqual(["https://www.google.com/ai"]);
+  expect(outgoing).toHaveLength(12);
+  expect(outgoing.at(-1)).toBe("https://www.google.com/ai");
   expect(
     await opened.evaluate(() => opener === null && document.referrer === ""),
   ).toBe(true);
@@ -190,4 +239,77 @@ test("V6.1 : ancres sans JS, questions parent puis retour interactif et recharge
         .getByRole("button", { name: "Recharger le HTML", exact: true })
         .click();
   }
+});
+
+test("V6.1 : préremplissage borné, offline et lien de repli conservent la question confirmée", async ({
+  page,
+  context,
+}) => {
+  const outgoing: string[] = [];
+  await context.route("https://www.google.com/**", async (route) => {
+    outgoing.push(route.request().url());
+    await route.fulfill({
+      contentType: "text/html",
+      body: "<title>Google simulé</title>",
+    });
+  });
+  const frame = await setup(page);
+  await frame.locator("[data-article]").first().click();
+  const modal = dialog(page);
+  const input = modal.getByRole("textbox");
+  const launch = modal.getByRole("button", {
+    name: "Lancer la question",
+    exact: true,
+  });
+  await input.fill("é".repeat(1000));
+  await expect(launch).toBeDisabled();
+  await expect(modal).toContainText("Raccourcissez-la");
+  await expect(
+    modal.getByRole("button", { name: "Copier la question", exact: true }),
+  ).toBeEnabled();
+  await input.fill("Question publique initiale");
+  await context.setOffline(true);
+  await launch.click();
+  await expect(modal).toContainText("Hors ligne");
+  expect(outgoing).toEqual([]);
+  expect(context.pages()).toHaveLength(1);
+  await context.setOffline(false);
+  await page.evaluate(() => {
+    window.open = () => {
+      throw new Error("Popup blocked");
+    };
+  });
+  await launch.click();
+  await expect(modal).toContainText("Ouverture indisponible");
+  const link = modal.getByRole("link", {
+    name: "Ouvrir directement la question dans Google Mode IA",
+    exact: true,
+  });
+  const query = "Question corrigée & + % # 🙂";
+  await input.fill(query);
+  const expected = new URL("https://www.google.com/search");
+  expected.search = new URLSearchParams({
+    hl: "fr",
+    udm: "50",
+    q: query,
+  }).toString();
+  await expect(link).toHaveAttribute("href", expected.href);
+  await expect(link).toHaveAttribute("rel", "noopener noreferrer");
+  await expect(link).toHaveAttribute("target", "_blank");
+  expect(outgoing).toEqual([]);
+  await context.setOffline(true);
+  await link.click();
+  expect(context.pages()).toHaveLength(1);
+  expect(outgoing).toEqual([]);
+  await context.setOffline(false);
+  const next = context.waitForEvent("page");
+  await link.click();
+  const popup = await next;
+  await popup.waitForLoadState("domcontentloaded");
+  expect(popup.url()).toBe(expected.href);
+  expect(outgoing).toEqual([expected.href]);
+  expect(
+    await popup.evaluate(() => opener === null && document.referrer === ""),
+  ).toBe(true);
+  await popup.close();
 });

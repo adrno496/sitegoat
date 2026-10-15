@@ -75,6 +75,18 @@ for (const [engine, type] of [
             body: "<title>Google simulated</title>",
           });
         }
+        const candidate = new URL(url);
+        if (
+          candidate.origin === "https://www.google.com" &&
+          candidate.pathname === "/search" &&
+          candidate.searchParams.get("udm") === "50"
+        ) {
+          external.push("google-prefilled-question-simulated");
+          return route.fulfill({
+            contentType: "text/html",
+            body: "<title>Google simulated</title>",
+          });
+        }
         if (new URL(url).origin === new URL(baseURL).origin)
           return route.continue();
         external.push("blocked-external");
@@ -225,27 +237,33 @@ for (const [engine, type] of [
             await page.evaluate(() => window.__copied.at(-1)),
             expectedQuestions[i],
           );
-          if (i === 0) {
-            const next = context.waitForEvent("page");
-            await modal
-              .getByRole("button", {
-                name: "Ouvrir Google Mode IA",
-                exact: true,
-              })
-              .click();
-            const popup = await next;
-            await popup.waitForLoadState("domcontentloaded");
-            assert.equal(popup.url(), "https://www.google.com/ai");
-            assert(
-              await popup.evaluate(
-                () => opener === null && document.referrer === "",
-              ),
-            );
-            await popup.close();
-          }
+          assert.equal(external.length, i);
+          const next = context.waitForEvent("page");
           await modal
-            .getByRole("button", { name: "Annuler", exact: true })
+            .getByRole("button", { name: "Lancer la question", exact: true })
             .click();
+          const popup = await next;
+          await popup.waitForLoadState("domcontentloaded");
+          const destination = new URL(popup.url());
+          assert.equal(
+            destination.origin + destination.pathname,
+            "https://www.google.com/search",
+          );
+          assert.deepEqual(
+            [...destination.searchParams],
+            [
+              ["hl", "fr"],
+              ["udm", "50"],
+              ["q", expectedQuestions[i]],
+            ],
+          );
+          assert(
+            await popup.evaluate(
+              () => opener === null && document.referrer === "",
+            ),
+          );
+          await popup.close();
+          await expect(modal).toHaveCount(0);
         }
         step = "safe-mode-and-return";
         await page
@@ -328,7 +346,7 @@ for (const [engine, type] of [
         ).toBeVisible();
         await page
           .getByRole("dialog")
-          .getByRole("button", { name: "Ouvrir Google Mode IA", exact: true })
+          .getByRole("button", { name: "Lancer la question", exact: true })
           .click();
         await expect(page.getByRole("dialog")).toContainText("Hors ligne");
         await page
@@ -346,7 +364,10 @@ for (const [engine, type] of [
           .click();
         assert(fs.readFileSync(await (await downloaded).path()).equals(bytes));
         assert.deepEqual(errors, []);
-        assert.deepEqual(external, ["google-entry-without-query"]);
+        assert.deepEqual(
+          external,
+          expectedQuestions.map(() => "google-prefilled-question-simulated"),
+        );
         results.push({
           engine,
           viewport: mobile ? "390x844 mobile simulated" : "1440x900 desktop",
@@ -354,6 +375,7 @@ for (const [engine, type] of [
           fragments: fragments.length,
           articleLinks: articleLinkCount,
           googleButtons: expectedQuestions.length,
+          confirmedPrefilledLaunches: expectedQuestions.length,
           themes: 8,
           safeMode: true,
           offlineReader: true,

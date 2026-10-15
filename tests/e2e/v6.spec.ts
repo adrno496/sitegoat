@@ -312,7 +312,7 @@ test("V6 : tous les boutons de section, v2 question seule, copie corrigée et en
     type: "journal360:google-ai:capability",
     version: 2,
     enabled: true,
-    actions: ["copy-question", "open-entry"],
+    actions: ["copy-question", "open-entry", "open-question"],
     entryUrl: "https://www.google.com/ai",
     maxQuestionLength: 2000,
   });
