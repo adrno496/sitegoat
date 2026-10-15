@@ -70,6 +70,7 @@ export function Reader({
     y: number;
     time: number;
   } | null>(null);
+  const [backGestureActive, setBackGestureActive] = useState(false);
   const pendingAiRef = useRef<GoogleAiRequest | null>(null);
   const [googleAiRequest, setGoogleAiRequest] =
     useState<GoogleAiRequest | null>(null);
@@ -92,6 +93,15 @@ export function Reader({
     [bytes, mode],
   );
   const [loadError, setLoadError] = useState("");
+  useEffect(() => {
+    const reset = () => {
+      swipe.current = null;
+      setBackGestureActive(false);
+    };
+    reset();
+    window.addEventListener("blur", reset);
+    return () => window.removeEventListener("blur", reset);
+  }, [expanded]);
   useDialogFocus(confirm, () => setConfirm(false));
   function dismissGoogleAi() {
     pendingAiRef.current = null;
@@ -691,7 +701,7 @@ export function Reader({
         )}
         {expanded && (
           <div
-            className="reader-back-gesture"
+            className={`reader-back-gesture${backGestureActive ? " reader-back-gesture-active" : ""}`}
             aria-hidden="true"
             inert={!!googleAiRequest || confirm}
             onPointerDown={(event) => {
@@ -708,6 +718,7 @@ export function Reader({
               } catch {
                 return;
               }
+              setBackGestureActive(true);
               swipe.current = {
                 id: event.pointerId,
                 x: event.clientX,
@@ -721,16 +732,21 @@ export function Reader({
                 start &&
                 (event.clientX < start.x - 12 ||
                   Math.abs(event.clientY - start.y) > 60)
-              )
+              ) {
                 swipe.current = null;
+                setBackGestureActive(false);
+              }
             }}
             onPointerCancel={() => {
+              setBackGestureActive(false);
               swipe.current = null;
             }}
             onLostPointerCapture={() => {
+              setBackGestureActive(false);
               swipe.current = null;
             }}
             onPointerUp={(event) => {
+              setBackGestureActive(false);
               const start = swipe.current;
               swipe.current = null;
               if (

@@ -2568,3 +2568,16 @@ textarea {
   gap: 8px;
   min-width: 0;
 }
+
+/* Keep imported mobile headers clear; both controls remain thumb-accessible. */
+@media (max-width: 767px) {
+  .reading-surface-expanded .reading-surface-header {
+    top: auto;
+    bottom: max(8px, env(safe-area-inset-bottom));
+  }
+}
+/* Keep an edge gesture in the parent while crossing an opaque iframe, even
+   where WebKit does not reliably retain capture across frame boundaries. */
+.reader-back-gesture-active {
+  width: 100%;
+}

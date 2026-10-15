@@ -1,0 +1,91 @@
+{
+  "version": "2.0.5",
+  "targetedE2E": {
+    "startTime": "2026-10-15T16:38:11.571Z",
+    "duration": 23668.495000000003,
+    "expected": 11,
+    "skipped": 1,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "preview": {
+    "testedAt": "2026-10-15T16:39:05.631Z",
+    "baseURL": "http://127.0.0.1:4181",
+    "version": "2.0.5",
+    "bundleSha256": "df42b740064bf8697d2b2c73331accb2ce641b9c86cf5dd26fc87ff662157f26",
+    "bundleMatchesLocal": true,
+    "parentCspUnchanged": true,
+    "privateHtmlUsed": false,
+    "supabaseWrites": 0,
+    "physicalDevices": "NON TESTÉS",
+    "results": [
+      {
+        "engine": "chromium",
+        "viewport": "desktop",
+        "status": "PASS",
+        "dailyImports": 4,
+        "visibleEditions": 1,
+        "currentRelease": "21h",
+        "historyVersions": 4,
+        "privateNotesPreserved": true,
+        "readingUpdates": true,
+        "cleanReaderControls": true,
+        "cleanReaderBackGesture": true,
+        "nativeBackForward": true,
+        "visibleSyncStatus": true,
+        "offline": true
+      },
+      {
+        "engine": "chromium",
+        "viewport": "mobile simulated",
+        "status": "PASS",
+        "dailyImports": 4,
+        "visibleEditions": 1,
+        "currentRelease": "21h",
+        "historyVersions": 4,
+        "privateNotesPreserved": true,
+        "readingUpdates": true,
+        "cleanReaderControls": true,
+        "cleanReaderBackGesture": true,
+        "nativeBackForward": true,
+        "visibleSyncStatus": true,
+        "offline": true
+      },
+      {
+        "engine": "webkit",
+        "viewport": "desktop",
+        "status": "PASS",
+        "dailyImports": 4,
+        "visibleEditions": 1,
+        "currentRelease": "21h",
+        "historyVersions": 4,
+        "privateNotesPreserved": true,
+        "readingUpdates": true,
+        "cleanReaderControls": true,
+        "cleanReaderBackGesture": true,
+        "nativeBackForward": true,
+        "visibleSyncStatus": true,
+        "offline": true
+      },
+      {
+        "engine": "webkit",
+        "viewport": "mobile simulated",
+        "status": "PASS",
+        "dailyImports": 4,
+        "visibleEditions": 1,
+        "currentRelease": "21h",
+        "historyVersions": 4,
+        "privateNotesPreserved": true,
+        "readingUpdates": true,
+        "cleanReaderControls": true,
+        "cleanReaderBackGesture": true,
+        "nativeBackForward": true,
+        "visibleSyncStatus": true,
+        "offline": true
+      }
+    ]
+  },
+  "initialLinuxCI": "FAIL WebKit pointer gesture, run 38768042501; follow-up required",
+  "googleNavigationChangesIncluded": false,
+  "sandboxCspUnchanged": true
+}

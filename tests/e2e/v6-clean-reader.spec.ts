@@ -6,7 +6,7 @@ async function setup(page: Page) {
   // A tall document tests real scrolling, not just a swipe event callback.
   const html = file.html.replace(
     "</body>",
-    '<div style="height:2400px">Suite publique fictive</div><a href="#release" id="local-anchor">Revenir au titre</a></body>',
+    '<div style="height:2400px">Suite publique fictive</div><a href="#release" id="local-anchor" style="display:block;text-align:center;padding:20px">Revenir au titre</a></body>',
   );
   await page.getByLabel("Fichiers HTML à importer").setInputFiles({
     name: file.name,
@@ -179,4 +179,38 @@ test("tactile Chromium réel : le défilement du HTML reste libre et le glisseme
   await expect(page.locator(".reader")).toBeVisible();
   await swipe(5, height / 2, 150, height / 2 + 4);
   await expect(page.locator(".reader")).toHaveCount(0);
+});
+
+test("les contrôles flottants laissent libre l’en-tête du HTML sur smartphone", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await setup(page);
+  await page
+    .frameLocator(".edition-frame")
+    .locator("body")
+    .evaluate((body) => {
+      const button = document.createElement("button");
+      button.id = "sticky-header-control";
+      button.textContent = "Navigation HTML";
+      button.style.cssText =
+        "position:fixed;right:8px;top:12px;z-index:9999;padding:10px";
+      button.onclick = () => (button.textContent = "Navigation HTML activée");
+      body.append(button);
+    });
+  await page
+    .frameLocator(".edition-frame")
+    .locator("#sticky-header-control")
+    .click();
+  await expect(
+    page.frameLocator(".edition-frame").locator("#sticky-header-control"),
+  ).toHaveText("Navigation HTML activée");
+  await expect(page.locator(".reading-surface-expanded")).toBeVisible();
+  await expect(
+    page.locator(".reading-surface-expanded button:visible"),
+  ).toHaveCount(2);
+  await page
+    .getByRole("button", { name: "Réduire la lecture", exact: true })
+    .click();
+  await expect(page.locator(".reading-options")).toBeVisible();
 });
