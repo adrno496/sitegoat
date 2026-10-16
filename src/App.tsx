@@ -132,6 +132,7 @@ export default function App() {
   );
   const [tab, setTab] = useState<Tab>("today");
   const [selected, setSelected] = useState<string | null>(null);
+  const [selectedArticle, setSelectedArticle] = useState<string>();
   const [readingUpdates, setReadingUpdates] = useState<ReadingChanges>();
   const [syncActivity, setSyncActivity] = useState<SyncActivity>();
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
@@ -425,6 +426,7 @@ export default function App() {
         .catch(() => {});
   }, [tab]);
   const readerHistory = useReaderHistory((id) => {
+    setSelectedArticle(undefined);
     const edition = allEditions.find((e) => e.id === id);
     setSelectedDay(null);
     setSelected(edition?.id || null);
@@ -435,6 +437,7 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: "instant" });
   });
   function backFromReader() {
+    setSelectedArticle(undefined);
     readerHistory.back();
     setSelected(null);
     setSelectedDay(null);
@@ -442,6 +445,7 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: "instant" });
   }
   function navigate(next: Tab) {
+    setSelectedArticle(undefined);
     readerHistory.reset();
     setSelected(null);
     setSelectedDay(null);
@@ -454,9 +458,10 @@ export default function App() {
     setSelectedDay(dayKey);
     window.scrollTo({ top: 0, behavior: "instant" });
   }
-  function openEdition(id: string) {
+  function openEdition(id: string, articleId?: string) {
     const edition = allEditions.find((e) => e.id === id);
     if (!edition) return;
+    setSelectedArticle(articleId);
     readerHistory.open(id);
     setReadingUpdates(
       edition ? readingChanges(edition, allEditions, data.states) : undefined,
@@ -947,6 +952,9 @@ export default function App() {
             }
           >
             <ArticlesView
+              active={
+                data.ready && tab === "articles" && !current && !selectedDay
+              }
               editions={allEditions}
               states={data.states}
               onOpen={openEdition}
@@ -960,7 +968,8 @@ export default function App() {
             <p>Ouverture de votre bibliothèque…</p>
           ) : current ? (
             <Reader
-              key={current.id}
+              key={`${current.id}:${selectedArticle || "edition"}`}
+              initialArticleId={selectedArticle}
               changes={readingUpdates}
               edition={current}
               editions={editions}

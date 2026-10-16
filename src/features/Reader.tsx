@@ -45,6 +45,7 @@ interface GoogleAiRequest {
 }
 export function Reader({
   edition,
+  initialArticleId,
   changes,
   editions,
   states,
@@ -56,6 +57,7 @@ export function Reader({
   run,
 }: {
   edition: Edition;
+  initialArticleId?: string;
   changes?: ReadingChanges;
   editions: Edition[];
   states: ReadingState[];
@@ -88,14 +90,20 @@ export function Reader({
   const [font, setFont] = useState(18);
   const [note, setNote] = useState("");
   const [kind, setKind] = useState<"note" | "decision">("note");
-  const [article, setArticle] = useState("");
+  const [article, setArticle] = useState(initialArticleId || "");
+  // App keys the reader by edition and target article. Keep this immutable
+  // navigation target stable when notes/reading states refresh the library.
+  const [initialArticle] = useState(() =>
+    edition.articles.find((a) => a.id === initialArticleId),
+  );
   const [htmlZoom, setHtmlZoom] = useState(70);
   const [frameRevision, setFrameRevision] = useState(0);
   // Monter le cadre avec son document final. Un srcdoc vide puis modifié après
   // montage peut rester blanc dans Chrome, surtout lors du changement de sandbox.
   const srcDoc = useMemo(
-    () => (bytes ? isolatedHTML(bytes, mode === "interactive") : ""),
-    [bytes, mode],
+    () =>
+      bytes ? isolatedHTML(bytes, mode === "interactive", initialArticle) : "",
+    [bytes, mode, initialArticle],
   );
   const [loadError, setLoadError] = useState("");
   useEffect(() => {

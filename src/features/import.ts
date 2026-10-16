@@ -1,5 +1,6 @@
 import {
   type Edition,
+  type Article,
   articleSchema,
   editionSchema,
   now,
@@ -27,6 +28,7 @@ import {
 } from "../data/day";
 import { validateSourceUrl } from "./sourceUrl";
 import { LOCAL_FRAGMENT_LINK_BRIDGE } from "./frameNavigation";
+import { prepareArticleNavigation } from "./articleNavigation";
 const cleanText = (s: string) => s.replace(/\s+/g, " ").trim();
 const str = (s: unknown) => (typeof s === "string" ? s : "");
 function plain(s: unknown) {
@@ -323,7 +325,11 @@ export async function commitImport(
     },
   );
 }
-export function isolatedHTML(bytes: Uint8Array, interactive: boolean) {
+export function isolatedHTML(
+  bytes: Uint8Array,
+  interactive: boolean,
+  targetArticle?: Article,
+) {
   const doc = new DOMParser().parseFromString(
     new TextDecoder().decode(bytes),
     "text/html",
@@ -400,5 +406,6 @@ export function isolatedHTML(bytes: Uint8Array, interactive: boolean) {
       `(()=>{for(const method of ['pushState','replaceState']){const original=history[method].bind(history);history[method]=function(state,unused,url){try{return original(state,unused,url)}catch(error){if(error.name==='SecurityError'&&typeof url==='string'&&url.startsWith('#')){location.hash=url;return}throw error}}}})();`;
     csp.after(routing);
   }
+  if (targetArticle) prepareArticleNavigation(doc, targetArticle, interactive);
   return "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;
 }

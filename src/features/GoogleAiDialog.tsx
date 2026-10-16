@@ -97,6 +97,7 @@ export function GoogleAiDialog({
             value={draft}
             maxLength={2000}
             rows={4}
+            placeholder="Saisissez ou modifiez votre question publique…"
             onChange={(e) => {
               setDraft(e.target.value);
               setNotice("");

@@ -17,11 +17,11 @@ export function rememberReadingQuestions(bytes: Uint8Array, doc: Document) {
   }
   questionCache.set(bytes, [...questions]);
 }
-// Known V6 producers (6.1, 6.4) expose explicit public questions: items[].aiQuestion
+// Known V6 producers (6.1, 6.4, Magazine 6.4.4) expose explicit public questions: items[].aiQuestion
 // for article buttons and #public-<topic> for the two dossier buttons. Adapt
 // only these explicit fields in the display DOM; never infer a question from
 // article text, private notes or arbitrary destinations.
-function adaptV6QuestionControls(doc: Document) {
+function explicitArticleQuestions(doc: Document) {
   let data: unknown;
   try {
     data = JSON.parse(
@@ -29,15 +29,16 @@ function adaptV6QuestionControls(doc: Document) {
         ?.textContent || "null",
     );
   } catch {
-    return;
+    return null;
   }
-  if (!data || typeof data !== "object" || Array.isArray(data)) return;
+  if (!data || typeof data !== "object" || Array.isArray(data)) return null;
   const value = data as Record<string, unknown>;
   if (
-    (value.schemaVersion !== "6.1" && value.schemaVersion !== "6.4") ||
+    typeof value.schemaVersion !== "string" ||
+    !["6.1", "6.4", "6.4.4"].includes(value.schemaVersion) ||
     !Array.isArray(value.items)
   )
-    return;
+    return null;
   const byId = new Map<string, unknown>();
   for (const item of value.items.slice(0, 2000)) {
     if (!item || typeof item !== "object" || Array.isArray(item)) continue;
@@ -49,6 +50,30 @@ function adaptV6QuestionControls(doc: Document) {
     )
       byId.set(article.id, article.aiQuestion);
   }
+  return byId;
+}
+function normalizedReadingQuestion(raw: unknown) {
+  const question =
+    typeof raw === "string"
+      ? raw.replace(/[ \t\r\n]+/g, " ").trim()
+      : undefined;
+  return validPublicQuestion(question) ? question : null;
+}
+// Read only the explicit question belonging to this original article. This also
+// works for imports already stored before the Articles tab existed.
+export function articleReadingQuestion(bytes: Uint8Array, articleId: string) {
+  const doc = new DOMParser().parseFromString(
+    new TextDecoder().decode(bytes),
+    "text/html",
+  );
+  return normalizedReadingQuestion(
+    explicitArticleQuestions(doc)?.get(articleId),
+  );
+}
+function adaptV6QuestionControls(doc: Document) {
+  const questions = explicitArticleQuestions(doc);
+  if (!questions) return;
+  const byId = questions;
   function questionOf(button: Element) {
     const id = button.getAttribute("data-article");
     const topic = button.getAttribute("data-topic");
@@ -60,11 +85,7 @@ function adaptV6QuestionControls(doc: Document) {
           : undefined;
     // Plain line wrapping is layout, not a command. Other controls/bidi and
     // overlong questions remain rejected by the existing parent validator.
-    const question =
-      typeof raw === "string"
-        ? raw.replace(/[ \t\r\n]+/g, " ").trim()
-        : undefined;
-    return validPublicQuestion(question) ? question : null;
+    return normalizedReadingQuestion(raw);
   }
   // 6.1 and 6.4.1 buttons open the producer's own dialog, whose clipboard and
   // search link cannot work in the isolated frame: route them to the parent.
