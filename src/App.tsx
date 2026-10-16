@@ -71,10 +71,13 @@ import {
 import { fingerprint, synchronizer } from "./features/sync";
 import { useDialogFocus } from "./features/dialogFocus";
 import { registerFileHandling } from "./features/fileHandling";
-type Tab = "today" | "library" | "search" | "memory" | "settings";
+import { ArticlesView } from "./features/ArticlesView";
+import { indexArticles } from "./data/articles";
+type Tab = "today" | "library" | "articles" | "search" | "memory" | "settings";
 const tabs = [
   { id: "today" as const, label: "Aujourd’hui", icon: Home },
   { id: "library" as const, label: "Bibliothèque", icon: Library },
+  { id: "articles" as const, label: "Articles", icon: FileText },
   { id: "search" as const, label: "Rechercher", icon: Search },
   { id: "memory" as const, label: "Mémoire", icon: BookOpen },
   { id: "settings" as const, label: "Réglages", icon: Settings },
@@ -428,14 +431,14 @@ export default function App() {
     if (edition) {
       setReadingUpdates(readingChanges(edition, allEditions, data.states));
       run(() => db.reading(edition.id, "edition", { openedAt: now() }));
-    } else setTab("library");
+    } else setTab((current) => (current === "articles" ? current : "library"));
     window.scrollTo({ top: 0, behavior: "instant" });
   });
   function backFromReader() {
     readerHistory.back();
     setSelected(null);
     setSelectedDay(null);
-    setTab("library");
+    setTab((current) => (current === "articles" ? current : "library"));
     window.scrollTo({ top: 0, behavior: "instant" });
   }
   function navigate(next: Tab) {
@@ -553,10 +556,9 @@ export default function App() {
       s.read &&
       editions.some((e) => e.id === s.editionId),
   ).length;
-  const articleCount = displayedEditions.reduce(
-    (sum, e) =>
-      sum + e.articles.filter((a) => !a.kind || a.kind === "news").length,
-    0,
+  const articleCount = useMemo(
+    () => indexArticles(editions).length,
+    [editions],
   );
   const favorites = data.states.filter(
     (s) => s.favorite && editions.some((e) => e.id === s.editionId),
@@ -846,6 +848,7 @@ export default function App() {
               <t.icon size={20} />
               <span>{t.label}</span>
               {t.id === "library" && <small>{displayedEditions.length}</small>}
+              {t.id === "articles" && <small>{articleCount}</small>}
             </button>
           ))}
         </nav>
@@ -938,6 +941,21 @@ export default function App() {
               Opération en cours…
             </div>
           )}
+          <div
+            hidden={
+              !data.ready || tab !== "articles" || !!current || !!selectedDay
+            }
+          >
+            <ArticlesView
+              editions={allEditions}
+              states={data.states}
+              onOpen={openEdition}
+              onImport={() => fileRef.current?.click()}
+              onReading={(editionId, articleId, patch) =>
+                run(() => db.reading(editionId, articleId, patch))
+              }
+            />
+          </div>
           {!data.ready ? (
             <p>Ouverture de votre bibliothèque…</p>
           ) : current ? (
@@ -949,6 +967,7 @@ export default function App() {
               states={data.states}
               notes={data.notes}
               onBack={backFromReader}
+              backLabel={tab === "articles" ? "Retour aux articles" : undefined}
               onOpen={openEdition}
               onDay={openDay}
               run={run}

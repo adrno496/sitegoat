@@ -26,6 +26,8 @@ Ouvrir `http://127.0.0.1:4173`. `npm run dev` sert l’interface ; il ne lance p
 
 ## Utilisation
 
+L’onglet **Articles** réunit automatiquement les articles structurés de toutes les veilles importées, archives comprises. Rechercher dans les titres, textes et sources, filtrer par rubrique, veille ou état de lecture, puis lire un article et passer au suivant. Les favoris et lectures utilisent la mémoire existante. Le journal d’origine reste accessible et son retour conserve les filtres. Les articles répétés dans les versions d’une même journée sont regroupés sur leur dernière occurrence ; ceux présents seulement dans une ancienne version restent accessibles. Les journaux sans sommaire structuré restent lisibles dans la Bibliothèque.
+
 1. **Importer** un ou plusieurs `.html` / `.htm` UTF-8 (10 Mo par fichier, 20 fichiers et 100 Mo par sélection).
 2. Vérifier titre, date, avertissements et conservation des doublons. Enregistrer. Un même hash peut être ignoré, conservé séparément ou ajouté comme version.
 3. Ouvrir l’édition : elle occupe directement toute la page. Le HTML est affiché à 70 % ; après réduction, les boutons −/+ ajustent ce zoom sans perdre la navigation. Les onglets et simulateurs fonctionnent automatiquement : le lecteur démarre en **mode interactif**, dans son cadre isolé. **Désactiver JS** passe au mode sécurisé ; ce choix explicite reste mémorisé pour cette édition sur cet appareil. Google Mode IA demande toujours une confirmation avant toute ouverture externe.

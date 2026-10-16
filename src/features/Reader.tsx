@@ -50,6 +50,7 @@ export function Reader({
   states,
   notes,
   onBack,
+  backLabel = "Retour à la bibliothèque",
   onOpen,
   onDay,
   run,
@@ -60,6 +61,7 @@ export function Reader({
   states: ReadingState[];
   notes: Note[];
   onBack: () => void;
+  backLabel?: string;
   onOpen: (id: string) => void;
   onDay?: (dayKey: string) => void;
   run: (action: () => Promise<unknown>, success?: string) => void;
@@ -308,7 +310,7 @@ export function Reader({
       <div className="reader-nav">
         <button className="text-button" onClick={onBack}>
           <ArrowLeft size={18} />
-          Bibliothèque
+          {backLabel}
         </button>
         <div className="reader-adjacent">
           <button
@@ -489,7 +491,7 @@ export function Reader({
           {expanded && (
             <button
               className="icon-button reader-back"
-              aria-label="Retour à la bibliothèque"
+              aria-label={backLabel}
               onClick={onBack}
             >
               <ArrowLeft size={18} />
