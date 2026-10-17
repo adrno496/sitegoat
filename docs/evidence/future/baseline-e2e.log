@@ -1,0 +1,288 @@
+
+> journal360-mobile@2.0.7 test:e2e
+> playwright test
+
+[WebServer] (node:21852) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:21855) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 140 tests using 1 worker
+
+(node:21856) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓    1 [chromium] › tests/e2e/app.spec.ts:36:1 › parcours complet : import, lecture, notes, favori, recherche, offline, export et restauration (2.7s)
+  ✓    2 [chromium] › tests/e2e/app.spec.ts:134:1 › démonstrations, interaction explicite et mémoire basée sur event_id (1.1s)
+  ✓    3 [chromium] › tests/e2e/app.spec.ts:173:1 › renommage doublon, version, archive et corbeille récupérable (8.0s)
+  ✓    4 [chromium] › tests/e2e/app.spec.ts:210:1 › sécurité : parent, stockage, fetch, ressources, top et popups bloqués (967ms)
+  ✓    5 [chromium] › tests/e2e/app.spec.ts:247:1 › responsive, thèmes et accessibilité sur six largeurs (4.6s)
+  ✓    6 [chromium] › tests/e2e/app.spec.ts:283:1 › manifest et réception Web Share Target en service worker (498ms)
+  ✓    7 [chromium] › tests/e2e/app.spec.ts:320:1 › File Handling launchQueue traite un HTML via le même écran de vérification (476ms)
+  ✓    8 [chromium] › tests/e2e/app.spec.ts:360:1 › lecture pleine page : tout le viewport, interactions conservées et retour sur mobile (3.5s)
+  ✓    9 [chromium] › tests/e2e/app.spec.ts:464:1 › mode interactif automatique, choix sécurisé conservé après rechargement et nouvelle édition interactive (1.1s)
+  ✓   10 [chromium] › tests/e2e/google-ai.spec.ts:186:1 › Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation (1.9s)
+  ✓   11 [chromium] › tests/e2e/google-ai.spec.ts:285:1 › Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles refusés (875ms)
+  ✓   12 [chromium] › tests/e2e/google-ai.spec.ts:417:1 › Google IA : seule la confirmation ouvre la question affichée, sans opener, referrer ni notes PWA (980ms)
+  ✓   13 [chromium] › tests/e2e/google-ai.spec.ts:478:1 › Google IA : lecture et confirmation hors ligne, copie HTML originale intacte (1.1s)
+  ✓   14 [chromium] › tests/e2e/update.spec.ts:5:1 › mise à jour réelle du service worker sans perte des originaux et favoris (875ms)
+  ✓   15 [chromium] › tests/e2e/v6-articles.spec.ts:33:1 › articles : import, filtres, lecture, sources, favoris, retour du journal et persistance (2.0s)
+  ✓   16 [chromium] › tests/e2e/v6-articles.spec.ts:133:1 › articles : pagination et recherche dans tout l’index (834ms)
+  ✓   17 [chromium] › tests/e2e/v6-articles.spec.ts:162:1 › questions Google depuis les articles : question exacte, édition, copie, ouverture volontaire et hors ligne (1.7s)
+  ✓   18 [chromium] › tests/e2e/v6-articles.spec.ts:262:1 › sommaire : ouvre l’analyse complète dans le HTML dynamique et conserve les questions Google du journal (1.1s)
+  ✓   19 [chromium] › tests/e2e/v6-articles.spec.ts:368:1 › sans question préparée : saisie manuelle, sans inventer depuis le titre ou les notes (656ms)
+  ✓   20 [chromium] › tests/e2e/v6-clean-reader.spec.ts:47:1 › HTML seul : deux petits contrôles, pleine hauteur, réduction et historique navigateur sans perte (1.0s)
+  ✓   21 [chromium] › tests/e2e/v6-clean-reader.spec.ts:113:1 › geste réservé au bord gauche : retour horizontal, mouvements verticaux et mauvais sens ignorés, même sans JS (1.0s)
+  ✓   22 [chromium] › tests/e2e/v6-clean-reader.spec.ts:177:1 › tactile Chromium réel : le défilement du HTML reste libre et le glissement au bord revient (1.1s)
+  ✓   23 [chromium] › tests/e2e/v6-clean-reader.spec.ts:221:1 › les contrôles flottants laissent libre l’en-tête du HTML sur smartphone (691ms)
+  ✓   24 [chromium] › tests/e2e/v6-collections.spec.ts:42:1 › IA majeur et Sentinel : imports dirigés, documents de même date, doublons séparés et retour du lecteur (1.3s)
+  ✓   25 [chromium] › tests/e2e/v6-collections.spec.ts:83:1 › destination modifiable à l’import, recherche, archives, corbeille et mode hors ligne (1.2s)
+  ✓   26 [chromium] › tests/e2e/v6-collections.spec.ts:138:1 › navigation mobile visible et accessibilité des deux nouveaux espaces (1.2s)
+  ✓   27 [chromium] › tests/e2e/v6-daily.spec.ts:64:1 › un HTML par jour : quatre imports successifs remplacent la carte, JS/offline et annotations restent disponibles (23.0s)
+  ✘   28 [chromium] › tests/e2e/v6-daily.spec.ts:127:1 › lot désordonné, doublon renommé et nouvelle journée : la dernière édition reste seule, recherche limitée au HTML courant (32.1s)
+(node:23967) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   29 [chromium] › tests/e2e/v6-daily.spec.ts:205:1 › mise à jour des anciens imports indépendants : regroupement immédiat sans migration des UUID ni réimport (920ms)
+  ✓   30 [chromium] › tests/e2e/v6-daily.spec.ts:272:1 › archiver, corbeille et restaurer une journée ne font pas réapparaître une ancienne carte (985ms)
+  ✓   31 [chromium] › tests/e2e/v6-google-navigation.spec.ts:100:1 › lien Google classique dynamique : confirmation, question exacte, lien de repli et entrée IA sans question (1.1s)
+  ✓   32 [chromium] › tests/e2e/v6-google-navigation.spec.ts:187:1 › session : source exacte, origine opaque insuffisante, nonce, rejeu, expiration et renouvellement du cadre (1.1s)
+  ✓   33 [chromium] › tests/e2e/v6-google-navigation.spec.ts:273:1 › question sensible refusée, offline, copie manuelle, ouverture silencieusement bloquée et exception (936ms)
+  ✓   34 [chromium] › tests/e2e/v6-google-navigation.spec.ts:377:1 › HTML autonome : lien classique en nouvel onglet et entrée IA sans préremplissage revendiqué (328ms)
+  ✓   35 [chromium] › tests/e2e/v6-improvements.spec.ts:37:1 › nouveautés en carte et dans les options, HTML épuré, repère conservé au rechargement et hors ligne (15.5s)
+  ✓   36 [chromium] › tests/e2e/v6-improvements.spec.ts:144:3 › Cloud simulé sans interception par le service worker › sync visible : en cours, échec, clic réessayer, succès daté, changements en attente et automatique désactivée (7.8s)
+  ✓   37 [chromium] › tests/e2e/v6.spec.ts:57:1 › V6 : 08→16→21, une carte journée, historique, recherche, original, notes et doublon (22.6s)
+  ✓   38 [chromium] › tests/e2e/v6.spec.ts:149:1 › V6 : dernière édition affichée malgré les avertissements, historique fiable et nouvelle journée conservés (28.9s)
+  ✓   39 [chromium] › tests/e2e/v6.spec.ts:169:1 › V6 : onglets, huit thèmes, image embarquée, zoom jusqu’à 200 %, offline et neuf largeurs (4.9s)
+  ✓   40 [chromium] › tests/e2e/v6.spec.ts:254:1 › V6 : tous les boutons de section, v2 question seule, copie corrigée et entrée Google sans données privées (1.8s)
+  ✓   41 [chromium] › tests/e2e/v6.spec.ts:373:1 › V6 : mode sécurisé, presse-papier refusé, popup bloquée et offline ont un repli manuel (946ms)
+  ✓   42 [chromium] › tests/e2e/v61.spec.ts:37:1 › V6.1 : les treize ancres conservent le document, le JS, les thèmes et les filtres (1.9s)
+  ✓   43 [chromium] › tests/e2e/v61.spec.ts:82:1 › V6.1 : onze boutons sans ancien marquage demandent confirmation, copie et lancement des onze questions (4.1s)
+  ✓   44 [chromium] › tests/e2e/v61.spec.ts:200:1 › V6.1 : ancres sans JS, questions parent puis retour interactif et rechargement conservent le pont (1.6s)
+  ✓   45 [chromium] › tests/e2e/v61.spec.ts:251:1 › V6.1 : préremplissage borné, offline et lien de repli conservent la question confirmée (959ms)
+  ✓   46 [chromium] › tests/e2e/v64-google-buttons.spec.ts:64:1 › 6.4.3 : le lien Mode IA d’un article ouvre la confirmation PWA avec sa question, puis Google Mode IA et la recherche Google (927ms)
+  ✓   47 [chromium] › tests/e2e/v64-google-buttons.spec.ts:100:1 › 6.4.3 : « En savoir plus » reste local et le lien de l’approfondissement reprend la question affichée (770ms)
+  ✓   48 [chromium] › tests/e2e/v64-google-buttons.spec.ts:119:1 › lien Mode IA sans question : la confirmation s’ouvre quand même et Google Mode IA reste disponible (764ms)
+  ✓   49 [chromium] › tests/e2e/v64-google-buttons.spec.ts:156:1 › 6.4 à fenêtre (6.4.1) : « En savoir plus » ouvre directement la confirmation PWA, la fenêtre du journal reste fermée (651ms)
+  ✓   50 [chromium] › tests/e2e/v64-google-buttons.spec.ts:176:1 › doublon exact réimporté : le dernier import remplace l’ancienne copie, une seule édition reste (7.6s)
+(node:25924) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   51 [webkit] › tests/e2e/app.spec.ts:36:1 › parcours complet : import, lecture, notes, favori, recherche, offline, export et restauration (3.4s)
+  ✓   52 [webkit] › tests/e2e/app.spec.ts:134:1 › démonstrations, interaction explicite et mémoire basée sur event_id (1.8s)
+  ✓   53 [webkit] › tests/e2e/app.spec.ts:173:1 › renommage doublon, version, archive et corbeille récupérable (8.5s)
+  ✓   54 [webkit] › tests/e2e/app.spec.ts:210:1 › sécurité : parent, stockage, fetch, ressources, top et popups bloqués (1.4s)
+  ✓   55 [webkit] › tests/e2e/app.spec.ts:247:1 › responsive, thèmes et accessibilité sur six largeurs (6.8s)
+  ✓   56 [webkit] › tests/e2e/app.spec.ts:283:1 › manifest et réception Web Share Target en service worker (619ms)
+  ✓   57 [webkit] › tests/e2e/app.spec.ts:320:1 › File Handling launchQueue traite un HTML via le même écran de vérification (597ms)
+  ✓   58 [webkit] › tests/e2e/app.spec.ts:360:1 › lecture pleine page : tout le viewport, interactions conservées et retour sur mobile (6.3s)
+  ✓   59 [webkit] › tests/e2e/app.spec.ts:464:1 › mode interactif automatique, choix sécurisé conservé après rechargement et nouvelle édition interactive (1.8s)
+  ✓   60 [webkit] › tests/e2e/google-ai.spec.ts:186:1 › Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation (2.9s)
+  ✓   61 [webkit] › tests/e2e/google-ai.spec.ts:285:1 › Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles refusés (1.1s)
+  ✓   62 [webkit] › tests/e2e/google-ai.spec.ts:417:1 › Google IA : seule la confirmation ouvre la question affichée, sans opener, referrer ni notes PWA (1.4s)
+  ✓   63 [webkit] › tests/e2e/google-ai.spec.ts:478:1 › Google IA : lecture et confirmation hors ligne, copie HTML originale intacte (1.2s)
+  ✓   64 [webkit] › tests/e2e/update.spec.ts:5:1 › mise à jour réelle du service worker sans perte des originaux et favoris (1.0s)
+  ✓   65 [webkit] › tests/e2e/v6-articles.spec.ts:33:1 › articles : import, filtres, lecture, sources, favoris, retour du journal et persistance (2.7s)
+  ✓   66 [webkit] › tests/e2e/v6-articles.spec.ts:133:1 › articles : pagination et recherche dans tout l’index (859ms)
+  ✓   67 [webkit] › tests/e2e/v6-articles.spec.ts:162:1 › questions Google depuis les articles : question exacte, édition, copie, ouverture volontaire et hors ligne (2.3s)
+  ✓   68 [webkit] › tests/e2e/v6-articles.spec.ts:262:1 › sommaire : ouvre l’analyse complète dans le HTML dynamique et conserve les questions Google du journal (1.6s)
+  ✓   69 [webkit] › tests/e2e/v6-articles.spec.ts:368:1 › sans question préparée : saisie manuelle, sans inventer depuis le titre ou les notes (857ms)
+  ✓   70 [webkit] › tests/e2e/v6-clean-reader.spec.ts:47:1 › HTML seul : deux petits contrôles, pleine hauteur, réduction et historique navigateur sans perte (1.5s)
+  ✓   71 [webkit] › tests/e2e/v6-clean-reader.spec.ts:113:1 › geste réservé au bord gauche : retour horizontal, mouvements verticaux et mauvais sens ignorés, même sans JS (1.4s)
+  -   72 [webkit] › tests/e2e/v6-clean-reader.spec.ts:177:1 › tactile Chromium réel : le défilement du HTML reste libre et le glissement au bord revient
+  ✓   73 [webkit] › tests/e2e/v6-clean-reader.spec.ts:221:1 › les contrôles flottants laissent libre l’en-tête du HTML sur smartphone (993ms)
+  ✓   74 [webkit] › tests/e2e/v6-collections.spec.ts:42:1 › IA majeur et Sentinel : imports dirigés, documents de même date, doublons séparés et retour du lecteur (1.9s)
+  ✓   75 [webkit] › tests/e2e/v6-collections.spec.ts:83:1 › destination modifiable à l’import, recherche, archives, corbeille et mode hors ligne (1.6s)
+  ✓   76 [webkit] › tests/e2e/v6-collections.spec.ts:138:1 › navigation mobile visible et accessibilité des deux nouveaux espaces (1.5s)
+  ✓   77 [webkit] › tests/e2e/v6-daily.spec.ts:64:1 › un HTML par jour : quatre imports successifs remplacent la carte, JS/offline et annotations restent disponibles (24.6s)
+  ✘   78 [webkit] › tests/e2e/v6-daily.spec.ts:127:1 › lot désordonné, doublon renommé et nouvelle journée : la dernière édition reste seule, recherche limitée au HTML courant (33.4s)
+(node:28398) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   79 [webkit] › tests/e2e/v6-daily.spec.ts:205:1 › mise à jour des anciens imports indépendants : regroupement immédiat sans migration des UUID ni réimport (1.4s)
+  ✓   80 [webkit] › tests/e2e/v6-daily.spec.ts:272:1 › archiver, corbeille et restaurer une journée ne font pas réapparaître une ancienne carte (1.4s)
+  ✓   81 [webkit] › tests/e2e/v6-google-navigation.spec.ts:100:1 › lien Google classique dynamique : confirmation, question exacte, lien de repli et entrée IA sans question (2.4s)
+  ✓   82 [webkit] › tests/e2e/v6-google-navigation.spec.ts:187:1 › session : source exacte, origine opaque insuffisante, nonce, rejeu, expiration et renouvellement du cadre (1.2s)
+  ✓   83 [webkit] › tests/e2e/v6-google-navigation.spec.ts:273:1 › question sensible refusée, offline, copie manuelle, ouverture silencieusement bloquée et exception (1.4s)
+  ✓   84 [webkit] › tests/e2e/v6-google-navigation.spec.ts:377:1 › HTML autonome : lien classique en nouvel onglet et entrée IA sans préremplissage revendiqué (886ms)
+  ✓   85 [webkit] › tests/e2e/v6-improvements.spec.ts:37:1 › nouveautés en carte et dans les options, HTML épuré, repère conservé au rechargement et hors ligne (16.3s)
+  ✓   86 [webkit] › tests/e2e/v6-improvements.spec.ts:144:3 › Cloud simulé sans interception par le service worker › sync visible : en cours, échec, clic réessayer, succès daté, changements en attente et automatique désactivée (7.8s)
+  ✓   87 [webkit] › tests/e2e/v6.spec.ts:57:1 › V6 : 08→16→21, une carte journée, historique, recherche, original, notes et doublon (24.1s)
+  ✓   88 [webkit] › tests/e2e/v6.spec.ts:149:1 › V6 : dernière édition affichée malgré les avertissements, historique fiable et nouvelle journée conservés (30.6s)
+  ✓   89 [webkit] › tests/e2e/v6.spec.ts:169:1 › V6 : onglets, huit thèmes, image embarquée, zoom jusqu’à 200 %, offline et neuf largeurs (9.8s)
+  ✓   90 [webkit] › tests/e2e/v6.spec.ts:254:1 › V6 : tous les boutons de section, v2 question seule, copie corrigée et entrée Google sans données privées (2.7s)
+  ✓   91 [webkit] › tests/e2e/v6.spec.ts:373:1 › V6 : mode sécurisé, presse-papier refusé, popup bloquée et offline ont un repli manuel (1.6s)
+  ✓   92 [webkit] › tests/e2e/v61.spec.ts:37:1 › V6.1 : les treize ancres conservent le document, le JS, les thèmes et les filtres (3.1s)
+  ✓   93 [webkit] › tests/e2e/v61.spec.ts:82:1 › V6.1 : onze boutons sans ancien marquage demandent confirmation, copie et lancement des onze questions (8.4s)
+  ✓   94 [webkit] › tests/e2e/v61.spec.ts:200:1 › V6.1 : ancres sans JS, questions parent puis retour interactif et rechargement conservent le pont (2.4s)
+  ✓   95 [webkit] › tests/e2e/v61.spec.ts:251:1 › V6.1 : préremplissage borné, offline et lien de repli conservent la question confirmée (1.5s)
+  ✓   96 [webkit] › tests/e2e/v64-google-buttons.spec.ts:64:1 › 6.4.3 : le lien Mode IA d’un article ouvre la confirmation PWA avec sa question, puis Google Mode IA et la recherche Google (1.6s)
+  ✓   97 [webkit] › tests/e2e/v64-google-buttons.spec.ts:100:1 › 6.4.3 : « En savoir plus » reste local et le lien de l’approfondissement reprend la question affichée (1.1s)
+  ✓   98 [webkit] › tests/e2e/v64-google-buttons.spec.ts:119:1 › lien Mode IA sans question : la confirmation s’ouvre quand même et Google Mode IA reste disponible (1.3s)
+  ✓   99 [webkit] › tests/e2e/v64-google-buttons.spec.ts:156:1 › 6.4 à fenêtre (6.4.1) : « En savoir plus » ouvre directement la confirmation PWA, la fenêtre du journal reste fermée (923ms)
+  ✓  100 [webkit] › tests/e2e/v64-google-buttons.spec.ts:176:1 › doublon exact réimporté : le dernier import remplace l’ancienne copie, une seule édition reste (8.0s)
+(node:31237) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  101 [chromium-mobile] › tests/e2e/google-ai.spec.ts:186:1 › Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation (9.0s)
+  ✓  102 [chromium-mobile] › tests/e2e/google-ai.spec.ts:285:1 › Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles refusés (1.1s)
+  ✓  103 [chromium-mobile] › tests/e2e/google-ai.spec.ts:417:1 › Google IA : seule la confirmation ouvre la question affichée, sans opener, referrer ni notes PWA (1.1s)
+  ✓  104 [chromium-mobile] › tests/e2e/google-ai.spec.ts:478:1 › Google IA : lecture et confirmation hors ligne, copie HTML originale intacte (1.2s)
+  ✓  105 [chromium-mobile] › tests/e2e/v6-articles.spec.ts:33:1 › articles : import, filtres, lecture, sources, favoris, retour du journal et persistance (2.0s)
+  ✓  106 [chromium-mobile] › tests/e2e/v6-articles.spec.ts:133:1 › articles : pagination et recherche dans tout l’index (616ms)
+  ✓  107 [chromium-mobile] › tests/e2e/v6-articles.spec.ts:162:1 › questions Google depuis les articles : question exacte, édition, copie, ouverture volontaire et hors ligne (1.5s)
+  ✓  108 [chromium-mobile] › tests/e2e/v6-articles.spec.ts:262:1 › sommaire : ouvre l’analyse complète dans le HTML dynamique et conserve les questions Google du journal (1.3s)
+  ✓  109 [chromium-mobile] › tests/e2e/v6-articles.spec.ts:368:1 › sans question préparée : saisie manuelle, sans inventer depuis le titre ou les notes (763ms)
+  ✓  110 [chromium-mobile] › tests/e2e/v6-clean-reader.spec.ts:47:1 › HTML seul : deux petits contrôles, pleine hauteur, réduction et historique navigateur sans perte (1.2s)
+  ✓  111 [chromium-mobile] › tests/e2e/v6-clean-reader.spec.ts:113:1 › geste réservé au bord gauche : retour horizontal, mouvements verticaux et mauvais sens ignorés, même sans JS (1.2s)
+  ✓  112 [chromium-mobile] › tests/e2e/v6-clean-reader.spec.ts:177:1 › tactile Chromium réel : le défilement du HTML reste libre et le glissement au bord revient (1.1s)
+  ✓  113 [chromium-mobile] › tests/e2e/v6-clean-reader.spec.ts:221:1 › les contrôles flottants laissent libre l’en-tête du HTML sur smartphone (729ms)
+  ✓  114 [chromium-mobile] › tests/e2e/v6-collections.spec.ts:42:1 › IA majeur et Sentinel : imports dirigés, documents de même date, doublons séparés et retour du lecteur (1.4s)
+  ✓  115 [chromium-mobile] › tests/e2e/v6-collections.spec.ts:83:1 › destination modifiable à l’import, recherche, archives, corbeille et mode hors ligne (1.2s)
+  ✓  116 [chromium-mobile] › tests/e2e/v6-collections.spec.ts:138:1 › navigation mobile visible et accessibilité des deux nouveaux espaces (1.4s)
+  ✓  117 [chromium-mobile] › tests/e2e/v6-daily.spec.ts:64:1 › un HTML par jour : quatre imports successifs remplacent la carte, JS/offline et annotations restent disponibles (2.1s)
+  ✘  118 [chromium-mobile] › tests/e2e/v6-daily.spec.ts:127:1 › lot désordonné, doublon renommé et nouvelle journée : la dernière édition reste seule, recherche limitée au HTML courant (11.2s)
+(node:32104) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  119 [chromium-mobile] › tests/e2e/v6-daily.spec.ts:205:1 › mise à jour des anciens imports indépendants : regroupement immédiat sans migration des UUID ni réimport (1.2s)
+  ✓  120 [chromium-mobile] › tests/e2e/v6-daily.spec.ts:272:1 › archiver, corbeille et restaurer une journée ne font pas réapparaître une ancienne carte (1.1s)
+  ✓  121 [chromium-mobile] › tests/e2e/v6-google-navigation.spec.ts:100:1 › lien Google classique dynamique : confirmation, question exacte, lien de repli et entrée IA sans question (1.6s)
+  ✓  122 [chromium-mobile] › tests/e2e/v6-google-navigation.spec.ts:187:1 › session : source exacte, origine opaque insuffisante, nonce, rejeu, expiration et renouvellement du cadre (1.4s)
+  ✓  123 [chromium-mobile] › tests/e2e/v6-google-navigation.spec.ts:273:1 › question sensible refusée, offline, copie manuelle, ouverture silencieusement bloquée et exception (1.6s)
+  ✓  124 [chromium-mobile] › tests/e2e/v6-google-navigation.spec.ts:377:1 › HTML autonome : lien classique en nouvel onglet et entrée IA sans préremplissage revendiqué (461ms)
+  ✓  125 [chromium-mobile] › tests/e2e/v6-improvements.spec.ts:37:1 › nouveautés en carte et dans les options, HTML épuré, repère conservé au rechargement et hors ligne (1.9s)
+  ✓  126 [chromium-mobile] › tests/e2e/v6-improvements.spec.ts:144:3 › Cloud simulé sans interception par le service worker › sync visible : en cours, échec, clic réessayer, succès daté, changements en attente et automatique désactivée (956ms)
+  ✓  127 [chromium-mobile] › tests/e2e/v6.spec.ts:57:1 › V6 : 08→16→21, une carte journée, historique, recherche, original, notes et doublon (2.3s)
+  ✓  128 [chromium-mobile] › tests/e2e/v6.spec.ts:149:1 › V6 : dernière édition affichée malgré les avertissements, historique fiable et nouvelle journée conservés (801ms)
+  ✓  129 [chromium-mobile] › tests/e2e/v6.spec.ts:169:1 › V6 : onglets, huit thèmes, image embarquée, zoom jusqu’à 200 %, offline et neuf largeurs (5.8s)
+  ✓  130 [chromium-mobile] › tests/e2e/v6.spec.ts:254:1 › V6 : tous les boutons de section, v2 question seule, copie corrigée et entrée Google sans données privées (2.0s)
+  ✓  131 [chromium-mobile] › tests/e2e/v6.spec.ts:373:1 › V6 : mode sécurisé, presse-papier refusé, popup bloquée et offline ont un repli manuel (7.9s)
+  ✓  132 [chromium-mobile] › tests/e2e/v61.spec.ts:37:1 › V6.1 : les treize ancres conservent le document, le JS, les thèmes et les filtres (1.9s)
+  ✓  133 [chromium-mobile] › tests/e2e/v61.spec.ts:82:1 › V6.1 : onze boutons sans ancien marquage demandent confirmation, copie et lancement des onze questions (3.9s)
+  ✓  134 [chromium-mobile] › tests/e2e/v61.spec.ts:200:1 › V6.1 : ancres sans JS, questions parent puis retour interactif et rechargement conservent le pont (8.2s)
+  ✓  135 [chromium-mobile] › tests/e2e/v61.spec.ts:251:1 › V6.1 : préremplissage borné, offline et lien de repli conservent la question confirmée (1.0s)
+  ✓  136 [chromium-mobile] › tests/e2e/v64-google-buttons.spec.ts:64:1 › 6.4.3 : le lien Mode IA d’un article ouvre la confirmation PWA avec sa question, puis Google Mode IA et la recherche Google (1.2s)
+  ✓  137 [chromium-mobile] › tests/e2e/v64-google-buttons.spec.ts:100:1 › 6.4.3 : « En savoir plus » reste local et le lien de l’approfondissement reprend la question affichée (1.0s)
+  ✓  138 [chromium-mobile] › tests/e2e/v64-google-buttons.spec.ts:119:1 › lien Mode IA sans question : la confirmation s’ouvre quand même et Google Mode IA reste disponible (927ms)
+  ✓  139 [chromium-mobile] › tests/e2e/v64-google-buttons.spec.ts:156:1 › 6.4 à fenêtre (6.4.1) : « En savoir plus » ouvre directement la confirmation PWA, la fenêtre du journal reste fermée (918ms)
+  ✓  140 [chromium-mobile] › tests/e2e/v64-google-buttons.spec.ts:176:1 › doublon exact réimporté : le dernier import remplace l’ancienne copie, une seule édition reste (536ms)
+
+
+  1) [chromium] › tests/e2e/v6-daily.spec.ts:127:1 › lot désordonné, doublon renommé et nouvelle journée : la dernière édition reste seule, recherche limitée au HTML courant
+
+    Error: expect(locator).toBeEnabled() failed
+
+    Locator:  getByRole('dialog').filter({ has: getByRole('heading', { name: 'Vérifier l’import', exact: true }) }).getByRole('button', { name: 'Enregistrer dans ma bibliothèque', exact: true })
+    Expected: enabled
+    Received: disabled
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toBeEnabled" getByRole('dialog').filter({ has: getByRole('heading', { name: 'Vérifier l’import', exact: true }) }).getByRole('button', { name: 'Enregistrer dans ma bibliothèque', exact: true }) with timeout 10000ms
+      - waiting for getByRole('dialog').filter({ has: getByRole('heading', { name: 'Vérifier l’import', exact: true }) }).getByRole('button', { name: 'Enregistrer dans ma bibliothèque', exact: true })
+        24 × locator resolved to <button disabled class="primary">…</button>
+           - unexpected value "disabled"
+
+
+      193 |   await expect(save).toBeDisabled();
+      194 |   await date.fill("2026-10-17");
+    > 195 |   await expect(save).toBeEnabled();
+          |                      ^
+      196 |   await expect(
+      197 |     modal.getByRole("combobox", { name: "Conservation", exact: true }),
+      198 |   ).toHaveValue("day");
+        at /private<baseline>/tests/e2e/v6-daily.spec.ts:195:22
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v6-daily-lot-désordonné-do-ea80e-che-limitée-au-HTML-courant-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v6-daily-lot-désordonné-do-ea80e-che-limitée-au-HTML-courant-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v6-daily-lot-désordonné-do-ea80e-che-limitée-au-HTML-courant-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v6-daily-lot-désordonné-do-ea80e-che-limitée-au-HTML-courant-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [webkit] › tests/e2e/v6-daily.spec.ts:127:1 › lot désordonné, doublon renommé et nouvelle journée : la dernière édition reste seule, recherche limitée au HTML courant
+
+    Error: expect(locator).toBeEnabled() failed
+
+    Locator:  getByRole('dialog').filter({ has: getByRole('heading', { name: 'Vérifier l’import', exact: true }) }).getByRole('button', { name: 'Enregistrer dans ma bibliothèque', exact: true })
+    Expected: enabled
+    Received: disabled
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toBeEnabled" getByRole('dialog').filter({ has: getByRole('heading', { name: 'Vérifier l’import', exact: true }) }).getByRole('button', { name: 'Enregistrer dans ma bibliothèque', exact: true }) with timeout 10000ms
+      - waiting for getByRole('dialog').filter({ has: getByRole('heading', { name: 'Vérifier l’import', exact: true }) }).getByRole('button', { name: 'Enregistrer dans ma bibliothèque', exact: true })
+        24 × locator resolved to <button disabled class="primary">…</button>
+           - unexpected value "disabled"
+
+
+      193 |   await expect(save).toBeDisabled();
+      194 |   await date.fill("2026-10-17");
+    > 195 |   await expect(save).toBeEnabled();
+          |                      ^
+      196 |   await expect(
+      197 |     modal.getByRole("combobox", { name: "Conservation", exact: true }),
+      198 |   ).toHaveValue("day");
+        at /private<baseline>/tests/e2e/v6-daily.spec.ts:195:22
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v6-daily-lot-désordonné-do-ea80e-che-limitée-au-HTML-courant-webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v6-daily-lot-désordonné-do-ea80e-che-limitée-au-HTML-courant-webkit/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v6-daily-lot-désordonné-do-ea80e-che-limitée-au-HTML-courant-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v6-daily-lot-désordonné-do-ea80e-che-limitée-au-HTML-courant-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium-mobile] › tests/e2e/v6-daily.spec.ts:127:1 › lot désordonné, doublon renommé et nouvelle journée : la dernière édition reste seule, recherche limitée au HTML courant
+
+    Error: expect(locator).toBeEnabled() failed
+
+    Locator:  getByRole('dialog').filter({ has: getByRole('heading', { name: 'Vérifier l’import', exact: true }) }).getByRole('button', { name: 'Enregistrer dans ma bibliothèque', exact: true })
+    Expected: enabled
+    Received: disabled
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toBeEnabled" getByRole('dialog').filter({ has: getByRole('heading', { name: 'Vérifier l’import', exact: true }) }).getByRole('button', { name: 'Enregistrer dans ma bibliothèque', exact: true }) with timeout 10000ms
+      - waiting for getByRole('dialog').filter({ has: getByRole('heading', { name: 'Vérifier l’import', exact: true }) }).getByRole('button', { name: 'Enregistrer dans ma bibliothèque', exact: true })
+        24 × locator resolved to <button disabled class="primary">…</button>
+           - unexpected value "disabled"
+
+
+      193 |   await expect(save).toBeDisabled();
+      194 |   await date.fill("2026-10-17");
+    > 195 |   await expect(save).toBeEnabled();
+          |                      ^
+      196 |   await expect(
+      197 |     modal.getByRole("combobox", { name: "Conservation", exact: true }),
+      198 |   ).toHaveValue("day");
+        at /private<baseline>/tests/e2e/v6-daily.spec.ts:195:22
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v6-daily-lot-désordonné-do-ea80e-che-limitée-au-HTML-courant-chromium-mobile/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v6-daily-lot-désordonné-do-ea80e-che-limitée-au-HTML-courant-chromium-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v6-daily-lot-désordonné-do-ea80e-che-limitée-au-HTML-courant-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v6-daily-lot-désordonné-do-ea80e-che-limitée-au-HTML-courant-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    [chromium] › tests/e2e/v6-daily.spec.ts:127:1 › lot désordonné, doublon renommé et nouvelle journée : la dernière édition reste seule, recherche limitée au HTML courant
+    [webkit] › tests/e2e/v6-daily.spec.ts:127:1 › lot désordonné, doublon renommé et nouvelle journée : la dernière édition reste seule, recherche limitée au HTML courant
+    [chromium-mobile] › tests/e2e/v6-daily.spec.ts:127:1 › lot désordonné, doublon renommé et nouvelle journée : la dernière édition reste seule, recherche limitée au HTML courant
+  1 skipped
+  136 passed (9.1m)

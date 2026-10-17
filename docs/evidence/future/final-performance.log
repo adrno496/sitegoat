@@ -1,0 +1,12 @@
+
+> journal360-mobile@2.0.7 test:performance
+> vitest run --config vitest.performance.config.ts
+
+
+ RUN  v5.0.4 <workspace>
+
+
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+   Start at  20:12:08
+   Duration  35.19s (tests 97%, environment 2%, import 1%)

@@ -1,0 +1,33 @@
+[WebServer] (node:95134) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:95141) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 18 tests using 1 worker
+
+(node:95142) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/v6-future.spec.ts:43:1 › Le Futur : HTML dédié, six modules, notes, révision confirmée, export, sauvegarde et offline (2.6s)
+  ✓   2 [chromium] › tests/e2e/v6-future.spec.ts:204:1 › Le Futur : conflits, hostile, doublons et transfert explicite des journaux (1.2s)
+  ✓   3 [chromium] › tests/e2e/v6-future.spec.ts:265:1 › Le Futur : clavier, axe, quatre largeurs, mouvement réduit et sombre (3.0s)
+  ✓   4 [chromium] › tests/e2e/v6-future.spec.ts:356:1 › Le Futur : migration AI-RADAR explicite et revue personnelle distincte de la source déclarée (748ms)
+  ✓   5 [chromium] › tests/e2e/v6-future.spec.ts:390:1 › Le Futur : capacité insuffisante et lot mixte avec un journal (753ms)
+  ✓   6 [chromium] › tests/e2e/v6-future.spec.ts:448:1 › Le Futur : lot désordonné, doublon HTML/JSON et confirmations par révision (1.4s)
+(node:95220) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   7 [webkit] › tests/e2e/v6-future.spec.ts:43:1 › Le Futur : HTML dédié, six modules, notes, révision confirmée, export, sauvegarde et offline (3.3s)
+  ✓   8 [webkit] › tests/e2e/v6-future.spec.ts:204:1 › Le Futur : conflits, hostile, doublons et transfert explicite des journaux (1.7s)
+  ✓   9 [webkit] › tests/e2e/v6-future.spec.ts:265:1 › Le Futur : clavier, axe, quatre largeurs, mouvement réduit et sombre (4.5s)
+  ✓  10 [webkit] › tests/e2e/v6-future.spec.ts:356:1 › Le Futur : migration AI-RADAR explicite et revue personnelle distincte de la source déclarée (1.1s)
+  ✓  11 [webkit] › tests/e2e/v6-future.spec.ts:390:1 › Le Futur : capacité insuffisante et lot mixte avec un journal (1.0s)
+  ✓  12 [webkit] › tests/e2e/v6-future.spec.ts:448:1 › Le Futur : lot désordonné, doublon HTML/JSON et confirmations par révision (1.3s)
+(node:95339) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [chromium-mobile] › tests/e2e/v6-future.spec.ts:43:1 › Le Futur : HTML dédié, six modules, notes, révision confirmée, export, sauvegarde et offline (2.7s)
+  ✓  14 [chromium-mobile] › tests/e2e/v6-future.spec.ts:204:1 › Le Futur : conflits, hostile, doublons et transfert explicite des journaux (1.7s)
+  ✓  15 [chromium-mobile] › tests/e2e/v6-future.spec.ts:265:1 › Le Futur : clavier, axe, quatre largeurs, mouvement réduit et sombre (4.6s)
+  ✓  16 [chromium-mobile] › tests/e2e/v6-future.spec.ts:356:1 › Le Futur : migration AI-RADAR explicite et revue personnelle distincte de la source déclarée (800ms)
+  ✓  17 [chromium-mobile] › tests/e2e/v6-future.spec.ts:390:1 › Le Futur : capacité insuffisante et lot mixte avec un journal (830ms)
+  ✓  18 [chromium-mobile] › tests/e2e/v6-future.spec.ts:448:1 › Le Futur : lot désordonné, doublon HTML/JSON et confirmations par révision (1.4s)
+
+  18 passed (37.5s)

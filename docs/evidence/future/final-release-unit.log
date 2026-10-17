@@ -1,0 +1,16 @@
+
+> journal360-mobile@2.0.7 test
+> vitest run
+
+
+ RUN  v5.0.4 <workspace>
+
+
+ Test Files  18 passed (18)
+      Tests  259 passed (259)
+   Start at  20:45:31
+   Duration  7.46s (tests 50%, environment 34%, import 10%, transform 3%, setup 2%)
+
+Environment  jsdom was created 18 times · 11.96s total, 34% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments

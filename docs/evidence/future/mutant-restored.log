@@ -1,0 +1,8 @@
+
+ RUN  v5.0.4 <workspace>
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 24 skipped (25)
+   Start at  19:53:06
+   Duration  448ms (environment 65%, import 22%, transform 5%, setup 4%, tests 3%, worker 1%)

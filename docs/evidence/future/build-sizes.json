@@ -3,54 +3,55 @@
     {
       "file": "assets/index-CdAZAwLy.js",
       "bytes": 866147,
-      "gzipBytes": 250262
+      "gzipBytes": 250553
     },
     {
       "file": "assets/index-DsfJfvS7.css",
       "bytes": 40611,
-      "gzipBytes": 8785
+      "gzipBytes": 8779
     },
     {
       "file": "assets/workbox-window.prod.es5-Bd17z0YL.js",
       "bytes": 5653,
-      "gzipBytes": 2214
+      "gzipBytes": 2199
     }
   ],
   "release": [
     {
       "file": "assets/FutureView-B2YKSC_-.css",
       "bytes": 2477,
-      "gzipBytes": 937
+      "gzipBytes": 932
     },
     {
-      "file": "assets/FutureView-DH-288nP.js",
+      "file": "assets/FutureView-DPaFV8eC.js",
       "bytes": 29579,
-      "gzipBytes": 9470
+      "gzipBytes": 9476
     },
     {
-      "file": "assets/ImportDialog-CC1e4a5U.js",
-      "bytes": 4709,
-      "gzipBytes": 2039
+      "file": "assets/ImportDialog-uXi0wltN.js",
+      "bytes": 5610,
+      "gzipBytes": 2328
     },
     {
-      "file": "assets/db-CiLsp8Ck.js",
-      "bytes": 25010,
-      "gzipBytes": 8529
+      "file": "assets/db-ChLL9lzv.js",
+      "bytes": 25041,
+      "gzipBytes": 8536
     },
     {
       "file": "assets/index-CvFXhY6k.css",
       "bytes": 40665,
-      "gzipBytes": 8796
+      "gzipBytes": 8790
     },
     {
-      "file": "assets/index-Dm3k3ptP.js",
+      "file": "assets/index-Sq91AEjA.js",
       "bytes": 874054,
-      "gzipBytes": 252647
+      "gzipBytes": 252921
     },
     {
       "file": "assets/workbox-window.prod.es5-Bd17z0YL.js",
       "bytes": 5653,
-      "gzipBytes": 2214
+      "gzipBytes": 2199
     }
-  ]
+  ],
+  "method": "Node zlib gzip level 9, identical settings for baseline and release; bytes exclude HTTP headers"
 }

@@ -1,0 +1,33 @@
+
+ RUN  v5.0.4 <workspace>
+
+ ❯ tests/future.unit.test.ts (25 tests | 1 failed | 24 skipped) 16ms
+   ❯ Le Futur : frontière documentaire et validation (18)
+     × refuse dates futures et observation de prospective sans preuve 14ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/future.unit.test.ts > Le Futur : frontière documentaire et validation > refuse dates futures et observation de prospective sans preuve
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/future.unit.test.ts:108:37
+    106|     ];
+    107|     p.scenarios[0].milestones[0].observedAt = "2026-10-01";
+    108|     expect(() => validateFuture(p)).toThrow(/jalon futur/);
+       |                                     ^
+    109|     p.provenance.sources[0].publishedAt = "2026-02-30";
+    110|     expect(() => validateFuture(p)).toThrow();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 24 skipped (25)
+   Start at  19:53:05
+   Duration  835ms (environment 69%, import 17%, transform 7%, setup 4%, tests 2%, worker 1%)

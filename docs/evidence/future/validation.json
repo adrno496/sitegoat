@@ -1,0 +1,60 @@
+{
+  "scope": "Local evidence before push. Functional source at 14ab3ca; following edits documentation only.",
+  "latestChecks": [
+    {
+      "check": "typecheck",
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "durationSeconds": 4.61
+    },
+    {
+      "check": "lint",
+      "command": "npm run lint",
+      "exitCode": 0,
+      "durationSeconds": 1.97
+    },
+    {
+      "check": "build",
+      "command": "npm run build",
+      "exitCode": 0,
+      "durationSeconds": 5.8
+    },
+    {
+      "check": "unit",
+      "command": "npm test",
+      "exitCode": 0,
+      "durationSeconds": 7.87
+    },
+    {
+      "check": "future-performance",
+      "command": "npx vitest run --config vitest.performance.config.ts tests/future.performance.test.ts",
+      "exitCode": 0,
+      "durationSeconds": 7.19
+    }
+  ],
+  "unitTestsPassed": 259,
+  "fullE2E": {
+    "passed": 154,
+    "skipped": 1,
+    "log": "final-e2e.log",
+    "note": "Before final Future-only refinements and sixth test; not a complete run of the final 158-case suite."
+  },
+  "finalFutureE2E": {
+    "passed": 18,
+    "check": {
+      "check": "future-e2e",
+      "command": "npx playwright test tests/e2e/v6-future.spec.ts",
+      "exitCode": 0,
+      "durationSeconds": 38.25
+    },
+    "log": "batch-final-future-e2e.log",
+    "note": "After preview/batch refinements; subsequent ISO metadata normalization covered by integration unit."
+  },
+  "performance": {
+    "fullSuitePassed": 4,
+    "log": "final-performance.log",
+    "latestFutureSuitePassed": 1,
+    "logLatest": "final-release-future-performance.log"
+  },
+  "remoteCI": "Consult GitHub Actions for the pushed main SHA; not a local test result."
+}
