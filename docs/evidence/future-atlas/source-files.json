@@ -1,0 +1,74 @@
+[
+  {
+    "file": "src/features/future/FutureView.tsx",
+    "sha256": "c691bb92e9579d6c15be71f1e3e68e2a10fb0c3e0716f561b1c23b51d1e86b8a"
+  },
+  {
+    "file": "src/features/future/future.css",
+    "sha256": "8befec2f796aa633d3c90f2c4a84197c65fa5fb772e7cda124052f19e2760d3e"
+  },
+  {
+    "file": "tests/e2e/v6-future.spec.ts",
+    "sha256": "95197a8c27fa874a1ad7eaa0418febafb9c701daa89a7cdf693e2508224f7f3a"
+  },
+  {
+    "file": "src/features/future/FutureActions.tsx",
+    "sha256": "05aa0f3aa1457d96e07ed7fd12d5373194dd53359fc2817d46704cc59be550d9"
+  },
+  {
+    "file": "src/features/future/FutureDetail.tsx",
+    "sha256": "f15d7cec25dd265b44f7f70321a66b9a6f514b533cf02f54a57abcb01549e0a1"
+  },
+  {
+    "file": "src/features/future/FutureEvidence.tsx",
+    "sha256": "7197efd4092e59576bbf12816d4a7c3c45a32ebe4c2d9cb4d6612b2dd1826376"
+  },
+  {
+    "file": "src/features/future/FutureOverview.tsx",
+    "sha256": "148c5488cd90179446a6f24de089e87de66e3f041f0ef920a2df6511a5341b08"
+  },
+  {
+    "file": "src/features/future/FuturePersonalNotes.tsx",
+    "sha256": "81dd587723183ec3b64dd891de5c5f3f78eaea8b4849c31ed23932d7f084d675"
+  },
+  {
+    "file": "src/features/future/FutureScenarioCompare.tsx",
+    "sha256": "be0416baf82711fd383d5e73e4931ed36d07a6842bb9167a29f756cb7711e5cb"
+  },
+  {
+    "file": "src/features/future/FutureSignals.tsx",
+    "sha256": "bbb1692517336d9bf8a2b7fde658c4b15ba6f3b257dcab3b615aa5c439f28eb1"
+  },
+  {
+    "file": "src/features/future/FutureSources.tsx",
+    "sha256": "10f7031e392817c12298d362e24629cc0fd04d9ca9707a2af623b4e8bce0979b"
+  },
+  {
+    "file": "src/features/future/FutureTimeline.tsx",
+    "sha256": "b23f44215f752d54fa9843465a86ebbfc40076b773515d5ea793ed6f681020dc"
+  },
+  {
+    "file": "src/features/future/hooks.ts",
+    "sha256": "abec9246dee0defd537dec1c1a7f241be708655168add1f4230457f737c93241"
+  },
+  {
+    "file": "src/features/future/selectors.ts",
+    "sha256": "21041bbc3865ac7e387f7793cc9b61aefa84a0e0d734fb1b1b9d04b15613f50b"
+  },
+  {
+    "file": "tests/e2e/v6-future-atlas.spec.ts",
+    "sha256": "8fb81df14db5d32338501058c78c62ab411c9cf46f6e5c9791f06fe321f33008"
+  },
+  {
+    "file": "tests/future-atlas.unit.test.ts",
+    "sha256": "26294f8f06280be4af0025fbf01b692508d008dba9e04719f4a4c0db901f3ffe"
+  },
+  {
+    "file": "scripts/measure-future-atlas.mjs",
+    "sha256": "92a72a73db4f266661fa2e28fd506b74b2ba4d8d1a9797689e991a4cdc753e44"
+  },
+  {
+    "file": "scripts/compare-future-atlas-tabs.mjs",
+    "sha256": "f9c922c0340964b68a0ba834d78f6b6795d7263b24a75fb63ebee798a93fce4f"
+  }
+]

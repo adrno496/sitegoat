@@ -1,0 +1,17 @@
+{
+  "sha": "5e61d02ca4403e2f117c1a349e35366924228d37",
+  "archiveSha256": "48ce67e8364c991ef186cd038de3b572986c0f070accb8032fcebedd5220c4c0",
+  "job": {
+    "pid": 61352,
+    "log": "/Users/dreano/Downloads/veille/veille/docs/evidence/future-atlas/baseline.log",
+    "start": 1792270781698,
+    "status": "complete",
+    "code": 0,
+    "seconds": 641.477
+  },
+  "unitPassed": 259,
+  "e2ePassed": 157,
+  "e2eSkipped": 1,
+  "performancePassed": 4,
+  "scope": "isolated source archive and synthetic IndexedDB only; user browser data not accessed"
+}

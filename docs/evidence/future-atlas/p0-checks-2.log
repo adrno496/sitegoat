@@ -1,0 +1,28 @@
+src/features/future/FutureActions.tsx 70ms
+src/features/future/FutureDetail.tsx 31ms
+src/features/future/FutureEvidence.tsx 6ms
+src/features/future/FutureOverview.tsx 6ms
+src/features/future/FuturePersonalNotes.tsx 7ms
+src/features/future/FutureScenarioCompare.tsx 10ms
+src/features/future/FutureSignals.tsx 9ms
+src/features/future/FutureSources.tsx 12ms
+src/features/future/FutureTimeline.tsx 21ms
+src/features/future/FutureView.tsx 49ms
+src/features/future/selectors.ts 9ms
+src/features/future/hooks.ts 7ms
+src/features/future/future.css 81ms
+scripts/measure-future-atlas.mjs 30ms
+tests/e2e/v6-future.spec.ts 46ms
+
+> journal360-mobile@2.0.7 typecheck
+> tsc -b
+
+
+> journal360-mobile@2.0.7 lint
+> eslint .
+
+
+<workspace>/src/features/future/FutureView.tsx
+  28:7  error  'format' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+✖ 1 problem (1 error, 0 warnings)

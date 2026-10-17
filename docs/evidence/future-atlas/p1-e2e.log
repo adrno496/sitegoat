@@ -1,0 +1,109 @@
+
+Running 36 tests using 1 worker
+
+  ✓   1 [chromium] › tests/e2e/v6-future-atlas.spec.ts:60:1 › Atlas P0 : compteurs réels, filtres, favoris, pagination et retour du focus (8.9s)
+  ✓   2 [chromium] › tests/e2e/v6-future-atlas.spec.ts:125:1 › Atlas P1 : frise fidèle, clavier, liens déclarés et comparateur (1.8s)
+  ✓   3 [chromium] › tests/e2e/v6-future-atlas.spec.ts:174:1 › Atlas P1 : préparation enregistrée, erreur de quota et brouillon conservé (2.5s)
+  ✓   4 [chromium] › tests/e2e/v6-future-atlas.spec.ts:226:1 › Atlas : zéro, un, beaucoup de jalons, autres scénarios et absence de source (1.7s)
+  ✘   5 [chromium] › tests/e2e/v6-future-atlas.spec.ts:279:1 › Atlas : WCAG sur parcours, reflow, mouvement réduit et tests des tests (45.2s)
+  ✓   6 [chromium] › tests/e2e/v6-future-atlas.spec.ts:385:1 › Atlas : base Le Futur indisponible, erreur visible et autres onglets accessibles (472ms)
+  ✓   7 [chromium] › tests/e2e/v6-future.spec.ts:46:1 › Le Futur : HTML dédié, six modules, notes, révision confirmée, export, sauvegarde et offline (2.9s)
+  ✓   8 [chromium] › tests/e2e/v6-future.spec.ts:213:1 › Le Futur : conflits, hostile, doublons et transfert explicite des journaux (1.4s)
+  ✓   9 [chromium] › tests/e2e/v6-future.spec.ts:274:1 › Le Futur : clavier, axe, quatre largeurs, mouvement réduit et sombre (4.0s)
+  ✓  10 [chromium] › tests/e2e/v6-future.spec.ts:365:1 › Le Futur : migration AI-RADAR explicite et revue personnelle distincte de la source déclarée (802ms)
+  ✓  11 [chromium] › tests/e2e/v6-future.spec.ts:399:1 › Le Futur : capacité insuffisante et lot mixte avec un journal (800ms)
+  ✓  12 [chromium] › tests/e2e/v6-future.spec.ts:457:1 › Le Futur : lot désordonné, doublon HTML/JSON et confirmations par révision (986ms)
+  ✓  13 [webkit] › tests/e2e/v6-future-atlas.spec.ts:60:1 › Atlas P0 : compteurs réels, filtres, favoris, pagination et retour du focus (8.7s)
+  ✓  14 [webkit] › tests/e2e/v6-future-atlas.spec.ts:125:1 › Atlas P1 : frise fidèle, clavier, liens déclarés et comparateur (1.8s)
+  ✓  15 [webkit] › tests/e2e/v6-future-atlas.spec.ts:174:1 › Atlas P1 : préparation enregistrée, erreur de quota et brouillon conservé (2.4s)
+  ✓  16 [webkit] › tests/e2e/v6-future-atlas.spec.ts:226:1 › Atlas : zéro, un, beaucoup de jalons, autres scénarios et absence de source (1.7s)
+  ✘  17 [webkit] › tests/e2e/v6-future-atlas.spec.ts:279:1 › Atlas : WCAG sur parcours, reflow, mouvement réduit et tests des tests (45.2s)
+  ✓  18 [webkit] › tests/e2e/v6-future-atlas.spec.ts:385:1 › Atlas : base Le Futur indisponible, erreur visible et autres onglets accessibles (1.6s)
+  ✓  19 [webkit] › tests/e2e/v6-future.spec.ts:46:1 › Le Futur : HTML dédié, six modules, notes, révision confirmée, export, sauvegarde et offline (3.7s)
+  ✓  20 [webkit] › tests/e2e/v6-future.spec.ts:213:1 › Le Futur : conflits, hostile, doublons et transfert explicite des journaux (1.7s)
+  ✓  21 [webkit] › tests/e2e/v6-future.spec.ts:274:1 › Le Futur : clavier, axe, quatre largeurs, mouvement réduit et sombre (5.2s)
+  ✓  22 [webkit] › tests/e2e/v6-future.spec.ts:365:1 › Le Futur : migration AI-RADAR explicite et revue personnelle distincte de la source déclarée (1.2s)
+  ✓  23 [webkit] › tests/e2e/v6-future.spec.ts:399:1 › Le Futur : capacité insuffisante et lot mixte avec un journal (1.1s)
+  ✓  24 [webkit] › tests/e2e/v6-future.spec.ts:457:1 › Le Futur : lot désordonné, doublon HTML/JSON et confirmations par révision (1.4s)
+  ✓  25 [chromium-mobile] › tests/e2e/v6-future-atlas.spec.ts:60:1 › Atlas P0 : compteurs réels, filtres, favoris, pagination et retour du focus (1.9s)
+  ✓  26 [chromium-mobile] › tests/e2e/v6-future-atlas.spec.ts:125:1 › Atlas P1 : frise fidèle, clavier, liens déclarés et comparateur (1.3s)
+  ✓  27 [chromium-mobile] › tests/e2e/v6-future-atlas.spec.ts:174:1 › Atlas P1 : préparation enregistrée, erreur de quota et brouillon conservé (2.6s)
+  ✓  28 [chromium-mobile] › tests/e2e/v6-future-atlas.spec.ts:226:1 › Atlas : zéro, un, beaucoup de jalons, autres scénarios et absence de source (1.2s)
+  ✓  29 [chromium-mobile] › tests/e2e/v6-future-atlas.spec.ts:279:1 › Atlas : WCAG sur parcours, reflow, mouvement réduit et tests des tests (3.9s)
+  ✓  30 [chromium-mobile] › tests/e2e/v6-future-atlas.spec.ts:385:1 › Atlas : base Le Futur indisponible, erreur visible et autres onglets accessibles (766ms)
+  ✓  31 [chromium-mobile] › tests/e2e/v6-future.spec.ts:46:1 › Le Futur : HTML dédié, six modules, notes, révision confirmée, export, sauvegarde et offline (2.9s)
+  ✓  32 [chromium-mobile] › tests/e2e/v6-future.spec.ts:213:1 › Le Futur : conflits, hostile, doublons et transfert explicite des journaux (1.3s)
+  ✓  33 [chromium-mobile] › tests/e2e/v6-future.spec.ts:274:1 › Le Futur : clavier, axe, quatre largeurs, mouvement réduit et sombre (5.4s)
+  ✓  34 [chromium-mobile] › tests/e2e/v6-future.spec.ts:365:1 › Le Futur : migration AI-RADAR explicite et revue personnelle distincte de la source déclarée (1.1s)
+  ✓  35 [chromium-mobile] › tests/e2e/v6-future.spec.ts:399:1 › Le Futur : capacité insuffisante et lot mixte avec un journal (1.0s)
+  ✓  36 [chromium-mobile] › tests/e2e/v6-future.spec.ts:457:1 › Le Futur : lot désordonné, doublon HTML/JSON et confirmations par révision (1.6s)
+
+
+  1) [chromium] › tests/e2e/v6-future-atlas.spec.ts:279:1 › Atlas : WCAG sur parcours, reflow, mouvement réduit et tests des tests
+
+    Test timeout of 45000ms exceeded.
+
+    Error: locator.selectOption: Test timeout of 45000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Animations', { exact: true })
+
+
+      305 |   await reducedGuard(page);
+      306 |   await page.emulateMedia({ reducedMotion: "no-preference" });
+    > 307 |   await page.getByLabel("Animations", { exact: true }).selectOption("off");
+          |                                                        ^
+      308 |   await page
+      309 |     .getByRole("button", { name: "Horizon précédent", exact: false })
+      310 |     .click();
+        at <workspace>/tests/e2e/v6-future-atlas.spec.ts:307:56
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v6-future-atlas-Atlas-WCAG-183b6-t-réduit-et-tests-des-tests-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v6-future-atlas-Atlas-WCAG-183b6-t-réduit-et-tests-des-tests-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v6-future-atlas-Atlas-WCAG-183b6-t-réduit-et-tests-des-tests-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v6-future-atlas-Atlas-WCAG-183b6-t-réduit-et-tests-des-tests-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [webkit] › tests/e2e/v6-future-atlas.spec.ts:279:1 › Atlas : WCAG sur parcours, reflow, mouvement réduit et tests des tests
+
+    Test timeout of 45000ms exceeded.
+
+    Error: locator.selectOption: Test timeout of 45000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Animations', { exact: true })
+
+
+      305 |   await page.getByLabel("Animations", { exact: true }).selectOption("off");
+      306 |   await page
+    > 307 |     .getByRole("button", { name: "Horizon précédent", exact: false })
+          |                                                        ^
+      308 |     .click();
+      309 |   await reducedGuard(page);
+      310 |   for (const width of [320, 390, 768, 1440]) {
+        at <workspace>/tests/e2e/v6-future-atlas.spec.ts:307:56
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v6-future-atlas-Atlas-WCAG-183b6-t-réduit-et-tests-des-tests-webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v6-future-atlas-Atlas-WCAG-183b6-t-réduit-et-tests-des-tests-webkit/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v6-future-atlas-Atlas-WCAG-183b6-t-réduit-et-tests-des-tests-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v6-future-atlas-Atlas-WCAG-183b6-t-réduit-et-tests-des-tests-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [chromium] › tests/e2e/v6-future-atlas.spec.ts:279:1 › Atlas : WCAG sur parcours, reflow, mouvement réduit et tests des tests
+    [webkit] › tests/e2e/v6-future-atlas.spec.ts:279:1 › Atlas : WCAG sur parcours, reflow, mouvement réduit et tests des tests
+  34 passed (2.9m)

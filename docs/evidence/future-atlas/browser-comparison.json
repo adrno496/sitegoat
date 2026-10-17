@@ -1,0 +1,80 @@
+{
+  "method": "Same Chromium desktop, three viewport widths, 5 warm navigations, 40 scripted scroll steps of 110 CSS px, serial before/after after the full E2E run. No mobile CPU emulation or physical device. End-of-page can cap scroll distance; never interpret that as a frame-rate difference. CPU interval includes captures. CDP heap is a checkpoint, not peak RSS.",
+  "results": [
+    {
+      "width": 1440,
+      "before": {
+        "entryMedianMs": 56.44900000000007,
+        "detailMedianMs": 50.05841700000019,
+        "heapUsedBytes": 10466748,
+        "cpuTaskSeconds": 0.22900099999999998,
+        "scrollP95Ms": 16.799999999999727,
+        "scrollDistancePx": 4275,
+        "scrollPixelsPerSecond": 6413.372218621732,
+        "cls": 0.010965684317129628,
+        "lcp": 152
+      },
+      "after": {
+        "entryMedianMs": 57.63412500000004,
+        "detailMedianMs": 47.88608399999998,
+        "heapUsedBytes": 10780788,
+        "cpuTaskSeconds": 0.264446,
+        "scrollP95Ms": 16.700000000000273,
+        "scrollDistancePx": 4400,
+        "scrollPixelsPerSecond": 6600.6600660066015,
+        "cls": 0.010965684317129628,
+        "lcp": 148
+      }
+    },
+    {
+      "width": 768,
+      "before": {
+        "entryMedianMs": 55.467375000000175,
+        "detailMedianMs": 51.66758300000038,
+        "heapUsedBytes": 10468332,
+        "cpuTaskSeconds": 0.22410100000000002,
+        "scrollP95Ms": 16.700000000000273,
+        "scrollDistancePx": 4400,
+        "scrollPixelsPerSecond": 6600.897722090204,
+        "cls": 0,
+        "lcp": 152
+      },
+      "after": {
+        "entryMedianMs": 56.87041599999975,
+        "detailMedianMs": 47.023957999999766,
+        "heapUsedBytes": 10588880,
+        "cpuTaskSeconds": 0.25870200000000004,
+        "scrollP95Ms": 16.700000000000273,
+        "scrollDistancePx": 4400,
+        "scrollPixelsPerSecond": 6600.244209035736,
+        "cls": 0,
+        "lcp": 156
+      }
+    },
+    {
+      "width": 390,
+      "before": {
+        "entryMedianMs": 55.796166000000085,
+        "detailMedianMs": 51.69783300000017,
+        "heapUsedBytes": 10753844,
+        "cpuTaskSeconds": 0.224253,
+        "scrollP95Ms": 16.700000000000273,
+        "scrollDistancePx": 4400,
+        "scrollPixelsPerSecond": 6601.254238305279,
+        "cls": 0,
+        "lcp": 156
+      },
+      "after": {
+        "entryMedianMs": 56.42033300000003,
+        "detailMedianMs": 48.11545800000022,
+        "heapUsedBytes": 10694916,
+        "cpuTaskSeconds": 0.242976,
+        "scrollP95Ms": 16.799999999999727,
+        "scrollDistancePx": 4400,
+        "scrollPixelsPerSecond": 6600.6600660066015,
+        "cls": 0,
+        "lcp": 152
+      }
+    }
+  ]
+}

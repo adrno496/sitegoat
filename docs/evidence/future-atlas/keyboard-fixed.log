@@ -1,0 +1,50 @@
+
+Running 3 tests using 1 worker
+
+  ✓  1 [chromium] › tests/e2e/v6-future-atlas.spec.ts:406:1 › Atlas : parcours clavier des contrôles principaux, import annulable et focus rendu (1.1s)
+  ✓  2 [webkit] › tests/e2e/v6-future-atlas.spec.ts:406:1 › Atlas : parcours clavier des contrôles principaux, import annulable et focus rendu (1.9s)
+  ✘  3 [chromium-mobile] › tests/e2e/v6-future-atlas.spec.ts:406:1 › Atlas : parcours clavier des contrôles principaux, import annulable et focus rendu (11.0s)
+
+
+  1) [chromium-mobile] › tests/e2e/v6-future-atlas.spec.ts:406:1 › Atlas : parcours clavier des contrôles principaux, import annulable et focus rendu
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('.future-card')
+    Expected: 0
+    Received: 1
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toHaveCount" locator('.future-card') with timeout 10000ms
+      - waiting for locator('.future-card')
+        24 × locator resolved to 1 element
+           - unexpected value "1"
+
+
+      434 |   await page.getByLabel("Rechercher un dossier").focus();
+      435 |   await page.keyboard.type("inconnu");
+    > 436 |   await expect(page.locator(".future-card")).toHaveCount(0);
+          |                                              ^
+      437 |   await page.locator(".future-filter-panel")
+      438 |     .getByRole("button", { name: "Effacer les filtres", exact: true })
+      439 |     .focus();
+        at <workspace>/tests/e2e/v6-future-atlas.spec.ts:436:46
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v6-future-atlas-Atlas-parc-8cbfc-rt-annulable-et-focus-rendu-chromium-mobile/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v6-future-atlas-Atlas-parc-8cbfc-rt-annulable-et-focus-rendu-chromium-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v6-future-atlas-Atlas-parc-8cbfc-rt-annulable-et-focus-rendu-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v6-future-atlas-Atlas-parc-8cbfc-rt-annulable-et-focus-rendu-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium-mobile] › tests/e2e/v6-future-atlas.spec.ts:406:1 › Atlas : parcours clavier des contrôles principaux, import annulable et focus rendu
+  2 passed (16.1s)

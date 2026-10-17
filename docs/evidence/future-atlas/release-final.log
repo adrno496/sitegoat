@@ -1,0 +1,262 @@
+
+> journal360-mobile@2.0.7 test
+> vitest run
+
+
+ RUN  v5.0.4 <workspace>
+
+ ✓ tests/sync.unit.test.ts (5 tests) 319ms
+ ✓ tests/collections.unit.test.ts (4 tests) 546ms
+   ✓ le même HTML peut appartenir aux trois espaces sans remplacer une autre destination 307ms
+ ✓ tests/data.unit.test.ts (16 tests) 530ms
+ ✓ tests/v643.unit.test.ts (14 tests) 710ms
+ ✓ tests/v61.unit.test.ts (12 tests) 809ms
+ ✓ tests/daily.unit.test.ts (11 tests) 1319ms
+ ✓ tests/future.unit.test.ts (33 tests) 1553ms
+   ✓ refuse une écriture personnelle valide qui rendrait la sauvegarde impossible 650ms
+ ✓ tests/articles.unit.test.ts (3 tests) 318ms
+ ✓ tests/reading-changes.unit.test.ts (7 tests) 391ms
+ ✓ tests/article-navigation.unit.test.ts (11 tests) 338ms
+ ✓ tests/googleAi.unit.test.ts (56 tests) 223ms
+ ✓ tests/access.unit.test.ts (3 tests) 11ms
+stderr | tests/sync-indicator.unit.test.ts > une modification pendant le transfert reste en attente malgré un premier succès daté
+The current testing environment is not configured to support act(...)
+
+ ✓ tests/backup-api.unit.test.ts (7 tests) 11ms
+stderr | tests/sync-indicator.unit.test.ts > une modification pendant le transfert reste en attente malgré un premier succès daté
+The current testing environment is not configured to support act(...)
+
+ ✓ tests/sync-indicator.unit.test.ts (2 tests) 256ms
+ ✓ tests/googleAiSession.unit.test.ts (26 tests) 16ms
+ ✓ tests/v6-sync.unit.test.ts (5 tests) 67ms
+ ✓ tests/future-atlas.unit.test.ts (4 tests) 42ms
+ ✓ tests/v6.unit.test.ts (43 tests) 3351ms
+   ✓ 2000 articles uniques réellement acceptés 1451ms
+ ✓ tests/cloud.unit.test.ts (1 test) 6040ms
+   ✓ file cloud : une seule opération simultanée, trois échecs conservés et aucun faux succès 6039ms
+
+ Test Files  19 passed (19)
+      Tests  263 passed (263)
+   Start at  23:20:49
+   Duration  7.37s (tests 50%, environment 34%, import 11%, setup 2%, transform 2%)
+
+Environment  jsdom was created 19 times · 11.66s total, 34% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+
+
+> journal360-mobile@2.0.7 test:e2e
+> playwright test
+
+
+Running 182 tests using 1 worker
+
+  ✓    1 [chromium] › tests/e2e/app.spec.ts:36:1 › parcours complet : import, lecture, notes, favori, recherche, offline, export et restauration (2.1s)
+  ✓    2 [chromium] › tests/e2e/app.spec.ts:134:1 › démonstrations, interaction explicite et mémoire basée sur event_id (1.1s)
+  ✓    3 [chromium] › tests/e2e/app.spec.ts:173:1 › renommage doublon, version, archive et corbeille récupérable (7.9s)
+  ✓    4 [chromium] › tests/e2e/app.spec.ts:210:1 › sécurité : parent, stockage, fetch, ressources, top et popups bloqués (845ms)
+  ✓    5 [chromium] › tests/e2e/app.spec.ts:247:1 › responsive, thèmes et accessibilité sur six largeurs (4.6s)
+  ✓    6 [chromium] › tests/e2e/app.spec.ts:283:1 › manifest et réception Web Share Target en service worker (536ms)
+  ✓    7 [chromium] › tests/e2e/app.spec.ts:320:1 › File Handling launchQueue traite un HTML via le même écran de vérification (466ms)
+  ✓    8 [chromium] › tests/e2e/app.spec.ts:360:1 › lecture pleine page : tout le viewport, interactions conservées et retour sur mobile (3.4s)
+  ✓    9 [chromium] › tests/e2e/app.spec.ts:464:1 › mode interactif automatique, choix sécurisé conservé après rechargement et nouvelle édition interactive (1.1s)
+  ✓   10 [chromium] › tests/e2e/google-ai.spec.ts:186:1 › Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation (1.9s)
+  ✓   11 [chromium] › tests/e2e/google-ai.spec.ts:285:1 › Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles refusés (828ms)
+  ✓   12 [chromium] › tests/e2e/google-ai.spec.ts:417:1 › Google IA : seule la confirmation ouvre la question affichée, sans opener, referrer ni notes PWA (878ms)
+  ✓   13 [chromium] › tests/e2e/google-ai.spec.ts:478:1 › Google IA : lecture et confirmation hors ligne, copie HTML originale intacte (958ms)
+  ✓   14 [chromium] › tests/e2e/update.spec.ts:5:1 › mise à jour réelle du service worker sans perte des originaux et favoris (757ms)
+  ✓   15 [chromium] › tests/e2e/v6-articles.spec.ts:33:1 › articles : import, filtres, lecture, sources, favoris, retour du journal et persistance (1.8s)
+  ✓   16 [chromium] › tests/e2e/v6-articles.spec.ts:133:1 › articles : pagination et recherche dans tout l’index (665ms)
+  ✓   17 [chromium] › tests/e2e/v6-articles.spec.ts:162:1 › questions Google depuis les articles : question exacte, édition, copie, ouverture volontaire et hors ligne (1.4s)
+  ✓   18 [chromium] › tests/e2e/v6-articles.spec.ts:262:1 › sommaire : ouvre l’analyse complète dans le HTML dynamique et conserve les questions Google du journal (1.1s)
+  ✓   19 [chromium] › tests/e2e/v6-articles.spec.ts:368:1 › sans question préparée : saisie manuelle, sans inventer depuis le titre ou les notes (628ms)
+  ✓   20 [chromium] › tests/e2e/v6-clean-reader.spec.ts:47:1 › HTML seul : deux petits contrôles, pleine hauteur, réduction et historique navigateur sans perte (1.1s)
+  ✓   21 [chromium] › tests/e2e/v6-clean-reader.spec.ts:113:1 › geste réservé au bord gauche : retour horizontal, mouvements verticaux et mauvais sens ignorés, même sans JS (1.1s)
+  ✓   22 [chromium] › tests/e2e/v6-clean-reader.spec.ts:177:1 › tactile Chromium réel : le défilement du HTML reste libre et le glissement au bord revient (1.1s)
+  ✓   23 [chromium] › tests/e2e/v6-clean-reader.spec.ts:221:1 › les contrôles flottants laissent libre l’en-tête du HTML sur smartphone (672ms)
+  ✓   24 [chromium] › tests/e2e/v6-collections.spec.ts:42:1 › IA majeur et Sentinel : imports dirigés, documents de même date, doublons séparés et retour du lecteur (1.3s)
+  ✓   25 [chromium] › tests/e2e/v6-collections.spec.ts:83:1 › destination modifiable à l’import, recherche, archives, corbeille et mode hors ligne (1.1s)
+  ✓   26 [chromium] › tests/e2e/v6-collections.spec.ts:138:1 › navigation mobile visible et accessibilité des deux nouveaux espaces (1.2s)
+  ✓   27 [chromium] › tests/e2e/v6-daily.spec.ts:64:1 › un HTML par jour : quatre imports successifs remplacent la carte, JS/offline et annotations restent disponibles (23.0s)
+  ✓   28 [chromium] › tests/e2e/v6-daily.spec.ts:127:1 › lot désordonné, doublon renommé et nouvelle journée : la dernière édition reste seule, recherche limitée au HTML courant (29.1s)
+  ✓   29 [chromium] › tests/e2e/v6-daily.spec.ts:205:1 › mise à jour des anciens imports indépendants : regroupement immédiat sans migration des UUID ni réimport (867ms)
+  ✓   30 [chromium] › tests/e2e/v6-daily.spec.ts:272:1 › archiver, corbeille et restaurer une journée ne font pas réapparaître une ancienne carte (915ms)
+  ✓   31 [chromium] › tests/e2e/v6-future-atlas.spec.ts:60:1 › Atlas P0 : compteurs réels, filtres, favoris, pagination et retour du focus (2.0s)
+  ✓   32 [chromium] › tests/e2e/v6-future-atlas.spec.ts:135:1 › Atlas P1 : frise fidèle, clavier, liens déclarés et comparateur (1.8s)
+  ✓   33 [chromium] › tests/e2e/v6-future-atlas.spec.ts:184:1 › Atlas P1 : préparation enregistrée, erreur de quota et brouillon conservé (2.0s)
+  ✘   34 [chromium] › tests/e2e/v6-future-atlas.spec.ts:236:1 › Atlas : zéro, un, beaucoup de jalons, autres scénarios et absence de source (11.7s)
+  ✓   35 [chromium] › tests/e2e/v6-future-atlas.spec.ts:289:1 › Atlas : WCAG sur parcours, reflow, mouvement réduit et tests des tests (4.4s)
+  ✓   36 [chromium] › tests/e2e/v6-future-atlas.spec.ts:395:1 › Atlas : base Le Futur indisponible, erreur visible et autres onglets accessibles (433ms)
+  ✓   37 [chromium] › tests/e2e/v6-future-atlas.spec.ts:418:1 › Atlas : parcours clavier des contrôles principaux, import annulable et focus rendu (1.3s)
+  ✓   38 [chromium] › tests/e2e/v6-future-atlas.spec.ts:491:1 › Atlas : nouvelle révision annoncée avec accès direct aux différences (1.8s)
+  ✓   39 [chromium] › tests/e2e/v6-future.spec.ts:46:1 › Le Futur : HTML dédié, six modules, notes, révision confirmée, export, sauvegarde et offline (2.8s)
+  ✓   40 [chromium] › tests/e2e/v6-future.spec.ts:220:1 › Le Futur : conflits, hostile, doublons et transfert explicite des journaux (1.2s)
+  ✓   41 [chromium] › tests/e2e/v6-future.spec.ts:281:1 › Le Futur : clavier, axe, quatre largeurs, mouvement réduit et sombre (3.6s)
+  ✓   42 [chromium] › tests/e2e/v6-future.spec.ts:372:1 › Le Futur : migration AI-RADAR explicite et revue personnelle distincte de la source déclarée (800ms)
+  ✓   43 [chromium] › tests/e2e/v6-future.spec.ts:406:1 › Le Futur : capacité insuffisante et lot mixte avec un journal (799ms)
+  ✓   44 [chromium] › tests/e2e/v6-future.spec.ts:464:1 › Le Futur : lot désordonné, doublon HTML/JSON et confirmations par révision (1.5s)
+  ✓   45 [chromium] › tests/e2e/v6-google-navigation.spec.ts:100:1 › lien Google classique dynamique : confirmation, question exacte, lien de repli et entrée IA sans question (1.2s)
+  ✓   46 [chromium] › tests/e2e/v6-google-navigation.spec.ts:187:1 › session : source exacte, origine opaque insuffisante, nonce, rejeu, expiration et renouvellement du cadre (850ms)
+  ✓   47 [chromium] › tests/e2e/v6-google-navigation.spec.ts:273:1 › question sensible refusée, offline, copie manuelle, ouverture silencieusement bloquée et exception (988ms)
+  ✓   48 [chromium] › tests/e2e/v6-google-navigation.spec.ts:377:1 › HTML autonome : lien classique en nouvel onglet et entrée IA sans préremplissage revendiqué (270ms)
+  ✓   49 [chromium] › tests/e2e/v6-improvements.spec.ts:37:1 › nouveautés en carte et dans les options, HTML épuré, repère conservé au rechargement et hors ligne (15.5s)
+  ✓   50 [chromium] › tests/e2e/v6-improvements.spec.ts:144:3 › Cloud simulé sans interception par le service worker › sync visible : en cours, échec, clic réessayer, succès daté, changements en attente et automatique désactivée (7.8s)
+  ✘   51 [chromium] › tests/e2e/v6.spec.ts:57:1 › V6 : 08→16→21, une carte journée, historique, recherche, original, notes et doublon (1.0s)
+
+
+  1) [chromium] › tests/e2e/v6-future-atlas.spec.ts:236:1 › Atlas : zéro, un, beaucoup de jalons, autres scénarios et absence de source
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('.future-title').first()
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('.future-title').first() with timeout 10000ms
+      - waiting for locator('.future-title').first()
+
+
+      22 |   await page.getByRole("button", { name: /Importer \d+ fichier/ }).click();
+      23 |   await expect(page.getByRole("dialog")).toHaveCount(0);
+    > 24 |   await expect(page.locator(".future-title").first()).toBeVisible();
+         |                                                       ^
+      25 |   const toast = page.getByRole("button", {
+      26 |     name: "Fermer la notification",
+      27 |     exact: true,
+        at upload (<workspace>/tests/e2e/v6-future-atlas.spec.ts:24:55)
+        at <workspace>/tests/e2e/v6-future-atlas.spec.ts:276:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v6-future-atlas-Atlas-zéro-88359-narios-et-absence-de-source-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v6-future-atlas-Atlas-zéro-88359-narios-et-absence-de-source-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v6-future-atlas-Atlas-zéro-88359-narios-et-absence-de-source-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v6-future-atlas-Atlas-zéro-88359-narios-et-absence-de-source-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › tests/e2e/v6.spec.ts:57:1 › V6 : 08→16→21, une carte journée, historique, recherche, original, notes et doublon
+
+    Test was interrupted.
+
+    Error: locator.click: Test ended.
+    Browser logs:
+
+    <launching> /Users/dreano/Library/Caches/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-mac-arm64/chrome-headless-shell --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --proxy-server=http://127.0.0.1:4199 --proxy-bypass-list=127.0.0.1;localhost --user-data-dir=/var/folders/4l/2_lxwmg92_bgxyw0d_dzyw700000gn/T/playwright_chromiumdev_profile-oTEyBo --remote-debugging-pipe --no-startup-window
+    <launched> pid=92408
+    [pid=92408][err] [1017/232311.562860:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232311.605422:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232313.743479:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232314.602773:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232314.945487:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232315.985818:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232316.035478:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232316.288064:INFO:CONSOLE:66] "[object Object]", source: http://127.0.0.1:4181/assets/index-DWWTYIqF.js (66)
+    [pid=92408][err] [1017/232316.317033:INFO:CONSOLE:66] "[object Object]", source: http://127.0.0.1:4181/assets/index-DWWTYIqF.js (66)
+    [pid=92408][err] [1017/232316.317180:INFO:CONSOLE:66] "[object Object]", source: http://127.0.0.1:4181/assets/index-DWWTYIqF.js (66)
+    [pid=92408][err] [1017/232316.317263:INFO:CONSOLE:66] "[object Object]", source: http://127.0.0.1:4181/assets/index-DWWTYIqF.js (66)
+    [pid=92408][err] [1017/232316.317405:INFO:CONSOLE:66] "[object Object]", source: http://127.0.0.1:4181/assets/index-DWWTYIqF.js (66)
+    [pid=92408][err] [1017/232316.359565:INFO:CONSOLE:66] "[object Object]", source: http://127.0.0.1:4181/assets/index-DWWTYIqF.js (66)
+    [pid=92408][err] [1017/232316.359762:INFO:CONSOLE:8] "Le Futur : date de visite non sauvegardée.", source: http://127.0.0.1:4181/assets/FutureView-DRprZADz.js (8)
+    [pid=92408][err] [1017/232316.424361:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232316.468665:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232317.760763:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232317.806029:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232319.559576:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232319.607471:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232320.610548:INFO:CONSOLE:0] "Blocked script execution in 'about:srcdoc' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.", source: about:srcdoc (0)
+    [pid=92408][err] [1017/232320.673613:INFO:CONSOLE:8150] "Blocked script execution in 'about:srcdoc' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.", source:  (8150)
+    [pid=92408][err] [1017/232320.673652:INFO:CONSOLE:8157] "Blocked script execution in 'about:srcdoc' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.", source:  (8157)
+    [pid=92408][err] [1017/232320.697993:INFO:CONSOLE:8150] "Blocked script execution in 'about:srcdoc' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.", source:  (8150)
+    [pid=92408][err] [1017/232320.698038:INFO:CONSOLE:8157] "Blocked script execution in 'about:srcdoc' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.", source:  (8157)
+    [pid=92408][err] [1017/232321.226082:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232322.316448:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232322.364730:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232323.541404:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232323.590175:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232324.945849:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232325.881726:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232327.139443:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232327.189612:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232327.944188:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232327.991719:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232328.748700:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232328.795083:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232330.276298:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232330.325020:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232330.931931:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232331.014368:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232331.241303:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232331.435356:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232331.483170:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232332.288598:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232332.339416:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232333.281477:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232333.333268:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232333.388004:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232333.472341:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232333.561353:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232333.607629:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232348.390100:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232349.030472:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232349.082492:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232349.213018:INFO:CONSOLE:3] "Service Worker registration blocked by Playwright", source:  (3)
+    [pid=92408][err] [1017/232356.849167:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408][err] [1017/232356.895643:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=92408] <gracefully close start>
+    Call log:
+      - waiting for getByRole('button', { name: 'Enregistrer dans ma bibliothèque', exact: true })
+        - locator resolved to <button class="primary">…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <div class="toast" role="status">…</div> intercepts pointer events
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <div class="toast" role="status">…</div> intercepts pointer events
+        - retrying click action
+          - waiting 100ms
+        - waiting for element to be visible, enabled and stable
+
+
+      35 |       exact: true,
+      36 |     })
+    > 37 |     .click();
+         |      ^
+      38 |   await expect(page.locator(".import-list")).toHaveCount(0);
+      39 |   return html;
+      40 | }
+        at importRevision (<workspace>/tests/e2e/v6.spec.ts:37:6)
+        at <workspace>/tests/e2e/v6.spec.ts:82:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v6-V6-08→16→21-une-carte-j-b1956-e-original-notes-et-doublon-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v6-V6-08→16→21-une-carte-j-b1956-e-original-notes-et-doublon-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v6-V6-08→16→21-une-carte-j-b1956-e-original-notes-et-doublon-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/e2e/v6-future-atlas.spec.ts:236:1 › Atlas : zéro, un, beaucoup de jalons, autres scénarios et absence de source
+  1 interrupted
+    [chromium] › tests/e2e/v6.spec.ts:57:1 › V6 : 08→16→21, une carte journée, historique, recherche, original, notes et doublon
+  131 did not run
+  49 passed (2.7m)

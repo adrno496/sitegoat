@@ -1,0 +1,158 @@
+src/features/future/FutureDetail.tsx 81ms
+tests/e2e/v6-future.spec.ts 49ms
+
+> journal360-mobile@2.0.7 typecheck
+> tsc -b
+
+
+> journal360-mobile@2.0.7 lint
+> eslint .
+
+
+> journal360-mobile@2.0.7 build
+> tsc -b && vite build
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 1763 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/manifest.webmanifest                          0.64 kB
+dist/index.html                                    0.71 kB │ gzip:   0.44 kB
+dist/assets/FutureView-xMWxTbag.css               14.01 kB │ gzip:   3.28 kB
+dist/assets/index-CvFXhY6k.css                    40.66 kB │ gzip:   8.88 kB
+dist/assets/ImportDialog-B98iJy4o.js               5.61 kB │ gzip:   2.33 kB
+dist/assets/workbox-window.prod.es5-Bd17z0YL.js    5.65 kB │ gzip:   2.20 kB
+dist/assets/db-0BHDyPKj.js                        25.03 kB │ gzip:   8.58 kB
+dist/assets/FutureView-CY1Wfxav.js                49.69 kB │ gzip:  14.66 kB
+dist/assets/index-CE26uUGV.js                    874.05 kB │ gzip: 255.78 kB
+
+✓ built in 267ms
+
+PWA v1.3.0
+Building src/sw.ts service worker ("es" format)...
+[plugin builtin:vite-reporter]
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+vite v8.3.4 building client environment for production...
+
+ WARN  inlineDynamicImports option is deprecated, please use codeSplitting: false instead.
+
+transforming...
+✓ 62 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/sw.mjs  114.24 kB │ gzip: 37.45 kB
+
+✓ built in 40ms
+
+PWA v1.3.0
+mode      injectManifest
+format:   es
+precache  20 entries (1071.75 KiB)
+files generated
+  dist/sw.js
+
+Running 3 tests using 1 worker
+
+  ✘  1 [chromium] › tests/e2e/v6-future.spec.ts:46:1 › Le Futur : HTML dédié, six modules, notes, révision confirmée, export, sauvegarde et offline (1.4s)
+  ✘  2 [webkit] › tests/e2e/v6-future.spec.ts:46:1 › Le Futur : HTML dédié, six modules, notes, révision confirmée, export, sauvegarde et offline (1.9s)
+  ✘  3 [chromium-mobile] › tests/e2e/v6-future.spec.ts:46:1 › Le Futur : HTML dédié, six modules, notes, révision confirmée, export, sauvegarde et offline (1.2s)
+
+
+  1) [chromium] › tests/e2e/v6-future.spec.ts:46:1 › Le Futur : HTML dédié, six modules, notes, révision confirmée, export, sauvegarde et offline
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "none"
+    Received: "appear"
+
+      111 |       .first()
+      112 |       .evaluate((e) => getComputedStyle(e).animationName),
+    > 113 |   ).toBe("none");
+          |     ^
+      114 |   await expect(previewBody).toBeVisible();
+      115 |   expect(
+      116 |     await previewBody.evaluate((e) => getComputedStyle(e).animationName),
+        at <workspace>/tests/e2e/v6-future.spec.ts:113:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v6-future-Le-Futur-HTML-dé-a90b5-xport-sauvegarde-et-offline-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v6-future-Le-Futur-HTML-dé-a90b5-xport-sauvegarde-et-offline-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v6-future-Le-Futur-HTML-dé-a90b5-xport-sauvegarde-et-offline-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v6-future-Le-Futur-HTML-dé-a90b5-xport-sauvegarde-et-offline-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [webkit] › tests/e2e/v6-future.spec.ts:46:1 › Le Futur : HTML dédié, six modules, notes, révision confirmée, export, sauvegarde et offline
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "none"
+    Received: "appear"
+
+      111 |       .first()
+      112 |       .evaluate((e) => getComputedStyle(e).animationName),
+    > 113 |   ).toBe("none");
+          |     ^
+      114 |   await expect(previewBody).toBeVisible();
+      115 |   expect(
+      116 |     await previewBody.evaluate((e) => getComputedStyle(e).animationName),
+        at <workspace>/tests/e2e/v6-future.spec.ts:113:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v6-future-Le-Futur-HTML-dé-a90b5-xport-sauvegarde-et-offline-webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v6-future-Le-Futur-HTML-dé-a90b5-xport-sauvegarde-et-offline-webkit/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v6-future-Le-Futur-HTML-dé-a90b5-xport-sauvegarde-et-offline-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v6-future-Le-Futur-HTML-dé-a90b5-xport-sauvegarde-et-offline-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium-mobile] › tests/e2e/v6-future.spec.ts:46:1 › Le Futur : HTML dédié, six modules, notes, révision confirmée, export, sauvegarde et offline
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "none"
+    Received: "appear"
+
+      111 |       .first()
+      112 |       .evaluate((e) => getComputedStyle(e).animationName),
+    > 113 |   ).toBe("none");
+          |     ^
+      114 |   await expect(previewBody).toBeVisible();
+      115 |   expect(
+      116 |     await previewBody.evaluate((e) => getComputedStyle(e).animationName),
+        at <workspace>/tests/e2e/v6-future.spec.ts:113:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v6-future-Le-Futur-HTML-dé-a90b5-xport-sauvegarde-et-offline-chromium-mobile/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v6-future-Le-Futur-HTML-dé-a90b5-xport-sauvegarde-et-offline-chromium-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v6-future-Le-Futur-HTML-dé-a90b5-xport-sauvegarde-et-offline-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v6-future-Le-Futur-HTML-dé-a90b5-xport-sauvegarde-et-offline-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    [chromium] › tests/e2e/v6-future.spec.ts:46:1 › Le Futur : HTML dédié, six modules, notes, révision confirmée, export, sauvegarde et offline
+    [webkit] › tests/e2e/v6-future.spec.ts:46:1 › Le Futur : HTML dédié, six modules, notes, révision confirmée, export, sauvegarde et offline
+    [chromium-mobile] › tests/e2e/v6-future.spec.ts:46:1 › Le Futur : HTML dédié, six modules, notes, révision confirmée, export, sauvegarde et offline

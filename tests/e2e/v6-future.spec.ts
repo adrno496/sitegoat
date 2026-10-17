@@ -32,6 +32,9 @@ async function confirm(page: Page) {
 async function open(page: Page, title = example.title) {
   await page.locator(".future-title").getByText(title, { exact: true }).click();
   await expect(page.locator(".future-detail")).toBeVisible();
+  await page
+    .getByText("Exports, original et empreinte", { exact: true })
+    .click();
 }
 async function closeToast(page: Page) {
   const b = page.getByRole("button", {
@@ -93,9 +96,21 @@ test("Le Futur : HTML dédié, six modules, notes, révision confirmée, export,
   await expect(
     page.getByLabel("Suivi de « Tester un outil sur une tâche bornée »"),
   ).toHaveValue("doing");
+  await page
+    .locator(".future-action")
+    .filter({ hasText: "Tester un outil sur une tâche bornée" })
+    .getByRole("button", { name: "Enregistrer l’action", exact: true })
+    .click();
   await page.getByRole("button", { name: "Voir l’aperçu HTML isolé" }).click();
   await expect(page.locator(".future-preview")).toHaveAttribute("sandbox", "");
   const previewBody = page.frameLocator(".future-preview").locator("body");
+  expect(
+    await page
+      .frameLocator(".future-preview")
+      .locator("article")
+      .first()
+      .evaluate((e) => getComputedStyle(e).animationName),
+  ).toBe("none");
   await expect(previewBody).toBeVisible();
   expect(
     await previewBody.evaluate((e) => getComputedStyle(e).animationName),
@@ -171,6 +186,7 @@ test("Le Futur : HTML dédié, six modules, notes, révision confirmée, export,
     example.title,
   );
   await page.getByRole("button", { name: "← Tous les dossiers" }).click();
+  await page.getByText("Sauvegarde et ressources", { exact: true }).click();
   const backup = page.waitForEvent("download");
   await page
     .getByRole("button", { name: "Sauvegarder Le Futur", exact: true })

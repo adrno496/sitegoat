@@ -1,0 +1,251 @@
+- paragraph: JOURNAL 360° / ATLAS PROSPECTIF
+- heading "Le Futur" [level=1]
+- paragraph: Explorer l’avenir, confronter les prévisions aux faits, se préparer.
+- button "Importer un dossier"
+- text: Animations
+- combobox "Animations":
+  - option "Activées"
+  - option "Réduites" [selected]
+- group: Sauvegarde et ressources
+- paragraph: Stockage local · sauvegarde séparée · synchronisation automatique non configurée
+- article:
+  - button "← Tous les dossiers"
+  - text: DOSSIER PROSPECTIF / RÉVISION 1
+  - 'heading "IA 2027–2040 : trois futurs à éprouver" [level=2]'
+  - paragraph: Scénario EXEMPLE SYNTHÉTIQUE
+  - paragraph: "À surveiller : EXEMPLE SYNTHÉTIQUE : explorer des conséquences possibles sur le travail et l’économie, sans prédire leur réalisation."
+  - button "Ajouter aux favoris"
+  - text: Version affichée
+  - combobox "Version affichée":
+    - option "Révision 1 · 16/10/2026 14:00:00" [selected]
+  - group: Exports, original et empreinte
+  - paragraph: Les notes et le suivi personnel concernent le dossier, quelle que soit la version affichée.
+  - status
+  - navigation "Modules du dossier":
+    - link "Vue d’ensemble":
+      - /url: "#future-atlas-overview"
+    - link "Chronologie":
+      - /url: "#future-module-timeline"
+    - link "Scénarios":
+      - /url: "#future-module-scenarios"
+    - link "Signaux":
+      - /url: "#future-module-signals"
+    - link "Ma préparation":
+      - /url: "#future-module-actions"
+    - link "Sources":
+      - /url: "#future-module-sources"
+    - link "Mon carnet":
+      - /url: "#future-personal-notes"
+    - link "Évolutions":
+      - /url: "#future-module-changes"
+  - text: VUE D’ENSEMBLE
+  - heading "L’essentiel, avant d’explorer." [level=2]
+  - paragraph: "EXEMPLE SYNTHÉTIQUE : explorer des conséquences possibles sur le travail et l’économie, sans prédire leur réalisation."
+  - article:
+    - text: 01 / Faits observés
+    - strong: "0"
+    - paragraph: Observations déclarées et sourcées. Aucune vérification indépendante par Journal 360.
+  - article:
+    - text: 02 / Hypothèses à surveiller
+    - strong: "10"
+    - paragraph: Scénarios, jalons prospectifs et signaux à surveiller ; des possibilités à éprouver.
+  - article:
+    - text: 03 / Actions concrètes
+    - strong: "3"
+    - paragraph: Actions proposées par les dossiers. Votre suivi personnel reste privé et local.
+  - list:
+    - listitem:
+      - text: Une trajectoire possible
+      - paragraph: Une diffusion rapide pourrait transformer certaines tâches. Les effets sur les emplois et la répartition des gains restent incertains.
+    - listitem:
+      - text: Une objection à garder en tête
+      - paragraph: Les gains mesurés sur des tâches isolées ne représentent pas toute l’économie.
+    - listitem:
+      - text: Un premier pas concret
+      - paragraph: Tester un outil sur une tâche bornée
+  - paragraph: Les observations sont déclarées dans le dossier. Une hypothèse ou un scénario n’est jamais une garantie.
+  - text: 01 / CHRONOLOGIE
+  - heading "Parcourir les horizons." [level=2]
+  - paragraph: Des jalons déclarés, pas un calendrier garanti. Choisissez une période pour explorer les trajectoires.
+  - group "Horizons de la chronologie":
+    - button "2027 1 jalon(s)" [pressed]
+    - button "2030 2 jalon(s)"
+    - button "2035 2 jalon(s)"
+    - button "2040+ 1 jalon(s)"
+  - button "← Horizon précédent" [disabled]
+  - status: 2027 · 1 jalon(s)
+  - button "Horizon suivant →"
+  - article:
+    - text: 2027 · Scénario
+    - heading "Accélération des capacités et de la diffusion — 2027" [level=3]
+    - paragraph: Projection fictive à revoir avec des sources indépendantes.
+    - paragraph: Accélération · Accélération des capacités et de la diffusion
+    - group: D’où vient cette affirmation ?
+    - link "Comparer avec une diffusion plus progressive → Progression modérée et complémentarité — 2030":
+      - /url: "#future-item-jalon-moderate-2030"
+  - group: Relations déclarées entre les jalons (1)
+  - text: 02 / SCÉNARIOS
+  - heading "Plusieurs futurs. Un regard critique." [level=2]
+  - paragraph: Comparez les conditions et les objections, sans probabilité ni classement inventé.
+  - button "Vue détaillée"
+  - region "Accélération":
+    - heading "Accélération" [level=3]
+    - article:
+      - text: Scénario · 2027
+      - heading "Accélération des capacités et de la diffusion" [level=3]
+      - paragraph: Une diffusion rapide pourrait transformer certaines tâches. Les effets sur les emplois et la répartition des gains restent incertains.
+      - group: Hypothèses et conditions
+      - group: Voir les objections
+      - group: Voir les sources
+      - text: Signaux liés
+      - list:
+        - listitem:
+          - link "Adoption à documenter":
+            - /url: "#future-item-signal-exemple"
+  - region "Progression modérée":
+    - heading "Progression modérée" [level=3]
+    - article:
+      - text: Scénario · 2030
+      - heading "Progression modérée et complémentarité" [level=3]
+      - paragraph: Les outils pourraient compléter des métiers sans automatiser tous leurs contextes. Les coûts d’intégration limiteraient la diffusion.
+      - group: Hypothèses et conditions
+      - group: Voir les objections
+      - group: Voir les sources
+      - text: Signaux liés
+      - list:
+        - listitem:
+          - link "Adoption à documenter":
+            - /url: "#future-item-signal-exemple"
+  - region "Ralentissement":
+    - heading "Ralentissement" [level=3]
+    - article:
+      - text: Scénario · 2040+
+      - heading "Ralentissement et contraintes durables" [level=3]
+      - paragraph: Des limites techniques, énergétiques ou économiques pourraient freiner les usages. Le maintien des compétences humaines resterait essentiel.
+      - group: Hypothèses et conditions
+      - group: Voir les objections
+      - group: Voir les sources
+      - text: Signaux liés
+      - list:
+        - listitem:
+          - link "Adoption à documenter":
+            - /url: "#future-item-signal-exemple"
+  - text: 03 / SIGNAUX
+  - heading "Confronter les trajectoires aux faits." [level=2]
+  - paragraph: Un radar de lecture, sans score de certitude. Les statuts restent ceux du dossier.
+  - text: 0 Observation déclarée 1 À surveiller 0 Contredit selon le dossier 0 Inconnu
+  - article:
+    - text: À surveiller
+    - heading "Adoption à documenter" [level=3]
+    - paragraph: "Signal fictif : rechercher des données comparables sur l’adoption et les gains de productivité. Aucune observation réelle revendiquée."
+    - term: Ce que l’on sait
+    - definition: Non renseigné comme observation sourcée.
+    - term: Ce que l’on ignore
+    - definition: Non renseigné dans un champ dédié.
+    - term: Qu’est-ce qui confirmerait ?
+    - definition: Non renseigné comme critère explicite.
+    - term: Qu’est-ce qui infirmerait ?
+    - definition: Non renseigné comme critère explicite.
+    - group: Sources, contrôle déclaré et objections
+  - text: 04 / MA PRÉPARATION
+  - heading "Se préparer, un pas à la fois." [level=2]
+  - paragraph: Votre feuille de route privée. La progression reflète uniquement les statuts enregistrés sur cet appareil.
+  - text: 0 / 3 actions terminées
+  - progressbar "Actions terminées"
+  - list:
+    - listitem: "À faire : 3"
+    - listitem: "En cours : 0"
+    - listitem: "Terminé : 0"
+    - listitem: "Abandonné : 0"
+  - heading "Maintenant" [level=3]
+  - article:
+    - text: À faire
+    - heading "Tester un outil sur une tâche bornée" [level=4]
+    - paragraph: "Compétence : Évaluation critique"
+    - paragraph: "Impact proposé : Choisir une tâche sans données sensibles, consigner le temps et les erreurs, comparer avec une méthode sans IA."
+    - text: Test décisif
+    - paragraph: Continuer uniquement si le résultat est reproductible, utile et contrôlable.
+    - group: Effort et scénarios concernés
+    - text: Suivi de « Tester un outil sur une tâche bornée »
+    - combobox "Suivi de « Tester un outil sur une tâche bornée »":
+      - option "À faire" [selected]
+      - option "En cours"
+      - option "Terminé"
+      - option "Abandonné"
+    - text: Résultat de « Tester un outil sur une tâche bornée »
+    - textbox "Résultat de « Tester un outil sur une tâche bornée »"
+    - button "Enregistrer l’action"
+    - status: Votre suivi reste privé.
+  - heading "Dans 3 mois" [level=3]
+  - article:
+    - text: À faire
+    - heading "Comparer plusieurs méthodes" [level=4]
+    - paragraph: "Compétence : Mesure de productivité"
+    - paragraph: "Impact proposé : Choisir une tâche sans données sensibles, consigner le temps et les erreurs, comparer avec une méthode sans IA."
+    - text: Test décisif
+    - paragraph: Continuer uniquement si le résultat est reproductible, utile et contrôlable.
+    - group: Effort et scénarios concernés
+    - text: Suivi de « Comparer plusieurs méthodes »
+    - combobox "Suivi de « Comparer plusieurs méthodes »":
+      - option "À faire" [selected]
+      - option "En cours"
+      - option "Terminé"
+      - option "Abandonné"
+    - text: Résultat de « Comparer plusieurs méthodes »
+    - textbox "Résultat de « Comparer plusieurs méthodes »"
+    - button "Enregistrer l’action"
+    - status: Votre suivi reste privé.
+  - heading "Dans 12 mois" [level=3]
+  - article:
+    - text: À faire
+    - heading "Réexaminer ses compétences" [level=4]
+    - paragraph: "Compétence : Adaptation professionnelle"
+    - paragraph: "Impact proposé : Choisir une tâche sans données sensibles, consigner le temps et les erreurs, comparer avec une méthode sans IA."
+    - text: Test décisif
+    - paragraph: Continuer uniquement si le résultat est reproductible, utile et contrôlable.
+    - group: Effort et scénarios concernés
+    - text: Suivi de « Réexaminer ses compétences »
+    - combobox "Suivi de « Réexaminer ses compétences »":
+      - option "À faire" [selected]
+      - option "En cours"
+      - option "Terminé"
+      - option "Abandonné"
+    - text: Résultat de « Réexaminer ses compétences »
+    - textbox "Résultat de « Réexaminer ses compétences »"
+    - button "Enregistrer l’action"
+    - status: Votre suivi reste privé.
+  - text: HISTORIQUE
+  - heading "Ce qui a changé." [level=2]
+  - paragraph: Différences éditoriales de cette révision ; les versions précédentes restent accessibles.
+  - list:
+    - listitem: Nouveau dossier ; aucune révision antérieure.
+  - group: Historique local complet (1)
+  - text: 05 / SOURCES
+  - heading "Remonter à l’origine." [level=2]
+  - paragraph: "Origine : Atelier fictif de prospective — données de démonstration · auteur non renseigné · publication : non renseignée · remise : 16/10/2026 12:00:00"
+  - paragraph: Une consultation déclarée par le fichier n’est pas une vérification. Une revue personnelle confirme votre consultation, sans certifier le fait.
+  - heading "Contradictions déclarées" [level=3]
+  - paragraph: Aucune contradiction renseignée dans ce dossier.
+  - article:
+    - heading "Source illustrative, sans preuve réelle" [level=3]
+    - link "Ouvrir la source originale":
+      - /url: https://example.org/illustration
+    - paragraph: "Démonstration · auteur non renseigné · unknown · publication : 2026-10-01"
+    - paragraph: "Consultation déclarée : non renseigné"
+    - text: Justifier ma consultation de « Source illustrative, sans preuve réelle »
+    - textbox "Justifier ma consultation de « Source illustrative, sans preuve réelle »"
+    - button "Enregistrer ma revue personnelle"
+  - text: VOTRE CARNET PRIVÉ
+  - heading "Mes notes et décisions privées" [level=2]
+  - group:
+    - text: Ma décision
+    - textbox "Ma décision"
+    - text: Ce qui invaliderait ma décision
+    - textbox "Ce qui invaliderait ma décision"
+    - text: Date de réexamen
+    - textbox "Date de réexamen"
+    - button "Enregistrer ma décision"
+  - text: Nouvelle note
+  - textbox "Nouvelle note"
+  - button "Ajouter ma note"
+  - list

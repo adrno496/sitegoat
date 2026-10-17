@@ -1,0 +1,9 @@
+{
+  "baseline": "5e61d02",
+  "archive": "baseline-synthetic.zip",
+  "restore": "PASS",
+  "exportedPayloadDeepEqual": true,
+  "documentId": "exemple-futur-ia",
+  "revision": 1,
+  "userData": "No user data: provided synthetic example only"
+}

@@ -1,0 +1,326 @@
+{
+  "environment": "Chromium headless, synthetic example, 5 warm navigations, 40 scripted scroll frames; not a phone or user study. LCP/CLS describe initial shell, not the SPA tab. Heap includes browser context, not screen-only memory.",
+  "results": [
+    {
+      "width": 1440,
+      "entryMs": [
+        56.79079200000001,
+        57.63412500000004,
+        57.7873340000001,
+        57.48458399999981,
+        58.22470799999974
+      ],
+      "detailMs": [
+        58.96579100000008,
+        47.88608399999998,
+        46.76520800000003,
+        47.670416999999816,
+        49.45933399999967
+      ],
+      "taskDurationSeconds": 0.264446,
+      "heapUsedBytes": 10780788,
+      "scrollFramesMs": [
+        16.59999999999991,
+        16.700000000000273,
+        16.59999999999991,
+        16.699999999999818,
+        16.700000000000273,
+        16.59999999999991,
+        16.699999999999818,
+        16.700000000000273,
+        16.59999999999991,
+        16.699999999999818,
+        16.700000000000273,
+        16.59999999999991,
+        16.699999999999818,
+        16.59999999999991,
+        16.700000000000273,
+        16.699999999999818,
+        16.700000000000273,
+        16.59999999999991,
+        16.59999999999991,
+        16.699999999999818,
+        16.700000000000273,
+        16.699999999999818,
+        16.59999999999991,
+        16.700000000000273,
+        16.699999999999818,
+        16.700000000000273,
+        16.59999999999991,
+        16.699999999999818,
+        16.700000000000273,
+        16.59999999999991,
+        16.699999999999818,
+        16.59999999999991,
+        16.800000000000182,
+        16.59999999999991,
+        16.700000000000273,
+        16.59999999999991,
+        16.59999999999991,
+        16.800000000000182,
+        16.59999999999991,
+        16.699999999999818
+      ],
+      "scrollDistancePx": 4400,
+      "scrollDurationMs": 666.5999999999999,
+      "scrollPixelsPerSecond": 6600.6600660066015,
+      "paint": {
+        "cls": 0.010965684317129628,
+        "lcp": 148
+      },
+      "heap": 11900000,
+      "resources": [
+        {
+          "name": "/assets/index-DWWTYIqF.js",
+          "transferSize": 874354,
+          "decodedBodySize": 874054
+        },
+        {
+          "name": "/assets/index-CvFXhY6k.css",
+          "transferSize": 40965,
+          "decodedBodySize": 40665
+        },
+        {
+          "name": "/assets/workbox-window.prod.es5-Bd17z0YL.js",
+          "transferSize": 5953,
+          "decodedBodySize": 5653
+        },
+        {
+          "name": "/assets/ImportDialog-DC3EELiQ.js",
+          "transferSize": 5910,
+          "decodedBodySize": 5610
+        },
+        {
+          "name": "/assets/db-gvoS69Mt.js",
+          "transferSize": 25337,
+          "decodedBodySize": 25037
+        },
+        {
+          "name": "/assets/FutureView-DRprZADz.js",
+          "transferSize": 0,
+          "decodedBodySize": 49698
+        },
+        {
+          "name": "/assets/FutureView-xMWxTbag.css",
+          "transferSize": 0,
+          "decodedBodySize": 14011
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "entryMs": [
+        56.139666000000034,
+        57.776834000000235,
+        59.89925000000039,
+        56.87041599999975,
+        56.31091699999979
+      ],
+      "detailMs": [
+        58.60612500000025,
+        46.93037499999991,
+        45.946500000000015,
+        47.023957999999766,
+        48.11987500000032
+      ],
+      "taskDurationSeconds": 0.25870200000000004,
+      "heapUsedBytes": 10588880,
+      "scrollFramesMs": [
+        16.641999999999825,
+        16.600000000000364,
+        16.699999999999818,
+        16.699999999999818,
+        16.700000000000273,
+        16.59999999999991,
+        16.699999999999818,
+        16.700000000000273,
+        16.59999999999991,
+        16.699999999999818,
+        16.700000000000273,
+        16.59999999999991,
+        16.699999999999818,
+        16.700000000000273,
+        16.59999999999991,
+        16.59999999999991,
+        16.700000000000273,
+        16.699999999999818,
+        16.699999999999818,
+        16.600000000000364,
+        16.699999999999818,
+        16.699999999999818,
+        16.600000000000364,
+        16.699999999999818,
+        16.59999999999991,
+        16.700000000000273,
+        16.699999999999818,
+        16.699999999999818,
+        16.600000000000364,
+        16.699999999999818,
+        16.59999999999991,
+        16.700000000000273,
+        16.699999999999818,
+        16.59999999999991,
+        16.700000000000273,
+        16.699999999999818,
+        16.699999999999818,
+        16.700000000000273,
+        16.59999999999991,
+        16.699999999999818
+      ],
+      "scrollDistancePx": 4400,
+      "scrollDurationMs": 666.6419999999998,
+      "scrollPixelsPerSecond": 6600.244209035736,
+      "paint": {
+        "cls": 0,
+        "lcp": 156
+      },
+      "heap": 11900000,
+      "resources": [
+        {
+          "name": "/assets/index-DWWTYIqF.js",
+          "transferSize": 874354,
+          "decodedBodySize": 874054
+        },
+        {
+          "name": "/assets/index-CvFXhY6k.css",
+          "transferSize": 40965,
+          "decodedBodySize": 40665
+        },
+        {
+          "name": "/assets/workbox-window.prod.es5-Bd17z0YL.js",
+          "transferSize": 5953,
+          "decodedBodySize": 5653
+        },
+        {
+          "name": "/assets/ImportDialog-DC3EELiQ.js",
+          "transferSize": 5910,
+          "decodedBodySize": 5610
+        },
+        {
+          "name": "/assets/db-gvoS69Mt.js",
+          "transferSize": 25337,
+          "decodedBodySize": 25037
+        },
+        {
+          "name": "/assets/FutureView-DRprZADz.js",
+          "transferSize": 0,
+          "decodedBodySize": 49698
+        },
+        {
+          "name": "/assets/FutureView-xMWxTbag.css",
+          "transferSize": 0,
+          "decodedBodySize": 14011
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "entryMs": [
+        56.16729099999975,
+        57.36674999999923,
+        56.0328329999993,
+        56.42033300000003,
+        56.730500000001484
+      ],
+      "detailMs": [
+        59.16649999999936,
+        46.69262499999968,
+        48.789084,
+        47.51533399999971,
+        48.11545800000022
+      ],
+      "taskDurationSeconds": 0.242976,
+      "heapUsedBytes": 10694916,
+      "scrollFramesMs": [
+        16.59999999999991,
+        16.700000000000273,
+        16.59999999999991,
+        16.699999999999818,
+        16.700000000000273,
+        16.59999999999991,
+        16.699999999999818,
+        16.700000000000273,
+        16.699999999999818,
+        16.59999999999991,
+        16.700000000000273,
+        16.699999999999818,
+        16.59999999999991,
+        16.700000000000273,
+        16.699999999999818,
+        16.59999999999991,
+        16.700000000000273,
+        16.699999999999818,
+        16.59999999999991,
+        16.700000000000273,
+        16.59999999999991,
+        16.799999999999727,
+        16.600000000000364,
+        16.699999999999818,
+        16.59999999999991,
+        16.59999999999991,
+        16.800000000000182,
+        16.59999999999991,
+        16.700000000000273,
+        16.699999999999818,
+        16.59999999999991,
+        16.700000000000273,
+        16.59999999999991,
+        16.799999999999727,
+        16.600000000000364,
+        16.59999999999991,
+        16.799999999999727,
+        16.600000000000364,
+        16.59999999999991,
+        16.699999999999818
+      ],
+      "scrollDistancePx": 4400,
+      "scrollDurationMs": 666.5999999999999,
+      "scrollPixelsPerSecond": 6600.6600660066015,
+      "paint": {
+        "cls": 0,
+        "lcp": 152
+      },
+      "heap": 11900000,
+      "resources": [
+        {
+          "name": "/assets/index-DWWTYIqF.js",
+          "transferSize": 874354,
+          "decodedBodySize": 874054
+        },
+        {
+          "name": "/assets/index-CvFXhY6k.css",
+          "transferSize": 40965,
+          "decodedBodySize": 40665
+        },
+        {
+          "name": "/assets/workbox-window.prod.es5-Bd17z0YL.js",
+          "transferSize": 5953,
+          "decodedBodySize": 5653
+        },
+        {
+          "name": "/assets/ImportDialog-DC3EELiQ.js",
+          "transferSize": 5910,
+          "decodedBodySize": 5610
+        },
+        {
+          "name": "/assets/db-gvoS69Mt.js",
+          "transferSize": 25337,
+          "decodedBodySize": 25037
+        },
+        {
+          "name": "/assets/FutureView-DRprZADz.js",
+          "transferSize": 0,
+          "decodedBodySize": 49698
+        },
+        {
+          "name": "/assets/FutureView-xMWxTbag.css",
+          "transferSize": 0,
+          "decodedBodySize": 14011
+        }
+      ],
+      "overflow": false
+    }
+  ]
+}

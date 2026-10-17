@@ -1,0 +1,77 @@
+{
+  "referenceSHA": "5e61d02ca4403e2f117c1a349e35366924228d37",
+  "branch": "codex/future-atlas-ui",
+  "scope": "P0/P1 local validation before user-authorized commit and push to main",
+  "checks": [
+    {
+      "name": "baseline",
+      "exitCode": 0,
+      "durationSeconds": 641.477,
+      "log": "baseline.log"
+    },
+    {
+      "name": "p0-checks-3",
+      "exitCode": 0,
+      "durationSeconds": 21.179,
+      "log": "p0-checks-3.log"
+    },
+    {
+      "name": "preview-motion-fixed",
+      "exitCode": 0,
+      "durationSeconds": 23.661,
+      "log": "preview-motion-fixed.log"
+    },
+    {
+      "name": "focus-edge",
+      "exitCode": 0,
+      "durationSeconds": 21.174,
+      "log": "focus-edge.log"
+    },
+    {
+      "name": "all-future-final",
+      "exitCode": 0,
+      "durationSeconds": 97.315,
+      "log": "all-future-final.log"
+    },
+    {
+      "name": "validated-full",
+      "exitCode": 0,
+      "durationSeconds": 651.781,
+      "log": "validated-full.log"
+    },
+    {
+      "name": "final-evidence-checks",
+      "exitCode": 0,
+      "durationSeconds": 33.778,
+      "log": "final-evidence-checks.log"
+    }
+  ],
+  "unitPassed": 263,
+  "e2e": {
+    "startTime": "2026-10-17T21:25:56.322Z",
+    "duration": 608997.1190000001,
+    "expected": 181,
+    "skipped": 1,
+    "unexpected": 0,
+    "flaky": 0,
+    "testsTotal": 182
+  },
+  "futureE2EPassed": 42,
+  "performanceTestsPassed": 4,
+  "negativeInjections": {
+    "futureObserved": "detected at fixed 2026-10-17 reference date",
+    "missingEvidence": "detected",
+    "unreachableControl": "detected in all three projects, then restored",
+    "motionWithReducedPreference": "detected in all three projects, then restored"
+  },
+  "legacyArchiveRestored": true,
+  "protectedSourceFilesUnchanged": 16,
+  "visual": {
+    "styleAndGeometryIdenticalViews": 8,
+    "exactPNGMobile": 4,
+    "desktopResidualPixelsPerView": 3,
+    "status": "PARTIAL; strict PNG check fails and is retained"
+  },
+  "manualChecks": "NON TESTÉ: physical device, human screen reader, native browser zoom, 30-second user task, real production profile backup",
+  "remotePublication": "User subsequently authorized commit and push to main; consult GitHub Actions for the delivered SHA. No manual deployment requested."
+}

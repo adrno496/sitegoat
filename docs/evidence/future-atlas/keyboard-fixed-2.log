@@ -1,0 +1,90 @@
+
+Running 3 tests using 1 worker
+
+  ✘  1 [chromium] › tests/e2e/v6-future-atlas.spec.ts:406:1 › Atlas : parcours clavier des contrôles principaux, import annulable et focus rendu (10.9s)
+  ✓  2 [webkit] › tests/e2e/v6-future-atlas.spec.ts:406:1 › Atlas : parcours clavier des contrôles principaux, import annulable et focus rendu (1.9s)
+  ✘  3 [chromium-mobile] › tests/e2e/v6-future-atlas.spec.ts:406:1 › Atlas : parcours clavier des contrôles principaux, import annulable et focus rendu (11.0s)
+
+
+  1) [chromium] › tests/e2e/v6-future-atlas.spec.ts:406:1 › Atlas : parcours clavier des contrôles principaux, import annulable et focus rendu
+
+    Error: expect(locator).toBeFocused() failed
+
+    Locator:  getByLabel('Rechercher un dossier')
+    Expected: focused
+    Received: inactive
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toBeFocused" getByLabel('Rechercher un dossier') with timeout 10000ms
+      - waiting for getByLabel('Rechercher un dossier')
+        24 × locator resolved to <input value="" type="search" placeholder="Scénario, signal, compétence…"/>
+           - unexpected value "inactive"
+
+
+      434 |   await expect(page.getByLabel("Rechercher un dossier")).toBeVisible();
+      435 |   await page.keyboard.press("Tab");
+    > 436 |   await expect(page.getByLabel("Rechercher un dossier")).toBeFocused();
+          |                                                          ^
+      437 |   await page.keyboard.type("inconnu");
+      438 |   await expect(page.locator(".future-card")).toHaveCount(0);
+      439 |   await page.locator(".future-filter-panel")
+        at <workspace>/tests/e2e/v6-future-atlas.spec.ts:436:58
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v6-future-atlas-Atlas-parc-8cbfc-rt-annulable-et-focus-rendu-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v6-future-atlas-Atlas-parc-8cbfc-rt-annulable-et-focus-rendu-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v6-future-atlas-Atlas-parc-8cbfc-rt-annulable-et-focus-rendu-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v6-future-atlas-Atlas-parc-8cbfc-rt-annulable-et-focus-rendu-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium-mobile] › tests/e2e/v6-future-atlas.spec.ts:406:1 › Atlas : parcours clavier des contrôles principaux, import annulable et focus rendu
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator:  getByLabel('Rechercher un dossier')
+    Expected: visible
+    Received: hidden
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toBeVisible" getByLabel('Rechercher un dossier') with timeout 10000ms
+      - waiting for getByLabel('Rechercher un dossier')
+        24 × locator resolved to <input value="" type="search" placeholder="Scénario, signal, compétence…"/>
+           - unexpected value "hidden"
+
+
+      432 |   )
+      433 |     await page.keyboard.press("Enter");
+    > 434 |   await expect(page.getByLabel("Rechercher un dossier")).toBeVisible();
+          |                                                          ^
+      435 |   await page.keyboard.press("Tab");
+      436 |   await expect(page.getByLabel("Rechercher un dossier")).toBeFocused();
+      437 |   await page.keyboard.type("inconnu");
+        at <workspace>/tests/e2e/v6-future-atlas.spec.ts:434:58
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v6-future-atlas-Atlas-parc-8cbfc-rt-annulable-et-focus-rendu-chromium-mobile/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v6-future-atlas-Atlas-parc-8cbfc-rt-annulable-et-focus-rendu-chromium-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v6-future-atlas-Atlas-parc-8cbfc-rt-annulable-et-focus-rendu-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v6-future-atlas-Atlas-parc-8cbfc-rt-annulable-et-focus-rendu-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [chromium] › tests/e2e/v6-future-atlas.spec.ts:406:1 › Atlas : parcours clavier des contrôles principaux, import annulable et focus rendu
+    [chromium-mobile] › tests/e2e/v6-future-atlas.spec.ts:406:1 › Atlas : parcours clavier des contrôles principaux, import annulable et focus rendu
+  1 passed (26.0s)

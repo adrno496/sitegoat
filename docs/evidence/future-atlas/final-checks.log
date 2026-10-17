@@ -1,0 +1,174 @@
+scripts/measure-future-atlas.mjs 45ms
+tests/e2e/v6-future-atlas.spec.ts 78ms
+
+> journal360-mobile@2.0.7 typecheck
+> tsc -b
+
+
+> journal360-mobile@2.0.7 lint
+> eslint .
+
+
+> journal360-mobile@2.0.7 build
+> tsc -b && vite build
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 1763 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/manifest.webmanifest                          0.64 kB
+dist/index.html                                    0.71 kB │ gzip:   0.44 kB
+dist/assets/FutureView-xMWxTbag.css               14.01 kB │ gzip:   3.28 kB
+dist/assets/index-CvFXhY6k.css                    40.66 kB │ gzip:   8.88 kB
+dist/assets/ImportDialog-B9IunfLL.js               5.61 kB │ gzip:   2.33 kB
+dist/assets/workbox-window.prod.es5-Bd17z0YL.js    5.65 kB │ gzip:   2.20 kB
+dist/assets/db-BL5jjnox.js                        25.03 kB │ gzip:   8.58 kB
+dist/assets/FutureView-2u_lvWBq.js                49.47 kB │ gzip:  14.60 kB
+dist/assets/index-ClZEGgZt.js                    874.05 kB │ gzip: 255.77 kB
+
+✓ built in 261ms
+
+PWA v1.3.0
+Building src/sw.ts service worker ("es" format)...
+[plugin builtin:vite-reporter]
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+vite v8.3.4 building client environment for production...
+
+ WARN  inlineDynamicImports option is deprecated, please use codeSplitting: false instead.
+
+transforming...
+✓ 62 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/sw.mjs  114.24 kB │ gzip: 37.45 kB
+
+✓ built in 41ms
+
+PWA v1.3.0
+mode      injectManifest
+format:   es
+precache  20 entries (1071.53 KiB)
+files generated
+  dist/sw.js
+
+> journal360-mobile@2.0.7 test
+> vitest run
+
+
+ RUN  v5.0.4 <workspace>
+
+ ✓ tests/sync.unit.test.ts (5 tests) 462ms
+ ✓ tests/collections.unit.test.ts (4 tests) 554ms
+   ✓ le même HTML peut appartenir aux trois espaces sans remplacer une autre destination 303ms
+ ✓ tests/data.unit.test.ts (16 tests) 607ms
+ ✓ tests/v643.unit.test.ts (14 tests) 781ms
+ ✓ tests/v61.unit.test.ts (12 tests) 827ms
+ ✓ tests/daily.unit.test.ts (11 tests) 1228ms
+   ✓ quatre cumuls sans schéma V6 : un seul HTML actif, quatrième édition et originaux/annotations intacts 344ms
+ ✓ tests/future.unit.test.ts (33 tests) 1506ms
+   ✓ refuse une écriture personnelle valide qui rendrait la sauvegarde impossible 628ms
+ ✓ tests/article-navigation.unit.test.ts (11 tests) 201ms
+ ✓ tests/articles.unit.test.ts (3 tests) 251ms
+ ✓ tests/googleAi.unit.test.ts (56 tests) 140ms
+ ✓ tests/access.unit.test.ts (3 tests) 15ms
+ ✓ tests/reading-changes.unit.test.ts (7 tests) 421ms
+stderr | tests/sync-indicator.unit.test.ts > une modification pendant le transfert reste en attente malgré un premier succès daté
+The current testing environment is not configured to support act(...)
+
+ ✓ tests/backup-api.unit.test.ts (7 tests) 9ms
+stderr | tests/sync-indicator.unit.test.ts > une modification pendant le transfert reste en attente malgré un premier succès daté
+The current testing environment is not configured to support act(...)
+
+ ✓ tests/sync-indicator.unit.test.ts (2 tests) 297ms
+ ✓ tests/v6-sync.unit.test.ts (5 tests) 84ms
+ ✓ tests/future-atlas.unit.test.ts (4 tests) 37ms
+ ✓ tests/googleAiSession.unit.test.ts (26 tests) 14ms
+ ✓ tests/v6.unit.test.ts (43 tests) 3388ms
+   ✓ V6 conserve ISO avec décalage et distingue ID externe, UUID, révisions locale/externe 306ms
+   ✓ 2000 articles uniques réellement acceptés 1428ms
+ ✓ tests/cloud.unit.test.ts (1 test) 6132ms
+   ✓ file cloud : une seule opération simultanée, trois échecs conservés et aucun faux succès 6130ms
+
+ Test Files  19 passed (19)
+      Tests  263 passed (263)
+   Start at  23:16:53
+   Duration  7.32s (tests 51%, environment 33%, import 11%, setup 2%, transform 2%)
+
+Environment  jsdom was created 19 times · 11.11s total, 33% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+
+
+> journal360-mobile@2.0.7 test:e2e
+> playwright test
+
+
+Running 182 tests using 1 worker
+
+  ✓    1 [chromium] › tests/e2e/app.spec.ts:36:1 › parcours complet : import, lecture, notes, favori, recherche, offline, export et restauration (2.1s)
+  ✓    2 [chromium] › tests/e2e/app.spec.ts:134:1 › démonstrations, interaction explicite et mémoire basée sur event_id (1.1s)
+  ✓    3 [chromium] › tests/e2e/app.spec.ts:173:1 › renommage doublon, version, archive et corbeille récupérable (7.9s)
+  ✓    4 [chromium] › tests/e2e/app.spec.ts:210:1 › sécurité : parent, stockage, fetch, ressources, top et popups bloqués (847ms)
+  ✓    5 [chromium] › tests/e2e/app.spec.ts:247:1 › responsive, thèmes et accessibilité sur six largeurs (4.6s)
+  ✓    6 [chromium] › tests/e2e/app.spec.ts:283:1 › manifest et réception Web Share Target en service worker (584ms)
+  ✓    7 [chromium] › tests/e2e/app.spec.ts:320:1 › File Handling launchQueue traite un HTML via le même écran de vérification (449ms)
+  ✓    8 [chromium] › tests/e2e/app.spec.ts:360:1 › lecture pleine page : tout le viewport, interactions conservées et retour sur mobile (3.6s)
+  ✓    9 [chromium] › tests/e2e/app.spec.ts:464:1 › mode interactif automatique, choix sécurisé conservé après rechargement et nouvelle édition interactive (1.1s)
+  ✓   10 [chromium] › tests/e2e/google-ai.spec.ts:186:1 › Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation (1.9s)
+  ✓   11 [chromium] › tests/e2e/google-ai.spec.ts:285:1 › Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles refusés (789ms)
+  ✓   12 [chromium] › tests/e2e/google-ai.spec.ts:417:1 › Google IA : seule la confirmation ouvre la question affichée, sans opener, referrer ni notes PWA (888ms)
+  ✓   13 [chromium] › tests/e2e/google-ai.spec.ts:478:1 › Google IA : lecture et confirmation hors ligne, copie HTML originale intacte (952ms)
+  ✓   14 [chromium] › tests/e2e/update.spec.ts:5:1 › mise à jour réelle du service worker sans perte des originaux et favoris (707ms)
+  ✓   15 [chromium] › tests/e2e/v6-articles.spec.ts:33:1 › articles : import, filtres, lecture, sources, favoris, retour du journal et persistance (1.8s)
+  ✓   16 [chromium] › tests/e2e/v6-articles.spec.ts:133:1 › articles : pagination et recherche dans tout l’index (645ms)
+  ✓   17 [chromium] › tests/e2e/v6-articles.spec.ts:162:1 › questions Google depuis les articles : question exacte, édition, copie, ouverture volontaire et hors ligne (1.4s)
+  ✓   18 [chromium] › tests/e2e/v6-articles.spec.ts:262:1 › sommaire : ouvre l’analyse complète dans le HTML dynamique et conserve les questions Google du journal (1.1s)
+  ✓   19 [chromium] › tests/e2e/v6-articles.spec.ts:368:1 › sans question préparée : saisie manuelle, sans inventer depuis le titre ou les notes (679ms)
+  ✓   20 [chromium] › tests/e2e/v6-clean-reader.spec.ts:47:1 › HTML seul : deux petits contrôles, pleine hauteur, réduction et historique navigateur sans perte (1.0s)
+  ✓   21 [chromium] › tests/e2e/v6-clean-reader.spec.ts:113:1 › geste réservé au bord gauche : retour horizontal, mouvements verticaux et mauvais sens ignorés, même sans JS (1.1s)
+  ✓   22 [chromium] › tests/e2e/v6-clean-reader.spec.ts:177:1 › tactile Chromium réel : le défilement du HTML reste libre et le glissement au bord revient (1.1s)
+  ✓   23 [chromium] › tests/e2e/v6-clean-reader.spec.ts:221:1 › les contrôles flottants laissent libre l’en-tête du HTML sur smartphone (704ms)
+  ✘   24 [chromium] › tests/e2e/v6-collections.spec.ts:42:1 › IA majeur et Sentinel : imports dirigés, documents de même date, doublons séparés et retour du lecteur (1.1s)
+
+
+  1) [chromium] › tests/e2e/v6-collections.spec.ts:42:1 › IA majeur et Sentinel : imports dirigés, documents de même date, doublons séparés et retour du lecteur
+
+    Test was interrupted.
+
+    Error: locator.isVisible: Test ended.
+    Call log:
+        - checking visibility of locator('.sidebar')
+
+
+       5 |   await page
+       6 |     .locator(
+    >  7 |       (await page.locator(".sidebar").isVisible()) ? ".sidebar" : ".mobile-nav",
+         |                                       ^
+       8 |     )
+       9 |     .getByRole("button", { name: label, exact: true })
+      10 |     .click();
+        at nav (<workspace>/tests/e2e/v6-collections.spec.ts:7:39)
+        at <workspace>/tests/e2e/v6-collections.spec.ts:76:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v6-collections-IA-majeur-e-5a58c-éparés-et-retour-du-lecteur-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v6-collections-IA-majeur-e-5a58c-éparés-et-retour-du-lecteur-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v6-collections-IA-majeur-e-5a58c-éparés-et-retour-du-lecteur-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v6-collections-IA-majeur-e-5a58c-éparés-et-retour-du-lecteur-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 interrupted
+    [chromium] › tests/e2e/v6-collections.spec.ts:42:1 › IA majeur et Sentinel : imports dirigés, documents de même date, doublons séparés et retour du lecteur
+  158 did not run
+  23 passed (39.8s)

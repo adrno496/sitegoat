@@ -1,0 +1,77 @@
+{
+  "method": "Node zlib gzip level 9, identical settings",
+  "before": [
+    {
+      "file": "FutureView-B2YKSC_-.css",
+      "bytes": 2477,
+      "gzipBytes": 932
+    },
+    {
+      "file": "FutureView-DPaFV8eC.js",
+      "bytes": 29579,
+      "gzipBytes": 9476
+    },
+    {
+      "file": "ImportDialog-uXi0wltN.js",
+      "bytes": 5610,
+      "gzipBytes": 2328
+    },
+    {
+      "file": "db-ChLL9lzv.js",
+      "bytes": 25041,
+      "gzipBytes": 8536
+    },
+    {
+      "file": "index-CvFXhY6k.css",
+      "bytes": 40665,
+      "gzipBytes": 8790
+    },
+    {
+      "file": "index-Sq91AEjA.js",
+      "bytes": 874054,
+      "gzipBytes": 252921
+    },
+    {
+      "file": "workbox-window.prod.es5-Bd17z0YL.js",
+      "bytes": 5653,
+      "gzipBytes": 2199
+    }
+  ],
+  "after": [
+    {
+      "file": "FutureView-DRprZADz.js",
+      "bytes": 49698,
+      "gzipBytes": 14568
+    },
+    {
+      "file": "FutureView-xMWxTbag.css",
+      "bytes": 14011,
+      "gzipBytes": 3261
+    },
+    {
+      "file": "ImportDialog-DC3EELiQ.js",
+      "bytes": 5610,
+      "gzipBytes": 2328
+    },
+    {
+      "file": "db-gvoS69Mt.js",
+      "bytes": 25037,
+      "gzipBytes": 8545
+    },
+    {
+      "file": "index-CvFXhY6k.css",
+      "bytes": 40665,
+      "gzipBytes": 8790
+    },
+    {
+      "file": "index-DWWTYIqF.js",
+      "bytes": 874054,
+      "gzipBytes": 252922
+    },
+    {
+      "file": "workbox-window.prod.es5-Bd17z0YL.js",
+      "bytes": 5653,
+      "gzipBytes": 2199
+    }
+  ]
+}

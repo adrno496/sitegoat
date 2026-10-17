@@ -1,0 +1,5 @@
+
+> journal360-mobile@2.0.7 preview
+> node scripts/serve.mjs
+
+Journal 360 local : http://127.0.0.1:4183

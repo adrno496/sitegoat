@@ -16,3 +16,6 @@ playwright-report/
 !docs/evidence/v61/*.log
 
 !docs/evidence/daily/*.log
+
+# Preuves locales de la refonte de l’atlas Le Futur
+!docs/evidence/future-atlas/*.log

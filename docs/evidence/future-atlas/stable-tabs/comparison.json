@@ -1,0 +1,61 @@
+{
+  "scope": "Empty stable views, feature CSS already loaded; same Chromium/viewport. Functional populated views covered by full E2E.",
+  "results": [
+    {
+      "width": 1440,
+      "tab": "Bibliothèque",
+      "identicalPNG": false,
+      "beforeSHA256": "44e4a6e9f859934813d8811d5ac06ae377f0c3d1304b11ee48c3e2d6436e9d1d",
+      "afterSHA256": "56f6bace69c275db40db56a5160c199aac15838cc81407eeb518dc223c94e84b"
+    },
+    {
+      "width": 1440,
+      "tab": "Articles",
+      "identicalPNG": false,
+      "beforeSHA256": "3b9798f00869af3889538556fe1326a5a8c6d1a5f7f9d642c17e2b4867fef49d",
+      "afterSHA256": "84fb4e1c73a6d5e78287eca28ba2aa9b3a5a2baa385e1970b7ccff9d5e0b640c"
+    },
+    {
+      "width": 1440,
+      "tab": "IA majeur",
+      "identicalPNG": false,
+      "beforeSHA256": "5db5520bdc6d2d925b742756170d48c075bd635f9b9b4bd560c0af2d3774d90d",
+      "afterSHA256": "25728a79664d44de25a735cc4fc0e2ca86792e11f5300a212e264d3744f52d24"
+    },
+    {
+      "width": 1440,
+      "tab": "Sentinel",
+      "identicalPNG": false,
+      "beforeSHA256": "c4e83aaa251e05daef177c6ed645143d982e8759b8ea0fe12815bf0f8d5c9151",
+      "afterSHA256": "9d0ceea89fad1823f624ae2948617e9c41e8f94347f37c70038cb9fbd55058f5"
+    },
+    {
+      "width": 390,
+      "tab": "Bibliothèque",
+      "identicalPNG": true,
+      "beforeSHA256": "651264ea15e999abc2f3a53f47c0966112e17e8d37da8edff2f1ca371e85c34b",
+      "afterSHA256": "651264ea15e999abc2f3a53f47c0966112e17e8d37da8edff2f1ca371e85c34b"
+    },
+    {
+      "width": 390,
+      "tab": "Articles",
+      "identicalPNG": true,
+      "beforeSHA256": "c0e7f5e763a74ba646b9e681b40ca55d0beb6388bdedb65465b558f301c9d9db",
+      "afterSHA256": "c0e7f5e763a74ba646b9e681b40ca55d0beb6388bdedb65465b558f301c9d9db"
+    },
+    {
+      "width": 390,
+      "tab": "IA majeur",
+      "identicalPNG": true,
+      "beforeSHA256": "5e7da0572ea5c7f07f1b47d65310266eb1dd5697501ef517482986f97f5e67d7",
+      "afterSHA256": "5e7da0572ea5c7f07f1b47d65310266eb1dd5697501ef517482986f97f5e67d7"
+    },
+    {
+      "width": 390,
+      "tab": "Sentinel",
+      "identicalPNG": true,
+      "beforeSHA256": "b02b8854ce67ba5f344ab6d1ed403533b0bc0419547519c3a61b2287dd6aaca2",
+      "afterSHA256": "b02b8854ce67ba5f344ab6d1ed403533b0bc0419547519c3a61b2287dd6aaca2"
+    }
+  ]
+}

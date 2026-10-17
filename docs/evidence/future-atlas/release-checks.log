@@ -1,0 +1,95 @@
+
+> journal360-mobile@2.0.7 test
+> vitest run
+
+
+ RUN  v5.0.4 <workspace>
+
+ ✓ tests/collections.unit.test.ts (4 tests) 486ms
+ ✓ tests/v643.unit.test.ts (14 tests) 644ms
+ ✓ tests/v61.unit.test.ts (12 tests) 620ms
+ ✓ tests/sync.unit.test.ts (5 tests) 389ms
+ ✓ tests/data.unit.test.ts (16 tests) 544ms
+ ✓ tests/daily.unit.test.ts (11 tests) 997ms
+ ✓ tests/future.unit.test.ts (33 tests) 1430ms
+   ✓ refuse une écriture personnelle valide qui rendrait la sauvegarde impossible 619ms
+ ✓ tests/article-navigation.unit.test.ts (11 tests) 202ms
+ ✓ tests/googleAi.unit.test.ts (56 tests) 134ms
+ ✓ tests/articles.unit.test.ts (3 tests) 220ms
+ ✓ tests/reading-changes.unit.test.ts (7 tests) 317ms
+stderr | tests/sync-indicator.unit.test.ts > une modification pendant le transfert reste en attente malgré un premier succès daté
+The current testing environment is not configured to support act(...)
+
+ ✓ tests/access.unit.test.ts (3 tests) 13ms
+ ✓ tests/backup-api.unit.test.ts (7 tests) 12ms
+stderr | tests/sync-indicator.unit.test.ts > une modification pendant le transfert reste en attente malgré un premier succès daté
+The current testing environment is not configured to support act(...)
+
+ ✓ tests/v6-sync.unit.test.ts (5 tests) 111ms
+ ✓ tests/sync-indicator.unit.test.ts (2 tests) 262ms
+ ✓ tests/future-atlas.unit.test.ts (4 tests) 42ms
+ ✓ tests/googleAiSession.unit.test.ts (26 tests) 15ms
+ ✓ tests/v6.unit.test.ts (43 tests) 3140ms
+   ✓ 2000 articles uniques réellement acceptés 1514ms
+ ✓ tests/cloud.unit.test.ts (1 test) 6051ms
+   ✓ file cloud : une seule opération simultanée, trois échecs conservés et aucun faux succès 6050ms
+
+ Test Files  19 passed (19)
+      Tests  263 passed (263)
+   Start at  23:18:34
+   Duration  7.25s (tests 51%, environment 35%, import 10%, setup 2%, transform 2%)
+
+Environment  jsdom was created 19 times · 10.82s total, 35% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+
+
+> journal360-mobile@2.0.7 test:e2e
+> playwright test
+
+
+Running 182 tests using 1 worker
+
+  ✓    1 [chromium] › tests/e2e/app.spec.ts:36:1 › parcours complet : import, lecture, notes, favori, recherche, offline, export et restauration (2.1s)
+  ✓    2 [chromium] › tests/e2e/app.spec.ts:134:1 › démonstrations, interaction explicite et mémoire basée sur event_id (1.1s)
+  ✓    3 [chromium] › tests/e2e/app.spec.ts:173:1 › renommage doublon, version, archive et corbeille récupérable (8.0s)
+  ✓    4 [chromium] › tests/e2e/app.spec.ts:210:1 › sécurité : parent, stockage, fetch, ressources, top et popups bloqués (830ms)
+  ✓    5 [chromium] › tests/e2e/app.spec.ts:247:1 › responsive, thèmes et accessibilité sur six largeurs (4.7s)
+  ✓    6 [chromium] › tests/e2e/app.spec.ts:283:1 › manifest et réception Web Share Target en service worker (535ms)
+  ✓    7 [chromium] › tests/e2e/app.spec.ts:320:1 › File Handling launchQueue traite un HTML via le même écran de vérification (463ms)
+  ✘    8 [chromium] › tests/e2e/app.spec.ts:360:1 › lecture pleine page : tout le viewport, interactions conservées et retour sur mobile (2.7s)
+
+
+  1) [chromium] › tests/e2e/app.spec.ts:360:1 › lecture pleine page : tout le viewport, interactions conservées et retour sur mobile
+
+    Test was interrupted.
+
+    Error: browserContext.newPage: Target page, context or browser has been closed
+     Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md
+
+      417 |     );
+      418 |     await expect(frame.locator("#counter")).toHaveText("1");
+    > 419 |     const a11y = await new AxeBuilder({ page }).analyze();
+          |                  ^
+      420 |     expect(a11y.violations).toEqual([]);
+      421 |     await page.screenshot({
+      422 |       path: `docs/screenshots/reader-full-page-${width}.png`,
+        at AxeBuilder.analyze (/Users/dreano/Downloads/veille/journal360-pwa/node_modules/@axe-core/playwright/dist/index.mjs:218:13)
+        at <workspace>/tests/e2e/app.spec.ts:419:18
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/app-lecture-pleine-page-to-6406e-ervées-et-retour-sur-mobile-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/app-lecture-pleine-page-to-6406e-ervées-et-retour-sur-mobile-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/app-lecture-pleine-page-to-6406e-ervées-et-retour-sur-mobile-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 interrupted
+    [chromium] › tests/e2e/app.spec.ts:360:1 › lecture pleine page : tout le viewport, interactions conservées et retour sur mobile
+  174 did not run
+  7 passed (22.0s)

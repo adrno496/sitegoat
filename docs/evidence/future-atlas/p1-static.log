@@ -1,0 +1,7 @@
+tests/future-atlas.unit.test.ts 67ms
+tests/e2e/v6-future-atlas.spec.ts 56ms
+
+> journal360-mobile@2.0.7 typecheck
+> tsc -b
+
+tests/e2e/v6-future-atlas.spec.ts(304,36): error TS2339: Property 'remove' does not exist on type 'Node'.

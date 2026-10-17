@@ -34,3 +34,13 @@ Cette consigne facilite la production ; elle ne remplace pas la validation local
 Les identifiants de sources/scénarios/signaux/jalons/actions sont uniques dans tout le dossier. Les liens de preuve doivent pointer vers une source déclarée ; les liens entre jalons et références d’actions/signaux doivent exister. Une observation nécessite une preuve et une date cohérente. Les URL exigent HTTPS public sans identifiants. Toute clé ou module inconnu est rejeté. Une version future du contrat devra être prise en charge par une évolution du code.
 
 Un journal quotidien sélectionné dans Le Futur propose un transfert explicite vers Bibliothèque, sans sauvegarde automatique dans la mauvaise rubrique. Un ancien AI-RADAR exige une confirmation de migration ; les affirmations restent inconnues et l’original est préservé. Les HTML historiques IA majeur et Sentinel gardent leur parcours actuel.
+
+## Se déplacer dans l’atlas
+
+L’accueil affiche les dernières versions et un résumé calculé. Ouvrez un dossier ou utilisez les raccourcis Chronologie, Scénarios, Signaux, Ma préparation et Sources. Les filtres peuvent être repliés ; « Effacer les filtres » restitue la liste complète.
+
+Dans la frise, choisissez une année, utilisez précédent/suivant ou les flèches du clavier, Home et End. Les liens entre jalons changent la période affichée sans modifier le fichier. Les objections et les sources se déplient ; le comparateur propose une vue détaillée.
+
+Dans Ma préparation, choisissez un statut, saisissez un résultat puis cliquez sur « Enregistrer l’action ». La confirmation reste dans la carte ; en cas d’échec, le brouillon reste présent. Les notes et décisions privées restent accessibles dans Mon carnet.
+
+« Sauvegarde et ressources » donne accès au ZIP dédié et à sa restauration. Dans un dossier, « Exports, original et empreinte » regroupe les exports et l’aperçu isolé statique. Le réglage local « Animations : Réduites » et la préférence système désactivent le mouvement de l’atlas ; ce réglage n’altère ni les données ni les originaux.

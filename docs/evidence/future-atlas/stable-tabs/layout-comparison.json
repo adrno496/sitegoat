@@ -1,0 +1,4949 @@
+{
+  "scope": "Headings and controls of empty stable tabs, same Chromium and viewport, after loading future CSS.",
+  "results": [
+    {
+      "width": 1440,
+      "tab": "Bibliothèque",
+      "styleAndGeometryIdentical": true,
+      "before": [
+        {
+          "tag": "H1",
+          "text": "Articles",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos articles, réunis ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer une veille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML IA majeur, ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML Sentinel, ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "Votre bibliothèque",
+          "label": null,
+          "rect": [
+            294,
+            141.5,
+            430.6875,
+            52.1875
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            339,
+            281.78125,
+            576,
+            44
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "SELECT",
+          "text": "Toutes les rubriques",
+          "label": null,
+          "rect": [
+            940,
+            285.78125,
+            157,
+            44
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "SELECT",
+          "text": "Toutes les dates",
+          "label": null,
+          "rect": [
+            1107,
+            285.78125,
+            138,
+            44
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "SELECT",
+          "text": "Plus récentesPar titreDerniers imports",
+          "label": null,
+          "rect": [
+            1255,
+            285.78125,
+            139,
+            44
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Éditions",
+          "label": null,
+          "rect": [
+            298,
+            357.78125,
+            67.140625,
+            44
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            368.140625,
+            357.78125,
+            70.1875,
+            44
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            441.328125,
+            357.78125,
+            71.421875,
+            44
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer",
+          "label": null,
+          "rect": [
+            1282.3125,
+            357.78125,
+            111.6875,
+            44
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H2",
+          "text": "Aucune édition ici.",
+          "label": null,
+          "rect": [
+            315,
+            586.78125,
+            1058,
+            33.59375
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML",
+          "label": null,
+          "rect": [
+            760.828125,
+            681.40625,
+            166.328125,
+            44
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        }
+      ],
+      "after": [
+        {
+          "tag": "H1",
+          "text": "Articles",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos articles, réunis ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer une veille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML IA majeur, ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML Sentinel, ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "Votre bibliothèque",
+          "label": null,
+          "rect": [
+            294,
+            141.5,
+            430.6875,
+            52.1875
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            339,
+            281.78125,
+            576,
+            44
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "SELECT",
+          "text": "Toutes les rubriques",
+          "label": null,
+          "rect": [
+            940,
+            285.78125,
+            157,
+            44
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "SELECT",
+          "text": "Toutes les dates",
+          "label": null,
+          "rect": [
+            1107,
+            285.78125,
+            138,
+            44
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "SELECT",
+          "text": "Plus récentesPar titreDerniers imports",
+          "label": null,
+          "rect": [
+            1255,
+            285.78125,
+            139,
+            44
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Éditions",
+          "label": null,
+          "rect": [
+            298,
+            357.78125,
+            67.140625,
+            44
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            368.140625,
+            357.78125,
+            70.1875,
+            44
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            441.328125,
+            357.78125,
+            71.421875,
+            44
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer",
+          "label": null,
+          "rect": [
+            1282.3125,
+            357.78125,
+            111.6875,
+            44
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H2",
+          "text": "Aucune édition ici.",
+          "label": null,
+          "rect": [
+            315,
+            586.78125,
+            1058,
+            33.59375
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML",
+          "label": null,
+          "rect": [
+            760.828125,
+            681.40625,
+            166.328125,
+            44
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "tab": "Articles",
+      "styleAndGeometryIdentical": true,
+      "before": [
+        {
+          "tag": "H1",
+          "text": "Articles",
+          "label": null,
+          "rect": [
+            294,
+            133.5,
+            490.96875,
+            52.1875
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos articles, réunis ici.",
+          "label": null,
+          "rect": [
+            315,
+            378.484375,
+            1058,
+            33.59375
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer une veille",
+          "label": null,
+          "rect": [
+            772.640625,
+            473.109375,
+            142.703125,
+            44
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML IA majeur, ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML Sentinel, ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        }
+      ],
+      "after": [
+        {
+          "tag": "H1",
+          "text": "Articles",
+          "label": null,
+          "rect": [
+            294,
+            133.5,
+            490.96875,
+            52.1875
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos articles, réunis ici.",
+          "label": null,
+          "rect": [
+            315,
+            378.484375,
+            1058,
+            33.59375
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer une veille",
+          "label": null,
+          "rect": [
+            772.640625,
+            473.109375,
+            142.703125,
+            44
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML IA majeur, ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML Sentinel, ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "tab": "IA majeur",
+      "styleAndGeometryIdentical": true,
+      "before": [
+        {
+          "tag": "H1",
+          "text": "Articles",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos articles, réunis ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer une veille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "IA majeur",
+          "label": null,
+          "rect": [
+            294,
+            133.5,
+            473.90625,
+            52.1875
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans IA majeur",
+          "label": null,
+          "rect": [
+            1192.390625,
+            115,
+            201.609375,
+            44
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            338,
+            272.484375,
+            783.75,
+            44
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            1158.75,
+            272.484375,
+            83.640625,
+            44
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            1245.390625,
+            272.484375,
+            70.1875,
+            44
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            1318.578125,
+            272.484375,
+            71.421875,
+            44
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML IA majeur, ici.",
+          "label": null,
+          "rect": [
+            315,
+            512.484375,
+            1058,
+            33.59375
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans IA majeur",
+          "label": null,
+          "rect": [
+            729.96875,
+            607.109375,
+            228.046875,
+            44
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML Sentinel, ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        }
+      ],
+      "after": [
+        {
+          "tag": "H1",
+          "text": "Articles",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos articles, réunis ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer une veille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "IA majeur",
+          "label": null,
+          "rect": [
+            294,
+            133.5,
+            473.90625,
+            52.1875
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans IA majeur",
+          "label": null,
+          "rect": [
+            1192.390625,
+            115,
+            201.609375,
+            44
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            338,
+            272.484375,
+            783.75,
+            44
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            1158.75,
+            272.484375,
+            83.640625,
+            44
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            1245.390625,
+            272.484375,
+            70.1875,
+            44
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            1318.578125,
+            272.484375,
+            71.421875,
+            44
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML IA majeur, ici.",
+          "label": null,
+          "rect": [
+            315,
+            512.484375,
+            1058,
+            33.59375
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans IA majeur",
+          "label": null,
+          "rect": [
+            729.96875,
+            607.109375,
+            228.046875,
+            44
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML Sentinel, ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "tab": "Sentinel",
+      "styleAndGeometryIdentical": true,
+      "before": [
+        {
+          "tag": "H1",
+          "text": "Articles",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos articles, réunis ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer une veille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML IA majeur, ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "Sentinel",
+          "label": null,
+          "rect": [
+            294,
+            133.5,
+            410.109375,
+            52.1875
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans Sentinel",
+          "label": null,
+          "rect": [
+            1199.953125,
+            115,
+            194.046875,
+            44
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            338,
+            272.484375,
+            783.75,
+            44
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            1158.75,
+            272.484375,
+            83.640625,
+            44
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            1245.390625,
+            272.484375,
+            70.1875,
+            44
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            1318.578125,
+            272.484375,
+            71.421875,
+            44
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML Sentinel, ici.",
+          "label": null,
+          "rect": [
+            315,
+            512.484375,
+            1058,
+            33.59375
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans Sentinel",
+          "label": null,
+          "rect": [
+            733.75,
+            607.109375,
+            220.484375,
+            44
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        }
+      ],
+      "after": [
+        {
+          "tag": "H1",
+          "text": "Articles",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos articles, réunis ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer une veille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML IA majeur, ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "Sentinel",
+          "label": null,
+          "rect": [
+            294,
+            133.5,
+            410.109375,
+            52.1875
+          ],
+          "font": "45px / 52.2px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans Sentinel",
+          "label": null,
+          "rect": [
+            1199.953125,
+            115,
+            194.046875,
+            44
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            338,
+            272.484375,
+            783.75,
+            44
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            1158.75,
+            272.484375,
+            83.640625,
+            44
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            1245.390625,
+            272.484375,
+            70.1875,
+            44
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            1318.578125,
+            272.484375,
+            71.421875,
+            44
+          ],
+          "font": "11px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML Sentinel, ici.",
+          "label": null,
+          "rect": [
+            315,
+            512.484375,
+            1058,
+            33.59375
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans Sentinel",
+          "label": null,
+          "rect": [
+            733.75,
+            607.109375,
+            220.484375,
+            44
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "tab": "Bibliothèque",
+      "styleAndGeometryIdentical": true,
+      "before": [
+        {
+          "tag": "H1",
+          "text": "Articles",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "30px / 34.8px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos articles, réunis ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer une veille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "30px / 34.8px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML IA majeur, ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "30px / 34.8px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML Sentinel, ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "Votre bibliothèque",
+          "label": null,
+          "rect": [
+            20,
+            134.5,
+            260,
+            39.4375
+          ],
+          "font": "34px / 39.44px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            65,
+            266.71875,
+            290,
+            44
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "SELECT",
+          "text": "Toutes les rubriques",
+          "label": null,
+          "rect": [
+            20,
+            327.71875,
+            111.328125,
+            44
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "SELECT",
+          "text": "Toutes les dates",
+          "label": null,
+          "rect": [
+            139.328125,
+            327.71875,
+            111.34375,
+            44
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "SELECT",
+          "text": "Plus récentesPar titreDerniers imports",
+          "label": null,
+          "rect": [
+            258.671875,
+            327.71875,
+            111.328125,
+            44
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Éditions",
+          "label": null,
+          "rect": [
+            24,
+            405.71875,
+            55.578125,
+            44
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            82.578125,
+            405.71875,
+            58.359375,
+            44
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            143.9375,
+            405.71875,
+            59.46875,
+            44
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer",
+          "label": null,
+          "rect": [
+            276.4375,
+            395.71875,
+            93.5625,
+            64
+          ],
+          "font": "600 10px / 14px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H2",
+          "text": "Aucune édition ici.",
+          "label": null,
+          "rect": [
+            41,
+            639.015625,
+            308,
+            33.59375
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML",
+          "label": null,
+          "rect": [
+            111.828125,
+            733.640625,
+            166.328125,
+            64
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        }
+      ],
+      "after": [
+        {
+          "tag": "H1",
+          "text": "Articles",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "30px / 34.8px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos articles, réunis ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer une veille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "30px / 34.8px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML IA majeur, ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "30px / 34.8px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML Sentinel, ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "Votre bibliothèque",
+          "label": null,
+          "rect": [
+            20,
+            134.5,
+            260,
+            39.4375
+          ],
+          "font": "34px / 39.44px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            65,
+            266.71875,
+            290,
+            44
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "SELECT",
+          "text": "Toutes les rubriques",
+          "label": null,
+          "rect": [
+            20,
+            327.71875,
+            111.328125,
+            44
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "SELECT",
+          "text": "Toutes les dates",
+          "label": null,
+          "rect": [
+            139.328125,
+            327.71875,
+            111.34375,
+            44
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "SELECT",
+          "text": "Plus récentesPar titreDerniers imports",
+          "label": null,
+          "rect": [
+            258.671875,
+            327.71875,
+            111.328125,
+            44
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Éditions",
+          "label": null,
+          "rect": [
+            24,
+            405.71875,
+            55.578125,
+            44
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            82.578125,
+            405.71875,
+            58.359375,
+            44
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            143.9375,
+            405.71875,
+            59.46875,
+            44
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer",
+          "label": null,
+          "rect": [
+            276.4375,
+            395.71875,
+            93.5625,
+            64
+          ],
+          "font": "600 10px / 14px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H2",
+          "text": "Aucune édition ici.",
+          "label": null,
+          "rect": [
+            41,
+            639.015625,
+            308,
+            33.59375
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML",
+          "label": null,
+          "rect": [
+            111.828125,
+            733.640625,
+            166.328125,
+            64
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "tab": "Articles",
+      "styleAndGeometryIdentical": true,
+      "before": [
+        {
+          "tag": "H1",
+          "text": "Articles",
+          "label": null,
+          "rect": [
+            20,
+            126.5,
+            350,
+            34.796875
+          ],
+          "font": "30px / 34.8px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos articles, réunis ici.",
+          "label": null,
+          "rect": [
+            41,
+            401.078125,
+            308,
+            33.59375
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer une veille",
+          "label": null,
+          "rect": [
+            123.640625,
+            519.5,
+            142.703125,
+            64
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "30px / 34.8px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML IA majeur, ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "30px / 34.8px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML Sentinel, ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        }
+      ],
+      "after": [
+        {
+          "tag": "H1",
+          "text": "Articles",
+          "label": null,
+          "rect": [
+            20,
+            126.5,
+            350,
+            34.796875
+          ],
+          "font": "30px / 34.8px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos articles, réunis ici.",
+          "label": null,
+          "rect": [
+            41,
+            401.078125,
+            308,
+            33.59375
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer une veille",
+          "label": null,
+          "rect": [
+            123.640625,
+            519.5,
+            142.703125,
+            64
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "30px / 34.8px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML IA majeur, ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "30px / 34.8px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML Sentinel, ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "tab": "IA majeur",
+      "styleAndGeometryIdentical": true,
+      "before": [
+        {
+          "tag": "H1",
+          "text": "Articles",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "30px / 34.8px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos articles, réunis ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer une veille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "IA majeur",
+          "label": null,
+          "rect": [
+            20,
+            126.5,
+            350,
+            34.796875
+          ],
+          "font": "30px / 34.8px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans IA majeur",
+          "label": null,
+          "rect": [
+            20,
+            254.890625,
+            201.609375,
+            64
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            64,
+            351.890625,
+            291,
+            44
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            24,
+            432.890625,
+            70.578125,
+            44
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            97.578125,
+            432.890625,
+            58.359375,
+            44
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            158.9375,
+            432.890625,
+            59.46875,
+            44
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML IA majeur, ici.",
+          "label": null,
+          "rect": [
+            41,
+            660.1875,
+            308,
+            33.59375
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans IA majeur",
+          "label": null,
+          "rect": [
+            80.96875,
+            778.609375,
+            228.046875,
+            64
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "30px / 34.8px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML Sentinel, ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        }
+      ],
+      "after": [
+        {
+          "tag": "H1",
+          "text": "Articles",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "30px / 34.8px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos articles, réunis ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer une veille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "IA majeur",
+          "label": null,
+          "rect": [
+            20,
+            126.5,
+            350,
+            34.796875
+          ],
+          "font": "30px / 34.8px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans IA majeur",
+          "label": null,
+          "rect": [
+            20,
+            254.890625,
+            201.609375,
+            64
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            64,
+            351.890625,
+            291,
+            44
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            24,
+            432.890625,
+            70.578125,
+            44
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            97.578125,
+            432.890625,
+            58.359375,
+            44
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            158.9375,
+            432.890625,
+            59.46875,
+            44
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML IA majeur, ici.",
+          "label": null,
+          "rect": [
+            41,
+            660.1875,
+            308,
+            33.59375
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans IA majeur",
+          "label": null,
+          "rect": [
+            80.96875,
+            778.609375,
+            228.046875,
+            64
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "30px / 34.8px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML Sentinel, ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans Sentinel",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "tab": "Sentinel",
+      "styleAndGeometryIdentical": true,
+      "before": [
+        {
+          "tag": "H1",
+          "text": "Articles",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "30px / 34.8px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos articles, réunis ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer une veille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "30px / 34.8px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML IA majeur, ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "Sentinel",
+          "label": null,
+          "rect": [
+            20,
+            126.5,
+            350,
+            34.796875
+          ],
+          "font": "30px / 34.8px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans Sentinel",
+          "label": null,
+          "rect": [
+            20,
+            254.890625,
+            194.046875,
+            64
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            64,
+            351.890625,
+            291,
+            44
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            24,
+            432.890625,
+            70.578125,
+            44
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            97.578125,
+            432.890625,
+            58.359375,
+            44
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            158.9375,
+            432.890625,
+            59.46875,
+            44
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML Sentinel, ici.",
+          "label": null,
+          "rect": [
+            41,
+            660.1875,
+            308,
+            33.59375
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans Sentinel",
+          "label": null,
+          "rect": [
+            84.75,
+            778.609375,
+            220.484375,
+            64
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        }
+      ],
+      "after": [
+        {
+          "tag": "H1",
+          "text": "Articles",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "30px / 34.8px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos articles, réunis ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer une veille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "30px / 34.8px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML IA majeur, ici.",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans IA majeur",
+          "label": null,
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "H1",
+          "text": "Sentinel",
+          "label": null,
+          "rect": [
+            20,
+            126.5,
+            350,
+            34.796875
+          ],
+          "font": "30px / 34.8px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer dans Sentinel",
+          "label": null,
+          "rect": [
+            20,
+            254.890625,
+            194.046875,
+            64
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "label": null,
+          "rect": [
+            64,
+            351.890625,
+            291,
+            44
+          ],
+          "font": "12px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Documents",
+          "label": null,
+          "rect": [
+            24,
+            432.890625,
+            70.578125,
+            44
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgb(255, 254, 251)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Archives",
+          "label": null,
+          "rect": [
+            97.578125,
+            432.890625,
+            58.359375,
+            44
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Corbeille",
+          "label": null,
+          "rect": [
+            158.9375,
+            432.890625,
+            59.46875,
+            44
+          ],
+          "font": "10px Arial, Helvetica, sans-serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "H2",
+          "text": "Vos HTML Sentinel, ici.",
+          "label": null,
+          "rect": [
+            41,
+            660.1875,
+            308,
+            33.59375
+          ],
+          "font": "28px / 33.6px Georgia, \"Times New Roman\", serif",
+          "color": "rgb(37, 61, 57)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Importer un HTML dans Sentinel",
+          "label": null,
+          "rect": [
+            84.75,
+            778.609375,
+            220.484375,
+            64
+          ],
+          "font": "600 12px / 16.8px Arial, Helvetica, sans-serif",
+          "color": "rgb(250, 247, 239)",
+          "background": "rgb(21, 63, 59)"
+        }
+      ]
+    }
+  ]
+}

@@ -123,3 +123,5 @@ Dans les journaux V6.4.3, chaque **Ouvrir Google Mode IA ↗** ouvre la confirma
 Le Futur accepte des dossiers prospectifs HTML autonomes (`futureData`) ou JSON `journal360.future` v1, dans une base locale séparée. Scénarios, frise, signaux, préparation, notes et versions sont accessibles sans modifier les journées. Les anciennes entrées AI-RADAR proposent une migration explicite. La sauvegarde ZIP dédiée doit être exportée séparément ; la synchronisation automatique Le Futur n’est pas configurée.
 
 [Guide et exemples](docs/FUTURE_IMPORT_GUIDE.md) · [Architecture](docs/FUTURE_ARCHITECTURE.md) · [Tests et limites](docs/FUTURE_TEST_REPORT.md) · [Rollback](docs/FUTURE_ROLLBACK.md).
+
+La refonte locale P0/P1 transforme Le Futur en atlas : résumé calculé, horizons au clavier, comparaison des scénarios et feuille de route personnelle. [Diff, captures, vérifications et limites](docs/FUTURE_ATLAS_REPORT.md).

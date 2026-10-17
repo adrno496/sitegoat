@@ -1,0 +1,82 @@
+import { chromium } from "playwright";
+import { mkdir, writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
+const [beforeURL, afterURL, output] = process.argv.slice(2);
+if (
+  !output ||
+  [beforeURL, afterURL].some((u) => new URL(u).hostname !== "127.0.0.1")
+)
+  throw Error("Local preview URLs and output directory required");
+const browser = await chromium.launch({ headless: true });
+const results = [];
+try {
+  for (const width of [1440, 390]) {
+    const images = new Map();
+    for (const [phase, url] of [
+      ["before", beforeURL],
+      ["after", afterURL],
+    ]) {
+      const context = await browser.newContext({
+        viewport: { width, height: 1000 },
+      });
+      const page = await context.newPage();
+      await page.route("**/*", (r) =>
+        new URL(r.request().url()).hostname === "127.0.0.1"
+          ? r.continue()
+          : r.abort(),
+      );
+      await page.goto(url);
+      const area = width > 700 ? ".sidebar" : ".mobile-nav";
+      await page
+        .locator(area)
+        .getByRole("button", { name: "Le Futur", exact: true })
+        .click();
+      await page.locator(".future-workspace").waitFor();
+      await mkdir(output + "/" + phase, { recursive: true });
+      for (const [key, name] of [
+        ["library", "Bibliothèque"],
+        ["articles", "Articles"],
+        ["major-ai", "IA majeur"],
+        ["sentinel", "Sentinel"],
+      ]) {
+        await page
+          .locator(area)
+          .getByRole("button", { name, exact: true })
+          .click();
+        await page.locator(".future-workspace").waitFor({ state: "detached" });
+        const bytes = await page.screenshot({
+          path: output + "/" + phase + "/" + key + "-" + width + ".png",
+          fullPage: true,
+          animations: "disabled",
+        });
+        const hash = createHash("sha256").update(bytes).digest("hex");
+        if (phase === "before") images.set(key, hash);
+        else
+          results.push({
+            width,
+            tab: name,
+            identicalPNG: images.get(key) === hash,
+            beforeSHA256: images.get(key),
+            afterSHA256: hash,
+          });
+      }
+      await context.close();
+    }
+  }
+  await writeFile(
+    output + "/comparison.json",
+    JSON.stringify(
+      {
+        scope:
+          "Empty stable views, feature CSS already loaded; same Chromium/viewport. Functional populated views covered by full E2E.",
+        results,
+      },
+      null,
+      2,
+    ) + "\n",
+  );
+  if (results.some((r) => !r.identicalPNG))
+    throw Error("Visual difference found; inspect before/after PNGs");
+} finally {
+  await browser.close();
+}

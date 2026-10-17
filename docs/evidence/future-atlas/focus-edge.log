@@ -1,0 +1,64 @@
+src/features/future/FutureView.tsx 102ms
+tests/e2e/v6-future-atlas.spec.ts 46ms
+
+> journal360-mobile@2.0.7 typecheck
+> tsc -b
+
+
+> journal360-mobile@2.0.7 lint
+> eslint .
+
+
+> journal360-mobile@2.0.7 build
+> tsc -b && vite build
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 1763 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/manifest.webmanifest                          0.64 kB
+dist/index.html                                    0.71 kB │ gzip:   0.44 kB
+dist/assets/FutureView-xMWxTbag.css               14.01 kB │ gzip:   3.28 kB
+dist/assets/index-CvFXhY6k.css                    40.66 kB │ gzip:   8.88 kB
+dist/assets/ImportDialog-DdgoM18n.js               5.61 kB │ gzip:   2.33 kB
+dist/assets/workbox-window.prod.es5-Bd17z0YL.js    5.65 kB │ gzip:   2.20 kB
+dist/assets/db-KtQZdJGZ.js                        25.03 kB │ gzip:   8.58 kB
+dist/assets/FutureView-CUCHSMC3.js                49.58 kB │ gzip:  14.62 kB
+dist/assets/index-D1THBAxW.js                    874.05 kB │ gzip: 255.78 kB
+
+[plugin builtin:vite-reporter]
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 264ms
+
+PWA v1.3.0
+Building src/sw.ts service worker ("es" format)...
+vite v8.3.4 building client environment for production...
+
+ WARN  inlineDynamicImports option is deprecated, please use codeSplitting: false instead.
+
+transforming...
+✓ 62 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/sw.mjs  114.24 kB │ gzip: 37.45 kB
+
+✓ built in 41ms
+
+PWA v1.3.0
+mode      injectManifest
+format:   es
+precache  20 entries (1071.63 KiB)
+files generated
+  dist/sw.js
+
+Running 3 tests using 1 worker
+
+  ✓  1 [chromium] › tests/e2e/v6-future-atlas.spec.ts:60:1 › Atlas P0 : compteurs réels, filtres, favoris, pagination et retour du focus (2.1s)
+  ✓  2 [webkit] › tests/e2e/v6-future-atlas.spec.ts:60:1 › Atlas P0 : compteurs réels, filtres, favoris, pagination et retour du focus (2.7s)
+  ✓  3 [chromium-mobile] › tests/e2e/v6-future-atlas.spec.ts:60:1 › Atlas P0 : compteurs réels, filtres, favoris, pagination et retour du focus (2.3s)
+
+  3 passed (9.1s)

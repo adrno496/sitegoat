@@ -1,0 +1,6 @@
+
+> journal360-mobile@2.0.7 typecheck
+> tsc -b
+
+src/features/future/FutureDetail.tsx(26,137): error TS18048: 'document' is possibly 'undefined'.
+src/features/future/FutureDetail.tsx(26,146): error TS2339: Property 'getElementById' does not exist on type 'FutureDocument'.

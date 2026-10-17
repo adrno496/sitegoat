@@ -1,0 +1,4736 @@
+diff --git a/src/features/future/FutureView.tsx b/src/features/future/FutureView.tsx
+index 5fe8a47..a117bc4 100644
+--- a/src/features/future/FutureView.tsx
++++ b/src/features/future/FutureView.tsx
+@@ -1,9 +1,7 @@
+-import { useEffect, useRef, useState } from "react";
+-import { liveQuery } from "dexie";
++import { useEffect, useMemo, useRef, useState } from "react";
+ import { download } from "../backup";
+-import { blobOf, now } from "../../data/model";
++import { now } from "../../data/model";
+ import { useDialogFocus } from "../dialogFocus";
+-import { radarReaderHTML } from "../aiRadar/import";
+ import {
+   futureDb,
+   normalize,
+@@ -16,65 +14,59 @@ import {
+   restoreFutureBackup,
+   type FutureArchive,
+ } from "./backup";
+-import {
+-  moduleLabels,
+-  personalSchema,
+-  statusLabels,
+-  type FuturePayload,
+-  type FuturePersonal,
+-} from "./schema";
+-import { renderFutureHTML } from "./html";
++import { statusLabels, type FuturePersonal } from "./schema";
++import { useLive } from "./hooks";
++import { contentCounts, formatDate } from "./selectors";
++import { FutureSummary, type AtlasCounts } from "./FutureOverview";
++import FutureDetail from "./FutureDetail";
+ import "./future.css";
+-function useLive<T>(query: () => Promise<T>, deps: unknown[], initial: T) {
+-  const [value, setValue] = useState(initial),
+-    [error, setError] = useState("");
+-  useEffect(() => {
+-    const sub = liveQuery(query).subscribe({
+-      next: setValue,
+-      error: (e) => setError(String(e)),
+-    });
+-    return () =>
+-      sub.unsubscribe(); /* query is intentionally governed by caller dependencies */ // eslint-disable-next-line react-hooks/exhaustive-deps
+-  }, deps);
+-  return { value, error };
+-}
+-const format = (value: string | null | undefined) =>
+-  value ? new Date(value).toLocaleString("fr-FR") : "non renseigné";
+ const verdicts = {
+   integrer: "Intégrer",
+   surveiller: "À surveiller",
+   ecarter: "Écarter",
+ };
+-const horizons = {
+-  now: "Maintenant",
+-  "3m": "Dans 3 mois",
+-  "12m": "Dans 12 mois",
+-};
+-function Sources({ urls }: { urls: string[] }) {
+-  return (
+-    <ul className="future-evidence">
+-      {urls.map((url, i) => (
+-        <li key={url}>
+-          <a href={url} target="_blank" rel="noreferrer noopener">
+-            Source déclarée {i + 1}
+-          </a>
+-        </li>
+-      ))}
+-    </ul>
+-  );
+-}
+ export default function FutureView({ onImport }: { onImport: () => void }) {
+   const { value: documents, error: loadError } = useLive(
+     () => futureDb.documents.orderBy("updatedAt").reverse().toArray(),
+     [],
+     [] as FutureDocument[],
+   );
+-  const { value: personal } = useLive(
++  const { value: personal, error: personalError } = useLive(
+     () => futureDb.personal.toArray(),
+     [],
+     [] as FuturePersonal[],
+   );
++  const { value: versions, error: versionError } = useLive(
++    () => futureDb.versions.toArray(),
++    [],
++    [] as FutureVersion[],
++  );
++  const { value: summary, error: summaryError } = useLive(
++    async () => {
++      const docs = await futureDb.documents.toArray();
++      const total: AtlasCounts = { observations: 0, hypotheses: 0, actions: 0 };
++      for (let i = 0; i < docs.length; i += 25) {
++        const rows = await futureDb.contents.bulkGet(
++          docs.slice(i, i + 25).map((d) => d.latest),
++        );
++        for (const row of rows) {
++          if (!row)
++            throw new Error(
++              "Résumé indisponible : snapshot manquant. Restaurez une sauvegarde.",
++            );
++          const c = contentCounts(row.payload);
++          total.observations += c.observations;
++          total.hypotheses += c.hypotheses;
++          total.actions += c.actions;
++        }
++      }
++      return total;
++    },
++    [],
++    null as AtlasCounts | null,
++  );
+   const [selected, setSelected] = useState(""),
++    [initialSection, setInitialSection] = useState("overview"),
+     [search, setSearch] = useState(""),
+     [status, setStatus] = useState(""),
+     [year, setYear] = useState(""),
+@@ -85,14 +77,23 @@ export default function FutureView({ onImport }: { onImport: () => void }) {
+     [error, setError] = useState(""),
+     [archive, setArchive] = useState<FutureArchive | null>(null),
+     [busy, setBusy] = useState(false),
+-    [lastVisit, setLastVisit] = useState("");
+-  const restoreRef = useRef<HTMLInputElement>(null);
++    [lastVisit, setLastVisit] = useState(""),
++    [motion, setMotion] = useState("subtle"),
++    [filtersOpen, setFiltersOpen] = useState(
++      () => !window.matchMedia("(max-width:700px)").matches,
++    );
++  const restoreRef = useRef<HTMLInputElement>(null),
++    cardRefs = useRef(new Map<string, HTMLButtonElement>()),
++    returnTo = useRef("");
+   useEffect(() => {
+     let active = true;
+     futureDb.settings
+-      .get("last-visit")
+-      .then((v) => {
+-        if (active) setLastVisit(v?.value || "");
++      .bulkGet(["last-visit", "atlas-motion"])
++      .then(([v, m]) => {
++        if (active) {
++          setLastVisit(v?.value || "");
++          setMotion(m?.value === "off" ? "off" : "subtle");
++        }
+       })
+       .catch((e) => setError(String(e)));
+     return () => {
+@@ -104,20 +105,57 @@ export default function FutureView({ onImport }: { onImport: () => void }) {
+         );
+     };
+   }, []);
+-  const favoriteIds = new Set(
+-    personal.filter((p) => p.favorite).map((p) => p.documentId),
++  useEffect(() => {
++    if (!selected && returnTo.current) {
++      (
++        cardRefs.current.get(returnTo.current) ||
++        window.document.getElementById("future-collection-heading")
++      )?.focus();
++      returnTo.current = "";
++    }
++  }, [selected]);
++  const favoriteIds = useMemo(
++    () => new Set(personal.filter((p) => p.favorite).map((p) => p.documentId)),
++    [personal],
+   );
+-  const matches = documents.filter(
+-    (d) =>
+-      (!search || d.search.includes(normalize(search))) &&
+-      (!status || d.status === status) &&
+-      (!year || d.years.includes(year)) &&
+-      (!verdict || d.verdict === verdict) &&
+-      (!favorites || favoriteIds.has(d.documentId)),
++  const matches = useMemo(
++    () =>
++      documents.filter(
++        (d) =>
++          (!search || d.search.includes(normalize(search))) &&
++          (!status || d.status === status) &&
++          (!year || d.years.includes(year)) &&
++          (!verdict || d.verdict === verdict) &&
++          (!favorites || favoriteIds.has(d.documentId)),
++      ),
++    [documents, search, status, year, verdict, favorites, favoriteIds],
+   );
+   const changed = lastVisit
+-    ? documents.filter((d) => d.changedAt > lastVisit)
+-    : [];
++      ? documents.filter((d) => d.changedAt > lastVisit)
++      : [],
++    newVersions = lastVisit
++      ? versions.filter((v) => v.importedAt > lastVisit).length
++      : 0;
++  const currentPage = Math.min(
++      page,
++      Math.max(0, Math.ceil(matches.length / 20) - 1),
++    ),
++    activeFilters = [!!search, !!status, !!year, !!verdict, favorites].filter(
++      Boolean,
++    ).length;
++  function open(id: string, section = "overview") {
++    returnTo.current = id;
++    setInitialSection(section);
++    setSelected(id);
++  }
++  function clearFilters() {
++    setSearch("");
++    setStatus("");
++    setYear("");
++    setVerdict("");
++    setFavorites(false);
++    setPage(0);
++  }
+   async function run(action: () => Promise<void>) {
+     setBusy(true);
+     setError("");
+@@ -133,56 +171,79 @@ export default function FutureView({ onImport }: { onImport: () => void }) {
+     if (!busy) setArchive(null);
+   });
+   return (
+-    <div className="future-workspace">
+-      <header className="section-heading">
++    <div className="future-workspace" data-motion={motion}>
++      <header className="future-atlas-header">
+         <div>
+-          <p className="eyebrow">ANTICIPER · COMPARER · SE PRÉPARER</p>
+-          <h1>Le Futur</h1>
+-          <p className="muted">
+-            Des scénarios à éprouver, des signaux à suivre. L’avenir décrit
+-            n’est jamais garanti.
++          <p className="future-kicker">JOURNAL 360° / ATLAS PROSPECTIF</p>
++          <h1>
++            Le Futur<span aria-hidden="true">.</span>
++          </h1>
++          <p className="future-tagline">
++            Explorer l’avenir, confronter les prévisions aux faits, se préparer.
+           </p>
+         </div>
+-        <button className="primary" onClick={onImport}>
+-          Importer un dossier
+-        </button>
++        <div className="future-header-actions">
++          <button className="primary" onClick={onImport}>
++            Importer un dossier <span aria-hidden="true">↗</span>
++          </button>
++          <label className="future-motion-control">
++            Animations
++            <select
++              aria-label="Animations"
++              value={motion}
++              onChange={(e) => {
++                const value = e.target.value;
++                setMotion(value);
++                run(async () => {
++                  await futureDb.settings.put({ key: "atlas-motion", value });
++                });
++              }}
++            >
++              <option value="subtle">Activées</option>
++              <option value="off">Réduites</option>
++            </select>
++          </label>
++        </div>
+       </header>
+-      <div className="future-tools">
+-        <a href="/examples/future/APERCU_FUTUR_IA_ANIME.html" download>
+-          Exemple HTML synthétique
+-        </a>
+-        <a href="/examples/future/SCHEMA_FUTUR_IA_v1.json" download>
+-          Contrat JSON v1
+-        </a>
+-        <button
+-          className="secondary"
+-          disabled={busy}
+-          onClick={() =>
+-            run(async () => {
+-              download(
+-                await exportFutureBackup(futureDb),
+-                `Le-Futur-${new Date().toISOString().slice(0, 10)}.zip`,
+-              );
+-              setMessage(
+-                "Sauvegarde exportée : elle contient vos originaux et vos notes privés.",
+-              );
+-            })
+-          }
+-        >
+-          Sauvegarder Le Futur
+-        </button>
+-        <button
+-          className="secondary"
+-          disabled={busy}
+-          onClick={() => restoreRef.current?.click()}
+-        >
+-          Restaurer Le Futur
+-        </button>
+-        <span className="small-note">
+-          Stockage local · sauvegarde séparée · synchronisation automatique non
+-          configurée
+-        </span>
+-      </div>
++      <details className="future-resource-menu">
++        <summary>Sauvegarde et ressources</summary>
++        <div className="future-tools">
++          <button
++            className="secondary"
++            disabled={busy}
++            onClick={() =>
++              run(async () => {
++                download(
++                  await exportFutureBackup(futureDb),
++                  "Le-Futur-" + new Date().toISOString().slice(0, 10) + ".zip",
++                );
++                setMessage(
++                  "Sauvegarde exportée : elle contient vos originaux et vos notes privés.",
++                );
++              })
++            }
++          >
++            Sauvegarder Le Futur
++          </button>
++          <button
++            className="secondary"
++            disabled={busy}
++            onClick={() => restoreRef.current?.click()}
++          >
++            Restaurer Le Futur
++          </button>
++          <a href="/examples/future/APERCU_FUTUR_IA_ANIME.html" download>
++            Exemple HTML synthétique
++          </a>
++          <a href="/examples/future/SCHEMA_FUTUR_IA_v1.json" download>
++            Contrat JSON v1
++          </a>
++        </div>
++      </details>
++      <p className="future-storage-note">
++        Stockage local · sauvegarde séparée · synchronisation automatique non
++        configurée
++      </p>
+       <input
+         hidden
+         type="file"
+@@ -204,9 +265,13 @@ export default function FutureView({ onImport }: { onImport: () => void }) {
+             });
+         }}
+       />
+-      {(loadError || error) && (
++      {(loadError ||
++        personalError ||
++        versionError ||
++        summaryError ||
++        error) && (
+         <p role="alert" className="warning">
+-          {loadError || error}
++          {loadError || personalError || versionError || summaryError || error}
+         </p>
+       )}
+       {message && <p role="status">{message}</p>}
+@@ -214,169 +279,280 @@ export default function FutureView({ onImport }: { onImport: () => void }) {
+         <FutureDetail
+           key={selected}
+           documentId={selected}
++          initialSection={initialSection}
+           onBack={() => setSelected("")}
+         />
+       ) : (
+         <>
+-          <p className="future-count">
+-            {documents.length} dossiers ·{" "}
+-            {documents.reduce((s, d) => s + (d.synthetic ? 1 : 0), 0)} exemples
+-            synthétiques · {changed.length} dossier(s) modifié(s) depuis{" "}
+-            {lastVisit ? format(lastVisit) : "votre première visite"}
+-          </p>
+-          {changed.length > 0 && (
+-            <details className="quiet-panel">
+-              <summary>Ce qui a changé depuis ma dernière visite</summary>
+-              <ul>
+-                {changed.slice(0, 100).map((d) => (
+-                  <li key={d.documentId}>
+-                    <button
+-                      className="text-button"
+-                      onClick={() => setSelected(d.documentId)}
+-                    >
+-                      {d.title} — révision {d.revision} : voir les différences
+-                      et l’historique
+-                    </button>
+-                  </li>
+-                ))}
+-              </ul>
+-              {changed.length > 100 && (
+-                <p>
+-                  100 dossiers affichés ; utilisez la recherche pour les autres.
+-                </p>
+-              )}
+-            </details>
+-          )}
+-          <div className="future-filters">
+-            <label>
+-              Rechercher un dossier
+-              <input
+-                type="search"
+-                value={search}
+-                onChange={(e) => {
+-                  setSearch(e.target.value);
+-                  setPage(0);
+-                }}
+-                placeholder="Scénario, signal, compétence…"
+-              />
+-            </label>
+-            <label>
+-              Statut
+-              <select
+-                value={status}
+-                onChange={(e) => {
+-                  setStatus(e.target.value);
+-                  setPage(0);
+-                }}
+-              >
+-                <option value="">Tous les statuts</option>
+-                {["observed", "hypothesis", "scenario"].map((s) => (
+-                  <option key={s} value={s}>
+-                    {statusLabels[s as "observed"]}
+-                  </option>
+-                ))}
+-              </select>
+-            </label>
+-            <label>
+-              Horizon
+-              <select
+-                value={year}
+-                onChange={(e) => {
+-                  setYear(e.target.value);
+-                  setPage(0);
+-                }}
+-              >
+-                <option value="">Tous les horizons</option>
+-                {["2027", "2030", "2035", "2040+", "unspecified"].map((y) => (
+-                  <option key={y} value={y}>
+-                    {y === "unspecified" ? "Non précisé" : y}
+-                  </option>
+-                ))}
+-              </select>
+-            </label>
+-            <label>
+-              Décision éditoriale
+-              <select
+-                value={verdict}
+-                onChange={(e) => {
+-                  setVerdict(e.target.value);
+-                  setPage(0);
++          <section
++            className="future-changed"
++            aria-labelledby="future-changed-heading"
++          >
++            <span className="future-kicker">VOTRE POINT DE REPRISE</span>
++            <h2 id="future-changed-heading">
++              Ce qui a changé depuis ma dernière visite
++            </h2>
++            <p>
++              {!lastVisit
++                ? "Première visite : explorez vos dossiers à votre rythme."
++                : changed.length === 0
++                  ? "Aucun nouveau dossier ni changement depuis votre dernière visite."
++                  : newVersions +
++                    " révision(s) nouvelle(s) · " +
++                    changed.length +
++                    " dossier(s) modifié(s)."}
++            </p>
++            {changed.length > 0 && (
++              <details>
++                <summary>Comparer les révisions et l’historique</summary>
++                <ul>
++                  {changed.slice(0, 100).map((d) => (
++                    <li key={d.documentId}>
++                      <button
++                        className="text-button"
++                        onClick={() => open(d.documentId, "changes")}
++                      >
++                        {d.title} — révision {d.revision} : voir les différences
++                        et l’historique
++                      </button>
++                    </li>
++                  ))}
++                </ul>
++                {changed.length > 100 && (
++                  <p>
++                    100 dossiers affichés ; utilisez la recherche pour les
++                    autres.
++                  </p>
++                )}
++              </details>
++            )}
++          </section>
++          <section
++            id="future-atlas-overview"
++            className="future-collection-overview"
++          >
++            <div className="future-section-heading">
++              <span className="future-kicker">UNE MINUTE POUR SE REPÉRER</span>
++              <h2>Observer. Envisager. Agir.</h2>
++              <p>
++                {documents.length} dossier(s) ·{" "}
++                {documents.filter((d) => d.synthetic).length} exemple(s)
++                synthétique(s) · dernières versions uniquement
++              </p>
++            </div>
++            {summary ? (
++              <FutureSummary counts={summary} />
++            ) : (
++              <p role="status">Lecture des résumés…</p>
++            )}
++          </section>
++          <nav className="future-module-nav" aria-label="Explorer l’atlas">
++            <a href="#future-atlas-overview">Vue d’ensemble</a>
++            {[
++              ["timeline", "Chronologie"],
++              ["scenarios", "Scénarios"],
++              ["signals", "Signaux"],
++              ["actions", "Ma préparation"],
++              ["sources", "Sources"],
++            ].map(([key, label]) => (
++              <button
++                key={key}
++                onClick={() => {
++                  if (matches[0]) open(matches[0].documentId, key);
++                  else document.getElementById("future-empty-state")?.focus();
+                 }}
+               >
+-                <option value="">Toutes les décisions</option>
+-                {Object.entries(verdicts).map(([k, v]) => (
+-                  <option key={k} value={k}>
+-                    {v}
+-                  </option>
+-                ))}
+-              </select>
+-            </label>
+-            <label className="future-check">
+-              <input
+-                type="checkbox"
+-                checked={favorites}
+-                onChange={(e) => {
+-                  setFavorites(e.target.checked);
+-                  setPage(0);
+-                }}
+-              />{" "}
+-              Favoris
+-            </label>
++                {label}
++              </button>
++            ))}
++          </nav>
++          <div className="future-collection-heading">
++            <h2 id="future-collection-heading" tabIndex={-1}>
++              Vos dossiers, vos perspectives.
++            </h2>
++            <span className="future-kicker">BIBLIOTHÈQUE PROSPECTIVE</span>
+           </div>
+-          <p aria-live="polite">{matches.length} résultat(s)</p>
++          <details
++            className="future-filter-panel"
++            open={filtersOpen}
++            onToggle={(e) => setFiltersOpen(e.currentTarget.open)}
++          >
++            <summary>Filtres · {activeFilters} actif(s)</summary>
++            <div className="future-filters">
++              <label>
++                Rechercher un dossier
++                <input
++                  type="search"
++                  value={search}
++                  placeholder="Scénario, signal, compétence…"
++                  onChange={(e) => {
++                    setSearch(e.target.value);
++                    setPage(0);
++                  }}
++                />
++              </label>
++              <label>
++                Statut
++                <select
++                  value={status}
++                  onChange={(e) => {
++                    setStatus(e.target.value);
++                    setPage(0);
++                  }}
++                >
++                  <option value="">Tous les statuts</option>
++                  {(["observed", "hypothesis", "scenario"] as const).map(
++                    (s) => (
++                      <option key={s} value={s}>
++                        {statusLabels[s]}
++                      </option>
++                    ),
++                  )}
++                </select>
++              </label>
++              <label>
++                Horizon
++                <select
++                  value={year}
++                  onChange={(e) => {
++                    setYear(e.target.value);
++                    setPage(0);
++                  }}
++                >
++                  <option value="">Tous les horizons</option>
++                  {["2027", "2030", "2035", "2040+", "unspecified"].map((y) => (
++                    <option key={y} value={y}>
++                      {y === "unspecified" ? "Non précisé" : y}
++                    </option>
++                  ))}
++                </select>
++              </label>
++              <label>
++                Décision éditoriale
++                <select
++                  value={verdict}
++                  onChange={(e) => {
++                    setVerdict(e.target.value);
++                    setPage(0);
++                  }}
++                >
++                  <option value="">Toutes les décisions</option>
++                  {Object.entries(verdicts).map(([k, v]) => (
++                    <option key={k} value={k}>
++                      {v}
++                    </option>
++                  ))}
++                </select>
++              </label>
++              <label className="future-check">
++                <input
++                  type="checkbox"
++                  checked={favorites}
++                  onChange={(e) => {
++                    setFavorites(e.target.checked);
++                    setPage(0);
++                  }}
++                />
++                Favoris
++              </label>
++              <button onClick={clearFilters}>Effacer les filtres</button>
++            </div>
++          </details>
++          <p aria-live="polite" className="future-results">
++            {matches.length} résultat(s)
++          </p>
+           <div className="future-grid">
+-            {matches.slice(page * 20, page * 20 + 20).map((d) => (
+-              <article className="quiet-panel future-card" key={d.documentId}>
+-                <small>
+-                  {statusLabels[d.status]} · Révision {d.revision}
+-                  {d.synthetic ? " · Synthétique" : ""}
+-                </small>
+-                <h2>
+-                  <button
+-                    className="future-title"
+-                    onClick={() => setSelected(d.documentId)}
+-                  >
+-                    {d.title}
+-                  </button>
+-                </h2>
+-                <p>{d.excerpt}</p>
+-                <span>
+-                  {verdicts[d.verdict]} ·{" "}
+-                  {d.years.filter((y) => y !== "unspecified").join(" / ")}
+-                </span>
+-                <p className="small-note">
+-                  Mis à jour : {format(d.updatedAt)}
+-                  {favoriteIds.has(d.documentId) ? " · Favori" : ""}
+-                </p>
+-              </article>
+-            ))}
++            {matches
++              .slice(currentPage * 20, currentPage * 20 + 20)
++              .map((d, i) => (
++                <article className="quiet-panel future-card" key={d.documentId}>
++                  <div className="future-card-top">
++                    <span className="future-kicker">
++                      DOSSIER{" "}
++                      {String(currentPage * 20 + i + 1).padStart(2, "0")}
++                    </span>
++                    <span className="future-badge">
++                      {statusLabels[d.status]}
++                    </span>
++                  </div>
++                  <h2>
++                    <button
++                      ref={(el) => {
++                        if (el) cardRefs.current.set(d.documentId, el);
++                        else cardRefs.current.delete(d.documentId);
++                      }}
++                      className="future-title"
++                      onClick={() => open(d.documentId)}
++                    >
++                      {d.title}
++                    </button>
++                  </h2>
++                  <p>{d.excerpt}</p>
++                  <div className="future-card-bottom">
++                    <span>
++                      {d.years.filter((y) => y !== "unspecified").join(" / ") ||
++                        "Horizon non précisé"}
++                    </span>
++                    <span>
++                      {verdicts[d.verdict]} · Révision {d.revision}
++                      {d.synthetic ? " · Synthétique" : ""}
++                      {favoriteIds.has(d.documentId) ? " · Favori" : ""}
++                    </span>
++                  </div>
++                  <p className="future-caption">
++                    Mis à jour : {formatDate(d.updatedAt)}
++                  </p>
++                </article>
++              ))}
+           </div>
+-          {!documents.length && (
+-            <section className="quiet-panel">
+-              <h2>Votre premier dossier prospectif</h2>
+-              <p>
+-                Importez un HTML contenant futureData ou un JSON Journal 360
+-                Future v1. Les journaux quotidiens restent dans Bibliothèque.
+-              </p>
++          {!matches.length && (
++            <section
++              id="future-empty-state"
++              tabIndex={-1}
++              className="future-empty"
++            >
++              <h2>
++                {documents.length
++                  ? "Aucun dossier ne correspond"
++                  : "Votre premier dossier prospectif"}
++              </h2>
+               <p>
+-                Les exemples fournis sont synthétiques et ne constituent pas une
+-                veille vérifiée.
++                {documents.length
++                  ? "Ajustez vos critères pour retrouver vos dossiers."
++                  : "Importez un HTML contenant futureData ou un JSON Journal 360 Future v1. Les journaux quotidiens restent dans Bibliothèque."}
+               </p>
++              {documents.length ? (
++                <button onClick={clearFilters}>Effacer les filtres</button>
++              ) : (
++                <>
++                  <p>
++                    Les exemples fournis sont synthétiques et ne constituent pas
++                    une veille vérifiée.
++                  </p>
++                  <button className="primary" onClick={onImport}>
++                    Choisir un fichier HTML ou JSON
++                  </button>
++                  <p>
++                    Vous pourrez vérifier le dossier puis annuler avant tout
++                    enregistrement.
++                  </p>
++                </>
++              )}
+             </section>
+           )}
+           {matches.length > 20 && (
+             <div className="future-tools">
+               <button
+-                disabled={page === 0}
++                disabled={currentPage === 0}
+                 onClick={() => setPage((p) => p - 1)}
+               >
+                 Page précédente
+               </button>
+               <span>
+-                {page + 1} / {Math.ceil(matches.length / 20)}
++                {currentPage + 1} / {Math.ceil(matches.length / 20)}
+               </span>
+               <button
+-                disabled={(page + 1) * 20 >= matches.length}
++                disabled={(currentPage + 1) * 20 >= matches.length}
+                 onClick={() => setPage((p) => p + 1)}
+               >
+                 Page suivante
+@@ -427,624 +603,3 @@ export default function FutureView({ onImport }: { onImport: () => void }) {
+     </div>
+   );
+ }
+-function FutureDetail({
+-  documentId,
+-  onBack,
+-}: {
+-  documentId: string;
+-  onBack: () => void;
+-}) {
+-  const { value: document } = useLive(
+-    () => futureDb.documents.get(documentId),
+-    [documentId],
+-    undefined as FutureDocument | undefined,
+-  );
+-  const { value: versions } = useLive(
+-    () =>
+-      futureDb.versions
+-        .where("documentId")
+-        .equals(documentId)
+-        .reverse()
+-        .sortBy("revision"),
+-    [documentId],
+-    [] as FutureVersion[],
+-  );
+-  const { value: saved } = useLive(
+-    () => futureDb.personal.get(documentId),
+-    [documentId],
+-    undefined as FuturePersonal | undefined,
+-  );
+-  const { value: events } = useLive(
+-    () =>
+-      futureDb.changes
+-        .where("documentId")
+-        .equals(documentId)
+-        .reverse()
+-        .sortBy("at"),
+-    [documentId],
+-    [] as { id: string; at: string; description: string }[],
+-  );
+-  const [versionId, setVersionId] = useState(""),
+-    [payload, setPayload] = useState<FuturePayload | null>(null),
+-    [error, setError] = useState(""),
+-    [note, setNote] = useState(""),
+-    [preview, setPreview] = useState("");
+-  const chosen = versionId || document?.latest;
+-  useEffect(() => {
+-    let active = true;
+-    setPreview("");
+-    if (chosen)
+-      futureDb.contents
+-        .get(chosen)
+-        .then((c) => {
+-          if (active) setPayload(c?.payload || null);
+-        })
+-        .catch((e) => setError(String(e)));
+-    return () => {
+-      active = false;
+-    };
+-  }, [chosen]);
+-  async function run(action: () => Promise<unknown>) {
+-    setError("");
+-    try {
+-      await action();
+-    } catch (e) {
+-      setError(e instanceof Error ? e.message : String(e));
+-    }
+-  }
+-  if (!payload) return <p role="status">Ouverture du dossier…{error}</p>;
+-  const p = payload,
+-    personal = saved || personalSchema.parse({ documentId, updatedAt: now() }),
+-    activeVersion = versions.find((v) => v.id === chosen);
+-  const patch = (value: Partial<FuturePersonal>) =>
+-    run(() => futureDb.updatePersonal(documentId, value));
+-  const anchor = (id: string) => `future-item-${id}`;
+-  return (
+-    <article
+-      className={`future-detail ${p.visualization.motion === "subtle" ? "future-motion" : ""}`}
+-    >
+-      <button className="text-button" onClick={onBack}>
+-        ← Tous les dossiers
+-      </button>
+-      <header className="quiet-panel">
+-        <small>
+-          {statusLabels[p.status]} ·{" "}
+-          {p.synthetic ? "EXEMPLE SYNTHÉTIQUE · " : ""}Révision {p.revision}
+-        </small>
+-        <h2>{p.title}</h2>
+-        <p>
+-          {verdicts[p.editorialDecision.verdict]} : {p.editorialDecision.reason}
+-        </p>
+-        <div className="future-tools">
+-          <button
+-            className="secondary"
+-            aria-pressed={personal.favorite}
+-            onClick={() => patch({ favorite: !personal.favorite })}
+-          >
+-            {personal.favorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+-          </button>
+-          <button
+-            className="secondary"
+-            onClick={() =>
+-              download(
+-                blobOf(
+-                  new TextEncoder().encode(JSON.stringify(p, null, 2)),
+-                  "application/json",
+-                ),
+-                `${p.documentId}-r${p.revision}.json`,
+-              )
+-            }
+-          >
+-            Exporter JSON
+-          </button>
+-          <button
+-            className="secondary"
+-            onClick={() =>
+-              run(async () =>
+-                download(
+-                  blobOf(
+-                    new TextEncoder().encode(renderFutureHTML(p)),
+-                    "text/html",
+-                  ),
+-                  `${p.documentId}-r${p.revision}.html`,
+-                ),
+-              )
+-            }
+-          >
+-            Exporter HTML portable
+-          </button>
+-          <button
+-            className="secondary"
+-            onClick={() =>
+-              run(async () => {
+-                if (!chosen || !activeVersion) return;
+-                const o = await futureDb.originals.get(chosen);
+-                if (o)
+-                  download(
+-                    blobOf(
+-                      o.bytes,
+-                      activeVersion.kind === "json"
+-                        ? "application/json"
+-                        : "text/html",
+-                    ),
+-                    activeVersion.filename,
+-                  );
+-              })
+-            }
+-          >
+-            Télécharger l’original
+-          </button>
+-          {activeVersion?.kind !== "json" && (
+-            <button
+-              className="secondary"
+-              onClick={() =>
+-                run(async () => {
+-                  setPreview(
+-                    radarReaderHTML(
+-                      new TextEncoder().encode(renderFutureHTML(p)),
+-                    ),
+-                  );
+-                })
+-              }
+-            >
+-              Voir l’aperçu HTML isolé
+-            </button>
+-          )}
+-        </div>
+-        <p className="small-note">
+-          Empreinte SHA-256 : {activeVersion?.sha256}
+-        </p>
+-        <label>
+-          Version affichée
+-          <select
+-            value={chosen || ""}
+-            onChange={(e) => setVersionId(e.target.value)}
+-          >
+-            {[...versions]
+-              .sort((a, b) => b.revision - a.revision)
+-              .map((v) => (
+-                <option key={v.id} value={v.id}>
+-                  Révision {v.revision} · {format(v.updatedAt)}
+-                </option>
+-              ))}
+-          </select>
+-        </label>
+-        <p className="small-note">
+-          Les notes et le suivi personnel concernent le dossier, quelle que soit
+-          la version affichée.
+-        </p>
+-      </header>
+-      {error && (
+-        <p role="alert" className="warning">
+-          {error}
+-        </p>
+-      )}
+-      {preview && (
+-        <section>
+-          <button onClick={() => setPreview("")}>Fermer l’aperçu</button>
+-          <iframe
+-            title="Aperçu HTML isolé du dossier"
+-            sandbox=""
+-            referrerPolicy="no-referrer"
+-            srcDoc={preview}
+-            className="future-preview"
+-          />
+-        </section>
+-      )}
+-      <nav className="future-module-nav" aria-label="Modules du dossier">
+-        {p.visualization.modules.map((m) => (
+-          <a key={m} href={`#future-module-${m}`}>
+-            {moduleLabels[m]}
+-          </a>
+-        ))}
+-      </nav>
+-      {p.visualization.modules.map((module) => (
+-        <section
+-          className="future-module"
+-          id={`future-module-${module}`}
+-          key={module}
+-        >
+-          <h2>{moduleLabels[module]}</h2>
+-          {module === "timeline" && (
+-            <div className="future-timeline">
+-              {p.scenarios
+-                .flatMap((s) =>
+-                  s.milestones.map((m) => ({ ...m, scenario: s.title })),
+-                )
+-                .sort((a, b) => a.year - b.year)
+-                .map((m) => (
+-                  <article className="quiet-panel" id={anchor(m.id)} key={m.id}>
+-                    <small>
+-                      {m.year} · {statusLabels[m.status]}
+-                    </small>
+-                    <h3>{m.title}</h3>
+-                    <p>{m.description}</p>
+-                    <p className="small-note">
+-                      {m.scenario}
+-                      {m.observedAt
+-                        ? ` · Observation déclarée le ${m.observedAt}`
+-                        : ""}
+-                    </p>
+-                    <Sources urls={m.evidenceUrls} />
+-                    {p.visualization.links
+-                      .filter((l) => l.from === m.id)
+-                      .map((l, i) => (
+-                        <p key={i}>
+-                          <a href={`#${anchor(l.to)}`}>
+-                            {l.label || "Voir le jalon lié"} →{" "}
+-                            {
+-                              p.scenarios
+-                                .flatMap((s) => s.milestones)
+-                                .find((m) => m.id === l.to)?.title
+-                            }
+-                          </a>
+-                        </p>
+-                      ))}
+-                  </article>
+-                ))}
+-              {!p.scenarios.some((s) => s.milestones.length) && (
+-                <p>Aucun jalon fourni.</p>
+-              )}
+-            </div>
+-          )}
+-          {module === "scenarios" && (
+-            <div className="future-grid">
+-              {p.scenarios.map((s) => (
+-                <article className="quiet-panel" key={s.id} id={anchor(s.id)}>
+-                  <small>
+-                    {
+-                      {
+-                        acceleration: "Accélération",
+-                        moderate: "Progression modérée",
+-                        slowdown: "Ralentissement",
+-                        other: "Autre scénario",
+-                      }[s.path]
+-                    }{" "}
+-                    · {s.horizon} · {statusLabels[s.status]}
+-                  </small>
+-                  <h3>{s.title}</h3>
+-                  <p>{s.summary}</p>
+-                  {(
+-                    [
+-                      ["assumptions", "Hypothèses"],
+-                      ["objections", "Objections et limites"],
+-                      ["triggers", "Déclencheurs"],
+-                      ["indicators", "Indicateurs"],
+-                    ] as const
+-                  ).map(([key, label]) => (
+-                    <div key={key}>
+-                      <h4>{label}</h4>
+-                      <ul>
+-                        {s[key].map((t, i) => (
+-                          <li key={i}>{t}</li>
+-                        ))}
+-                      </ul>
+-                      {!s[key].length && <p>Non renseigné.</p>}
+-                    </div>
+-                  ))}
+-                  {s.signalIds.length > 0 && (
+-                    <p>
+-                      Signaux liés :{" "}
+-                      {s.signalIds.map((id) => (
+-                        <a key={id} href={`#${anchor(id)}`}>
+-                          {p.signals.find((v) => v.id === id)?.title}{" "}
+-                        </a>
+-                      ))}
+-                    </p>
+-                  )}
+-                </article>
+-              ))}
+-            </div>
+-          )}
+-          {module === "signals" && (
+-            <div className="future-grid">
+-              {p.signals.map((s) => (
+-                <article className="quiet-panel" key={s.id} id={anchor(s.id)}>
+-                  <small>{statusLabels[s.status]}</small>
+-                  <h3>{s.title}</h3>
+-                  <p>{s.description}</p>
+-                  <p>
+-                    Dernier contrôle déclaré dans le fichier :{" "}
+-                    {format(s.lastCheckedAt)}. Aucun contrôle automatique.
+-                  </p>
+-                  <p>{s.checkNote}</p>
+-                  <Sources urls={s.evidenceUrls} />
+-                </article>
+-              ))}
+-              {!p.signals.length && <p>Aucun signal fourni.</p>}
+-            </div>
+-          )}
+-          {module === "actions" && (
+-            <div className="future-grid">
+-              {(["now", "3m", "12m"] as const).map((h) => (
+-                <div key={h}>
+-                  <h3>{horizons[h]}</h3>
+-                  {p.actions
+-                    .filter((a) => a.horizon === h)
+-                    .map((a) => (
+-                      <article className="quiet-panel" key={a.id}>
+-                        <h4>{a.title}</h4>
+-                        <p>
+-                          <b>Compétence :</b> {a.skill}
+-                        </p>
+-                        <p>{a.description}</p>
+-                        <p>
+-                          Effort :{" "}
+-                          {a.effortHours === null
+-                            ? "non documenté"
+-                            : `${a.effortHours} h — ${a.effortEvidence}`}
+-                        </p>
+-                        <p>
+-                          <b>Test décisif :</b> {a.decisiveTest}
+-                        </p>
+-                        {a.scenarioIds.length > 0 && (
+-                          <p>
+-                            Scénarios concernés :{" "}
+-                            {a.scenarioIds
+-                              .map(
+-                                (id) =>
+-                                  p.scenarios.find((s) => s.id === id)?.title,
+-                              )
+-                              .join(" · ")}
+-                          </p>
+-                        )}
+-                        <label>
+-                          Suivi de « {a.title} »
+-                          <select
+-                            value={personal.actions[a.id]?.status || "todo"}
+-                            onChange={(e) =>
+-                              patch({
+-                                actions: {
+-                                  ...personal.actions,
+-                                  [a.id]: {
+-                                    status: e.target.value as "todo",
+-                                    result:
+-                                      personal.actions[a.id]?.result || "",
+-                                  },
+-                                },
+-                              })
+-                            }
+-                          >
+-                            {[
+-                              ["todo", "À faire"],
+-                              ["doing", "En cours"],
+-                              ["done", "Terminé"],
+-                              ["abandoned", "Abandonné"],
+-                            ].map(([k, v]) => (
+-                              <option key={k} value={k}>
+-                                {v}
+-                              </option>
+-                            ))}
+-                          </select>
+-                        </label>
+-                        <label>
+-                          Résultat de « {a.title} »
+-                          <textarea
+-                            defaultValue={personal.actions[a.id]?.result || ""}
+-                            maxLength={4000}
+-                            onBlur={(e) => {
+-                              if (
+-                                e.target.value !==
+-                                (personal.actions[a.id]?.result || "")
+-                              )
+-                                patch({
+-                                  actions: {
+-                                    ...personal.actions,
+-                                    [a.id]: {
+-                                      status:
+-                                        personal.actions[a.id]?.status ||
+-                                        "todo",
+-                                      result: e.target.value,
+-                                    },
+-                                  },
+-                                });
+-                            }}
+-                          />
+-                        </label>
+-                      </article>
+-                    ))}
+-                </div>
+-              ))}
+-            </div>
+-          )}
+-          {module === "changes" && (
+-            <>
+-              <p>
+-                Différences éditoriales de cette révision ; les versions
+-                précédentes restent accessibles.
+-              </p>
+-              <ul>
+-                {activeVersion?.changes.map((c, i) => (
+-                  <li key={i}>{c}</li>
+-                ))}
+-              </ul>
+-              <details>
+-                <summary>Historique local complet ({events.length})</summary>
+-                <ul>
+-                  {events.map((e) => (
+-                    <li key={e.id}>
+-                      {format(e.at)} — {e.description}
+-                    </li>
+-                  ))}
+-                </ul>
+-              </details>
+-            </>
+-          )}
+-          {module === "sources" && (
+-            <>
+-              <p>
+-                Origine : {p.provenance.title} ·{" "}
+-                {p.provenance.author || "auteur non renseigné"} · publication :{" "}
+-                {p.provenance.publishedAt || "non renseignée"} · remise :{" "}
+-                {format(p.provenance.providedAt)}
+-              </p>
+-              {p.provenance.originalUrl && (
+-                <a
+-                  href={p.provenance.originalUrl}
+-                  target="_blank"
+-                  rel="noreferrer noopener"
+-                >
+-                  Consulter l’origine
+-                </a>
+-              )}
+-              <p>
+-                Une consultation déclarée par le fichier n’est pas une
+-                vérification. Une revue personnelle confirme votre consultation,
+-                sans certifier le fait.
+-              </p>
+-              <h3>Contradictions déclarées</h3>
+-              {p.signals
+-                .filter((s) => s.status === "contradicted")
+-                .map((s) => (
+-                  <article className="quiet-panel" key={s.id}>
+-                    <h4>{s.title}</h4>
+-                    <p>{s.description}</p>
+-                    <p>{s.checkNote}</p>
+-                    <p>
+-                      Contrôle déclaré : {format(s.lastCheckedAt)} · aucune
+-                      certification.
+-                    </p>
+-                    <Sources urls={s.evidenceUrls} />
+-                  </article>
+-                ))}
+-              {!p.signals.some((s) => s.status === "contradicted") && (
+-                <p>Aucune contradiction renseignée dans ce dossier.</p>
+-              )}
+-              <div className="future-grid">
+-                {p.provenance.sources.map((s) => (
+-                  <article className="quiet-panel" key={s.id}>
+-                    <h3>{s.label}</h3>
+-                    {s.url ? (
+-                      <a href={s.url} target="_blank" rel="noreferrer noopener">
+-                        Ouvrir la source originale
+-                      </a>
+-                    ) : (
+-                      <p>Source privée · aucune URL publique.</p>
+-                    )}
+-                    <p>
+-                      {s.publisher} · {s.author || "auteur non renseigné"} ·{" "}
+-                      {s.type} · publication :{" "}
+-                      {s.publishedAt || "non renseignée"}
+-                    </p>
+-                    <p>Consultation déclarée : {format(s.consultedAt)}</p>
+-                    {personal.sourceReviews[s.id] ? (
+-                      <p>
+-                        Revue personnelle enregistrée le{" "}
+-                        {format(personal.sourceReviews[s.id].at)} :{" "}
+-                        {personal.sourceReviews[s.id].reason}
+-                      </p>
+-                    ) : (
+-                      <form
+-                        onSubmit={(e) => {
+-                          e.preventDefault();
+-                          const f = e.currentTarget;
+-                          const reason = String(
+-                            new FormData(f).get("reason") || "",
+-                          ).trim();
+-                          if (reason.length >= 10)
+-                            patch({
+-                              sourceReviews: {
+-                                ...personal.sourceReviews,
+-                                [s.id]: { at: now(), reason },
+-                              },
+-                            });
+-                        }}
+-                      >
+-                        <label>
+-                          Justifier ma consultation de « {s.label} »
+-                          <input
+-                            name="reason"
+-                            required
+-                            minLength={10}
+-                            maxLength={4000}
+-                          />
+-                        </label>
+-                        <button className="secondary">
+-                          Enregistrer ma revue personnelle
+-                        </button>
+-                      </form>
+-                    )}
+-                  </article>
+-                ))}
+-              </div>
+-            </>
+-          )}
+-        </section>
+-      ))}
+-      <section className="quiet-panel future-personal">
+-        <h2>Mes notes et décisions privées</h2>
+-        <form
+-          onSubmit={(e) => {
+-            e.preventDefault();
+-            const f = new FormData(e.currentTarget);
+-            patch({
+-              decision: String(f.get("decision")),
+-              invalidation: String(f.get("invalidation")),
+-              reviewDate: String(f.get("reviewDate")),
+-            });
+-          }}
+-        >
+-          <label>
+-            Ma décision
+-            <textarea
+-              name="decision"
+-              maxLength={4000}
+-              defaultValue={personal.decision}
+-            />
+-          </label>
+-          <label>
+-            Ce qui invaliderait ma décision
+-            <textarea
+-              name="invalidation"
+-              maxLength={4000}
+-              defaultValue={personal.invalidation}
+-            />
+-          </label>
+-          <label>
+-            Date de réexamen
+-            <input
+-              type="date"
+-              name="reviewDate"
+-              defaultValue={personal.reviewDate}
+-            />
+-          </label>
+-          <button className="secondary">Enregistrer ma décision</button>
+-        </form>
+-        <form
+-          onSubmit={(e) => {
+-            e.preventDefault();
+-            if (note.trim())
+-              run(async () => {
+-                await futureDb.updatePersonal(documentId, {
+-                  notes: [
+-                    ...personal.notes,
+-                    { id: crypto.randomUUID(), body: note.trim(), at: now() },
+-                  ],
+-                });
+-                setNote("");
+-              });
+-          }}
+-        >
+-          <label>
+-            Nouvelle note
+-            <textarea
+-              value={note}
+-              maxLength={20000}
+-              onChange={(e) => setNote(e.target.value)}
+-              required
+-            />
+-          </label>
+-          <button className="primary">Ajouter ma note</button>
+-        </form>
+-        <ul>
+-          {personal.notes.map((n) => (
+-            <li key={n.id}>
+-              <time>{format(n.at)}</time>
+-              <p>{n.body}</p>
+-            </li>
+-          ))}
+-        </ul>
+-      </section>
+-    </article>
+-  );
+-}
+diff --git a/src/features/future/future.css b/src/features/future/future.css
+index 79bfb6b..b4244a5 100644
+--- a/src/features/future/future.css
++++ b/src/features/future/future.css
+@@ -1,103 +1,630 @@
++/* Atlas styles are scoped: no navigation, theme or other workspace overrides. */
+ .future-workspace {
+   min-width: 0;
++  font-size: 16px;
++  --atlas-rule: var(--muted);
++}
++.future-workspace
++  :where(p, li, dd, label, input, select, textarea, button, summary),
++.future-workspace .quiet-panel p {
++  font-size: 16px;
++  line-height: 1.6;
++}
++.future-workspace :where(button, input, select, summary) {
++  min-height: 44px;
++}
++.future-workspace
++  :where(button, a, summary, input, select, textarea):focus-visible,
++.future-workspace [tabindex="-1"]:focus {
++  outline: 3px solid var(--ink);
++  outline-offset: 4px;
++}
++.future-workspace :where(a) {
++  color: var(--ink);
++  text-underline-offset: 4px;
++}
++.future-workspace :where(button, summary, a) {
++  touch-action: manipulation;
++}
++.future-workspace :where(button, a, summary) {
++  overflow-wrap: anywhere;
++}
++.future-workspace :where(button:not(.primary):not(.future-title)) {
++  background: var(--surface);
++  border: 1px solid var(--muted);
++  border-radius: 8px;
++  padding: 9px 14px;
++}
++.future-workspace :where(button.primary) {
++  min-height: 48px;
++  padding: 12px 20px;
++  font-size: 16px;
++}
++.future-workspace :where(p, li) {
++  overflow-wrap: anywhere;
++}
++.future-workspace :where(p) {
++  white-space: pre-wrap;
++}
++.future-workspace :where(details) {
++  border-top: 1px solid var(--line);
++  padding: 8px 0;
++}
++.future-workspace :where(summary) {
++  cursor: pointer;
++  padding: 9px 0;
++  font-weight: 600;
++}
++.future-workspace :where(summary:hover, a:hover) {
++  text-decoration: underline;
++}
++.future-workspace :where(ul, ol) {
++  padding-left: 22px;
++}
++.future-workspace :where(li + li) {
++  margin-top: 8px;
++}
++.future-workspace :where(input, select, textarea) {
++  width: 100%;
++  max-width: 100%;
++  padding: 10px;
++  border: 1px solid var(--muted);
++  border-radius: 6px;
++  background: var(--surface);
++  color: var(--ink);
++  font-size: 16px;
++}
++.future-workspace :where(textarea) {
++  min-height: 100px;
++  resize: vertical;
++}
++.future-workspace :where(label) {
++  display: block;
++  font-size: 16px;
++}
++.future-workspace :where(label select, label input, label textarea) {
++  margin-top: 6px;
++}
++.future-workspace :where(fieldset) {
++  border: 0;
++  padding: 0;
++  margin: 0;
++  min-width: 0;
++}
++.future-workspace :where(form label) {
++  margin: 14px 0;
++}
++.future-workspace :where(h2) {
++  font-size: clamp(28px, 3vw, 40px);
++  letter-spacing: -0.9px;
++  line-height: 1.17;
++}
++.future-workspace .quiet-panel h2 {
++  font-size: 28px;
++}
++.future-workspace :where(h3),
++.future-workspace .quiet-panel h3 {
++  font-family: var(--serif);
++  font-size: 24px;
++  line-height: 1.25;
++  letter-spacing: -0.3px;
++}
++.future-workspace :where(h4) {
++  font-size: 17px;
++  line-height: 1.4;
++  margin: 14px 0 8px;
++}
++.future-workspace .quiet-panel {
++  padding: 24px;
++  border-radius: 12px;
++  margin: 0;
++  min-width: 0;
++}
++.future-atlas-header {
++  display: flex;
++  justify-content: space-between;
++  align-items: center;
++  gap: 32px;
++  padding: 18px 0 26px;
++  border-bottom: 1px solid var(--muted);
++}
++.future-workspace .future-kicker {
++  display: block;
++  font:
++    600 12px/1.6 Arial,
++    Helvetica,
++    sans-serif;
++  letter-spacing: 1.6px;
++  color: var(--muted);
++  margin: 0 0 16px;
++}
++.future-atlas-header h1 {
++  font-size: clamp(60px, 7vw, 96px);
++  line-height: 0.95;
++  font-weight: 400;
++  letter-spacing: -4px;
++  margin: 22px 0;
++}
++.future-atlas-header h1 span {
++  color: var(--accent);
++}
++.future-workspace .future-tagline {
++  font-size: 18px;
++  max-width: 40ch;
++  margin: 0;
++}
++.future-header-actions {
++  display: grid;
++  gap: 16px;
++  min-width: 215px;
++}
++.future-motion-control {
++  display: flex !important;
++  align-items: center;
++  gap: 12px;
++}
++.future-motion-control select {
++  margin: 0 !important;
++  width: auto;
++}
++.future-resource-menu {
++  border-top: 0 !important;
++}
++.future-resource-menu summary {
++  width: fit-content;
++}
++.future-workspace .future-storage-note,
++.future-workspace .future-caption {
++  font-size: 14px;
++  line-height: 1.6;
++  color: var(--muted);
++  overflow-wrap: anywhere;
+ }
+ .future-tools,
+ .future-module-nav {
+   display: flex;
+   align-items: center;
+-  gap: 12px;
+   flex-wrap: wrap;
++  gap: 12px;
+   margin: 18px 0;
+ }
+-.future-grid {
++.future-tools > label {
++  min-width: min(100%, 230px);
++}
++.future-tools a,
++.future-evidence a,
++.future-related {
++  display: inline-block;
++  min-height: 24px;
++  padding: 3px 0;
++}
++.future-changed {
++  border-left: 3px solid var(--accent);
++  padding: 8px 22px;
++  margin: 28px 0 40px;
++}
++.future-changed h2 {
++  font-size: 24px;
++  margin-bottom: 8px;
++}
++.future-changed .future-kicker {
++  margin-bottom: 8px;
++}
++.future-changed p:last-child {
++  margin-bottom: 0;
++}
++.future-section-heading {
++  max-width: 75ch;
++  margin-bottom: 26px;
++}
++.future-section-heading h2 {
++  margin-bottom: 14px;
++}
++.future-section-heading .future-kicker {
++  margin-bottom: 12px;
++}
++.future-summary {
+   display: grid;
+-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr));
+-  gap: 16px;
++  grid-template-columns: repeat(3, minmax(0, 1fr));
++  border: 1px solid var(--muted);
++  border-radius: 12px;
++  overflow: hidden;
++  background: var(--surface);
+ }
+-.future-filters {
++.future-summary article {
++  padding: 24px;
++}
++.future-summary article + article {
++  border-left: 1px solid var(--line);
++}
++.future-summary strong {
++  display: block;
++  font: 400 56px/1.1 var(--serif);
++  margin: 16px 0;
++}
++.future-summary p {
++  margin: 0;
++}
++.future-essentials {
+   display: grid;
+-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+-  gap: 12px;
+-  font-size: 12px;
+-  padding: 14px;
+-  border: 1px solid var(--line);
+-  border-radius: 14px;
++  grid-template-columns: repeat(3, minmax(0, 1fr));
++  gap: 28px;
++  list-style: none;
++  padding: 0 !important;
++  margin: 28px 0;
+ }
+-.future-filters input,
+-.future-filters select {
+-  font-size: 13px;
+-  min-height: 38px;
++.future-essentials li {
++  margin: 0 !important;
++  border-top: 2px solid var(--muted);
++  padding-top: 16px;
++}
++.future-essentials b {
++  font-size: 16px;
++}
++.future-disclaimer {
++  padding: 14px 18px;
++  background: var(--soft);
++  border-radius: 8px;
++}
++.future-module-nav {
++  padding: 12px 0;
++  border-top: 1px solid var(--line);
++  border-bottom: 1px solid var(--line);
++  gap: 8px;
++  margin: 30px 0;
+ }
+-.future-check {
++.future-module-nav a,
++.future-module-nav button {
+   display: flex;
+   align-items: center;
+-  gap: 8px;
++  min-height: 44px;
++  padding: 8px 14px;
++  border: 1px solid var(--muted);
++  border-radius: 24px;
++  background: var(--surface);
++  font-size: 16px;
++  text-decoration: none;
++}
++.future-module-nav a:first-child {
++  background: var(--ink);
++  color: var(--surface);
++}
++.future-collection-heading {
++  display: flex;
++  align-items: baseline;
++  justify-content: space-between;
++  gap: 20px;
++  margin-top: 40px;
++}
++.future-collection-heading h2 {
++  font-size: 28px;
++}
++.future-filter-panel {
++  border: 1px solid var(--line) !important;
++  padding: 12px 18px !important;
++  border-radius: 10px;
++}
++.future-filters {
++  display: grid;
++  grid-template-columns: 2fr repeat(3, minmax(0, 1fr));
++  align-items: end;
++  gap: 16px;
++  margin: 14px 0;
++}
++.future-filters .future-check {
++  display: flex;
++  align-items: center;
++  gap: 10px;
++  min-height: 44px;
+ }
+ .future-workspace input[type="checkbox"],
+ .future-import input[type="checkbox"] {
+-  width: auto;
++  width: 24px;
++  min-height: 24px;
++  height: 24px;
++  margin: 0;
++}
++.future-results {
++  margin: 20px 0;
++}
++.future-grid {
++  display: grid;
++  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
++  gap: 20px;
++}
++.future-card {
++  display: flex;
++  flex-direction: column;
++  gap: 10px;
++}
++.future-card-top,
++.future-card-bottom {
++  display: flex;
++  align-items: center;
++  justify-content: space-between;
++  gap: 16px;
++  flex-wrap: wrap;
++}
++.future-card-top .future-kicker {
++  margin: 0;
++}
++.future-badge {
++  display: inline-block;
++  font-size: 13px !important;
++  line-height: 1.5;
++  padding: 5px 9px;
++  border: 1px solid var(--muted);
++  border-radius: 6px;
++  margin: 0 6px 8px 0;
+ }
+ .future-title {
++  display: block;
++  width: 100%;
++  min-height: 44px;
+   font: inherit;
+   text-align: left;
+-  padding: 0;
+-  background: none;
++  padding: 4px 0;
++  background: transparent;
+   border: 0;
+   color: inherit;
+   cursor: pointer;
++  text-decoration: none;
++}
++.future-title:hover {
+   text-decoration: underline;
+-  text-decoration-thickness: 1px;
+   text-underline-offset: 5px;
+ }
++.future-title span {
++  font-family: Arial, sans-serif;
++  font-size: 22px;
++  color: var(--muted);
++}
+ .future-card h2 {
+-  font-size: 24px;
++  margin: 0;
++}
++.future-card-bottom {
++  border-top: 1px solid var(--line);
++  padding-top: 18px;
++  margin-top: auto;
++  font-size: 14px;
++}
++.future-card .future-caption {
++  margin: 0;
++}
++.future-empty {
++  padding: 32px;
++  border: 1px dashed var(--muted);
++  border-radius: 12px;
++  margin: 18px 0;
+ }
+-.future-card,
++.future-detail,
+ .future-module,
+-.future-detail {
++.future-card {
+   min-width: 0;
+   overflow-wrap: anywhere;
+ }
+-.future-workspace p,
+-.future-import p {
+-  white-space: pre-wrap;
++.future-back {
++  margin: 12px 0 24px;
+ }
+-.future-detail h2 {
+-  line-height: 1.2;
++.future-dossier-header {
++  padding: 28px 0;
++  border-bottom: 1px solid var(--muted);
+ }
+-.future-detail small {
+-  display: block;
++.future-dossier-header > h2 {
++  font-size: clamp(34px, 4.6vw, 58px);
++  max-width: 24ch;
++  line-height: 1.07;
+ }
+-.future-detail textarea {
+-  min-height: 90px;
++.future-dossier-header > p {
++  max-width: 80ch;
+ }
+-.future-detail label,
+-.future-import label {
++.future-file-tools {
++  margin-top: 20px;
++}
++.future-module,
++.future-overview,
++#future-personal-notes {
++  margin: 52px 0;
++  scroll-margin: 24px 0 140px;
++}
++.future-save-status {
++  min-height: 1.6em;
++  margin: 12px 0;
++}
++.future-detail :where([id]) {
++  scroll-margin: 24px 0 140px;
++}
++.future-horizon-rail {
++  display: grid;
++  grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr));
++  gap: 8px;
++  padding: 0 0 14px;
++  border-bottom: 2px solid var(--muted);
++}
++.future-workspace .future-horizon-rail button {
++  padding: 18px;
++  text-align: left;
++  border-radius: 8px 8px 0 0;
++  border-color: var(--muted);
++}
++.future-horizon-rail button[aria-pressed="true"] {
++  background: var(--ink) !important;
++  color: var(--surface);
++}
++.future-horizon-rail button span {
+   display: block;
+-  margin: 14px 0;
++  font: 32px/1.1 var(--serif);
+ }
+-.future-detail select {
+-  max-width: 100%;
++.future-horizon-rail button small {
++  display: block;
++  font-size: 14px;
++  margin-top: 10px;
++}
++.future-period-controls {
++  display: flex;
++  align-items: center;
++  justify-content: space-between;
++  gap: 12px;
++  margin: 18px 0 28px;
++  flex-wrap: wrap;
+ }
+ .future-timeline {
+-  border-left: 3px solid var(--accent, #476854);
+-  padding-left: 20px;
++  display: grid;
++  grid-template-columns: 130px minmax(0, 1fr);
++  gap: 30px;
++}
++.future-period-title {
++  font: 48px/1 var(--serif);
++  padding-top: 18px;
+ }
+-.future-timeline article {
+-  scroll-margin-top: 24px;
+-  position: relative;
++.future-period-title span {
++  display: block;
++  font:
++    12px/1.6 Arial,
++    sans-serif;
++  letter-spacing: 2px;
++  margin-top: 14px;
+ }
+-.future-module {
+-  margin: 32px 0;
+-  scroll-margin-top: 24px;
++.future-milestones {
++  display: grid;
++  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
++  gap: 20px;
++  align-items: start;
+ }
+-.future-module-nav a {
+-  padding: 8px 12px;
+-  border: 1px solid var(--line);
+-  border-radius: 20px;
+-  color: inherit;
++.future-milestone {
++  border-top: 3px solid var(--accent) !important;
++}
++.future-related {
++  margin-top: 14px;
++}
++.future-relations {
++  margin: 24px 0;
++}
++.future-scenario-compare {
++  display: grid;
++  grid-template-columns: repeat(3, minmax(0, 1fr));
++  gap: 20px;
++  align-items: start;
++}
++.future-lane-title {
++  border-top: 3px solid var(--muted);
++  padding-top: 16px;
++  min-height: 76px;
++}
++.future-lane-acceleration .future-lane-title {
++  border-color: var(--accent);
++}
++.future-lane-moderate .future-lane-title {
++  border-color: var(--ink);
++}
++.future-lane .future-scenario + .future-scenario {
++  margin-top: 20px;
++}
++.future-scenario .future-badge {
+   font-size: 13px;
+ }
++.future-linked-signals {
++  margin-top: 16px;
++}
++.future-other {
++  margin-top: 30px;
++}
++.future-missing {
++  color: var(--muted);
++  font-style: italic;
++}
++.future-signal-radar {
++  display: grid;
++  grid-template-columns: repeat(4, minmax(0, 1fr));
++  gap: 12px;
++  margin-bottom: 24px;
++}
++.future-signal-radar > div {
++  border: 1px solid var(--muted);
++  border-radius: 10px;
++  padding: 16px;
++  display: grid;
++  gap: 10px;
++}
++.future-signal-radar b {
++  font: 40px/1 var(--serif);
++}
++.future-signal-radar > div > span:first-child {
++  font-size: 24px;
++}
++.future-signal-questions dt {
++  font-weight: 600;
++  margin: 14px 0 4px;
++}
++.future-signal-questions dd {
++  margin: 0;
++  color: var(--muted);
++}
++.future-progress {
++  padding: 20px 24px;
++  border: 1px solid var(--muted);
++  border-radius: 10px;
++  margin-bottom: 26px;
++  background: var(--surface);
++}
++.future-progress progress {
++  display: block;
++  width: 100%;
++  height: 12px;
++  margin: 16px 0;
++  accent-color: var(--ink);
++}
++.future-progress ul {
++  display: flex;
++  flex-wrap: wrap;
++  gap: 16px;
++  list-style: none;
++  padding: 0;
++  margin: 0;
++}
++.future-progress li {
++  margin: 0 !important;
++}
++.future-roadmap {
++  display: grid;
++  grid-template-columns: repeat(3, minmax(0, 1fr));
++  gap: 20px;
++}
++.future-roadmap-stage > h3 {
++  display: flex;
++  gap: 12px;
++  align-items: center;
++}
++.future-roadmap-stage > h3 span {
++  font:
++    12px/1 Arial,
++    sans-serif;
++  border: 1px solid var(--muted);
++  border-radius: 50%;
++  padding: 10px;
++}
++.future-roadmap-stage .future-action {
++  margin-top: 16px;
++}
++.future-action > h4 {
++  font: 24px/1.25 var(--serif);
++  margin: 6px 0 18px;
++}
++.future-decisive {
++  background: var(--soft);
++  border-left: 2px solid var(--muted);
++  padding: 16px;
++  margin: 18px 0;
++}
++.future-decisive p {
++  margin: 8px 0 0;
++}
++.future-personal {
++  margin: 32px 0 !important;
++}
++.future-personal form {
++  margin: 24px 0;
++}
+ .future-preview {
+   width: 100%;
+   height: 70vh;
+@@ -105,35 +632,37 @@
+   border: 1px solid var(--line);
+   border-radius: 12px;
+ }
+-.future-personal form {
+-  margin: 20px 0;
++.future-import {
++  font-size: 16px;
+ }
+-.future-motion .future-module {
+-  animation: future-enter 0.28s ease-out;
++.future-import label {
++  display: block;
++  margin: 14px 0;
+ }
+-.future-count,
+-.future-detail .small-note {
+-  overflow-wrap: anywhere;
++.future-import label input[type="checkbox"] {
++  vertical-align: middle;
++  margin-right: 8px;
+ }
+-.future-evidence {
+-  padding-left: 20px;
++.future-workspace[data-motion="subtle"]
++  .future-detail:not([data-document-motion="off"])
++  .future-interaction {
++  animation: future-atlas-enter 0.2s ease-out;
+ }
+-.future-workspace button:focus-visible,
+-.future-workspace a:focus-visible,
+-.future-import button:focus-visible {
+-  outline: 3px solid var(--accent, #476854);
+-  outline-offset: 4px;
+-}
+-@keyframes future-enter {
++@keyframes future-atlas-enter {
+   from {
+-    opacity: 0.6;
+-    transform: translateY(4px);
++    opacity: 0.65;
++    transform: translateY(3px);
+   }
+   to {
+     opacity: 1;
+     transform: none;
+   }
+ }
++.future-workspace[data-motion="off"] * {
++  animation: none !important;
++  transition: none !important;
++  scroll-behavior: auto !important;
++}
+ @media (prefers-reduced-motion: reduce) {
+   .future-workspace * {
+     animation: none !important;
+@@ -141,24 +670,186 @@
+     scroll-behavior: auto !important;
+   }
+ }
++@media (max-width: 1100px) {
++  .future-roadmap,
++  .future-scenario-compare {
++    grid-template-columns: 1fr;
++  }
++  .future-lane-title {
++    min-height: 0;
++  }
++  .future-filters {
++    grid-template-columns: repeat(2, minmax(0, 1fr));
++  }
++  .future-essentials {
++    grid-template-columns: 1fr;
++    gap: 12px;
++  }
++}
++@media (min-width: 1250px) {
++  .future-roadmap,
++  .future-scenario-compare {
++    grid-template-columns: repeat(3, minmax(0, 1fr));
++  }
++}
+ @media (max-width: 700px) {
+-  .mobile-nav {
+-    grid-template-columns: repeat(5, minmax(0, 1fr));
++  .future-atlas-header {
++    display: block;
++    padding-top: 10px;
++  }
++  .future-atlas-header h1 {
++    font-size: 64px;
++  }
++  .future-header-actions {
++    margin-top: 24px;
++    min-width: 0;
++    justify-items: start;
++  }
++  .future-header-actions .primary {
++    width: 100%;
++  }
++  .future-summary {
++    grid-template-columns: 1fr;
++  }
++  .future-summary article {
++    padding: 22px;
++  }
++  .future-summary article + article {
++    border-left: 0;
++    border-top: 1px solid var(--line);
++  }
++  .future-summary strong {
++    font-size: 44px;
+   }
+-  .mobile-nav span {
+-    font-size: 9px;
++  .future-changed {
++    padding-left: 16px;
++    margin: 24px 0;
+   }
+-  .future-detail h2 {
+-    font-size: 26px;
++  .future-collection-heading {
++    display: block;
++  }
++  .future-filters {
++    grid-template-columns: 1fr;
+   }
+   .future-timeline {
+-    padding-left: 12px;
++    grid-template-columns: 1fr;
++    gap: 12px;
++  }
++  .future-period-title {
++    display: none;
++  }
++  .future-horizon-rail {
++    grid-template-columns: repeat(2, minmax(0, 1fr));
++  }
++  .future-horizon-rail button span {
++    font-size: 30px;
++  }
++  .future-period-controls {
++    display: grid;
++    grid-template-columns: 1fr 1fr;
++  }
++  .future-period-controls > span {
++    grid-row: 1;
++    grid-column: 1/-1;
++  }
++  .future-period-controls button {
++    font-size: 14px;
++  }
++  .future-signal-radar {
++    grid-template-columns: repeat(2, minmax(0, 1fr));
++  }
++  .future-dossier-header > h2 {
++    font-size: 36px;
+   }
+-  .future-tools button {
++  .future-module {
++    margin: 36px 0;
++  }
++  .future-workspace .quiet-panel {
++    padding: 20px;
++  }
++  .future-workspace .future-kicker {
++    letter-spacing: 1px;
++  }
++  .future-module-nav {
++    gap: 8px;
++  }
++  .future-module-nav a,
++  .future-module-nav button {
++    padding: 8px 12px;
++  }
++  .future-workspace .future-tools {
++    align-items: stretch;
++  }
++  .future-tools > * {
+     max-width: 100%;
+   }
++  .future-workspace .future-summary p {
++    font-size: 16px;
++  }
+ }
+ 
+-.future-workspace a {
+-  color: var(--ink);
++/* Reflow also follows the available atlas width (sidebar and local text zoom). */
++.future-workspace {
++  container-type: inline-size;
++}
++@container (max-width:650px) {
++  .future-atlas-header {
++    display: block;
++  }
++  .future-header-actions {
++    margin-top: 24px;
++    justify-items: start;
++    min-width: 0;
++  }
++  .future-summary,
++  .future-essentials,
++  .future-scenario-compare,
++  .future-roadmap,
++  .future-filters,
++  .future-timeline {
++    grid-template-columns: 1fr;
++  }
++  .future-summary article + article {
++    border-left: 0;
++    border-top: 1px solid var(--line);
++  }
++  .future-period-title {
++    display: none;
++  }
++  .future-horizon-rail {
++    grid-template-columns: repeat(2, minmax(0, 1fr));
++  }
++  .future-signal-radar {
++    grid-template-columns: repeat(2, minmax(0, 1fr));
++  }
++  .future-collection-heading {
++    display: block;
++  }
++  .future-atlas-header h1 {
++    font-size: 64px;
++    letter-spacing: -2px;
++  }
++  .future-period-controls {
++    display: grid;
++    grid-template-columns: 1fr 1fr;
++  }
++  .future-period-controls > span {
++    grid-row: 1;
++    grid-column: 1/-1;
++  }
++}
++
++/* Safari native pop-up controls otherwise ignore the minimum target height. */
++.future-workspace select {
++  appearance: none;
++  min-height: 48px;
++  padding-right: 34px;
++  background-image:
++    linear-gradient(45deg, transparent 50%, var(--ink) 50%),
++    linear-gradient(135deg, var(--ink) 50%, transparent 50%);
++  background-position:
++    calc(100% - 18px) 50%,
++    calc(100% - 13px) 50%;
++  background-size: 5px 5px;
++  background-repeat: no-repeat;
+ }
+diff --git a/tests/e2e/v6-future.spec.ts b/tests/e2e/v6-future.spec.ts
+index 414ad78..edf89c9 100644
+--- a/tests/e2e/v6-future.spec.ts
++++ b/tests/e2e/v6-future.spec.ts
+@@ -32,6 +32,9 @@ async function confirm(page: Page) {
+ async function open(page: Page, title = example.title) {
+   await page.locator(".future-title").getByText(title, { exact: true }).click();
+   await expect(page.locator(".future-detail")).toBeVisible();
++  await page
++    .getByText("Exports, original et empreinte", { exact: true })
++    .click();
+ }
+ async function closeToast(page: Page) {
+   const b = page.getByRole("button", {
+@@ -93,9 +96,21 @@ test("Le Futur : HTML dédié, six modules, notes, révision confirmée, export,
+   await expect(
+     page.getByLabel("Suivi de « Tester un outil sur une tâche bornée »"),
+   ).toHaveValue("doing");
++  await page
++    .locator(".future-action")
++    .filter({ hasText: "Tester un outil sur une tâche bornée" })
++    .getByRole("button", { name: "Enregistrer l’action", exact: true })
++    .click();
+   await page.getByRole("button", { name: "Voir l’aperçu HTML isolé" }).click();
+   await expect(page.locator(".future-preview")).toHaveAttribute("sandbox", "");
+   const previewBody = page.frameLocator(".future-preview").locator("body");
++  expect(
++    await page
++      .frameLocator(".future-preview")
++      .locator("article")
++      .first()
++      .evaluate((e) => getComputedStyle(e).animationName),
++  ).toBe("none");
+   await expect(previewBody).toBeVisible();
+   expect(
+     await previewBody.evaluate((e) => getComputedStyle(e).animationName),
+@@ -171,6 +186,7 @@ test("Le Futur : HTML dédié, six modules, notes, révision confirmée, export,
+     example.title,
+   );
+   await page.getByRole("button", { name: "← Tous les dossiers" }).click();
++  await page.getByText("Sauvegarde et ressources", { exact: true }).click();
+   const backup = page.waitForEvent("download");
+   await page
+     .getByRole("button", { name: "Sauvegarder Le Futur", exact: true })
+diff --git a/src/features/future/FutureActions.tsx b/src/features/future/FutureActions.tsx
+new file mode 100644
+index 0000000..117537a
+--- /dev/null
++++ b/src/features/future/FutureActions.tsx
+@@ -0,0 +1,180 @@
++import { useState } from "react";
++import type { FuturePayload, FuturePersonal } from "./schema";
++import { actionLabels, horizonLabels, preparationCounts } from "./selectors";
++export type SavePersonal = (patch: Partial<FuturePersonal>) => Promise<boolean>;
++export function FutureActions({
++  payload: p,
++  personal,
++  onSave,
++}: {
++  payload: FuturePayload;
++  personal: FuturePersonal;
++  onSave: SavePersonal;
++}) {
++  const counts = preparationCounts(p, personal);
++  return (
++    <>
++      <div className="future-section-heading">
++        <span className="future-kicker">04 / MA PRÉPARATION</span>
++        <h2>Se préparer, un pas à la fois.</h2>
++        <p>
++          Votre feuille de route privée. La progression reflète uniquement les
++          statuts enregistrés sur cet appareil.
++        </p>
++      </div>
++      <div className="future-progress">
++        <span>
++          <b>
++            {counts.done} / {p.actions.length}
++          </b>{" "}
++          actions terminées
++        </span>
++        <progress
++          value={counts.done}
++          max={Math.max(1, p.actions.length)}
++          aria-label="Actions terminées"
++        />
++        <ul>
++          {Object.entries(counts).map(([key, count]) => (
++            <li key={key}>
++              {actionLabels[key as keyof typeof actionLabels]} : {count}
++            </li>
++          ))}
++        </ul>
++      </div>
++      <div className="future-roadmap">
++        {(["now", "3m", "12m"] as const).map((h, i) => (
++          <section className="future-roadmap-stage" key={h}>
++            <h3>
++              <span aria-hidden="true">0{i + 1}</span>
++              {horizonLabels[h]}
++            </h3>
++            {p.actions
++              .filter((a) => a.horizon === h)
++              .map((a) => (
++                <ActionCard
++                  key={a.id}
++                  action={a}
++                  saved={personal.actions[a.id]}
++                  payload={p}
++                  onSave={onSave}
++                />
++              ))}
++            {!p.actions.some((a) => a.horizon === h) && (
++              <p className="future-missing">Aucune action renseignée.</p>
++            )}
++          </section>
++        ))}
++      </div>
++    </>
++  );
++}
++function ActionCard({
++  action: a,
++  saved,
++  payload: p,
++  onSave,
++}: {
++  action: FuturePayload["actions"][number];
++  saved: FuturePersonal["actions"][string] | undefined;
++  payload: FuturePayload;
++  onSave: SavePersonal;
++}) {
++  const [draft, setDraft] = useState<{
++      status: keyof typeof actionLabels;
++      result: string;
++    } | null>(null),
++    [busy, setBusy] = useState(false),
++    [message, setMessage] = useState(""),
++    [failed, setFailed] = useState(false);
++  const value = draft || saved || { status: "todo" as const, result: "" };
++  return (
++    <article className="quiet-panel future-action">
++      <span className="future-badge">
++        {actionLabels[saved?.status || "todo"]}
++      </span>
++      <h4>{a.title}</h4>
++      <p>
++        <b>Compétence :</b> {a.skill}
++      </p>
++      <p>
++        <b>Impact proposé :</b> {a.description}
++      </p>
++      <div className="future-decisive">
++        <b>Test décisif</b>
++        <p>{a.decisiveTest}</p>
++      </div>
++      <details>
++        <summary>Effort et scénarios concernés</summary>
++        <p>
++          {a.effortHours === null
++            ? "Effort non documenté."
++            : a.effortHours + " h — " + a.effortEvidence}
++        </p>
++        <p>
++          Scénarios concernés :{" "}
++          {a.scenarioIds
++            .map((id) => p.scenarios.find((s) => s.id === id)?.title)
++            .join(" · ") || "Non renseigné."}
++        </p>
++      </details>
++      <form
++        onSubmit={async (e) => {
++          e.preventDefault();
++          setBusy(true);
++          setFailed(false);
++          const ok = await onSave({ actions: { [a.id]: value } });
++          if (ok) {
++            setDraft(null);
++            setMessage("Action enregistrée sur cet appareil.");
++          } else {
++            setFailed(true);
++            setMessage(
++              "Échec de sauvegarde. Vos saisies sont conservées ici ; réessayez.",
++            );
++          }
++          setBusy(false);
++        }}
++      >
++        <label>
++          Suivi de « {a.title} »
++          <select
++            disabled={busy}
++            value={value.status}
++            onChange={(e) => {
++              setDraft({
++                ...value,
++                status: e.target.value as keyof typeof actionLabels,
++              });
++              setMessage("Modification non enregistrée.");
++            }}
++          >
++            {Object.entries(actionLabels).map(([key, label]) => (
++              <option key={key} value={key}>
++                {label}
++              </option>
++            ))}
++          </select>
++        </label>
++        <label>
++          Résultat de « {a.title} »
++          <textarea
++            disabled={busy}
++            value={value.result}
++            maxLength={4000}
++            onChange={(e) => {
++              setDraft({ ...value, result: e.target.value });
++              setMessage("Modification non enregistrée.");
++            }}
++          />
++        </label>
++        <button className="secondary" disabled={busy}>
++          {busy ? "Enregistrement…" : "Enregistrer l’action"}
++        </button>
++        <p className="future-save-status" role={failed ? "alert" : "status"}>
++          {message || "Votre suivi reste privé."}
++        </p>
++      </form>
++    </article>
++  );
++}
+diff --git a/src/features/future/FutureDetail.tsx b/src/features/future/FutureDetail.tsx
+new file mode 100644
+index 0000000..a3ebde1
+--- /dev/null
++++ b/src/features/future/FutureDetail.tsx
+@@ -0,0 +1,366 @@
++import { useEffect, useRef, useState } from "react";
++import { download } from "../backup";
++import { blobOf, now } from "../../data/model";
++import { radarReaderHTML } from "../aiRadar/import";
++import {
++  futureDb,
++  type FutureVersion,
++  type FutureDocument,
++  type FutureChange,
++} from "./db";
++import {
++  moduleLabels,
++  personalSchema,
++  statusLabels,
++  type FuturePayload,
++  type FuturePersonal,
++} from "./schema";
++import { renderFutureHTML } from "./html";
++import { useLive } from "./hooks";
++import { formatDate } from "./selectors";
++import { FutureOverview } from "./FutureOverview";
++import { FutureTimeline } from "./FutureTimeline";
++import { FutureScenarioCompare } from "./FutureScenarioCompare";
++import { FutureSignals } from "./FutureSignals";
++import { FutureActions } from "./FutureActions";
++import { FutureSources } from "./FutureSources";
++import { FuturePersonalNotes } from "./FuturePersonalNotes";
++const verdicts = {
++  integrer: "Intégrer",
++  surveiller: "À surveiller",
++  ecarter: "Écarter",
++};
++export default function FutureDetail({
++  documentId,
++  onBack,
++  initialSection = "overview",
++}: {
++  documentId: string;
++  onBack: () => void;
++  initialSection?: string;
++}) {
++  const { value: dossier, error: documentError } = useLive(
++    () => futureDb.documents.get(documentId),
++    [documentId],
++    undefined as FutureDocument | undefined,
++  );
++  const { value: versions, error: versionsError } = useLive(
++    () =>
++      futureDb.versions
++        .where("documentId")
++        .equals(documentId)
++        .sortBy("revision"),
++    [documentId],
++    [] as FutureVersion[],
++  );
++  const { value: saved, error: personalError } = useLive(
++    () => futureDb.personal.get(documentId),
++    [documentId],
++    undefined as FuturePersonal | undefined,
++  );
++  const { value: events, error: eventsError } = useLive(
++    () => futureDb.changes.where("documentId").equals(documentId).sortBy("at"),
++    [documentId],
++    [] as FutureChange[],
++  );
++  const [versionId, setVersionId] = useState(""),
++    [payload, setPayload] = useState<FuturePayload | null>(null),
++    [error, setError] = useState(""),
++    [message, setMessage] = useState(""),
++    [preview, setPreview] = useState("");
++  const heading = useRef<HTMLHeadingElement>(null),
++    focused = useRef(false),
++    previewButton = useRef<HTMLButtonElement>(null);
++  const chosen = versionId || dossier?.latest;
++  useEffect(() => {
++    let active = true;
++    setPreview("");
++    if (chosen)
++      futureDb.contents
++        .get(chosen)
++        .then((c) => {
++          if (active) {
++            setPayload(c?.payload || null);
++            if (!c)
++              setError(
++                "Snapshot indisponible. Revenez à la liste ou restaurez une sauvegarde.",
++              );
++          }
++        })
++        .catch((e) => {
++          if (active) setError(String(e));
++        });
++    return () => {
++      active = false;
++    };
++  }, [chosen]);
++  useEffect(() => {
++    if (!payload || focused.current) return;
++    focused.current = true;
++    if (initialSection === "overview") heading.current?.focus();
++    else
++      (
++        document.getElementById("future-module-" + initialSection) ||
++        heading.current
++      )?.focus();
++  }, [payload, initialSection]);
++  async function run(action: () => Promise<unknown>, success = "") {
++    setError("");
++    try {
++      await action();
++      if (success) setMessage(success);
++      return true;
++    } catch (e) {
++      setError(e instanceof Error ? e.message : String(e));
++      return false;
++    }
++  }
++  const loadError =
++    documentError || versionsError || personalError || eventsError;
++  if (!payload)
++    return (
++      <div>
++        <button onClick={onBack}>← Tous les dossiers</button>
++        {loadError || error ? (
++          <p role="alert">{loadError || error}</p>
++        ) : (
++          <p role="status">Ouverture du dossier…</p>
++        )}
++      </div>
++    );
++  const p = payload,
++    personal = saved || personalSchema.parse({ documentId, updatedAt: now() }),
++    activeVersion = versions.find((v) => v.id === chosen);
++  const patch = (value: Partial<FuturePersonal>) =>
++    run(
++      () => futureDb.updatePersonal(documentId, value),
++      "Modifications enregistrées sur cet appareil.",
++    );
++  const components = {
++    timeline: <FutureTimeline key={chosen} payload={p} />,
++    scenarios: <FutureScenarioCompare payload={p} />,
++    signals: <FutureSignals payload={p} />,
++    actions: <FutureActions payload={p} personal={personal} onSave={patch} />,
++    sources: <FutureSources payload={p} personal={personal} onSave={patch} />,
++    changes: (
++      <>
++        <div className="future-section-heading">
++          <span className="future-kicker">HISTORIQUE</span>
++          <h2>Ce qui a changé.</h2>
++        </div>
++        <p>
++          Différences éditoriales de cette révision ; les versions précédentes
++          restent accessibles.
++        </p>
++        <ul>
++          {activeVersion?.changes.map((c, i) => (
++            <li key={i}>{c}</li>
++          ))}
++        </ul>
++        <details>
++          <summary>Historique local complet ({events.length})</summary>
++          <ul>
++            {[...events].reverse().map((e) => (
++              <li key={e.id}>
++                {formatDate(e.at)} — {e.description}
++              </li>
++            ))}
++          </ul>
++        </details>
++      </>
++    ),
++  };
++  return (
++    <article
++      className="future-detail"
++      data-document-motion={p.visualization.motion}
++    >
++      <button className="text-button future-back" onClick={onBack}>
++        ← Tous les dossiers
++      </button>
++      <header className="future-dossier-header">
++        <span className="future-kicker">
++          DOSSIER PROSPECTIF / RÉVISION {p.revision}
++        </span>
++        <h2 ref={heading} tabIndex={-1}>
++          {p.title}
++        </h2>
++        <p>
++          <span className="future-badge">{statusLabels[p.status]}</span>
++          {p.synthetic && (
++            <span className="future-badge">EXEMPLE SYNTHÉTIQUE</span>
++          )}
++        </p>
++        <p>
++          {verdicts[p.editorialDecision.verdict]} : {p.editorialDecision.reason}
++        </p>
++        <div className="future-tools">
++          <button
++            className="secondary"
++            aria-pressed={personal.favorite}
++            onClick={() => patch({ favorite: !personal.favorite })}
++          >
++            {personal.favorite ? "Retirer des favoris" : "Ajouter aux favoris"}
++          </button>
++          <label>
++            Version affichée
++            <select
++              value={chosen || ""}
++              onChange={(e) => setVersionId(e.target.value)}
++            >
++              {[...versions]
++                .sort((a, b) => b.revision - a.revision)
++                .map((v) => (
++                  <option key={v.id} value={v.id}>
++                    Révision {v.revision} · {formatDate(v.updatedAt)}
++                  </option>
++                ))}
++            </select>
++          </label>
++        </div>
++        <details className="future-file-tools">
++          <summary>Exports, original et empreinte</summary>
++          <div className="future-tools">
++            <button
++              onClick={() =>
++                run(async () => {
++                  download(
++                    blobOf(
++                      new TextEncoder().encode(JSON.stringify(p, null, 2)),
++                      "application/json",
++                    ),
++                    p.documentId + ".json",
++                  );
++                })
++              }
++            >
++              Exporter JSON
++            </button>
++            <button
++              onClick={() =>
++                run(async () => {
++                  download(
++                    blobOf(
++                      new TextEncoder().encode(renderFutureHTML(p)),
++                      "text/html",
++                    ),
++                    p.documentId + ".html",
++                  );
++                })
++              }
++            >
++              Exporter HTML portable
++            </button>
++            <button
++              onClick={() =>
++                run(async () => {
++                  if (!chosen || !activeVersion) return;
++                  const o = await futureDb.originals.get(chosen);
++                  if (o)
++                    download(
++                      blobOf(
++                        o.bytes,
++                        activeVersion.kind === "json"
++                          ? "application/json"
++                          : "text/html",
++                      ),
++                      activeVersion.filename,
++                    );
++                })
++              }
++            >
++              Télécharger l’original
++            </button>
++            {activeVersion?.kind !== "json" && (
++              <button
++                ref={previewButton}
++                onClick={() =>
++                  run(async () =>
++                    setPreview(
++                      radarReaderHTML(
++                        new TextEncoder().encode(
++                          renderFutureHTML(p).replace(
++                            "</head>",
++                            "<style>*,*::before,*::after{animation:none!important;transition:none!important}</style></head>",
++                          ),
++                        ),
++                      ),
++                    ),
++                  )
++                }
++              >
++                Voir l’aperçu HTML isolé
++              </button>
++            )}
++          </div>
++          <p className="future-caption">
++            Empreinte SHA-256 : {activeVersion?.sha256}
++          </p>
++        </details>
++        <p className="future-caption">
++          Les notes et le suivi personnel concernent le dossier, quelle que soit
++          la version affichée.
++        </p>
++      </header>
++      {(error || loadError) && (
++        <p role="alert" className="warning">
++          {error || loadError}
++        </p>
++      )}
++      <p className="future-save-status" role="status">
++        {message}
++      </p>
++      {preview && (
++        <section>
++          <button
++            onClick={() => {
++              setPreview("");
++              previewButton.current?.focus();
++            }}
++          >
++            Fermer l’aperçu
++          </button>
++          <iframe
++            title="Aperçu HTML isolé du dossier"
++            sandbox=""
++            referrerPolicy="no-referrer"
++            srcDoc={preview}
++            className="future-preview"
++          />
++        </section>
++      )}
++      <nav className="future-module-nav" aria-label="Modules du dossier">
++        <a href="#future-atlas-overview">Vue d’ensemble</a>
++        {p.visualization.modules
++          .filter((m) => m !== "changes")
++          .map((m) => (
++            <a key={m} href={"#future-module-" + m}>
++              {m === "scenarios"
++                ? "Scénarios"
++                : m === "sources"
++                  ? "Sources"
++                  : moduleLabels[m]}
++            </a>
++          ))}
++        <a href="#future-personal-notes">Mon carnet</a>
++        {p.visualization.modules.includes("changes") && (
++          <a href="#future-module-changes">Évolutions</a>
++        )}
++      </nav>
++      <FutureOverview payload={p} />
++      {p.visualization.modules.map((module) => (
++        <section
++          className="future-module"
++          id={"future-module-" + module}
++          tabIndex={-1}
++          key={module}
++        >
++          {components[module]}
++        </section>
++      ))}
++      <div id="future-personal-notes" tabIndex={-1}>
++        <FuturePersonalNotes personal={personal} onSave={patch} />
++      </div>
++    </article>
++  );
++}
+diff --git a/src/features/future/FutureEvidence.tsx b/src/features/future/FutureEvidence.tsx
+new file mode 100644
+index 0000000..1707bb2
+--- /dev/null
++++ b/src/features/future/FutureEvidence.tsx
+@@ -0,0 +1,39 @@
++import type { FuturePayload } from "./schema";
++export function FutureEvidence({
++  urls,
++  payload,
++}: {
++  urls: string[];
++  payload: FuturePayload;
++}) {
++  return urls.length ? (
++    <ul className="future-evidence">
++      {urls.map((url) => (
++        <li key={url}>
++          <a href={url} target="_blank" rel="noreferrer noopener">
++            {payload.provenance.sources.find((s) => s.url === url)?.label ||
++              "Source déclarée"}{" "}
++            <span aria-hidden="true">↗</span>
++          </a>
++        </li>
++      ))}
++    </ul>
++  ) : (
++    <p className="future-missing">
++      Aucune source renseignée pour cette affirmation.
++    </p>
++  );
++}
++export function FutureText({ text }: { text: string }) {
++  return text.length > 320 ? (
++    <>
++      <p>{text.slice(0, 320)}…</p>
++      <details>
++        <summary>Lire le texte complet</summary>
++        <p>{text}</p>
++      </details>
++    </>
++  ) : (
++    <p>{text}</p>
++  );
++}
+diff --git a/src/features/future/FutureOverview.tsx b/src/features/future/FutureOverview.tsx
+new file mode 100644
+index 0000000..9e08d21
+--- /dev/null
++++ b/src/features/future/FutureOverview.tsx
+@@ -0,0 +1,69 @@
++import type { FuturePayload } from "./schema";
++import { contentCounts } from "./selectors";
++export type AtlasCounts = ReturnType<typeof contentCounts>;
++export function FutureSummary({ counts }: { counts: AtlasCounts }) {
++  return (
++    <div className="future-summary" aria-label="Résumé d’une minute">
++      <article>
++        <span className="future-kicker">01 / Faits observés</span>
++        <strong>{counts.observations}</strong>
++        <p>
++          Observations déclarées et sourcées. Aucune vérification indépendante
++          par Journal 360.
++        </p>
++      </article>
++      <article>
++        <span className="future-kicker">02 / Hypothèses à surveiller</span>
++        <strong>{counts.hypotheses}</strong>
++        <p>
++          Scénarios, jalons prospectifs et signaux à surveiller ; des
++          possibilités à éprouver.
++        </p>
++      </article>
++      <article>
++        <span className="future-kicker">03 / Actions concrètes</span>
++        <strong>{counts.actions}</strong>
++        <p>
++          Actions proposées par les dossiers. Votre suivi personnel reste privé
++          et local.
++        </p>
++      </article>
++    </div>
++  );
++}
++export function FutureOverview({ payload: p }: { payload: FuturePayload }) {
++  return (
++    <section
++      id="future-atlas-overview"
++      className="future-overview"
++      tabIndex={-1}
++    >
++      <div className="future-section-heading">
++        <span className="future-kicker">VUE D’ENSEMBLE</span>
++        <h2>L’essentiel, avant d’explorer.</h2>
++        <p>{p.editorialDecision.reason}</p>
++      </div>
++      <FutureSummary counts={contentCounts(p)} />
++      <ol className="future-essentials">
++        <li>
++          <b>Une trajectoire possible</b>
++          <p>{p.scenarios[0]?.summary || "Aucun scénario renseigné."}</p>
++        </li>
++        <li>
++          <b>Une objection à garder en tête</b>
++          <p>
++            {p.scenarios.flatMap((s) => s.objections)[0] || "Non renseigné."}
++          </p>
++        </li>
++        <li>
++          <b>Un premier pas concret</b>
++          <p>{p.actions[0]?.title || "Aucune action renseignée."}</p>
++        </li>
++      </ol>
++      <p className="future-disclaimer">
++        Les observations sont déclarées dans le dossier. Une hypothèse ou un
++        scénario n’est jamais une garantie.
++      </p>
++    </section>
++  );
++}
+diff --git a/src/features/future/FuturePersonalNotes.tsx b/src/features/future/FuturePersonalNotes.tsx
+new file mode 100644
+index 0000000..8472a9b
+--- /dev/null
++++ b/src/features/future/FuturePersonalNotes.tsx
+@@ -0,0 +1,96 @@
++import { useState } from "react";
++import type { FuturePersonal } from "./schema";
++import type { SavePersonal } from "./FutureActions";
++import { now } from "../../data/model";
++import { formatDate } from "./selectors";
++export function FuturePersonalNotes({
++  personal,
++  onSave,
++}: {
++  personal: FuturePersonal;
++  onSave: SavePersonal;
++}) {
++  const [note, setNote] = useState(""),
++    [busy, setBusy] = useState(false);
++  return (
++    <section className="quiet-panel future-personal">
++      <span className="future-kicker">VOTRE CARNET PRIVÉ</span>
++      <h2>Mes notes et décisions privées</h2>
++      <form
++        onSubmit={async (e) => {
++          e.preventDefault();
++          const f = new FormData(e.currentTarget);
++          setBusy(true);
++          await onSave({
++            decision: String(f.get("decision")),
++            invalidation: String(f.get("invalidation")),
++            reviewDate: String(f.get("reviewDate")),
++          });
++          setBusy(false);
++        }}
++      >
++        <fieldset disabled={busy}>
++          <label>
++            Ma décision
++            <textarea
++              name="decision"
++              maxLength={4000}
++              defaultValue={personal.decision}
++            />
++          </label>
++          <label>
++            Ce qui invaliderait ma décision
++            <textarea
++              name="invalidation"
++              maxLength={4000}
++              defaultValue={personal.invalidation}
++            />
++          </label>
++          <label>
++            Date de réexamen
++            <input
++              name="reviewDate"
++              type="date"
++              defaultValue={personal.reviewDate}
++            />
++          </label>
++          <button className="secondary">Enregistrer ma décision</button>
++        </fieldset>
++      </form>
++      <form
++        onSubmit={async (e) => {
++          e.preventDefault();
++          if (!note.trim()) return;
++          setBusy(true);
++          const ok = await onSave({
++            notes: [{ id: crypto.randomUUID(), body: note.trim(), at: now() }],
++          });
++          if (ok) setNote("");
++          setBusy(false);
++        }}
++      >
++        <label>
++          Nouvelle note
++          <textarea
++            disabled={busy}
++            value={note}
++            maxLength={20000}
++            onChange={(e) => setNote(e.target.value)}
++            required
++          />
++        </label>
++        <button disabled={busy} className="primary">
++          Ajouter ma note
++        </button>
++      </form>
++      <ul>
++        {personal.notes.map((n) => (
++          <li key={n.id}>
++            <time>{formatDate(n.at)}</time>
++            <p>{n.body}</p>
++          </li>
++        ))}
++      </ul>
++    </section>
++  );
++}
+diff --git a/src/features/future/FutureScenarioCompare.tsx b/src/features/future/FutureScenarioCompare.tsx
+new file mode 100644
+index 0000000..908168c
+--- /dev/null
++++ b/src/features/future/FutureScenarioCompare.tsx
+@@ -0,0 +1,124 @@
++import { useState } from "react";
++import { statusLabels, type FuturePayload } from "./schema";
++import { itemAnchor, pathLabels, scenarioEvidence } from "./selectors";
++import { FutureEvidence, FutureText } from "./FutureEvidence";
++export function FutureScenarioCompare({
++  payload: p,
++}: {
++  payload: FuturePayload;
++}) {
++  const [detailed, setDetailed] = useState(false);
++  function card(s: FuturePayload["scenarios"][number]) {
++    return (
++      <article
++        className="future-scenario quiet-panel"
++        key={s.id}
++        id={itemAnchor(s.id)}
++      >
++        <span className="future-badge">
++          {statusLabels[s.status]} ·{" "}
++          {s.horizon === "unspecified" ? "Horizon non précisé" : s.horizon}
++        </span>
++        <h3>{s.title}</h3>
++        <FutureText text={s.summary} />
++        <details open={detailed}>
++          <summary>Hypothèses et conditions</summary>
++          <h4>Hypothèses</h4>
++          <Items items={s.assumptions} />
++          <h4>Déclencheurs</h4>
++          <Items items={s.triggers} />
++          <h4>Indicateurs à suivre</h4>
++          <Items items={s.indicators} />
++          <h4>Implications</h4>
++          <p>Non renseigné dans un champ dédié ; voir le résumé du scénario.</p>
++        </details>
++        <details open={detailed}>
++          <summary>Voir les objections</summary>
++          <Items items={s.objections} />
++        </details>
++        <details open={detailed}>
++          <summary>Voir les sources</summary>
++          <p>
++            Références déclarées dans les jalons et signaux liés à ce scénario.
++          </p>
++          <FutureEvidence urls={scenarioEvidence(p, s.id)} payload={p} />
++        </details>
++        {s.signalIds.length > 0 && (
++          <div className="future-linked-signals">
++            <b>Signaux liés</b>
++            <ul>
++              {s.signalIds.map((id) => (
++                <li key={id}>
++                  {p.visualization.modules.includes("signals") ? (
++                    <a href={"#" + itemAnchor(id)}>
++                      {p.signals.find((v) => v.id === id)?.title}
++                    </a>
++                  ) : (
++                    p.signals.find((v) => v.id === id)?.title
++                  )}
++                </li>
++              ))}
++            </ul>
++          </div>
++        )}
++      </article>
++    );
++  }
++  return (
++    <>
++      <div className="future-section-heading">
++        <span className="future-kicker">02 / SCÉNARIOS</span>
++        <h2>Plusieurs futurs. Un regard critique.</h2>
++        <p>
++          Comparez les conditions et les objections, sans probabilité ni
++          classement inventé.
++        </p>
++        <button aria-pressed={detailed} onClick={() => setDetailed((v) => !v)}>
++          {detailed ? "Vue compacte" : "Vue détaillée"}
++        </button>
++      </div>
++      {!p.scenarios.length ? (
++        <p className="future-empty">
++          Aucun scénario fourni. Aucune trajectoire n’est inventée.
++        </p>
++      ) : (
++        <>
++          <div className="future-scenario-compare">
++            {(["acceleration", "moderate", "slowdown"] as const).map((path) => (
++              <section
++                className={"future-lane future-lane-" + path}
++                key={path}
++                aria-label={pathLabels[path]}
++              >
++                <h3 className="future-lane-title">{pathLabels[path]}</h3>
++                {p.scenarios.filter((s) => s.path === path).map(card)}
++                {!p.scenarios.some((s) => s.path === path) && (
++                  <p className="future-missing">Trajectoire non renseignée.</p>
++                )}
++              </section>
++            ))}
++          </div>
++          {p.scenarios.some((s) => s.path === "other") && (
++            <section className="future-other">
++              <h3>Autres trajectoires</h3>
++              <div className="future-grid">
++                {p.scenarios.filter((s) => s.path === "other").map(card)}
++              </div>
++            </section>
++          )}
++        </>
++      )}
++    </>
++  );
++}
++function Items({ items }: { items: string[] }) {
++  return items.length ? (
++    <ul>
++      {items.map((text, i) => (
++        <li key={i}>{text}</li>
++      ))}
++    </ul>
++  ) : (
++    <p className="future-missing">Non renseigné.</p>
++  );
++}
+diff --git a/src/features/future/FutureSignals.tsx b/src/features/future/FutureSignals.tsx
+new file mode 100644
+index 0000000..6ae597c
+--- /dev/null
++++ b/src/features/future/FutureSignals.tsx
+@@ -0,0 +1,97 @@
++import { statusLabels, type FuturePayload } from "./schema";
++import { itemAnchor, formatDate } from "./selectors";
++import { FutureEvidence, FutureText } from "./FutureEvidence";
++const symbols = { observed: "◉", watch: "◷", contradicted: "×", unknown: "?" };
++export function FutureSignals({ payload: p }: { payload: FuturePayload }) {
++  return (
++    <>
++      <div className="future-section-heading">
++        <span className="future-kicker">03 / SIGNAUX</span>
++        <h2>Confronter les trajectoires aux faits.</h2>
++        <p>
++          Un radar de lecture, sans score de certitude. Les statuts restent ceux
++          du dossier.
++        </p>
++      </div>
++      <div className="future-signal-radar" aria-label="Répartition des signaux">
++        {(["observed", "watch", "contradicted", "unknown"] as const).map(
++          (status) => (
++            <div key={status}>
++              <span aria-hidden="true">{symbols[status]}</span>
++              <b>{p.signals.filter((s) => s.status === status).length}</b>
++              <span>{statusLabels[status]}</span>
++            </div>
++          ),
++        )}
++      </div>
++      <div className="future-grid">
++        {p.signals.map((s) => (
++          <article
++            className="quiet-panel future-signal"
++            key={s.id}
++            id={itemAnchor(s.id)}
++          >
++            <span className="future-badge">
++              <span aria-hidden="true">{symbols[s.status]} </span>
++              {statusLabels[s.status]}
++            </span>
++            <h3>{s.title}</h3>
++            <FutureText text={s.description} />
++            <dl className="future-signal-questions">
++              <dt>Ce que l’on sait</dt>
++              <dd>
++                {s.status === "observed"
++                  ? "Une observation est déclarée avec ses sources ; elle n’est pas vérifiée indépendamment."
++                  : s.status === "contradicted"
++                    ? "Une contradiction est déclarée avec ses sources ; elle n’est pas vérifiée indépendamment."
++                    : "Non renseigné comme observation sourcée."}
++              </dd>
++              <dt>Ce que l’on ignore</dt>
++              <dd>Non renseigné dans un champ dédié.</dd>
++              <dt>Qu’est-ce qui confirmerait ?</dt>
++              <dd>Non renseigné comme critère explicite.</dd>
++              <dt>Qu’est-ce qui infirmerait ?</dt>
++              <dd>Non renseigné comme critère explicite.</dd>
++            </dl>
++            <details>
++              <summary>Sources, contrôle déclaré et objections</summary>
++              <p>
++                Dernier contrôle déclaré dans le fichier :{" "}
++                {formatDate(s.lastCheckedAt)}. Aucun contrôle automatique.
++              </p>
++              <p>{s.checkNote || "Note de contrôle non renseignée."}</p>
++              <FutureEvidence urls={s.evidenceUrls} payload={p} />
++              {p.scenarios
++                .filter((v) => v.signalIds.includes(s.id))
++                .map((v) => (
++                  <div key={v.id}>
++                    <h4>{v.title}</h4>
++                    <p>
++                      Les déclencheurs et objections suivants concernent ce
++                      scénario ; ils ne constituent pas des critères de
++                      validation du signal.
++                    </p>
++                    <b>Déclencheurs déclarés</b>
++                    <ul>
++                      {v.triggers.map((t, i) => (
++                        <li key={i}>{t}</li>
++                      ))}
++                    </ul>
++                    <b>Objections à examiner</b>
++                    <ul>
++                      {v.objections.map((t, i) => (
++                        <li key={i}>{t}</li>
++                      ))}
++                    </ul>
++                  </div>
++                ))}
++            </details>
++          </article>
++        ))}
++      </div>
++      {!p.signals.length && (
++        <p className="future-empty">Aucun signal fourni.</p>
++      )}
++    </>
++  );
++}
+diff --git a/src/features/future/FutureSources.tsx b/src/features/future/FutureSources.tsx
+new file mode 100644
+index 0000000..b8139b3
+--- /dev/null
++++ b/src/features/future/FutureSources.tsx
+@@ -0,0 +1,116 @@
++import type { FuturePayload, FuturePersonal } from "./schema";
++import type { SavePersonal } from "./FutureActions";
++import { now } from "../../data/model";
++import { formatDate } from "./selectors";
++import { FutureEvidence } from "./FutureEvidence";
++export function FutureSources({
++  payload: p,
++  personal,
++  onSave,
++}: {
++  payload: FuturePayload;
++  personal: FuturePersonal;
++  onSave: SavePersonal;
++}) {
++  return (
++    <>
++      <div className="future-section-heading">
++        <span className="future-kicker">05 / SOURCES</span>
++        <h2>Remonter à l’origine.</h2>
++      </div>
++      <p>
++        Origine : {p.provenance.title} ·{" "}
++        {p.provenance.author || "auteur non renseigné"} · publication :{" "}
++        {p.provenance.publishedAt || "non renseignée"} · remise :{" "}
++        {formatDate(p.provenance.providedAt)}
++      </p>
++      {p.provenance.originalUrl && (
++        <a
++          href={p.provenance.originalUrl}
++          target="_blank"
++          rel="noreferrer noopener"
++        >
++          Consulter l’origine
++        </a>
++      )}
++      <p>
++        Une consultation déclarée par le fichier n’est pas une vérification. Une
++        revue personnelle confirme votre consultation, sans certifier le fait.
++      </p>
++      <h3>Contradictions déclarées</h3>
++      {p.signals
++        .filter((s) => s.status === "contradicted")
++        .map((s) => (
++          <article className="quiet-panel" key={s.id}>
++            <h4>{s.title}</h4>
++            <p>{s.description}</p>
++            <p>{s.checkNote}</p>
++            <p>
++              Contrôle déclaré : {formatDate(s.lastCheckedAt)} · aucune
++              certification.
++            </p>
++            <FutureEvidence urls={s.evidenceUrls} payload={p} />
++          </article>
++        ))}
++      {!p.signals.some((s) => s.status === "contradicted") && (
++        <p>Aucune contradiction renseignée dans ce dossier.</p>
++      )}
++      <div className="future-grid">
++        {p.provenance.sources.map((s) => (
++          <article className="quiet-panel" key={s.id}>
++            <h3>{s.label}</h3>
++            {s.url ? (
++              <a href={s.url} target="_blank" rel="noreferrer noopener">
++                Ouvrir la source originale
++              </a>
++            ) : (
++              <p>Source privée · aucune URL publique.</p>
++            )}
++            <p>
++              {s.publisher} · {s.author || "auteur non renseigné"} · {s.type} ·
++              publication : {s.publishedAt || "non renseignée"}
++            </p>
++            <p>Consultation déclarée : {formatDate(s.consultedAt)}</p>
++            {personal.sourceReviews[s.id] ? (
++              <p>
++                Revue personnelle enregistrée le{" "}
++                {formatDate(personal.sourceReviews[s.id].at)} :{" "}
++                {personal.sourceReviews[s.id].reason}
++              </p>
++            ) : (
++              <form
++                onSubmit={(e) => {
++                  e.preventDefault();
++                  const f = e.currentTarget;
++                  const reason = String(
++                    new FormData(f).get("reason") || "",
++                  ).trim();
++                  if (reason.length >= 10)
++                    onSave({
++                      sourceReviews: {
++                        ...personal.sourceReviews,
++                        [s.id]: { at: now(), reason },
++                      },
++                    });
++                }}
++              >
++                <label>
++                  Justifier ma consultation de « {s.label} »
++                  <input
++                    name="reason"
++                    required
++                    minLength={10}
++                    maxLength={4000}
++                  />
++                </label>
++                <button className="secondary">
++                  Enregistrer ma revue personnelle
++                </button>
++              </form>
++            )}
++          </article>
++        ))}
++      </div>
++    </>
++  );
++}
+diff --git a/src/features/future/FutureTimeline.tsx b/src/features/future/FutureTimeline.tsx
+new file mode 100644
+index 0000000..9405e46
+--- /dev/null
++++ b/src/features/future/FutureTimeline.tsx
+@@ -0,0 +1,209 @@
++import {
++  useEffect,
++  useMemo,
++  useRef,
++  useState,
++  type KeyboardEvent,
++} from "react";
++import { statusLabels, type FuturePayload } from "./schema";
++import {
++  itemAnchor,
++  pathLabels,
++  periodFor,
++  timelineItems,
++  timelinePeriods,
++} from "./selectors";
++import { FutureEvidence, FutureText } from "./FutureEvidence";
++export function FutureTimeline({ payload: p }: { payload: FuturePayload }) {
++  const items = useMemo(() => timelineItems(p), [p]),
++    periods = useMemo(() => timelinePeriods(p), [p]);
++  const [period, setPeriod] = useState(() =>
++      items[0] ? periodFor(items[0].year) : "2027",
++    ),
++    [limit, setLimit] = useState(12),
++    [interacted, setInteracted] = useState(false),
++    [pending, setPending] = useState("");
++  const buttons = useRef<(HTMLButtonElement | null)[]>([]);
++  const active = periods.includes(period) ? period : periods[0],
++    index = periods.indexOf(active),
++    visible = items.filter((m) => periodFor(m.year) === active);
++  function select(value: string) {
++    setPeriod(value);
++    setLimit(12);
++    setInteracted(true);
++  }
++  function key(e: KeyboardEvent<HTMLButtonElement>, i: number) {
++    const next =
++      e.key === "ArrowRight"
++        ? Math.min(periods.length - 1, i + 1)
++        : e.key === "ArrowLeft"
++          ? Math.max(0, i - 1)
++          : e.key === "Home"
++            ? 0
++            : e.key === "End"
++              ? periods.length - 1
++              : -1;
++    if (next < 0) return;
++    e.preventDefault();
++    select(periods[next]);
++    buttons.current[next]?.focus();
++  }
++  function follow(id: string) {
++    const target = items.find((m) => m.id === id);
++    if (!target) return;
++    const group = items.filter(
++      (m) => periodFor(m.year) === periodFor(target.year),
++    );
++    setPeriod(periodFor(target.year));
++    setLimit(Math.max(12, group.findIndex((m) => m.id === id) + 1));
++    setInteracted(true);
++    setPending(id);
++  }
++  useEffect(() => {
++    if (pending) {
++      document.getElementById(itemAnchor(pending))?.focus();
++      setPending("");
++    }
++  }, [pending, period, limit]);
++  return (
++    <>
++      <div className="future-section-heading">
++        <span className="future-kicker">01 / CHRONOLOGIE</span>
++        <h2>Parcourir les horizons.</h2>
++        <p>
++          Des jalons déclarés, pas un calendrier garanti. Choisissez une période
++          pour explorer les trajectoires.
++        </p>
++      </div>
++      <div
++        className="future-horizon-rail"
++        role="group"
++        aria-label="Horizons de la chronologie"
++      >
++        {periods.map((year, i) => (
++          <button
++            key={year}
++            ref={(el) => {
++              buttons.current[i] = el;
++            }}
++            aria-pressed={active === year}
++            onKeyDown={(e) => key(e, i)}
++            onClick={() => select(year)}
++          >
++            <span>{year}</span>
++            <small>
++              {items.filter((m) => periodFor(m.year) === year).length} jalon(s)
++            </small>
++          </button>
++        ))}
++      </div>
++      <div className="future-period-controls">
++        <button
++          onClick={() => select(periods[index - 1])}
++          disabled={index === 0}
++        >
++          ← Horizon précédent
++        </button>
++        <span role="status">
++          {active} · {visible.length} jalon(s)
++        </span>
++        <button
++          onClick={() => select(periods[index + 1])}
++          disabled={index === periods.length - 1}
++        >
++          Horizon suivant →
++        </button>
++      </div>
++      <div
++        key={active}
++        className={
++          "future-timeline" + (interacted ? " future-interaction" : "")
++        }
++      >
++        <div className="future-period-title" aria-hidden="true">
++          {active}
++          <span>HORIZON</span>
++        </div>
++        <div className="future-milestones">
++          {visible.slice(0, limit).map((m) => (
++            <article
++              className="future-milestone quiet-panel"
++              key={m.id}
++              id={itemAnchor(m.id)}
++              tabIndex={-1}
++            >
++              <span className="future-badge">
++                {m.year} · {statusLabels[m.status]}
++              </span>
++              <h3>{m.title}</h3>
++              <FutureText text={m.description} />
++              <p className="future-caption">
++                {pathLabels[m.path]} · {m.scenario}
++                {m.observedAt
++                  ? " · Observation déclarée le " + m.observedAt
++                  : ""}
++              </p>
++              <details>
++                <summary>D’où vient cette affirmation ?</summary>
++                <FutureEvidence urls={m.evidenceUrls} payload={p} />
++              </details>
++              {p.visualization.links
++                .filter((l) => l.from === m.id)
++                .map((l, i) => (
++                  <a
++                    className="future-related"
++                    key={i}
++                    href={"#" + itemAnchor(l.to)}
++                    onClick={(e) => {
++                      e.preventDefault();
++                      follow(l.to);
++                    }}
++                  >
++                    {l.label || "Voir le jalon lié"} →{" "}
++                    {items.find((target) => target.id === l.to)?.title}
++                  </a>
++                ))}
++            </article>
++          ))}
++          {!visible.length && (
++            <p className="future-empty">
++              Aucun jalon renseigné pour cet horizon. Les autres périodes
++              restent accessibles.
++            </p>
++          )}
++          {visible.length > limit && (
++            <button onClick={() => setLimit((n) => n + 12)}>
++              Afficher 12 jalons de plus ({visible.length - limit} restants)
++            </button>
++          )}
++        </div>
++      </div>
++      {p.visualization.links.length > 0 && (
++        <details className="future-relations">
++          <summary>
++            Relations déclarées entre les jalons ({p.visualization.links.length}
++            )
++          </summary>
++          <ul>
++            {p.visualization.links.map((l, i) => (
++              <li key={i}>
++                {items.find((m) => m.id === l.from)?.title} →{" "}
++                <a
++                  href={"#" + itemAnchor(l.to)}
++                  onClick={(e) => {
++                    e.preventDefault();
++                    follow(l.to);
++                  }}
++                >
++                  {items.find((m) => m.id === l.to)?.title}
++                </a>
++                {l.label ? " · " + l.label : ""}
++              </li>
++            ))}
++          </ul>
++          <p>Aucun lien supplémentaire n’est déduit par l’application.</p>
++        </details>
++      )}
++    </>
++  );
++}
+diff --git a/src/features/future/hooks.ts b/src/features/future/hooks.ts
+new file mode 100644
+index 0000000..b1373ff
+--- /dev/null
++++ b/src/features/future/hooks.ts
+@@ -0,0 +1,23 @@
++import { useEffect, useState } from "react";
++import { liveQuery } from "dexie";
++export function useLive<T>(
++  query: () => Promise<T>,
++  deps: unknown[],
++  initial: T,
++) {
++  const [value, setValue] = useState(initial),
++    [error, setError] = useState("");
++  useEffect(() => {
++    const sub = liveQuery(query).subscribe({
++      next: (v) => {
++        setValue(v);
++        setError("");
++      },
++      error: (e) => setError(String(e)),
++    });
++    return () => sub.unsubscribe();
++    // Queries are intentionally governed by caller dependencies.
++    // eslint-disable-next-line react-hooks/exhaustive-deps
++  }, deps);
++  return { value, error };
++}
+diff --git a/src/features/future/selectors.ts b/src/features/future/selectors.ts
+new file mode 100644
+index 0000000..7016c06
+--- /dev/null
++++ b/src/features/future/selectors.ts
+@@ -0,0 +1,71 @@
++import type { FuturePayload, FuturePersonal } from "./schema";
++export const pathLabels = {
++  acceleration: "Accélération",
++  moderate: "Progression modérée",
++  slowdown: "Ralentissement",
++  other: "Autres trajectoires",
++};
++export const actionLabels = {
++  todo: "À faire",
++  doing: "En cours",
++  done: "Terminé",
++  abandoned: "Abandonné",
++};
++export const horizonLabels = {
++  now: "Maintenant",
++  "3m": "Dans 3 mois",
++  "12m": "Dans 12 mois",
++};
++export const formatDate = (value: string | null | undefined) =>
++  value ? new Date(value).toLocaleString("fr-FR") : "non renseigné";
++export const itemAnchor = (id: string) => "future-item-" + id;
++export function timelineItems(p: FuturePayload) {
++  return p.scenarios
++    .flatMap((s) =>
++      s.milestones.map((m) => ({ ...m, scenario: s.title, path: s.path })),
++    )
++    .sort((a, b) => a.year - b.year || a.id.localeCompare(b.id));
++}
++export function periodFor(year: number) {
++  return year >= 2040 ? "2040+" : String(year);
++}
++export function timelinePeriods(p: FuturePayload) {
++  return [
++    ...new Set([
++      "2027",
++      "2030",
++      "2035",
++      "2040+",
++      ...timelineItems(p).map((m) => periodFor(m.year)),
++    ]),
++  ].sort((a, b) => parseInt(a) - parseInt(b));
++}
++export function contentCounts(p: FuturePayload) {
++  const milestones = p.scenarios.flatMap((s) => s.milestones);
++  return {
++    observations:
++      p.signals.filter((s) => s.status === "observed").length +
++      milestones.filter((m) => m.status === "observed").length,
++    hypotheses:
++      p.scenarios.length +
++      milestones.filter((m) => m.status !== "observed").length +
++      p.signals.filter((s) => s.status === "watch").length,
++    actions: p.actions.length,
++  };
++}
++export function preparationCounts(p: FuturePayload, personal: FuturePersonal) {
++  const result = { todo: 0, doing: 0, done: 0, abandoned: 0 };
++  for (const a of p.actions) result[personal.actions[a.id]?.status || "todo"]++;
++  return result;
++}
++export function scenarioEvidence(p: FuturePayload, id: string) {
++  const s = p.scenarios.find((s) => s.id === id);
++  return [
++    ...new Set([
++      ...(s?.milestones.flatMap((m) => m.evidenceUrls) || []),
++      ...p.signals
++        .filter((v) => s?.signalIds.includes(v.id))
++        .flatMap((v) => v.evidenceUrls),
++    ]),
++  ];
++}
+diff --git a/tests/e2e/v6-future-atlas.spec.ts b/tests/e2e/v6-future-atlas.spec.ts
+new file mode 100644
+index 0000000..c7ee319
+--- /dev/null
++++ b/tests/e2e/v6-future-atlas.spec.ts
+@@ -0,0 +1,525 @@
++import { test, expect, type Page } from "@playwright/test";
++import AxeBuilder from "@axe-core/playwright";
++import { readFileSync, mkdirSync, writeFileSync } from "node:fs";
++const example = JSON.parse(
++  readFileSync("public/examples/future/EXEMPLE_FUTUR_IA_v1.json", "utf8"),
++);
++async function nav(page: Page, label = "Le Futur") {
++  const area = (await page.locator(".sidebar").isVisible())
++    ? ".sidebar"
++    : ".mobile-nav";
++  await page
++    .locator(area)
++    .getByRole("button", { name: label, exact: true })
++    .click();
++}
++async function upload(page: Page, payload = example) {
++  await page.getByLabel("Fichiers HTML à importer").setInputFiles({
++    name: "atlas.json",
++    mimeType: "application/json",
++    buffer: Buffer.from(JSON.stringify(payload)),
++  });
++  await page.getByRole("button", { name: /Importer \d+ fichier/ }).click();
++  await expect(page.getByRole("dialog")).toHaveCount(0);
++  const toast = page.getByRole("button", {
++    name: "Fermer la notification",
++    exact: true,
++  });
++  if (await toast.isVisible()) await toast.click();
++}
++async function open(page: Page) {
++  await page.locator(".future-title").first().click();
++  await expect(page.locator(".future-detail")).toBeVisible();
++}
++async function init(page: Page, payload = example) {
++  await page.goto("/");
++  await nav(page);
++  await upload(page, payload);
++  await open(page);
++}
++async function reducedGuard(page: Page) {
++  const animated = await page.locator(".future-workspace").evaluate((root) =>
++    [...root.querySelectorAll("*")].some((el) => {
++      const s = getComputedStyle(el);
++      return (
++        s.animationName !== "none" &&
++        s.animationDuration.split(",").some((t) => parseFloat(t) > 0)
++      );
++    }),
++  );
++  if (animated) throw Error("Mouvement actif malgré la réduction");
++}
++async function railKeyboardGuard(page: Page) {
++  const b = page.locator(".future-horizon-rail button");
++  await b.first().focus();
++  await page.keyboard.press("ArrowRight");
++  if (!(await b.nth(1).evaluate((el) => el === document.activeElement)))
++    throw Error("Horizon inaccessible au clavier");
++}
++test("Atlas P0 : compteurs réels, filtres, favoris, pagination et retour du focus", async ({
++  page,
++}) => {
++  await page.goto("/");
++  await nav(page);
++  await expect(page.locator(".future-empty")).toContainText(
++    "Votre premier dossier",
++  );
++  await expect(page.locator(".future-summary strong")).toHaveText([
++    "0",
++    "0",
++    "0",
++  ]);
++  await upload(page);
++  await expect(page.locator(".future-summary strong")).toHaveText([
++    "0",
++    "10",
++    "3",
++  ]);
++  await expect(page.locator(".future-changed")).toContainText(
++    /Première visite|Aucun nouveau/,
++  );
++  const filter = page.locator(".future-filter-panel");
++  if (!(await filter.evaluate((e) => (e as HTMLDetailsElement).open)))
++    await filter.locator("summary").click();
++  await page.getByLabel("Rechercher un dossier").fill("introuvable");
++  await expect(page.locator(".future-card")).toHaveCount(0);
++  await filter.getByRole("button", { name: "Effacer les filtres" }).click();
++  await expect(page.locator(".future-card")).toHaveCount(1);
++  await open(page);
++  await expect(page.locator(".future-dossier-header h2")).toBeFocused();
++  await page
++    .getByRole("button", { name: "Ajouter aux favoris", exact: true })
++    .click();
++  await page.getByRole("button", { name: "← Tous les dossiers" }).click();
++  await expect(page.locator(".future-title")).toBeFocused();
++  await page.getByLabel("Favoris", { exact: true }).check();
++  await expect(page.locator(".future-card")).toHaveCount(1);
++  await page.getByLabel("Rechercher un dossier").fill("evaluation critique");
++  await expect(page.locator(".future-card")).toHaveCount(1);
++  await open(page);
++  await page
++    .getByRole("button", { name: "Retirer des favoris", exact: true })
++    .click();
++  await expect(
++    page.getByRole("button", { name: "Ajouter aux favoris", exact: true }),
++  ).toBeVisible();
++  await page.getByRole("button", { name: "← Tous les dossiers" }).click();
++  await expect(page.locator(".future-card")).toHaveCount(0);
++  await expect(page.locator("#future-collection-heading")).toBeFocused();
++  await filter.getByRole("button", { name: "Effacer les filtres" }).click();
++  const files = Array.from({ length: 20 }, (_, i) => ({
++    name: "atlas-" + i + ".json",
++    mimeType: "application/json",
++    buffer: Buffer.from(
++      JSON.stringify({
++        ...example,
++        documentId: "atlas-" + i,
++        title: "Dossier synthétique " + i,
++      }),
++    ),
++  }));
++  await page.getByLabel("Fichiers HTML à importer").setInputFiles(files);
++  await page.getByRole("button", { name: /Importer 20 fichier/ }).click();
++  await expect(page.locator(".future-card")).toHaveCount(20);
++  await expect(page.locator(".future-summary strong")).toHaveText([
++    "0",
++    "210",
++    "63",
++  ]);
++  await page
++    .getByRole("button", { name: "Page suivante", exact: true })
++    .click();
++  await expect(page.locator(".future-card")).toHaveCount(1);
++});
++test("Atlas P1 : frise fidèle, clavier, liens déclarés et comparateur", async ({
++  page,
++}) => {
++  await init(page);
++  const rail = page.locator(".future-horizon-rail");
++  await expect(rail.locator("button")).toHaveCount(4);
++  await expect(page.locator(".future-milestone")).toHaveCount(1);
++  await railKeyboardGuard(page);
++  await expect(rail.locator("button").nth(1)).toHaveAttribute(
++    "aria-pressed",
++    "true",
++  );
++  await expect(page.locator(".future-milestone")).toHaveCount(2);
++  await page.keyboard.press("End");
++  await expect(rail.locator("button").last()).toHaveAttribute(
++    "aria-pressed",
++    "true",
++  );
++  await expect(page.locator(".future-milestone")).toContainText("2040");
++  await page.keyboard.press("Home");
++  await page.locator(".future-related").click();
++  await expect(page.locator("#future-item-jalon-moderate-2030")).toBeFocused();
++  await expect(rail.locator("button").nth(1)).toHaveAttribute(
++    "aria-pressed",
++    "true",
++  );
++  await expect(page.locator(".future-scenario")).toHaveCount(3);
++  await page
++    .getByRole("button", { name: "Vue détaillée", exact: true })
++    .click();
++  for (const lane of ["Accélération", "Progression modérée", "Ralentissement"])
++    await expect(
++      page
++        .getByRole("region", { name: lane, exact: true })
++        .locator("details")
++        .first(),
++    ).toHaveAttribute("open", "");
++  for (const scenario of example.scenarios) {
++    const card = page.locator("#future-item-" + scenario.id);
++    await expect(card).toContainText(scenario.summary);
++    await expect(card).toContainText(scenario.objections[0]);
++  }
++  await expect(page.locator(".future-signal-radar")).toContainText(
++    "À surveiller",
++  );
++  await expect(page.locator(".future-signal-questions")).toContainText(
++    "Non renseigné",
++  );
++});
++test("Atlas P1 : préparation enregistrée, erreur de quota et brouillon conservé", async ({
++  page,
++}) => {
++  await page.addInitScript(() => {
++    const original = IDBObjectStore.prototype.put;
++    IDBObjectStore.prototype.put = function (
++      ...args: Parameters<IDBObjectStore["put"]>
++    ) {
++      if (this.name === "personal" && Reflect.get(window, "__failAtlasSave"))
++        throw new DOMException("Quota de test", "QuotaExceededError");
++      return original.apply(this, args);
++    };
++  });
++  await init(page);
++  const action = page.locator(".future-action").first();
++  await action.getByLabel(/Suivi de/).selectOption("done");
++  await action
++    .getByLabel(/Résultat de/)
++    .fill("Résultat synthétique conservé après échec");
++  await page.evaluate(() => Reflect.set(window, "__failAtlasSave", true));
++  await action
++    .getByRole("button", { name: "Enregistrer l’action", exact: true })
++    .click();
++  await expect(action.getByRole("alert")).toContainText(
++    "Vos saisies sont conservées",
++  );
++  await expect(action.getByLabel(/Résultat de/)).toHaveValue(
++    "Résultat synthétique conservé après échec",
++  );
++  await expect(page.locator(".future-progress")).toContainText("0 / 3");
++  await page.evaluate(() => Reflect.set(window, "__failAtlasSave", false));
++  await action
++    .getByRole("button", { name: "Enregistrer l’action", exact: true })
++    .click();
++  await expect(action.getByRole("status")).toContainText("Action enregistrée");
++  await expect(page.locator(".future-progress")).toContainText("1 / 3");
++  await page.reload();
++  await nav(page);
++  await open(page);
++  await expect(
++    page
++      .locator(".future-action")
++      .first()
++      .getByLabel(/Suivi de/),
++  ).toHaveValue("done");
++  await expect(
++    page
++      .locator(".future-action")
++      .first()
++      .getByLabel(/Résultat de/),
++  ).toHaveValue("Résultat synthétique conservé après échec");
++});
++test("Atlas : zéro, un, beaucoup de jalons, autres scénarios et absence de source", async ({
++  page,
++}) => {
++  const p = structuredClone(example);
++  p.documentId = "atlas-limites";
++  p.scenarios = [p.scenarios[0]];
++  p.scenarios[0].path = "other";
++  p.scenarios[0].signalIds = [];
++  p.scenarios[0].milestones = Array.from({ length: 30 }, (_, i) => ({
++    ...example.scenarios[0].milestones[0],
++    id: "jalon-many-" + i,
++    year: 2028,
++  }));
++  p.signals = [];
++  p.actions = [];
++  p.visualization.links = [];
++  await init(page, p);
++  await expect(page.locator(".future-milestone")).toHaveCount(12);
++  await page
++    .getByRole("button", { name: /Afficher 12 jalons de plus/ })
++    .click();
++  await expect(page.locator(".future-milestone")).toHaveCount(24);
++  await page
++    .getByRole("button", { name: /Afficher 12 jalons de plus/ })
++    .click();
++  await expect(page.locator(".future-milestone")).toHaveCount(30);
++  await expect(page.locator(".future-other")).toContainText(
++    p.scenarios[0].title,
++  );
++  await page.locator(".future-milestone").first().locator("summary").click();
++  await expect(page.locator(".future-milestone").first()).toContainText(
++    "Aucune source renseignée",
++  );
++  await expect(page.locator(".future-progress")).toContainText("0 / 0");
++  const q = {
++    ...p,
++    documentId: "atlas-vide",
++    title: "Dossier vide synthétique",
++    scenarios: [],
++  };
++  await upload(page, q);
++  await page.getByRole("button", { name: "← Tous les dossiers" }).click();
++  await page
++    .locator(".future-title")
++    .getByText(q.title, { exact: true })
++    .click();
++  await expect(page.locator(".future-timeline")).toContainText(
++    "Aucun jalon renseigné",
++  );
++  await expect(page.locator("#future-module-scenarios")).toContainText(
++    "Aucun scénario fourni",
++  );
++});
++test("Atlas : WCAG sur parcours, reflow, mouvement réduit et tests des tests", async ({
++  page,
++}, info) => {
++  await init(page);
++  await railKeyboardGuard(page);
++  await page
++    .locator(".future-horizon-rail button")
++    .nth(1)
++    .evaluate((e) => ((e as HTMLButtonElement).disabled = true));
++  await expect(railKeyboardGuard(page)).rejects.toThrow("Horizon inaccessible");
++  await page
++    .locator(".future-horizon-rail button")
++    .nth(1)
++    .evaluate((e) => ((e as HTMLButtonElement).disabled = false));
++  await railKeyboardGuard(page);
++  await page.emulateMedia({ reducedMotion: "reduce" });
++  await page
++    .getByRole("button", { name: "Horizon suivant →", exact: true })
++    .click();
++  await reducedGuard(page);
++  const injected = await page.addStyleTag({
++    content:
++      "@keyframes atlas-mutant{to{opacity:.5}}.future-workspace[data-motion] .future-timeline{animation:atlas-mutant 2s infinite!important}",
++  });
++  await expect(reducedGuard(page)).rejects.toThrow("Mouvement actif");
++  await injected.evaluate((e) => (e as Element).remove());
++  await reducedGuard(page);
++  await page.emulateMedia({ reducedMotion: "no-preference" });
++  await page.getByLabel("Animations", { exact: true }).selectOption("off");
++  await page
++    .getByRole("button", { name: "Horizon précédent", exact: false })
++    .click();
++  await reducedGuard(page);
++  for (const width of [320, 390, 768, 1440]) {
++    await page.setViewportSize({ width, height: 1000 });
++    expect(
++      await page.evaluate(
++        () => document.documentElement.scrollWidth <= innerWidth,
++      ),
++    ).toBe(true);
++    const small = await page
++      .locator(
++        ".future-workspace button:visible,.future-workspace summary:visible,.future-workspace select:visible",
++      )
++      .evaluateAll((els) =>
++        els
++          .filter((e) => {
++            const r = e.getBoundingClientRect();
++            return r.width < 24 || r.height < 24;
++          })
++          .map((e) => e.textContent),
++      );
++    expect(small).toEqual([]);
++  }
++  for (const theme of ["light", "dark"]) {
++    if (theme === "dark") {
++      await nav(page, "Réglages");
++      await page
++        .getByRole("button", { name: "Lecture sombre", exact: true })
++        .click();
++      await nav(page);
++      await open(page);
++    }
++    const result = await new AxeBuilder({ page })
++      .include(".future-workspace")
++      .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
++      .analyze();
++    expect(result.violations).toEqual([]);
++  }
++  await page.setViewportSize({ width: 1440, height: 1000 });
++  await page.locator(".future-workspace").evaluate((e) => {
++    e.style.zoom = "2";
++  });
++  expect(
++    await page.evaluate(
++      () => document.documentElement.scrollWidth <= innerWidth,
++    ),
++  ).toBe(true);
++  await page.locator(".future-workspace").evaluate((e) => {
++    e.style.zoom = "";
++  });
++  const accessibility = await page.locator(".future-workspace").ariaSnapshot();
++  expect(accessibility).toContain('navigation "Modules du dossier"');
++  mkdirSync("docs/evidence/future-atlas", { recursive: true });
++  writeFileSync(
++    "docs/evidence/future-atlas/accessibility-" + info.project.name + ".txt",
++    accessibility,
++  );
++  writeFileSync(
++    "docs/evidence/future-atlas/mutations-" + info.project.name + ".json",
++    JSON.stringify(
++      {
++        keyboard: "injected failure detected, restored pass",
++        motion: "injected failure detected, restored pass",
++        scope: "isolated browser only",
++      },
++      null,
++      2,
++    ) + "\n",
++  );
++  await page.reload();
++  await nav(page);
++  await expect(page.getByLabel("Animations", { exact: true })).toHaveValue(
++    "off",
++  );
++});
++test("Atlas : base Le Futur indisponible, erreur visible et autres onglets accessibles", async ({
++  page,
++}) => {
++  await page.addInitScript(() => {
++    const original = indexedDB.open.bind(indexedDB);
++    indexedDB.open = function (...args: Parameters<IDBFactory["open"]>) {
++      if (args[0] === "journal360-future-private")
++        throw new DOMException(
++          "IndexedDB indisponible (test)",
++          "InvalidStateError",
++        );
++      return original(...args);
++    };
++  });
++  await page.goto("/");
++  await nav(page);
++  await expect(page.getByRole("alert").first()).toContainText(
++    /indisponible|InvalidState/,
++  );
++  await nav(page, "Bibliothèque");
++  await expect(page.locator(".future-workspace")).toHaveCount(0);
++});
++
++test("Atlas : parcours clavier des contrôles principaux, import annulable et focus rendu", async ({
++  page,
++}) => {
++  await page.goto("/");
++  await nav(page);
++  const importButton = page.getByRole("button", {
++    name: "Importer un dossier",
++    exact: true,
++  });
++  await importButton.focus();
++  const chooser = page.waitForEvent("filechooser");
++  await page.keyboard.press("Enter");
++  await (
++    await chooser
++  ).setFiles("public/examples/future/EXEMPLE_FUTUR_IA_v1.json");
++  await expect(page.getByRole("dialog")).toBeVisible();
++  await page.keyboard.press("Escape");
++  await expect(page.getByRole("dialog")).toHaveCount(0);
++  await expect(importButton).toBeFocused();
++  await upload(page);
++  await expect(page.locator(".future-title").first()).toBeVisible();
++  const filters = page.locator(".future-filter-panel summary");
++  await filters.focus();
++  if (
++    !(await page
++      .locator(".future-filter-panel")
++      .evaluate((e) => (e as HTMLDetailsElement).open))
++  )
++    await page.keyboard.press("Enter");
++  await expect(page.getByLabel("Rechercher un dossier")).toBeVisible();
++  await page.keyboard.press("Tab");
++  await expect(page.getByLabel("Rechercher un dossier")).toBeFocused();
++  await page.keyboard.type("inconnu");
++  await expect(page.locator(".future-card")).toHaveCount(0);
++  await page
++    .locator(".future-filter-panel")
++    .getByRole("button", { name: "Effacer les filtres", exact: true })
++    .focus();
++  await page.keyboard.press("Space");
++  await page.locator(".future-title").focus();
++  await page.keyboard.press("Enter");
++  await expect(page.locator(".future-dossier-header h2")).toBeFocused();
++  await page
++    .getByRole("button", { name: "Vue détaillée", exact: true })
++    .focus();
++  await page.keyboard.press("Space");
++  await expect(
++    page.locator(".future-scenario details").first(),
++  ).toHaveAttribute("open", "");
++  await page.getByLabel("Nouvelle note", { exact: true }).focus();
++  await page.keyboard.type("Note synthétique saisie au clavier");
++  const save = page.getByRole("button", {
++    name: "Ajouter ma note",
++    exact: true,
++  });
++  await save.focus();
++  expect(
++    await save.evaluate((el) => {
++      const r = el.getBoundingClientRect();
++      const at = document.elementFromPoint(
++        r.x + r.width / 2,
++        r.y + r.height / 2,
++      );
++      return at === el || el.contains(at);
++    }),
++  ).toBe(true);
++  await page.keyboard.press("Enter");
++  await expect(page.locator(".future-personal")).toContainText(
++    "Note synthétique saisie au clavier",
++  );
++  await page.getByRole("button", { name: "← Tous les dossiers" }).focus();
++  await page.keyboard.press("Enter");
++  await expect(page.locator(".future-title")).toBeFocused();
++});
++test("Atlas : nouvelle révision annoncée avec accès direct aux différences", async ({
++  page,
++}) => {
++  await init(page);
++  await nav(page, "Bibliothèque");
++  await nav(page);
++  await expect(page.locator(".future-changed")).toContainText(
++    "Aucun nouveau dossier",
++  );
++  await page.getByLabel("Fichiers HTML à importer").setInputFiles({
++    name: "revision.json",
++    mimeType: "application/json",
++    buffer: Buffer.from(
++      JSON.stringify({
++        ...example,
++        revision: 2,
++        updatedAt: "2026-10-16T15:00:00Z",
++        title: "Trajectoires révisées",
++      }),
++    ),
++  });
++  await page
++    .getByLabel("J’ai lu les différences et confirme cette mise à jour.")
++    .check();
++  await page.getByRole("button", { name: /Importer \d+ fichier/ }).click();
++  await expect(page.locator(".future-changed")).toContainText(
++    "1 révision(s) nouvelle(s)",
++  );
++  await page.locator(".future-changed summary").click();
++  await page.locator(".future-changed .text-button").click();
++  await expect(page.locator("#future-module-changes")).toBeFocused();
++  await expect(page.locator("#future-module-changes")).toContainText(
++    "Titre modifié",
++  );
++});
+diff --git a/tests/future-atlas.unit.test.ts b/tests/future-atlas.unit.test.ts
+new file mode 100644
+index 0000000..9fb46a3
+--- /dev/null
++++ b/tests/future-atlas.unit.test.ts
+@@ -0,0 +1,102 @@
++import { describe, it, expect } from "vitest";
++import { readFileSync } from "node:fs";
++import { validateFuture } from "../src/features/future/import";
++import {
++  contentCounts,
++  timelineItems,
++  timelinePeriods,
++  periodFor,
++  preparationCounts,
++  scenarioEvidence,
++} from "../src/features/future/selectors";
++import { personalSchema } from "../src/features/future/schema";
++const fixture = () =>
++  validateFuture(
++    JSON.parse(
++      readFileSync("public/examples/future/EXEMPLE_FUTUR_IA_v1.json", "utf8"),
++    ),
++  );
++describe("Atlas: données fidèles sans mutation", () => {
++  it("préserve les textes, années, preuves et liens exacts des trois trajectoires", () => {
++    const p = fixture(),
++      before = JSON.stringify(p);
++    const items = timelineItems(p);
++    expect(items.map((m) => m.id).sort()).toEqual(
++      p.scenarios.flatMap((s) => s.milestones.map((m) => m.id)).sort(),
++    );
++    expect(items.every((m, i) => i === 0 || m.year >= items[i - 1].year)).toBe(
++      true,
++    );
++    expect(timelinePeriods(p)).toEqual(["2027", "2030", "2035", "2040+"]);
++    expect(contentCounts(p)).toEqual({
++      observations: 0,
++      hypotheses: 10,
++      actions: 3,
++    });
++    expect(scenarioEvidence(p, "scenario-moderate")).toEqual([
++      "https://example.org/illustration",
++    ]);
++    expect(JSON.stringify(p)).toBe(before);
++  });
++  it("gère zéro, un et de nombreux éléments, y compris les années hors des repères", () => {
++    const p = fixture();
++    p.scenarios = [];
++    p.signals = [];
++    p.actions = [];
++    p.visualization.links = [];
++    expect(contentCounts(p)).toEqual({
++      observations: 0,
++      hypotheses: 0,
++      actions: 0,
++    });
++    expect(timelineItems(p)).toEqual([]);
++    expect(timelinePeriods(p)).toEqual(["2027", "2030", "2035", "2040+"]);
++    p.scenarios = [fixture().scenarios[0]];
++    p.scenarios[0].signalIds = [];
++    p.scenarios[0].milestones = [
++      { ...p.scenarios[0].milestones[0], year: 2028 },
++    ];
++    expect(timelinePeriods(p)).toContain("2028");
++    p.scenarios[0].milestones = Array.from({ length: 100 }, (_, i) => ({
++      ...p.scenarios[0].milestones[0],
++      id: "many-" + i,
++      year: 2040 + (i % 61),
++    }));
++    expect(timelineItems(p)).toHaveLength(100);
++    expect(periodFor(2100)).toBe("2040+");
++    expect(contentCounts(p).hypotheses).toBe(101);
++  });
++  it("compte seulement les statuts personnels des actions encore présentes, sans compter les brouillons", () => {
++    const p = fixture(),
++      personal = personalSchema.parse({
++        documentId: p.documentId,
++        updatedAt: new Date().toISOString(),
++        actions: {
++          "action-now": { status: "done", result: "test" },
++          "action-3m": { status: "abandoned", result: "" },
++          "ancienne-action": { status: "done", result: "" },
++        },
++      });
++    expect(preparationCounts(p, personal)).toEqual({
++      todo: 1,
++      doing: 0,
++      done: 1,
++      abandoned: 1,
++    });
++  });
++  it("détecte les deux injections de données demandées, puis accepte le dossier conforme", () => {
++    const p = fixture();
++    p.scenarios[0].milestones[0].status = "observed";
++    p.scenarios[0].milestones[0].observedAt = "2026-10-16";
++    p.scenarios[0].milestones[0].evidenceUrls = [
++      "https://example.org/illustration",
++    ];
++    expect(() => validateFuture(p, new Date("2026-10-17T12:00:00Z"))).toThrow(
++      /jalon futur/,
++    );
++    const q = fixture();
++    q.signals[0].evidenceUrls = ["https://example.org/preuve-absente"];
++    expect(() => validateFuture(q)).toThrow(/provenance.sources/);
++    expect(() => validateFuture(fixture())).not.toThrow();
++  });
++});
+diff --git a/scripts/measure-future-atlas.mjs b/scripts/measure-future-atlas.mjs
+new file mode 100644
+index 0000000..4f12b1b
+--- /dev/null
++++ b/scripts/measure-future-atlas.mjs
+@@ -0,0 +1,160 @@
++// Local-only, synthetic browser benchmark. Run against an already built preview.
++import { chromium } from "playwright";
++import { mkdir, writeFile } from "node:fs/promises";
++import { resolve } from "node:path";
++const [url, output] = process.argv.slice(2);
++if (!url || new URL(url).hostname !== "127.0.0.1" || !output)
++  throw Error(
++    "Usage: node scripts/measure-future-atlas.mjs http://127.0.0.1:PORT output-directory",
++  );
++await mkdir(output, { recursive: true });
++const browser = await chromium.launch({ headless: true });
++const results = [];
++try {
++  for (const width of [1440, 768, 390]) {
++    const context = await browser.newContext({
++      viewport: { width, height: 1000 },
++    });
++    const page = await context.newPage();
++    await page.route("**/*", (route) =>
++      new URL(route.request().url()).hostname === "127.0.0.1"
++        ? route.continue()
++        : route.abort(),
++    );
++    await page.addInitScript(() => {
++      window.__atlasMetrics = { cls: 0, lcp: null };
++      try {
++        new PerformanceObserver((list) => {
++          for (const e of list.getEntries())
++            if (!e.hadRecentInput) window.__atlasMetrics.cls += e.value;
++        }).observe({ type: "layout-shift", buffered: true });
++        new PerformanceObserver((list) => {
++          window.__atlasMetrics.lcp = list.getEntries().at(-1)?.startTime;
++        }).observe({ type: "largest-contentful-paint", buffered: true });
++      } catch {
++        /* browser support is reported */
++      }
++    });
++    await page.goto(url);
++    await page
++      .getByLabel("Fichiers HTML à importer")
++      .setInputFiles(
++        resolve("public/examples/future/EXEMPLE_FUTUR_IA_v1.json"),
++      );
++    await page.getByRole("button", { name: /Importer \d+ fichier/ }).click();
++    await page.locator(".future-title").waitFor();
++    const toast = page.getByRole("button", {
++      name: "Fermer la notification",
++      exact: true,
++    });
++    if (await toast.isVisible()) await toast.click();
++    const nav = async (name) => {
++      const surface = (await page.locator(".sidebar").isVisible())
++        ? ".sidebar"
++        : ".mobile-nav";
++      await page
++        .locator(surface)
++        .getByRole("button", { name, exact: true })
++        .click();
++    };
++    const cdp = await context.newCDPSession(page);
++    await cdp.send("Performance.enable");
++    const getCPU = async () =>
++      (await cdp.send("Performance.getMetrics")).metrics.find(
++        (m) => m.name === "TaskDuration",
++      )?.value;
++    const entryMs = [],
++      detailMs = [];
++    const cpuStart = await getCPU();
++    for (let i = 0; i < 5; i++) {
++      await nav("Bibliothèque");
++      const start = performance.now();
++      await nav("Le Futur");
++      await page.locator(".future-title").waitFor();
++      entryMs.push(performance.now() - start);
++      const detailStart = performance.now();
++      await page.locator(".future-title").click();
++      await page.locator(".future-detail h2").first().waitFor();
++      detailMs.push(performance.now() - detailStart);
++      await page.getByRole("button", { name: "← Tous les dossiers" }).click();
++    }
++    await page.screenshot({
++      path: output + "/home-" + width + ".png",
++      fullPage: true,
++    });
++    await page.locator(".future-title").click();
++    await page.locator(".future-detail h2").first().waitFor();
++    await page.screenshot({
++      path: output + "/detail-" + width + ".png",
++      fullPage: true,
++    });
++    const scroll = await page.evaluate(
++      () =>
++        new Promise((resolve) => {
++          const samples = [];
++          let previous, started;
++          const initialY = window.scrollY;
++          const tick = (at) => {
++            if (previous !== undefined) {
++              samples.push(at - previous);
++              window.scrollBy(0, 110);
++            } else started = at;
++            previous = at;
++            if (samples.length === 40) {
++              const distancePx = window.scrollY - initialY;
++              window.scrollTo(0, 0);
++              resolve({
++                frames: samples,
++                distancePx,
++                durationMs: at - started,
++              });
++            } else requestAnimationFrame(tick);
++          };
++          requestAnimationFrame(tick);
++        }),
++    );
++    const metrics = await page.evaluate(() => ({
++      paint: window.__atlasMetrics,
++      heap: performance.memory?.usedJSHeapSize ?? null,
++      resources: performance
++        .getEntriesByType("resource")
++        .filter((r) => /\.(js|css)(\?|$)/.test(r.name))
++        .map((r) => ({
++          name: new URL(r.name).pathname,
++          transferSize: r.transferSize,
++          decodedBodySize: r.decodedBodySize,
++        })),
++      overflow: document.documentElement.scrollWidth > innerWidth,
++    }));
++    results.push({
++      width,
++      entryMs,
++      detailMs,
++      taskDurationSeconds: (await getCPU()) - cpuStart,
++      heapUsedBytes:
++        (await cdp.send("Performance.getMetrics")).metrics.find(
++          (m) => m.name === "JSHeapUsedSize",
++        )?.value ?? null,
++      scrollFramesMs: scroll.frames,
++      scrollDistancePx: scroll.distancePx,
++      scrollDurationMs: scroll.durationMs,
++      scrollPixelsPerSecond: (scroll.distancePx / scroll.durationMs) * 1000,
++      ...metrics,
++    });
++    await context.close();
++  }
++  await writeFile(
++    output + "/browser-performance.json",
++    JSON.stringify(
++      {
++        environment:
++          "Chromium headless, synthetic example, 5 warm navigations, 40 scripted scroll frames; not a phone or user study. LCP/CLS describe initial shell, not the SPA tab. Heap includes browser context, not screen-only memory.",
++        results,
++      },
++      null,
++      2,
++    ) + "\n",
++  );
++} finally {
++  await browser.close();
++}
+diff --git a/scripts/compare-future-atlas-tabs.mjs b/scripts/compare-future-atlas-tabs.mjs
+new file mode 100644
+index 0000000..3cf6d1e
+--- /dev/null
++++ b/scripts/compare-future-atlas-tabs.mjs
+@@ -0,0 +1,82 @@
++import { chromium } from "playwright";
++import { mkdir, writeFile } from "node:fs/promises";
++import { createHash } from "node:crypto";
++const [beforeURL, afterURL, output] = process.argv.slice(2);
++if (
++  !output ||
++  [beforeURL, afterURL].some((u) => new URL(u).hostname !== "127.0.0.1")
++)
++  throw Error("Local preview URLs and output directory required");
++const browser = await chromium.launch({ headless: true });
++const results = [];
++try {
++  for (const width of [1440, 390]) {
++    const images = new Map();
++    for (const [phase, url] of [
++      ["before", beforeURL],
++      ["after", afterURL],
++    ]) {
++      const context = await browser.newContext({
++        viewport: { width, height: 1000 },
++      });
++      const page = await context.newPage();
++      await page.route("**/*", (r) =>
++        new URL(r.request().url()).hostname === "127.0.0.1"
++          ? r.continue()
++          : r.abort(),
++      );
++      await page.goto(url);
++      const area = width > 700 ? ".sidebar" : ".mobile-nav";
++      await page
++        .locator(area)
++        .getByRole("button", { name: "Le Futur", exact: true })
++        .click();
++      await page.locator(".future-workspace").waitFor();
++      await mkdir(output + "/" + phase, { recursive: true });
++      for (const [key, name] of [
++        ["library", "Bibliothèque"],
++        ["articles", "Articles"],
++        ["major-ai", "IA majeur"],
++        ["sentinel", "Sentinel"],
++      ]) {
++        await page
++          .locator(area)
++          .getByRole("button", { name, exact: true })
++          .click();
++        await page.locator(".future-workspace").waitFor({ state: "detached" });
++        const bytes = await page.screenshot({
++          path: output + "/" + phase + "/" + key + "-" + width + ".png",
++          fullPage: true,
++          animations: "disabled",
++        });
++        const hash = createHash("sha256").update(bytes).digest("hex");
++        if (phase === "before") images.set(key, hash);
++        else
++          results.push({
++            width,
++            tab: name,
++            identicalPNG: images.get(key) === hash,
++            beforeSHA256: images.get(key),
++            afterSHA256: hash,
++          });
++      }
++      await context.close();
++    }
++  }
++  await writeFile(
++    output + "/comparison.json",
++    JSON.stringify(
++      {
++        scope:
++          "Empty stable views, feature CSS already loaded; same Chromium/viewport. Functional populated views covered by full E2E.",
++        results,
++      },
++      null,
++      2,
++    ) + "\n",
++  );
++  if (results.some((r) => !r.identicalPNG))
++    throw Error("Visual difference found; inspect before/after PNGs");
++} finally {
++  await browser.close();
++}
