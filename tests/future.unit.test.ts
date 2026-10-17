@@ -437,3 +437,18 @@ it("refuse une écriture personnelle valide qui rendrait la sauvegarde impossibl
   expect(await db.changes.count()).toBe(1);
   expect(await db.versions.count()).toBe(1);
 });
+
+it("sert les exemples comme fichiers statiques sans les réécrire vers la SPA Vercel", () => {
+  const config = JSON.parse(readFileSync("vercel.json", "utf8"));
+  const rewrite = new RegExp(`^${config.rewrites[0].source}$`);
+  for (const path of [
+    "/examples/future/APERCU_FUTUR_IA_ANIME.html",
+    "/examples/future/EXEMPLE_FUTUR_IA_v1.json",
+    "/examples/future/SCHEMA_FUTUR_IA_v1.json",
+    "/assets/index.js",
+    "/demo/edition-12.html",
+    "/api/backup",
+  ])
+    expect(rewrite.test(path)).toBe(false);
+  expect(rewrite.test("/future")).toBe(true);
+});
