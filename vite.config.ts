@@ -9,7 +9,7 @@ export default defineConfig({
       srcDir: "src",
       filename: "sw.ts",
       registerType: "prompt",
-      injectManifest: { globPatterns: ["**/*.{js,css,html,png,svg,woff2}"] },
+      injectManifest: { globPatterns: ["**/*.{js,css,html,json,png,svg,woff2}"] },
       includeAssets: ["favicon.svg", "icon-192.png", "icon-512.png"],
       manifest: {
         name: "Journal 360 Mobile",

@@ -8,7 +8,15 @@ import {
   type SyncActivity,
 } from "./features/SyncIndicator";
 import { DayCard, DayView } from "./features/DayView";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { liveQuery } from "dexie";
 import { useRegisterSW } from "virtual:pwa-register/react";
 import type { Session } from "@supabase/supabase-js";
@@ -82,6 +90,10 @@ import {
   type ImportDestination,
 } from "./data/collections";
 import { CollectionView } from "./features/CollectionView";
+import { classifyFuture } from "./features/future/routing";
+import type { FutureFile } from "./features/future/import";
+const FutureView = lazy(() => import("./features/future/FutureView"));
+const FutureImportDialog = lazy(() => import("./features/future/ImportDialog"));
 type Tab =
   | "today"
   | "library"
@@ -90,13 +102,15 @@ type Tab =
   | "memory"
   | "settings"
   | "ai-major"
-  | "sentinel";
+  | "sentinel"
+  | "future";
 const tabs = [
   { id: "today" as const, label: "Aujourd’hui", icon: Home },
   { id: "library" as const, label: "Bibliothèque", icon: Library },
   { id: "articles" as const, label: "Articles", icon: FileText },
   { id: "ai-major" as const, label: "IA majeur", icon: Brain },
   { id: "sentinel" as const, label: "Sentinel", icon: Shield },
+  { id: "future" as const, label: "Le Futur", icon: Clock },
   { id: "search" as const, label: "Rechercher", icon: Search },
   { id: "memory" as const, label: "Mémoire", icon: BookOpen },
   { id: "settings" as const, label: "Réglages", icon: Settings },
@@ -156,6 +170,7 @@ export default function App() {
   const [syncActivity, setSyncActivity] = useState<SyncActivity>();
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [futureFiles, setFutureFiles] = useState<FutureFile[]>([]);
   const [restoration, setRestoration] = useState<BackupData | null>(null);
   const [toast, setToast] = useState("");
   const [busy, setBusy] = useState(false);
@@ -254,8 +269,9 @@ export default function App() {
         bytes: Uint8Array;
         demo?: boolean;
         pendingId?: string;
+        type?: string;
       }[],
-      destination: ImportDestination = "library",
+      destination: ImportDestination | "future" = "library",
     ) => {
       if (
         files.length > 20 ||
@@ -263,7 +279,18 @@ export default function App() {
       )
         throw new Error("Limite : 20 fichiers et 100 Mo par import.");
       const prepared: Candidate[] = [];
+      const prospective: FutureFile[] = [];
       for (const file of files) {
+        const kind = classifyFuture(file.bytes);
+        if (
+          destination === "future" ||
+          kind === "future" ||
+          kind === "legacy" ||
+          /\.json$/i.test(file.name)
+        ) {
+          prospective.push(file);
+          continue;
+        }
         const edition = inCollection(
           await inspectHTML(file.name, file.bytes, file.demo),
           destination,
@@ -286,6 +313,7 @@ export default function App() {
         });
       }
       setCandidates((previous) => [...previous, ...prepared]);
+      setFutureFiles((previous) => [...previous, ...prospective]);
     },
     [],
   );
@@ -521,9 +549,13 @@ export default function App() {
       list.push({
         name: file.name,
         bytes: new Uint8Array(await file.arrayBuffer()),
+        type: file.type,
       });
     }
-    await prepare(list, isCollection(tab) ? tab : "library");
+    await prepare(
+      list,
+      tab === "future" ? "future" : isCollection(tab) ? tab : "library",
+    );
   }
   async function importDemo() {
     const files = await Promise.all(
@@ -1033,6 +1065,11 @@ export default function App() {
               />
             </div>
           ))}
+          {data.ready && tab === "future" && !current && !selectedDay && (
+            <Suspense fallback={<p>Ouverture de Le Futur…</p>}>
+              <FutureView onImport={() => fileRef.current?.click()} />
+            </Suspense>
+          )}
           {!data.ready ? (
             <p>Ouverture de votre bibliothèque…</p>
           ) : current ? (
@@ -2267,7 +2304,7 @@ export default function App() {
         hidden
         ref={fileRef}
         type="file"
-        accept=".html,.htm,text/html"
+        accept=".html,.htm,.json,text/html,application/json"
         multiple
         aria-label="Fichiers HTML à importer"
         onChange={(e) => {
@@ -2316,6 +2353,41 @@ export default function App() {
             setTab(destination);
           }}
         />
+      )}
+      {futureFiles.length > 0 && candidates.length === 0 && (
+        <Suspense
+          fallback={<p role="status">Ouverture de la vérification Le Futur…</p>}
+        >
+          <FutureImportDialog
+            files={futureFiles}
+            onClose={() => {
+              const ids = futureFiles.flatMap((f) =>
+                f.pendingId ? [f.pendingId] : [],
+              );
+              run(async () => {
+                await db.pending.bulkDelete(ids);
+              });
+              setFutureFiles([]);
+            }}
+            onDone={(message) => {
+              const ids = futureFiles.flatMap((f) =>
+                f.pendingId ? [f.pendingId] : [],
+              );
+              run(async () => {
+                await db.pending.bulkDelete(ids);
+              });
+              setFutureFiles([]);
+              setSelected(null);
+              setSelectedDay(null);
+              setTab("future");
+              setToast(message);
+            }}
+            onJournal={(file) => {
+              setFutureFiles((previous) => previous.filter((f) => f !== file));
+              run(() => prepare([file], "library"));
+            }}
+          />
+        </Suspense>
       )}
       {restoration && (
         <div className="modal-backdrop">

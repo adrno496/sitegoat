@@ -3,7 +3,7 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: ["tests/setup.ts"],
-    include: ["tests/v6.performance.test.ts"],
+    include: ["tests/v6.performance.test.ts", "tests/future.performance.test.ts"],
     testTimeout: 180000,
     fileParallelism: false,
   },

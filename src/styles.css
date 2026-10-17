@@ -2923,11 +2923,11 @@ textarea {
   width: 100%;
   z-index: 5;
 }
-/* Keep every destination visible with eight tabs on phones. */
+/* Keep every destination visible with nine tabs on phones. */
 @media (max-width: 700px) {
   .mobile-nav {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
   .mobile-nav button {
     min-width: 0;
@@ -2998,4 +2998,10 @@ textarea {
   gap: 12px;
   border-top: 1px solid var(--line);
   padding-top: 16px;
+}
+
+@media (max-width: 700px) {
+  .mobile-nav span {
+    font-size: 9px;
+  }
 }
