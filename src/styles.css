@@ -112,6 +112,7 @@ strong {
 }
 .sidebar {
   position: fixed;
+  overflow-y: auto;
   width: 248px;
   inset: 0 auto 0 0;
   background: var(--sidebar);
@@ -2922,10 +2923,79 @@ textarea {
   width: 100%;
   z-index: 5;
 }
-/* Six destinations fit narrow phone viewports. */
-@media (max-width: 767px) {
+/* Keep every destination visible with eight tabs on phones. */
+@media (max-width: 700px) {
+  .mobile-nav {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
   .mobile-nav button {
     min-width: 0;
-    flex: 1;
+    width: 100%;
   }
+  .main-wrap {
+    padding-bottom: 125px;
+  }
+  .mobile-import {
+    bottom: calc(135px + env(safe-area-inset-bottom));
+  }
+  .toast {
+    bottom: calc(200px + env(safe-area-inset-bottom));
+  }
+}
+.collection-heading {
+  gap: 18px;
+  flex-wrap: wrap;
+  align-items: start;
+}
+.collection-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+.collection-toolbar .search-field {
+  flex: 1;
+  min-width: min(260px, 100%);
+}
+.collection-card {
+  min-width: 0;
+  padding: 26px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+}
+.collection-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  color: var(--accent);
+  font-size: 12px;
+}
+.collection-card h2 {
+  font-size: 25px;
+  overflow-wrap: anywhere;
+}
+.collection-card .title-button {
+  font: inherit;
+}
+.collection-excerpt {
+  overflow-wrap: anywhere;
+  color: var(--muted);
+}
+.collection-filename {
+  font-size: 11px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+  margin-top: auto;
+}
+.collection-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
 }

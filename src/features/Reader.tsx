@@ -106,6 +106,12 @@ export function Reader({
     [bytes, mode, initialArticle],
   );
   const [loadError, setLoadError] = useState("");
+  const backTitle =
+    backLabel === "Retour à la bibliothèque"
+      ? "Bibliothèque"
+      : backLabel === "Retour aux articles"
+        ? "Articles"
+        : backLabel.replace(/^Retour à /, "");
   useEffect(() => {
     const reset = () => {
       swipe.current = null;
@@ -318,7 +324,7 @@ export function Reader({
       <div className="reader-nav">
         <button className="text-button" onClick={onBack}>
           <ArrowLeft size={18} />
-          {backLabel}
+          {backTitle}
         </button>
         <div className="reader-adjacent">
           <button

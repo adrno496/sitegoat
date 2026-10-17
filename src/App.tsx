@@ -40,6 +40,8 @@ import {
   Trash2,
   Archive,
   Bookmark,
+  Brain,
+  Shield,
 } from "lucide-react";
 import { db } from "./data/db";
 import {
@@ -73,11 +75,28 @@ import { useDialogFocus } from "./features/dialogFocus";
 import { registerFileHandling } from "./features/fileHandling";
 import { ArticlesView } from "./features/ArticlesView";
 import { indexArticles } from "./data/articles";
-type Tab = "today" | "library" | "articles" | "search" | "memory" | "settings";
+import {
+  collections,
+  inCollection,
+  isCollection,
+  type ImportDestination,
+} from "./data/collections";
+import { CollectionView } from "./features/CollectionView";
+type Tab =
+  | "today"
+  | "library"
+  | "articles"
+  | "search"
+  | "memory"
+  | "settings"
+  | "ai-major"
+  | "sentinel";
 const tabs = [
   { id: "today" as const, label: "Aujourd’hui", icon: Home },
   { id: "library" as const, label: "Bibliothèque", icon: Library },
   { id: "articles" as const, label: "Articles", icon: FileText },
+  { id: "ai-major" as const, label: "IA majeur", icon: Brain },
+  { id: "sentinel" as const, label: "Sentinel", icon: Shield },
   { id: "search" as const, label: "Rechercher", icon: Search },
   { id: "memory" as const, label: "Mémoire", icon: BookOpen },
   { id: "settings" as const, label: "Réglages", icon: Settings },
@@ -194,7 +213,10 @@ export default function App() {
     [allEditions],
   );
   const displayedEditions = useMemo(
-    () => sortEditions(currentEditions(editions.filter((e) => !e.archived))),
+    () =>
+      sortEditions(
+        currentEditions(editions.filter((e) => !e.archived && !e.collection)),
+      ),
     [editions],
   );
   const latest = displayedEditions[0];
@@ -233,6 +255,7 @@ export default function App() {
         demo?: boolean;
         pendingId?: string;
       }[],
+      destination: ImportDestination = "library",
     ) => {
       if (
         files.length > 20 ||
@@ -241,7 +264,10 @@ export default function App() {
         throw new Error("Limite : 20 fichiers et 100 Mo par import.");
       const prepared: Candidate[] = [];
       for (const file of files) {
-        const edition = await inspectHTML(file.name, file.bytes, file.demo);
+        const edition = inCollection(
+          await inspectHTML(file.name, file.bytes, file.demo),
+          destination,
+        );
         prepared.push({
           edition,
           bytes: file.bytes,
@@ -249,8 +275,13 @@ export default function App() {
             !!(await db.editions
               .where("sha256")
               .equals(edition.sha256)
+              .filter((e) => e.collection === edition.collection)
               .first()) ||
-            prepared.some((c) => c.edition.sha256 === edition.sha256),
+            prepared.some(
+              (c) =>
+                c.edition.sha256 === edition.sha256 &&
+                c.edition.collection === edition.collection,
+            ),
           pendingId: file.pendingId,
         });
       }
@@ -433,7 +464,10 @@ export default function App() {
     if (edition) {
       setReadingUpdates(readingChanges(edition, allEditions, data.states));
       run(() => db.reading(edition.id, "edition", { openedAt: now() }));
-    } else setTab((current) => (current === "articles" ? current : "library"));
+    } else
+      setTab((current) =>
+        current === "articles" || isCollection(current) ? current : "library",
+      );
     window.scrollTo({ top: 0, behavior: "instant" });
   });
   function backFromReader() {
@@ -441,7 +475,9 @@ export default function App() {
     readerHistory.back();
     setSelected(null);
     setSelectedDay(null);
-    setTab((current) => (current === "articles" ? current : "library"));
+    setTab((current) =>
+      current === "articles" || isCollection(current) ? current : "library",
+    );
     window.scrollTo({ top: 0, behavior: "instant" });
   }
   function navigate(next: Tab) {
@@ -487,7 +523,7 @@ export default function App() {
         bytes: new Uint8Array(await file.arrayBuffer()),
       });
     }
-    await prepare(list);
+    await prepare(list, isCollection(tab) ? tab : "library");
   }
   async function importDemo() {
     const files = await Promise.all(
@@ -533,11 +569,13 @@ export default function App() {
   const filtered = useMemo(() => {
     const q = normalize(query);
     let list = currentEditions(
-      allEditions.filter((e) =>
-        libraryMode === "trash"
-          ? e.deleted
-          : !e.deleted &&
-            (libraryMode === "archived" ? e.archived : !e.archived),
+      allEditions.filter(
+        (e) =>
+          !e.collection &&
+          (libraryMode === "trash"
+            ? e.deleted
+            : !e.deleted &&
+              (libraryMode === "archived" ? e.archived : !e.archived)),
       ),
     ).filter(
       (e) =>
@@ -854,6 +892,14 @@ export default function App() {
               <span>{t.label}</span>
               {t.id === "library" && <small>{displayedEditions.length}</small>}
               {t.id === "articles" && <small>{articleCount}</small>}
+              {isCollection(t.id) && (
+                <small>
+                  {
+                    editions.filter((e) => e.collection === t.id && !e.archived)
+                      .length
+                  }
+                </small>
+              )}
             </button>
           ))}
         </nav>
@@ -964,6 +1010,29 @@ export default function App() {
               }
             />
           </div>
+          {collections.map((collection) => (
+            <div
+              key={collection.id}
+              hidden={
+                !data.ready ||
+                tab !== collection.id ||
+                !!current ||
+                !!selectedDay
+              }
+            >
+              <CollectionView
+                collection={collection.id}
+                editions={allEditions}
+                onImport={() => fileRef.current?.click()}
+                onOpen={openEdition}
+                onUpdate={(id, patch) =>
+                  run(() =>
+                    db.editions.update(id, { ...patch, updatedAt: now() }),
+                  )
+                }
+              />
+            </div>
+          ))}
           {!data.ready ? (
             <p>Ouverture de votre bibliothèque…</p>
           ) : current ? (
@@ -972,11 +1041,19 @@ export default function App() {
               initialArticleId={selectedArticle}
               changes={readingUpdates}
               edition={current}
-              editions={editions}
+              editions={editions.filter(
+                (edition) => edition.collection === current.collection,
+              )}
               states={data.states}
               notes={data.notes}
               onBack={backFromReader}
-              backLabel={tab === "articles" ? "Retour aux articles" : undefined}
+              backLabel={
+                tab === "articles"
+                  ? "Retour aux articles"
+                  : isCollection(tab)
+                    ? `Retour à ${collections.find((collection) => collection.id === tab)!.label}`
+                    : undefined
+              }
               onOpen={openEdition}
               onDay={openDay}
               run={run}
@@ -2221,7 +2298,7 @@ export default function App() {
       {candidates.length > 0 && (
         <ImportDialog
           candidates={candidates}
-          editions={editions}
+          editions={allEditions}
           onClose={() => {
             const pending = candidates.flatMap((c) =>
               c.pendingId ? [c.pendingId] : [],
@@ -2231,12 +2308,12 @@ export default function App() {
             });
             setCandidates([]);
           }}
-          onDone={(message) => {
+          onDone={(message, destination) => {
             setCandidates([]);
             setSelected(null);
             setSelectedDay(null);
             setToast(message);
-            setTab("library");
+            setTab(destination);
           }}
         />
       )}

@@ -10,6 +10,8 @@ export function journalFilenameDate(filename: string): string | undefined {
 // Group existing records too, including older/quarantined/independent imports.
 // A missing date is never replaced with today's date or the import date.
 export function dayKeyOf(e: Edition): string | undefined {
+  // Dedicated folders contain independent documents, even on the same date.
+  if (e.collection) return undefined;
   const date =
     e.date && validDate(e.date) ? e.date : journalFilenameDate(e.filename);
   if (date) return `journal360-day-${date}`;

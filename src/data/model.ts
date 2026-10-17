@@ -54,6 +54,7 @@ export const editionSchema = z.object({
   independent: z.boolean().optional(),
   supersedes: z.uuid().optional(),
   importOrigin: z.enum(["file", "demo", "share", "archive"]).optional(),
+  collection: z.enum(["ai-major", "sentinel"]).optional(),
 });
 export { calendarSchema };
 export const stateSchema = z.object({

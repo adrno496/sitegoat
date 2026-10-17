@@ -256,6 +256,7 @@ export async function commitImport(
       const matching = await repository.editions
         .where("sha256")
         .equals(edition.sha256)
+        .filter((e) => e.collection === edition.collection)
         .toArray();
       const existing =
         choice === "day"
@@ -300,6 +301,10 @@ export async function commitImport(
       if (choice === "version" && parentId) {
         const parent = await repository.editions.get(parentId);
         if (!parent) throw new Error("Édition précédente introuvable.");
+        if (parent.collection !== edition.collection)
+          throw new Error(
+            "Choisissez une version précédente dans le même onglet.",
+          );
         if (parent.dayKey && edition.date !== parent.date)
           throw new Error(
             "Le rattachement à une journée exige la même date éditoriale.",

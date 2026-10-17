@@ -6,6 +6,11 @@ import { type Edition, dateLabel, sizeLabel } from "../data/model";
 import { commitImport } from "./import";
 import { recordDiagnostic } from "./diagnostics";
 import { assessVersion, resolveDay, dayKeyOf } from "../data/day";
+import {
+  collections,
+  inCollection,
+  type ImportDestination,
+} from "../data/collections";
 export interface Candidate {
   edition: Edition;
   bytes: Uint8Array;
@@ -21,8 +26,11 @@ export function ImportDialog({
   candidates: Candidate[];
   editions: Edition[];
   onClose: () => void;
-  onDone: (message: string) => void;
+  onDone: (message: string, destination: ImportDestination) => void;
 }) {
+  const [destinations, setDestinations] = useState<
+    Record<string, ImportDestination>
+  >({});
   const [choices, setChoices] = useState<
     Record<string, "ignore" | "keep" | "version" | "day" | "replace">
   >({});
@@ -40,6 +48,7 @@ export function ImportDialog({
     let saved = 0,
       replaced = 0,
       ignored = 0;
+    const savedDestinations = new Set<ImportDestination>();
     try {
       await db.transaction(
         "rw",
@@ -47,17 +56,27 @@ export function ImportDialog({
         async () => {
           for (const c of candidates) {
             const edited = metadata[c.edition.id];
-            const edition = {
-              ...c.edition,
-              title: edited?.title.trim() || c.edition.title,
-              date: edited ? edited.date || null : c.edition.date,
-            };
+            const destination =
+              destinations[c.edition.id] || c.edition.collection || "library";
+            const edition = inCollection(
+              {
+                ...c.edition,
+                title: edited?.title.trim() || c.edition.title,
+                date: edited ? edited.date || null : c.edition.date,
+              },
+              destination,
+            );
+            const duplicate = !!(await db.editions
+              .where("sha256")
+              .equals(edition.sha256)
+              .filter((e) => e.collection === edition.collection)
+              .first());
             const choice =
               choices[c.edition.id] === "ignore"
                 ? "ignore"
                 : dayKeyOf(edition)
                   ? "day"
-                  : choices[c.edition.id] || (c.duplicate ? "replace" : "keep");
+                  : choices[c.edition.id] || (duplicate ? "replace" : "keep");
             const result = await commitImport(
               db,
               edition,
@@ -68,12 +87,14 @@ export function ImportDialog({
             if (result.replaced) replaced++;
             if (result.duplicate && !result.replaced) ignored++;
             else saved++;
+            savedDestinations.add(destination);
             if (c.pendingId) await db.pending.delete(c.pendingId);
           }
         },
       );
       onDone(
         `${saved} édition${saved > 1 ? "s" : ""} importée${saved > 1 ? "s" : ""}${replaced ? ` · ${replaced} ancienne${replaced > 1 ? "s" : ""} copie${replaced > 1 ? "s" : ""} remplacée${replaced > 1 ? "s" : ""}` : ""}${ignored ? ` · ${ignored} doublon ignoré` : ""}.`,
+        savedDestinations.size === 1 ? [...savedDestinations][0] : "library",
       );
     } catch (e) {
       void recordDiagnostic("import-failed");
@@ -118,12 +139,44 @@ export function ImportDialog({
               title: c.edition.title,
               date: c.edition.date || "",
             };
-            const preview = { ...c.edition, date: edited.date || null };
+            const destination =
+              destinations[c.edition.id] || c.edition.collection || "library";
+            const preview = inCollection(
+              { ...c.edition, date: edited.date || null },
+              destination,
+            );
+            const duplicate =
+              editions.some(
+                (e) =>
+                  e.sha256 === preview.sha256 &&
+                  e.collection === preview.collection,
+              ) ||
+              candidates
+                .slice(0, index)
+                .some(
+                  (c) =>
+                    c.edition.sha256 === preview.sha256 &&
+                    (destinations[c.edition.id] ||
+                      c.edition.collection ||
+                      "library") === destination,
+                );
+            const possibleParents = editions.filter(
+              (e) => !e.deleted && e.collection === preview.collection,
+            );
             const key = dayKeyOf(preview);
             const peers = [
               ...editions,
-              ...candidates.slice(0, index).map((v) => v.edition),
-            ].filter((e) => key && dayKeyOf(e) === key);
+              ...candidates
+                .slice(0, index)
+                .map((v) =>
+                  inCollection(
+                    v.edition,
+                    destinations[v.edition.id] ||
+                      v.edition.collection ||
+                      "library",
+                  ),
+                ),
+            ].filter((e) => !e.deleted && key && dayKeyOf(e) === key);
             const assessment = key ? assessVersion(preview, peers) : null;
             const previous = resolveDay(peers).current;
             const choice =
@@ -131,7 +184,7 @@ export function ImportDialog({
                 ? "ignore"
                 : key
                   ? "day"
-                  : choices[c.edition.id] || (c.duplicate ? "replace" : "keep");
+                  : choices[c.edition.id] || (duplicate ? "replace" : "keep");
             const older =
               previous &&
               resolveDay([...peers, preview]).current?.id !== preview.id;
@@ -142,6 +195,36 @@ export function ImportDialog({
                   <strong>{c.edition.filename}</strong>
                   <span>{sizeLabel(c.edition.size)}</span>
                 </div>
+                <label>
+                  Ranger ce HTML dans
+                  <select
+                    value={destination}
+                    disabled={busy}
+                    onChange={(event) => {
+                      setDestinations({
+                        ...destinations,
+                        [c.edition.id]: event.target.value as ImportDestination,
+                      });
+                      setChoices((previous) => {
+                        const next = { ...previous };
+                        delete next[c.edition.id];
+                        return next;
+                      });
+                      setParents((previous) => {
+                        const next = { ...previous };
+                        delete next[c.edition.id];
+                        return next;
+                      });
+                    }}
+                  >
+                    <option value="library">Bibliothèque</option>
+                    {collections.map((collection) => (
+                      <option key={collection.id} value={collection.id}>
+                        {collection.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
                 <label>
                   Titre
                   <input
@@ -159,7 +242,7 @@ export function ImportDialog({
                   Date éditoriale <span className="muted">(facultative)</span>
                   <input
                     type="date"
-                    disabled={!!c.edition.dayKey}
+                    disabled={!!preview.dayKey}
                     value={edited.date}
                     onChange={(e) =>
                       setMetadata({
@@ -223,7 +306,7 @@ export function ImportDialog({
                     {w}
                   </p>
                 ))}
-                {c.duplicate && (
+                {duplicate && (
                   <p className="warning">
                     <Check size={16} />
                     Doublon exact détecté, même si le nom est différent.
@@ -245,17 +328,17 @@ export function ImportDialog({
                   >
                     {key && (
                       <option value="day">
-                        {c.duplicate
+                        {duplicate
                           ? "Remplacer l’ancienne copie par ce dernier import"
                           : `${previous ? "Mettre à jour la journée" : "Créer la journée"} · historique conservé`}
                       </option>
                     )}
-                    {!key && c.duplicate && (
+                    {!key && duplicate && (
                       <option value="replace">
                         Remplacer l’ancienne copie par ce dernier import
                       </option>
                     )}
-                    {c.duplicate && (
+                    {duplicate && (
                       <option value="ignore">Ignorer le doublon</option>
                     )}
                     {!key && (
@@ -263,7 +346,7 @@ export function ImportDialog({
                         Conserver comme édition indépendante
                       </option>
                     )}
-                    {!key && editions.length > 0 && (
+                    {!key && possibleParents.length > 0 && (
                       <option value="version">
                         Ajouter une version à une édition
                       </option>
@@ -284,7 +367,7 @@ export function ImportDialog({
                       }
                     >
                       <option value="">Choisir une édition</option>
-                      {editions.map((e) => (
+                      {possibleParents.map((e) => (
                         <option key={e.id} value={e.id}>
                           {e.title} · {dateLabel(e.date)}
                         </option>
@@ -311,14 +394,7 @@ export function ImportDialog({
               busy ||
               candidates.some(
                 (c) =>
-                  !dayKeyOf({
-                    ...c.edition,
-                    date: metadata[c.edition.id]
-                      ? metadata[c.edition.id].date || null
-                      : c.edition.date,
-                  }) &&
-                  choices[c.edition.id] === "version" &&
-                  !parents[c.edition.id],
+                  choices[c.edition.id] === "version" && !parents[c.edition.id],
               )
             }
             onClick={() => void commit()}
