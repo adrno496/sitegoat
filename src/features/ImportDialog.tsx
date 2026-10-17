@@ -394,7 +394,21 @@ export function ImportDialog({
               busy ||
               candidates.some(
                 (c) =>
-                  choices[c.edition.id] === "version" && !parents[c.edition.id],
+                  !dayKeyOf(
+                    inCollection(
+                      {
+                        ...c.edition,
+                        date: metadata[c.edition.id]
+                          ? metadata[c.edition.id].date || null
+                          : c.edition.date,
+                      },
+                      destinations[c.edition.id] ||
+                        c.edition.collection ||
+                        "library",
+                    ),
+                  ) &&
+                  choices[c.edition.id] === "version" &&
+                  !parents[c.edition.id],
               )
             }
             onClick={() => void commit()}
