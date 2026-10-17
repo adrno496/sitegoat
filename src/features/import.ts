@@ -1,3 +1,4 @@
+import { classifyFuture } from "./future/routing";
 import {
   type Edition,
   type Article,
@@ -65,12 +66,27 @@ export async function inspectHTML(
     html.includes("\0")
   )
     throw new Error("Le fichier ne ressemble pas à un document HTML valide.");
+  const documentaryType = classifyFuture(bytes);
+  if (documentaryType === "future" || documentaryType === "legacy")
+    throw new Error(
+      documentaryType === "future"
+        ? "Dossier Le Futur : utilisez son import dédié."
+        : "Document AI-RADAR : migration explicite vers Le Futur requise.",
+    );
   const document = new DOMParser().parseFromString(html, "text/html");
+  if (document.querySelector("script#futureData"))
+    throw new Error(
+      "Dossier Le Futur : utilisez son import dédié, jamais une journée du journal.",
+    );
   const warnings: string[] = [];
   const script = document.querySelector(
     'script#editionData[type="application/json"]',
   );
   let data: Record<string, unknown> = {};
+  if (script && /"contentType"\s*:\s*"ai-radar"/.test(script.textContent || ""))
+    throw new Error(
+      "Document AI-RADAR : migration explicite vers Le Futur requise.",
+    );
   if (script) {
     try {
       const parsed: unknown = JSON.parse(script.textContent || "");
@@ -84,6 +100,14 @@ export async function inspectHTML(
     }
   }
   const items = Array.isArray(data.items) ? data.items.slice(0, 2000) : [];
+  if (data.contentType === "ai-radar")
+    throw new Error(
+      "Ce document AI-RADAR doit être importé dans Le Futur, jamais dans une journée du journal.",
+    );
+  if (data.contentType)
+    warnings.push(
+      "Type documentaire non reconnu : vérifiez la destination avant de confirmer l’import.",
+    );
   const articleIds = new Set<string>();
   let rejectedArticles = 0,
     duplicateArticles = 0,

@@ -1,0 +1,237 @@
+{
+  "format": "journal360.future",
+  "version": 1,
+  "documentId": "exemple-futur-ia",
+  "revision": 1,
+  "updatedAt": "2026-10-16T12:00:00Z",
+  "title": "IA 2027–2040 : trois futurs à éprouver",
+  "status": "scenario",
+  "synthetic": true,
+  "editorialDecision": {
+    "verdict": "surveiller",
+    "reason": "EXEMPLE SYNTHÉTIQUE : explorer des conséquences possibles sur le travail et l’économie, sans prédire leur réalisation."
+  },
+  "provenance": {
+    "originType": "manual",
+    "title": "Atelier fictif de prospective — données de démonstration",
+    "originalUrl": null,
+    "author": null,
+    "publishedAt": null,
+    "providedAt": "2026-10-16T10:00:00Z",
+    "sources": [
+      {
+        "id": "source-exemple",
+        "label": "Source illustrative, sans preuve réelle",
+        "url": "https://example.org/illustration",
+        "publisher": "Démonstration",
+        "author": null,
+        "publishedAt": "2026-10-01",
+        "type": "unknown",
+        "consultedAt": null
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "id": "scenario-acceleration",
+      "title": "Accélération des capacités et de la diffusion",
+      "path": "acceleration",
+      "horizon": "2027",
+      "status": "scenario",
+      "summary": "Une diffusion rapide pourrait transformer certaines tâches. Les effets sur les emplois et la répartition des gains restent incertains.",
+      "assumptions": [
+        "Hypothèse illustrative : la trajectoire des coûts influence la diffusion."
+      ],
+      "objections": [
+        "Les gains mesurés sur des tâches isolées ne représentent pas toute l’économie."
+      ],
+      "triggers": [
+        "Évaluer les coûts complets et les résultats reproductibles."
+      ],
+      "indicators": [
+        "Suivre des mesures comparables de qualité, coûts et adoption."
+      ],
+      "signalIds": [
+        "signal-exemple"
+      ],
+      "milestones": [
+        {
+          "id": "jalon-acceleration-2027",
+          "year": 2027,
+          "title": "Accélération des capacités et de la diffusion — 2027",
+          "description": "Projection fictive à revoir avec des sources indépendantes.",
+          "status": "scenario",
+          "evidenceUrls": [],
+          "observedAt": null
+        },
+        {
+          "id": "jalon-acceleration-2030",
+          "year": 2030,
+          "title": "Accélération des capacités et de la diffusion — 2030",
+          "description": "Projection fictive à revoir avec des sources indépendantes.",
+          "status": "scenario",
+          "evidenceUrls": [],
+          "observedAt": null
+        }
+      ]
+    },
+    {
+      "id": "scenario-moderate",
+      "title": "Progression modérée et complémentarité",
+      "path": "moderate",
+      "horizon": "2030",
+      "status": "scenario",
+      "summary": "Les outils pourraient compléter des métiers sans automatiser tous leurs contextes. Les coûts d’intégration limiteraient la diffusion.",
+      "assumptions": [
+        "Hypothèse illustrative : la trajectoire des coûts influence la diffusion."
+      ],
+      "objections": [
+        "Les gains mesurés sur des tâches isolées ne représentent pas toute l’économie."
+      ],
+      "triggers": [
+        "Évaluer les coûts complets et les résultats reproductibles."
+      ],
+      "indicators": [
+        "Suivre des mesures comparables de qualité, coûts et adoption."
+      ],
+      "signalIds": [
+        "signal-exemple"
+      ],
+      "milestones": [
+        {
+          "id": "jalon-moderate-2030",
+          "year": 2030,
+          "title": "Progression modérée et complémentarité — 2030",
+          "description": "Projection fictive à revoir avec des sources indépendantes.",
+          "status": "scenario",
+          "evidenceUrls": [],
+          "observedAt": null
+        },
+        {
+          "id": "jalon-moderate-2035",
+          "year": 2035,
+          "title": "Progression modérée et complémentarité — 2035",
+          "description": "Projection fictive à revoir avec des sources indépendantes.",
+          "status": "scenario",
+          "evidenceUrls": [],
+          "observedAt": null
+        }
+      ]
+    },
+    {
+      "id": "scenario-slowdown",
+      "title": "Ralentissement et contraintes durables",
+      "path": "slowdown",
+      "horizon": "2040+",
+      "status": "scenario",
+      "summary": "Des limites techniques, énergétiques ou économiques pourraient freiner les usages. Le maintien des compétences humaines resterait essentiel.",
+      "assumptions": [
+        "Hypothèse illustrative : la trajectoire des coûts influence la diffusion."
+      ],
+      "objections": [
+        "Les gains mesurés sur des tâches isolées ne représentent pas toute l’économie."
+      ],
+      "triggers": [
+        "Évaluer les coûts complets et les résultats reproductibles."
+      ],
+      "indicators": [
+        "Suivre des mesures comparables de qualité, coûts et adoption."
+      ],
+      "signalIds": [
+        "signal-exemple"
+      ],
+      "milestones": [
+        {
+          "id": "jalon-slowdown-2035",
+          "year": 2035,
+          "title": "Ralentissement et contraintes durables — 2035",
+          "description": "Projection fictive à revoir avec des sources indépendantes.",
+          "status": "scenario",
+          "evidenceUrls": [],
+          "observedAt": null
+        },
+        {
+          "id": "jalon-slowdown-2040",
+          "year": 2040,
+          "title": "Ralentissement et contraintes durables — 2040",
+          "description": "Projection fictive à revoir avec des sources indépendantes.",
+          "status": "scenario",
+          "evidenceUrls": [],
+          "observedAt": null
+        }
+      ]
+    }
+  ],
+  "signals": [
+    {
+      "id": "signal-exemple",
+      "title": "Adoption à documenter",
+      "status": "watch",
+      "description": "Signal fictif : rechercher des données comparables sur l’adoption et les gains de productivité. Aucune observation réelle revendiquée.",
+      "evidenceUrls": [
+        "https://example.org/illustration"
+      ],
+      "lastCheckedAt": null,
+      "checkNote": "Non contrôlé. Les liens example.org sont illustratifs."
+    }
+  ],
+  "actions": [
+    {
+      "id": "action-now",
+      "title": "Tester un outil sur une tâche bornée",
+      "horizon": "now",
+      "skill": "Évaluation critique",
+      "description": "Choisir une tâche sans données sensibles, consigner le temps et les erreurs, comparer avec une méthode sans IA.",
+      "effortHours": 2,
+      "effortEvidence": "Estimation pédagogique fictive : deux sessions d’une heure, à ajuster.",
+      "decisiveTest": "Continuer uniquement si le résultat est reproductible, utile et contrôlable.",
+      "scenarioIds": [
+        "scenario-moderate"
+      ]
+    },
+    {
+      "id": "action-3m",
+      "title": "Comparer plusieurs méthodes",
+      "horizon": "3m",
+      "skill": "Mesure de productivité",
+      "description": "Choisir une tâche sans données sensibles, consigner le temps et les erreurs, comparer avec une méthode sans IA.",
+      "effortHours": null,
+      "effortEvidence": "",
+      "decisiveTest": "Continuer uniquement si le résultat est reproductible, utile et contrôlable.",
+      "scenarioIds": [
+        "scenario-moderate"
+      ]
+    },
+    {
+      "id": "action-12m",
+      "title": "Réexaminer ses compétences",
+      "horizon": "12m",
+      "skill": "Adaptation professionnelle",
+      "description": "Choisir une tâche sans données sensibles, consigner le temps et les erreurs, comparer avec une méthode sans IA.",
+      "effortHours": null,
+      "effortEvidence": "",
+      "decisiveTest": "Continuer uniquement si le résultat est reproductible, utile et contrôlable.",
+      "scenarioIds": [
+        "scenario-moderate"
+      ]
+    }
+  ],
+  "visualization": {
+    "modules": [
+      "timeline",
+      "scenarios",
+      "signals",
+      "actions",
+      "changes",
+      "sources"
+    ],
+    "motion": "subtle",
+    "links": [
+      {
+        "from": "jalon-acceleration-2027",
+        "to": "jalon-moderate-2030",
+        "label": "Comparer avec une diffusion plus progressive"
+      }
+    ]
+  }
+}
