@@ -68,7 +68,7 @@ export function summarize(
     verdict: payload.editorialDecision.verdict,
     revision: payload.revision,
     latest: version.id,
-    updatedAt: payload.updatedAt,
+    updatedAt: new Date(payload.updatedAt).toISOString(),
     importedAt: version.importedAt,
     changedAt: version.importedAt,
     years: [...new Set(payload.scenarios.map((s) => s.horizon))],

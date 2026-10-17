@@ -455,3 +455,27 @@ it("sert les exemples comme fichiers statiques sans les réécrire vers la SPA V
     expect(rewrite.test(path)).toBe(false);
   expect(rewrite.test("/future")).toBe(true);
 });
+
+it("ordonne les métadonnées chronologiquement avec des décalages ISO différents sans changer les originaux", async () => {
+  const db = repo();
+  const a = {
+      ...example,
+      documentId: "zone-a",
+      updatedAt: "2026-10-16T14:00:00+02:00",
+    },
+    b = { ...example, documentId: "zone-b", updatedAt: "2026-10-16T13:30:00Z" };
+  await db.importBatch(
+    [await inspectFuture(file(a)), await inspectFuture(file(b))],
+    new Set(),
+    new Set(),
+  );
+  expect(
+    (await db.documents.orderBy("updatedAt").reverse().toArray()).map(
+      (d) => d.documentId,
+    ),
+  ).toEqual(["zone-b", "zone-a"]);
+  const doc = await db.documents.get("zone-a");
+  expect((await db.contents.get(doc!.latest))!.payload.updatedAt).toBe(
+    a.updatedAt,
+  );
+});

@@ -1,0 +1,32 @@
+[
+  {
+    "check": "typecheck",
+    "command": "npm run typecheck",
+    "exitCode": 0,
+    "durationSeconds": 4.34
+  },
+  {
+    "check": "lint",
+    "command": "npm run lint",
+    "exitCode": 0,
+    "durationSeconds": 2.13
+  },
+  {
+    "check": "build",
+    "command": "npm run build",
+    "exitCode": 0,
+    "durationSeconds": 5.7
+  },
+  {
+    "check": "unit",
+    "command": "npm test",
+    "exitCode": 0,
+    "durationSeconds": 7.76
+  },
+  {
+    "check": "e2e",
+    "command": "npm run test:e2e",
+    "exitCode": 130,
+    "durationSeconds": 289.18
+  }
+]

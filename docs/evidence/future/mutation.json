@@ -1,0 +1,6 @@
+{
+  "mutation": "Remove rejection of future milestone as observed",
+  "expectedFailureExitCode": 1,
+  "restoredCheckExitCode": 0,
+  "originalRestoredExactly": true
+}

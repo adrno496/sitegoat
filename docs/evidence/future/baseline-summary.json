@@ -1,0 +1,26 @@
+{
+  "typecheck": {
+    "exitCode": 0,
+    "seconds": 3.65
+  },
+  "lint": {
+    "exitCode": 0,
+    "seconds": 1.97
+  },
+  "build": {
+    "exitCode": 0,
+    "seconds": 5.7
+  },
+  "test": {
+    "exitCode": 0,
+    "seconds": 8.82
+  },
+  "test:e2e": {
+    "exitCode": 1,
+    "seconds": 546.31
+  },
+  "test:performance": {
+    "exitCode": 0,
+    "seconds": 29.56
+  }
+}

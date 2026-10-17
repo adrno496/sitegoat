@@ -1,0 +1,32 @@
+[
+  {
+    "check": "typecheck",
+    "command": "npm run typecheck",
+    "exitCode": 0,
+    "durationSeconds": 4.61
+  },
+  {
+    "check": "lint",
+    "command": "npm run lint",
+    "exitCode": 0,
+    "durationSeconds": 1.97
+  },
+  {
+    "check": "build",
+    "command": "npm run build",
+    "exitCode": 0,
+    "durationSeconds": 5.8
+  },
+  {
+    "check": "unit",
+    "command": "npm test",
+    "exitCode": 0,
+    "durationSeconds": 7.87
+  },
+  {
+    "check": "future-performance",
+    "command": "npx vitest run --config vitest.performance.config.ts tests/future.performance.test.ts",
+    "exitCode": 0,
+    "durationSeconds": 7.19
+  }
+]

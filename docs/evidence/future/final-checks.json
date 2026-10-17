@@ -1,0 +1,44 @@
+[
+  {
+    "check": "typecheck",
+    "command": "npm run typecheck",
+    "exitCode": 0,
+    "durationSeconds": 4.49
+  },
+  {
+    "check": "lint",
+    "command": "npm run lint",
+    "exitCode": 0,
+    "durationSeconds": 1.97
+  },
+  {
+    "check": "build",
+    "command": "npm run build",
+    "exitCode": 0,
+    "durationSeconds": 5.4
+  },
+  {
+    "check": "unit",
+    "command": "npm test",
+    "exitCode": 0,
+    "durationSeconds": 7.55
+  },
+  {
+    "check": "future-e2e",
+    "command": "npx playwright test tests/e2e/v6-future.spec.ts",
+    "exitCode": 0,
+    "durationSeconds": 33.24
+  },
+  {
+    "check": "performance",
+    "command": "npm run test:performance",
+    "exitCode": 0,
+    "durationSeconds": 35.7
+  },
+  {
+    "check": "e2e",
+    "command": "npm run test:e2e",
+    "exitCode": 0,
+    "durationSeconds": 545.49
+  }
+]
