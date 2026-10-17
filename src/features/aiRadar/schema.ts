@@ -28,7 +28,7 @@ const dateOrInstant = z.union([calendar, z.iso.datetime({ offset: true })]);
 export function publicHttps(value: string): boolean {
   try {
     const url = new URL(value);
-    const host = url.hostname.toLowerCase();
+    const host = url.hostname.toLowerCase().replace(/\.+$/, "");
     return (
       value.startsWith("https://") &&
       url.protocol === "https:" &&

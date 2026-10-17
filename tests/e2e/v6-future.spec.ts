@@ -45,9 +45,18 @@ test("Le Futur : HTML dédié, six modules, notes, révision confirmée, export,
   context,
 }) => {
   await page.goto("/");
-  await page
-    .getByLabel("Fichiers HTML à importer")
-    .setInputFiles(folder + "APERCU_FUTUR_IA_ANIME.html");
+  const customHTML = readFileSync(
+    folder + "APERCU_FUTUR_IA_ANIME.html",
+    "utf8",
+  ).replace(
+    "</head>",
+    "<style>@keyframes foreign-motion{to{opacity:.1}}body{animation:foreign-motion 1s infinite;background:rgb(255,0,0)}</style></head>",
+  );
+  await page.getByLabel("Fichiers HTML à importer").setInputFiles({
+    name: "APERCU_FUTUR_IA_ANIME.html",
+    mimeType: "text/html",
+    buffer: Buffer.from(customHTML),
+  });
   await expect(page.getByRole("dialog")).toContainText("Nouveau dossier");
   await confirm(page);
   await closeToast(page);
@@ -86,6 +95,14 @@ test("Le Futur : HTML dédié, six modules, notes, révision confirmée, export,
   ).toHaveValue("doing");
   await page.getByRole("button", { name: "Voir l’aperçu HTML isolé" }).click();
   await expect(page.locator(".future-preview")).toHaveAttribute("sandbox", "");
+  const previewBody = page.frameLocator(".future-preview").locator("body");
+  await expect(previewBody).toBeVisible();
+  expect(
+    await previewBody.evaluate((e) => getComputedStyle(e).animationName),
+  ).not.toContain("foreign-motion");
+  expect(
+    await previewBody.evaluate((e) => getComputedStyle(e).backgroundColor),
+  ).not.toBe("rgb(255, 0, 0)");
   await expect(
     page
       .frameLocator(".future-preview")
@@ -397,7 +414,7 @@ test("Le Futur : capacité insuffisante et lot mixte avec un journal", async ({
       value: { estimate: async () => ({ usage: 0, quota: 100000000 }) },
     });
   });
-  const daily = dailyFile("21");
+  const daily = dailyFile("21", "2026-10-16");
   await page.getByLabel("Fichiers HTML à importer").setInputFiles([
     {
       name: daily.name,
@@ -426,4 +443,62 @@ test("Le Futur : capacité insuffisante et lot mixte avec un journal", async ({
   await expect(page.locator(".future-card")).toHaveCount(1);
   await nav(page, "Bibliothèque");
   await expect(page.locator(".day-card")).toHaveCount(1);
+});
+
+test("Le Futur : lot désordonné, doublon HTML/JSON et confirmations par révision", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await nav(page);
+  const update = {
+    ...example,
+    revision: 2,
+    updatedAt: "2026-10-16T15:00:00Z",
+    title: "Révision du lot",
+  };
+  await page.getByLabel("Fichiers HTML à importer").setInputFiles([
+    {
+      name: "revision-2.json",
+      mimeType: "application/json",
+      buffer: Buffer.from(JSON.stringify(update)),
+    },
+    {
+      name: "revision-1.html",
+      mimeType: "text/html",
+      buffer: readFileSync(folder + "APERCU_FUTUR_IA_ANIME.html"),
+    },
+    {
+      name: "revision-1-copie.json",
+      mimeType: "application/json",
+      buffer: Buffer.from(JSON.stringify(example)),
+    },
+  ]);
+  const modal = page.getByRole("dialog");
+  await expect(modal).toContainText("Nouveau dossier");
+  await expect(modal).toContainText("Mise à jour");
+  await expect(modal).toContainText("Doublon");
+  await expect(
+    page.getByRole("button", { name: /Importer 2 fichier/ }),
+  ).toBeDisabled();
+  await page
+    .getByLabel("J’ai lu les différences et confirme cette mise à jour.")
+    .check();
+  await confirm(page);
+  await expect(
+    page.getByRole("status").filter({ hasText: "1 doublon ignoré" }),
+  ).toBeVisible();
+  await closeToast(page);
+  await open(page, "Révision du lot");
+  await expect(
+    page.getByLabel("Version affichée").locator("option"),
+  ).toHaveCount(2);
+  const old = await page
+    .getByLabel("Version affichée")
+    .locator("option")
+    .filter({ hasText: "Révision 1" })
+    .getAttribute("value");
+  await page.getByLabel("Version affichée").selectOption(old!);
+  await expect(page.locator(".future-detail h2").first()).toHaveText(
+    example.title,
+  );
 });

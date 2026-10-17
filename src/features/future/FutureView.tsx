@@ -579,8 +579,11 @@ function FutureDetail({
               className="secondary"
               onClick={() =>
                 run(async () => {
-                  const original = await futureDb.originals.get(chosen!);
-                  if (original) setPreview(radarReaderHTML(original.bytes));
+                  setPreview(
+                    radarReaderHTML(
+                      new TextEncoder().encode(renderFutureHTML(p)),
+                    ),
+                  );
                 })
               }
             >

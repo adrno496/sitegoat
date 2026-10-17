@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useDialogFocus } from "../dialogFocus";
-import { futureDb } from "./db";
+import { canonical, describeChanges, futureDb } from "./db";
 import { inspectFuture, type FutureCandidate, type FutureFile } from "./import";
+const confirmationKey = (candidate: FutureCandidate) =>
+  `${candidate.payload!.documentId}@${candidate.payload!.revision}`;
 const labels = {
   new: "Nouveau dossier",
   update: "Mise à jour",
@@ -47,12 +49,22 @@ export default function FutureImportDialog({
         const preview = await futureDb.preview(candidate);
         list.push({ candidate, preview });
       }
-      const revisions = new Map<string, string>();
+      const revisions = new Map<string, { sha: string; json: string }>();
       for (const row of list) {
         if (!row.candidate.payload) continue;
         const key = `${row.candidate.payload.documentId}:${row.candidate.payload.revision}`,
           prev = revisions.get(key);
-        if (prev && prev !== row.candidate.sha256) {
+        const json = canonical(row.candidate.payload);
+        if (prev && (prev.sha === row.candidate.sha256 || prev.json === json)) {
+          row.preview = {
+            status: "duplicate",
+            changes: [
+              "Même snapshot déjà présent dans ce lot ; aucune double publication.",
+            ],
+          };
+          continue;
+        }
+        if (prev) {
           row.preview = {
             status: "conflict",
             changes: [
@@ -68,7 +80,45 @@ export default function FutureImportDialog({
             )
               other.preview = row.preview;
         }
-        revisions.set(key, row.candidate.sha256!);
+        revisions.set(key, { sha: row.candidate.sha256!, json });
+      }
+      const virtual = new Map<
+        string,
+        NonNullable<FutureCandidate["payload"]>
+      >();
+      const ordered = list
+        .filter(
+          (row) =>
+            row.candidate.payload &&
+            ["new", "update"].includes(row.preview.status),
+        )
+        .sort(
+          (a, b) =>
+            a.candidate.payload!.documentId.localeCompare(
+              b.candidate.payload!.documentId,
+            ) || a.candidate.payload!.revision - b.candidate.payload!.revision,
+        );
+      for (const row of ordered) {
+        const payload = row.candidate.payload!,
+          before = virtual.get(payload.documentId);
+        if (
+          before &&
+          Date.parse(payload.updatedAt) <= Date.parse(before.updatedAt)
+        ) {
+          row.preview = {
+            status: "conflict",
+            changes: [
+              "Les dates des révisions de ce lot doivent progresser strictement.",
+            ],
+          };
+          continue;
+        }
+        if (before)
+          row.preview = {
+            status: "update",
+            changes: describeChanges(before, payload),
+          };
+        virtual.set(payload.documentId, payload);
       }
       const estimate = await navigator.storage?.estimate?.();
       const need =
@@ -101,7 +151,7 @@ export default function FutureImportDialog({
     eligible.every(
       (r) =>
         r.preview.status !== "update" ||
-        confirmed.has(r.candidate.payload!.documentId),
+        confirmed.has(confirmationKey(r.candidate)),
     );
   function toggle(set: Set<string>, id: string, fn: (v: Set<string>) => void) {
     const next = new Set(set);
@@ -174,9 +224,9 @@ export default function FutureImportDialog({
               <label>
                 <input
                   type="checkbox"
-                  checked={confirmed.has(c.payload!.documentId)}
+                  checked={confirmed.has(confirmationKey(c))}
                   onChange={() =>
-                    toggle(confirmed, c.payload!.documentId, setConfirmed)
+                    toggle(confirmed, confirmationKey(c), setConfirmed)
                   }
                 />{" "}
                 J’ai lu les différences et confirme cette mise à jour.
@@ -211,11 +261,20 @@ export default function FutureImportDialog({
               try {
                 const result = await futureDb.importBatch(
                   eligible.map((r) => r.candidate),
-                  confirmed,
+                  new Set(
+                    eligible
+                      .filter((r) =>
+                        confirmed.has(confirmationKey(r.candidate)),
+                      )
+                      .map((r) => r.candidate.payload!.documentId),
+                  ),
                   migrations,
                 );
+                const ignored =
+                  result.ignored +
+                  rows.filter((r) => r.preview.status === "duplicate").length;
                 onDone(
-                  `${result.added} dossiers ou révisions importés · ${result.ignored} doublons ignorés. Les fichiers incompatibles n’ont pas été importés.`,
+                  `${result.added} dossiers ou révisions importés · ${ignored} doublon${ignored > 1 ? "s" : ""} ignoré${ignored > 1 ? "s" : ""}. Les fichiers incompatibles n’ont pas été importés.`,
                 );
               } catch (e) {
                 setError(e instanceof Error ? e.message : String(e));
