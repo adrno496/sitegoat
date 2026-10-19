@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   Archive,
   ArrowUpRight,
+  Download,
   FileText,
   Plus,
   Search,
@@ -15,6 +16,9 @@ import {
   type Edition,
 } from "../data/model";
 import { normalizeArticleSearch } from "../data/articles";
+import { db } from "../data/db";
+import { download } from "./backup";
+import { extractVscodePrompt, vscodePromptFilename } from "./vscodePrompt";
 
 export function CollectionView({
   collection,
@@ -34,6 +38,40 @@ export function CollectionView({
 }) {
   const [query, setQuery] = useState("");
   const [mode, setMode] = useState<"active" | "archived" | "trash">("active");
+  const [exporting, setExporting] = useState<string | null>(null);
+  const [exportStatus, setExportStatus] = useState({ id: "", message: "" });
+  async function exportPrompt(edition: Edition) {
+    setExporting(edition.id);
+    setExportStatus({ id: edition.id, message: "" });
+    try {
+      const original = await db.originals.get(edition.id);
+      if (!original)
+        throw new Error("Le HTML original est indisponible sur cet appareil.");
+      const prompt = extractVscodePrompt(original.bytes);
+      if (!prompt)
+        throw new Error(
+          "Aucun prompt VS Code identifiable dans ce document. Ouvrez le HTML pour le vérifier.",
+        );
+      download(
+        new Blob([prompt], { type: "text/markdown;charset=utf-8" }),
+        vscodePromptFilename(edition.filename),
+      );
+      setExportStatus({
+        id: edition.id,
+        message: "Téléchargement du prompt lancé.",
+      });
+    } catch (error) {
+      setExportStatus({
+        id: edition.id,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Téléchargement impossible. Réessayez.",
+      });
+    } finally {
+      setExporting(null);
+    }
+  }
   const info = collections.find((item) => item.id === collection)!;
   const documents = sortEditions(
     editions.filter(
@@ -132,6 +170,18 @@ export function CollectionView({
                       Ouvrir le HTML
                       <ArrowUpRight size={16} />
                     </button>
+                    {collection === "sentinel" && (
+                      <button
+                        className="text-button"
+                        disabled={exporting !== null}
+                        onClick={() => void exportPrompt(edition)}
+                      >
+                        <Download size={16} />
+                        {exporting === edition.id
+                          ? "Préparation du prompt…"
+                          : "Télécharger le prompt VS Code (.md)"}
+                      </button>
+                    )}
                     <button
                       className="text-button"
                       onClick={() =>
@@ -151,6 +201,11 @@ export function CollectionView({
                   </>
                 )}
               </div>
+              {exportStatus.id === edition.id && (
+                <p className="muted" role="status">
+                  {exportStatus.message}
+                </p>
+              )}
             </article>
           ))}
         </div>

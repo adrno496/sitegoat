@@ -1,6 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { v643HTML } from "../helpers/v643";
+import { readFile } from "node:fs/promises";
 async function nav(page: Page, label: string) {
   await page
     .locator(
@@ -14,13 +15,11 @@ async function importFile(
   title = "Dossier commun",
   destination?: string,
 ) {
-  await page
-    .getByLabel("Fichiers HTML à importer")
-    .setInputFiles({
-      name: "dossier.html",
-      mimeType: "text/html",
-      buffer: Buffer.from(v643HTML({ title })),
-    });
+  await page.getByLabel("Fichiers HTML à importer").setInputFiles({
+    name: "dossier.html",
+    mimeType: "text/html",
+    buffer: Buffer.from(v643HTML({ title })),
+  });
   if (destination)
     await page
       .getByRole("dialog")
@@ -127,12 +126,10 @@ test("destination modifiable à l’import, recherche, archives, corbeille et mo
     .getByRole("button", { name: "Ouvrir le HTML", exact: true })
     .click();
   await expect(
-    page
-      .frameLocator(".edition-frame")
-      .getByRole("heading", {
-        name: "Compatibilité V6.4.3 synthétique",
-        exact: true,
-      }),
+    page.frameLocator(".edition-frame").getByRole("heading", {
+      name: "Compatibilité V6.4.3 synthétique",
+      exact: true,
+    }),
   ).toBeVisible();
 });
 test("navigation mobile visible et accessibilité des deux nouveaux espaces", async ({
@@ -170,4 +167,91 @@ test("navigation mobile visible et accessibilité des deux nouveaux espaces", as
     path: test.info().outputPath("sentinel-mobile.png"),
     fullPage: true,
   });
+});
+
+test("Sentinel : télécharge le prompt Markdown exact depuis une carte existante, même hors ligne", async ({
+  page,
+  context,
+}) => {
+  const prompt =
+    "# Mission VS Code — Évaluation\n\n```ts\nconst a = '<tag> & test';\n```\n\nFin.\n";
+  const html = `<title>Sentinel avec prompt</title><h1>Rapport</h1><script>window.promptScriptRan = true; fetch('https://example.invalid/leak')</script><section><h2>PROMPT COMPLET POUR VS CODE / CODEX</h2><textarea id="fullPrompt">${prompt.replaceAll("&", "&amp;").replaceAll("<", "&lt;")}</textarea></section>`;
+  await page.goto("/");
+  await nav(page, "Sentinel");
+  await page
+    .getByLabel("Fichiers HTML à importer")
+    .setInputFiles({
+      name: "SENTINEL_TEST.html",
+      mimeType: "text/html",
+      buffer: Buffer.from(html),
+    });
+  await page
+    .getByRole("button", {
+      name: "Enregistrer dans ma bibliothèque",
+      exact: true,
+    })
+    .click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await page.reload();
+  await nav(page, "Sentinel");
+  const card = page
+    .locator(".collection-card")
+    .filter({
+      has: page.getByRole("heading", {
+        name: "Sentinel avec prompt",
+        exact: true,
+      }),
+    });
+  await context.setOffline(true);
+  const downloaded = page.waitForEvent("download");
+  await card
+    .getByRole("button", {
+      name: "Télécharger le prompt VS Code (.md)",
+      exact: true,
+    })
+    .click();
+  const file = await downloaded;
+  expect(file.suggestedFilename()).toBe("SENTINEL_TEST_PROMPT_VSCODE.md");
+  expect(await readFile((await file.path())!, "utf8")).toBe(prompt);
+  await expect(card.getByRole("status")).toHaveText(
+    "Téléchargement du prompt lancé.",
+  );
+  expect(await page.evaluate(() => "promptScriptRan" in window)).toBe(false);
+  expect(
+    (
+      await new AxeBuilder({ page })
+        .include(".collection-view:not([hidden])")
+        .analyze()
+    ).violations,
+  ).toEqual([]);
+  for (const width of [320, 390, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+  }
+  await context.setOffline(false);
+  await importFile(page, "Sans prompt");
+  const missing = page
+    .locator(".collection-card")
+    .filter({
+      has: page.getByRole("heading", { name: "Sans prompt", exact: true }),
+    });
+  await missing
+    .getByRole("button", {
+      name: "Télécharger le prompt VS Code (.md)",
+      exact: true,
+    })
+    .click();
+  await expect(missing.getByRole("status")).toContainText(
+    "Aucun prompt VS Code identifiable",
+  );
+  await expect(
+    missing.getByRole("button", {
+      name: "Télécharger le prompt VS Code (.md)",
+      exact: true,
+    }),
+  ).toBeEnabled();
 });
