@@ -20,6 +20,7 @@ import { db } from "../data/db";
 import { articleReadingQuestion, GOOGLE_AI_ENTRY } from "./googleAi";
 import { GoogleAiDialog } from "./GoogleAiDialog";
 import { useDialogFocus } from "./dialogFocus";
+import { PromptAccess } from "./unified/PromptAccess";
 
 const PAGE_SIZE = 30;
 export function ArticlesView({
@@ -107,9 +108,13 @@ export function ArticlesView({
         key: item.key,
         editionId: item.edition.id,
         sha256: item.edition.sha256,
-        question: original
-          ? articleReadingQuestion(original.bytes, item.article.id) || ""
-          : "",
+        question:
+          item.edition.unified?.items.find(
+            (a) => a.eventId === item.article.eventId,
+          )?.publicResearchQuestion ||
+          (original
+            ? articleReadingQuestion(original.bytes, item.article.id) || ""
+            : ""),
       });
     } catch {
       if (ticket === questionTicket.current)
@@ -413,6 +418,15 @@ export function ArticlesView({
                       </button>
                       {questionButton(current)}
                     </div>
+                    {current.edition.unified?.promptAssets.some(
+                      (p) => p.eventId === current.article.eventId,
+                    ) && (
+                      <PromptAccess
+                        key={current.key}
+                        edition={current.edition}
+                        eventId={current.article.eventId}
+                      />
+                    )}
                     <div className="article-body">
                       {current.article.text ? (
                         current.article.text

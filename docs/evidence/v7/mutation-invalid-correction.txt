@@ -1,0 +1,28 @@
+
+ RUN  v5.0.4 /Users/dreano/Downloads/veille/veille
+
+ ❯ tests/v7-integrity.unit.test.ts (1 test | 1 failed) 56ms
+   × V7 : une enveloppe complète conserve ses identités, preuves et prompts entiers 55ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  23:30:12
+   Duration  483ms (environment 60%, import 16%, tests 15%, transform 5%, setup 4%, worker 1%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/v7-integrity.unit.test.ts > V7 : une enveloppe complète conserve ses identités, preuves et prompts entiers
+Error: édition : Correction sans source correspondante.
+ ❯ validateUnified src/data/unified.ts:312:11
+    310|   const result = unifiedSchema.safeParse(value);
+    311|   if (!result.success)
+    312|     throw new Error(
+       |           ^
+    313|       result.error.issues
+    314|         .slice(0, 4)
+ ❯ inspectHTML src/features/import.ts:100:7
+ ❯ tests/v7-integrity.unit.test.ts:15:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

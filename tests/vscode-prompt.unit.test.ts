@@ -1,6 +1,7 @@
 import { expect, it } from "vitest";
 import {
   extractVscodePrompt,
+  extractVscodePrompts,
   vscodePromptFilename,
 } from "../src/features/vscodePrompt";
 const bytes = (html: string) => new TextEncoder().encode(html);
@@ -35,11 +36,11 @@ it("ne confond pas un rapport, un champ de notes ou une instruction de script av
       ),
     ),
   ).toBe("# Mission\n\nTexte");
-  expect(() =>
-    extractVscodePrompt(
+  expect(
+    extractVscodePrompts(
       bytes("<h2>Prompt VS Code</h2><pre>Choix A</pre><pre>Choix B</pre>"),
     ),
-  ).toThrow("Plusieurs prompts");
+  ).toHaveLength(2);
 });
 
 it("produit un nom Markdown local sans chemin ni caractères de contrôle", () => {
@@ -49,4 +50,16 @@ it("produit un nom Markdown local sans chemin ni caractères de contrôle", () =
   expect(vscodePromptFilename("C:\\dossier\\alerte?.html")).toBe(
     "alerte__PROMPT_VSCODE.md",
   );
+});
+
+it("reconnaît plusieurs zones mixtes legacy sans ignorer un second prompt", () => {
+  const prompts = extractVscodePrompts(
+    bytes(
+      '<section><h2>Prompt VS Code premier</h2><textarea id="fullPrompt"># A\nComplet A.</textarea></section><section><h2>Prompt Codex second</h2><pre># B\nComplet B.</pre></section>',
+    ),
+  );
+  expect(prompts.map((p) => p.content)).toEqual([
+    "# A\nComplet A.",
+    "# B\nComplet B.",
+  ]);
 });

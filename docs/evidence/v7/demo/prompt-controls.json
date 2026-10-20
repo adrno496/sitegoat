@@ -1,0 +1,8 @@
+{
+  "clipboard": "Mocked in an isolated Chromium context; no system clipboard touched",
+  "fullTextEqual": true,
+  "copySuccess": true,
+  "copyBlockedFallback": true,
+  "manualSelection": true,
+  "externalRequests": 0
+}

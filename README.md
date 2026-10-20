@@ -4,6 +4,12 @@ Une bibliothèque personnelle de journaux HTML, en français, installable comme 
 
 Version publiée : [sitegoat.vercel.app](https://sitegoat.vercel.app). [Rapport de tests](TEST_REPORT.md).
 
+## Journal 360 unifié V7
+
+L’accueil réunit les huit éditions cumulatives **08/10/12/14/16/18/20/22**, les quatre univers, le radar économique FR/Europe/USA/Chine et la chronologie IA/Futur. Les états absents ou partiels restent visibles. La sous-navigation donne accès aux prompts multiples et à une recherche globale textuelle locale, en conservant les parcours historiques.
+
+[Guide des imports et des sauvegardes V7](docs/JOURNAL360_V7_IMPORT_GUIDE.md) · [Rapport et preuves](docs/JOURNAL360_V7_REPORT.md) · [Exemples synthétiques](public/examples/unified/README.md). Les anciens ZIP v1/v2 restent lisibles ; les ZIP contenant V7 portent la version 3 et nécessitent la mise à jour des appareils avant tout usage cloud réel. La publication sur `main` est autorisée séparément après validation locale. Les limites de ressources, les appareils physiques non testés et la coordination des clients ZIP v3 restent détaillés dans le rapport.
+
 ## Démarrer
 
 Node 24 recommandé.
@@ -26,9 +32,9 @@ Ouvrir `http://127.0.0.1:4173`. `npm run dev` sert l’interface ; il ne lance p
 
 ## Utilisation
 
-Les onglets **IA majeur** et **Sentinel** accueillent vos HTML dans deux espaces dédiés. Depuis l’un de ces onglets, l’import sélectionne cet espace par défaut ; le champ **Ranger ce HTML dans** permet aussi de choisir la destination depuis un import général. Chaque dossier reste indépendant, même daté du même jour. Un doublon ne remplace qu’une copie du même espace. Recherche, lecture HTML, archives, corbeille et restauration sont disponibles dans chaque onglet ; le classement est conservé dans les sauvegardes ZIP et la synchronisation. Sur téléphone, les huit destinations sont visibles sur deux lignes.
+Les onglets **IA majeur** et **Sentinel** accueillent vos HTML dans deux espaces dédiés. Depuis l’un de ces onglets, l’import sélectionne cet espace par défaut ; le champ **Ranger ce HTML dans** permet aussi de choisir la destination depuis un import général. Chaque dossier reste indépendant, même daté du même jour. Un doublon ne remplace qu’une copie du même espace. Recherche, lecture HTML, archives, corbeille et restauration sont disponibles dans chaque onglet ; le classement est conservé dans les sauvegardes ZIP et la synchronisation. Sur téléphone, les neuf destinations sont visibles sur deux lignes.
 
-Dans **Sentinel**, le bouton **Télécharger le prompt VS Code (.md)** extrait le prompt intégré au HTML original, y compris pour les documents déjà importés et hors ligne. Il préserve le texte Markdown sans exécuter le HTML. Un document sans prompt identifiable ou contenant plusieurs prompts distincts affiche une explication au lieu de produire un fichier incomplet.
+Dans **Sentinel**, **Voir les prompts VS Code** inspecte les anciens HTML sans les exécuter. Chaque prompt distinct propose Voir, Copier, Sélectionner et **Télécharger le prompt VS Code (.md)**. Les éditions V7 exposent directement leurs prompts validés, également dans Articles et Mes prompts .md. Aucun bouton de téléchargement n’est créé quand le document ne contient pas de prompt. Le texte UTF-8 est conservé intégralement, hors ligne et sans envoi externe.
 
 L’onglet **Articles** réunit automatiquement les articles structurés de toutes les veilles importées, archives comprises. Rechercher dans les titres, textes et sources, filtrer par rubrique, veille ou état de lecture, puis lire un article et passer au suivant. Les favoris et lectures utilisent la mémoire existante. Le journal d’origine reste accessible et son retour conserve les filtres. Les articles répétés dans les versions d’une même journée sont regroupés sur leur dernière occurrence ; ceux présents seulement dans une ancienne version restent accessibles. Les journaux sans sommaire structuré restent lisibles dans la Bibliothèque.
 
@@ -38,7 +44,7 @@ Le **sommaire visible** donne accès à tous les titres correspondant aux filtre
 
 1. **Importer** un ou plusieurs `.html` / `.htm` UTF-8 (10 Mo par fichier, 20 fichiers et 100 Mo par sélection).
 2. Vérifier titre, date, avertissements et conservation des doublons. Enregistrer. Un même hash peut être ignoré, conservé séparément ou ajouté comme version.
-3. Ouvrir l’édition : elle occupe directement toute la page. Le HTML est affiché à 70 % ; après réduction, les boutons −/+ ajustent ce zoom sans perdre la navigation. Les onglets et simulateurs fonctionnent automatiquement : le lecteur démarre en **mode interactif**, dans son cadre isolé. **Désactiver JS** passe au mode sécurisé ; ce choix explicite reste mémorisé pour cette édition sur cet appareil. Google Mode IA demande toujours une confirmation avant toute ouverture externe.
+3. Ouvrir l’édition : elle occupe directement toute la page. Le HTML est affiché à 70 % ; après réduction, les boutons −/+ ajustent ce zoom sans perdre la navigation. Les onglets et simulateurs fonctionnent automatiquement : le lecteur historique démarre en **mode interactif**, dans son cadre isolé. **Désactiver JS** passe au mode sécurisé ; ce choix explicite reste mémorisé pour cette édition sur cet appareil. Les éditions V7 démarrent en **mode sécurisé**, sans scripts. Google Mode IA demande toujours une confirmation avant toute ouverture externe.
 4. Deux contrôles restent visibles sur le HTML : une petite flèche de retour et **Réduire la lecture**. Glisser vers la droite depuis le bord gauche revient à la bibliothèque. Toucher **Réduire la lecture** pour accéder au zoom, au réglage JS, à l’historique, au mode texte et aux annotations. Garder un favori, marquer une lecture, enregistrer notes et décisions. Tous ces états sont dans IndexedDB, séparément du HTML original.
 5. Dans **Réglages**, exporter un ZIP et le conserver hors du navigateur. Restaurer un ZIP vérifie les fichiers SHA-256 avant toute écriture et fusionne sans effacement.
 6. Pour retrouver la même bibliothèque sur PC et smartphone, ouvrir [sitegoat.vercel.app](https://sitegoat.vercel.app) et saisir le même code d’accès privé dans **Réglages** sur chaque appareil. La synchronisation Supabase est activée par défaut : les éditions, notes, favoris, lectures, archives et corbeille sont récupérés automatiquement. Les modifications partent après deux secondes de repos ; les nouveautés sont vérifiées toutes les 30 secondes, au retour du réseau et au retour dans l’application. **Synchroniser maintenant** permet de forcer une vérification. Une case permet de suspendre la synchronisation de cet appareil.

@@ -25,7 +25,13 @@ const verdicts = {
   surveiller: "À surveiller",
   ecarter: "Écarter",
 };
-export default function FutureView({ onImport }: { onImport: () => void }) {
+export default function FutureView({
+  onImport,
+  initialDocumentId = "",
+}: {
+  onImport: () => void;
+  initialDocumentId?: string;
+}) {
   const { value: documents, error: loadError } = useLive(
     () => futureDb.documents.orderBy("updatedAt").reverse().toArray(),
     [],
@@ -65,7 +71,7 @@ export default function FutureView({ onImport }: { onImport: () => void }) {
     [],
     null as AtlasCounts | null,
   );
-  const [selected, setSelected] = useState(""),
+  const [selected, setSelected] = useState(initialDocumentId),
     [initialSection, setInitialSection] = useState("overview"),
     [search, setSearch] = useState(""),
     [status, setStatus] = useState(""),

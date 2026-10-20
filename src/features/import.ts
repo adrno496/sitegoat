@@ -1,4 +1,6 @@
 import { classifyFuture } from "./future/routing";
+import { validateUnified } from "../data/unified";
+import { validateFuture } from "./future/import";
 import {
   type Edition,
   type Article,
@@ -19,6 +21,7 @@ import {
   editorialMetadata,
   verifiedInstant,
   validDate,
+  slotSchema,
 } from "../data/editorial";
 import {
   editorialUUID,
@@ -79,6 +82,32 @@ export async function inspectHTML(
       "Dossier Le Futur : utilisez son import dédié, jamais une journée du journal.",
     );
   const warnings: string[] = [];
+  const unifiedBlocks = document.querySelectorAll(
+    'script#unifiedData[type="application/json"]',
+  );
+  if (
+    document.querySelectorAll("#unifiedData").length !== unifiedBlocks.length ||
+    unifiedBlocks.length > 1
+  )
+    throw new Error("Un seul bloc unifiedData est autorisé.");
+  if (
+    unifiedBlocks[0] &&
+    new TextEncoder().encode(unifiedBlocks[0].textContent || "").length >
+      2 * 1024 * 1024
+  )
+    throw new Error("Métadonnées V7 limitées à 2 Mo.");
+  const unified = unifiedBlocks.length
+    ? validateUnified(JSON.parse(unifiedBlocks[0].textContent || "null"))
+    : undefined;
+  if (unified) {
+    for (const prompt of unified.promptAssets)
+      if (
+        prompt.sha256 &&
+        (await hash(new TextEncoder().encode(prompt.content))) !== prompt.sha256
+      )
+        throw new Error("Prompt tronqué ou checksum Markdown invalide.");
+    for (const payload of unified.futureDocuments) validateFuture(payload);
+  }
   const script = document.querySelector(
     'script#editionData[type="application/json"]',
   );
@@ -99,6 +128,17 @@ export async function inspectHTML(
       );
     }
   }
+  if (unified)
+    data = {
+      title: unified.title,
+      editionDate: unified.editionDate,
+      sourceVerifiedAt: unified.sourceVerifiedAt ?? undefined,
+      items: unified.items.map((item) => ({
+        ...item,
+        event_id: item.eventId,
+        sources: item.sourceRecords.map((s) => s.url),
+      })),
+    };
   const items = Array.isArray(data.items) ? data.items.slice(0, 2000) : [];
   if (data.contentType === "ai-radar")
     throw new Error(
@@ -160,7 +200,7 @@ export async function inspectHTML(
       text,
       sources,
       date: editorialDate(a.date) || undefined,
-      firstSeenSlot: ["08:00", "16:00", "21:00"].includes(str(a.firstSeenSlot))
+      firstSeenSlot: slotSchema.safeParse(a.firstSeenSlot).success
         ? a.firstSeenSlot
         : undefined,
       kind: [
@@ -172,6 +212,8 @@ export async function inspectHTML(
       ].includes(str(a.kind))
         ? a.kind
         : undefined,
+      sourceWatch: unified ? a.sourceWatch : undefined,
+      editorialChangeAt: unified ? a.lastChangedAt : undefined,
     });
     if (!parsed.success) rejectedArticles++;
     return parsed.success ? [parsed.data] : [];
@@ -220,7 +262,22 @@ export async function inspectHTML(
     ) ||
     journalFilenameDate(filename) ||
     null;
-  const metadata = editorialMetadata(data, date, warnings);
+  const metadata = unified
+    ? {
+        schemaVersion: 2 as const,
+        dayKey: unified.editionId,
+        externalEditionId: unified.editionId,
+        externalRevision: unified.revision,
+        scheduleId: unified.scheduleId,
+        editionSlot: unified.editionSlot,
+        slotsIncluded: unified.slotsIncluded,
+        missingSlots: unified.missingSlots,
+        declaredCumulativeStatus: unified.cumulativeStatus,
+        cumulativeStatus: "UNKNOWN" as const,
+        importOrigin: "file" as const,
+        unified,
+      }
+    : editorialMetadata(data, date, warnings);
   const sourceVerifiedAt = verifiedInstant(data.sourceVerifiedAt, warnings);
   return editionSchema.parse({
     id,

@@ -29,6 +29,7 @@ import { GOOGLE_AI_ENTRY, readingQuestions } from "./googleAi";
 import { verifiedLabel } from "../data/editorial";
 import { resolveDay, dayKeyOf } from "../data/day";
 import { validateSourceUrl } from "./sourceUrl";
+import { PromptAccess } from "./unified/PromptAccess";
 import {
   parseGoogleAiMessage,
   validateGoogleDestination,
@@ -68,6 +69,7 @@ export function Reader({
   onDay?: (dayKey: string) => void;
   run: (action: () => Promise<unknown>, success?: string) => void;
 }) {
+  const secureByDefault = !!edition.unified;
   const surfaceRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const swipe = useRef<{
@@ -84,7 +86,7 @@ export function Reader({
   const [expanded, setExpanded] = useState(true);
   const [bytes, setBytes] = useState<Uint8Array>();
   const [mode, setMode] = useState<"safe" | "interactive" | "text">(
-    "interactive",
+    secureByDefault ? "safe" : "interactive",
   );
   const [confirm, setConfirm] = useState(false);
   const [font, setFont] = useState(18);
@@ -251,7 +253,7 @@ export function Reader({
   useEffect(() => {
     setExpanded(true);
     setBytes(undefined);
-    setMode("interactive");
+    setMode(secureByDefault ? "safe" : "interactive");
     setNote("");
     setLoadError("");
     let canceled = false;
@@ -263,7 +265,11 @@ export function Reader({
         if (!canceled) {
           if (o) {
             setBytes(o.bytes);
-            setMode(trust?.value === "safe" ? "safe" : "interactive");
+            setMode(
+              secureByDefault || trust?.value === "safe"
+                ? "safe"
+                : "interactive",
+            );
           } else
             setLoadError(
               "Original manquant. La lecture textuelle reste disponible.",
@@ -276,7 +282,7 @@ export function Reader({
     return () => {
       canceled = true;
     };
-  }, [edition.id]);
+  }, [edition.id, secureByDefault]);
   useEffect(() => {
     if (!expanded || !surfaceRef.current) return;
     const surface = surfaceRef.current;
@@ -865,6 +871,13 @@ export function Reader({
           </div>
         )}
       </div>
+      {(edition.collection === "sentinel" ||
+        !!edition.unified?.promptAssets.length) && (
+        <details className="reader-prompt-resources">
+          <summary>Prompts Markdown de cette édition</summary>
+          <PromptAccess key={edition.id} edition={edition} />
+        </details>
+      )}
       <section className="annotation-panel">
         <div>
           <p className="eyebrow">VOTRE REGARD</p>

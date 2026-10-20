@@ -1,6 +1,6 @@
 import type { Edition } from "./model";
 import { hash } from "./model";
-import { SLOTS, validDate, type Slot } from "./editorial";
+import { scheduleFor, V7_SCHEDULE, validDate, type Slot } from "./editorial";
 export function journalFilenameDate(filename: string): string | undefined {
   const date = filename.match(
     /^(?:LE[_ -])?JOURNAL[_ -]?360[_ -](\d{4}-\d{2}-\d{2})(?:[_ .-]|$)/i,
@@ -25,6 +25,8 @@ export function isDayVersion(e: Edition) {
   return !!dayKeyOf(e);
 }
 function publicationMinute(e: Edition) {
+  if (e.editionSlot)
+    return +e.editionSlot.slice(0, 2) * 60 + +e.editionSlot.slice(3);
   const clock = e.filename.match(
     /(?:^|[_ -])EDITION[_ -](\d{2})H(\d{2})?(?=[_ .-]|$)/i,
   );
@@ -51,6 +53,7 @@ function events(e: Edition) {
 }
 export function assessVersion(e: Edition, versions: Edition[]): Assessment {
   const issues: string[] = [];
+  const SLOTS = scheduleFor(e);
   const slots = e.slotsIncluded || [];
   const lastSlot = Math.max(-1, ...slots.map((s) => SLOTS.indexOf(s)));
   const missingSlots = [
@@ -59,7 +62,43 @@ export function assessVersion(e: Edition, versions: Edition[]): Assessment {
       ...SLOTS.slice(0, lastSlot + 1).filter((s) => !slots.includes(s)),
     ]),
   ];
-  const peers = versions.filter((v) => v.id !== e.id && v.sha256 !== e.sha256);
+  const peers = versions.filter(
+    (v) =>
+      v.id !== e.id &&
+      v.sha256 !== e.sha256 &&
+      (v.scheduleId || "legacy-3") === (e.scheduleId || "legacy-3"),
+  );
+  if (e.scheduleId === V7_SCHEDULE) {
+    const received = new Set([e, ...peers].map((v) => v.editionSlot));
+    const absent = SLOTS.slice(0, lastSlot + 1).filter((s) => !received.has(s));
+    for (const slot of absent)
+      if (!missingSlots.includes(slot)) missingSlots.push(slot);
+    if (e.unified?.sourcesNotVerified.length)
+      issues.push("Sources non vérifiées déclarées.");
+    if (
+      !e.sourceVerifiedAt ||
+      e.unified?.items.some((i) => i.evidenceStatus === "unverified")
+    )
+      issues.push(
+        "Vérification éditoriale insuffisante pour le cumul déclaré.",
+      );
+    const sequence = [e, ...peers].filter(
+      (v) => v.editionSlot && v.editionSlot <= e.editionSlot!,
+    );
+    if (
+      sequence.some((v) =>
+        sequence.some(
+          (other) =>
+            other.id !== v.id &&
+            other.sha256 !== v.sha256 &&
+            other.externalRevision === v.externalRevision,
+        ),
+      )
+    )
+      issues.push(
+        "Une révision de la chaîne présente plusieurs contenus concurrents.",
+      );
+  }
   const previous = peers
     .filter((v) => revision(v) < revision(e))
     .sort((a, b) => revision(b) - revision(a))[0];
@@ -72,6 +111,15 @@ export function assessVersion(e: Edition, versions: Edition[]): Assessment {
       .flatMap((v) => [...events(v)]),
   );
   const current = events(e);
+  if (e.scheduleId === V7_SCHEDULE) {
+    for (const [id, article] of current) {
+      if (
+        before.get(id)?.firstSeenSlot &&
+        before.get(id)?.firstSeenSlot !== article.firstSeenSlot
+      )
+        issues.push(`Première apparition modifiée pour ${id}.`);
+    }
+  }
   const removed = [...before.keys()].filter((id) => !current.has(id));
   if (!revision(e) || !slots.length)
     issues.push("Révision ou créneaux manquants.");

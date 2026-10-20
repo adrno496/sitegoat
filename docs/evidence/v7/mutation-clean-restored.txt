@@ -1,0 +1,9 @@
+
+ RUN  v5.0.4 /Users/dreano/Downloads/veille/veille
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  23:30:14
+   Duration  503ms (environment 58%, tests 18%, import 15%, transform 4%, setup 3%, worker 1%)
+

@@ -48,7 +48,22 @@ export function indexArticles(editions: Edition[]): IndexedArticle[] {
     }
     result.push(...indexed.values());
   }
-  return result;
+  // Cross-universe aliases require an explicit eventId and a V7 anchor on the
+  // same editorial date. Never merge unrelated legacy titles or other days.
+  const anchors = new Map(
+    result
+      .filter((i) => i.edition.unified && i.article.eventId)
+      .map((i) => [JSON.stringify([i.edition.date, i.article.eventId]), i]),
+  );
+  return result.filter((item) => {
+    const anchor =
+      item.article.eventId &&
+      anchors.get(JSON.stringify([item.edition.date, item.article.eventId]));
+    if (!anchor || anchor === item) return true;
+    for (const id of item.versions)
+      if (!anchor.versions.includes(id)) anchor.versions.push(id);
+    return false;
+  });
 }
 
 export function matchesArticle(item: IndexedArticle, query: string) {

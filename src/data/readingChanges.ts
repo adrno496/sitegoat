@@ -43,7 +43,15 @@ export function readingChanges(
   const previous = new Map(before.articles.map((a) => [a.eventId!, a]));
   const current = new Set(edition.articles.map((a) => a.eventId!));
   const content = (a: Article) =>
-    JSON.stringify([a.title, a.text, a.category, a.sources, a.kind, a.date]);
+    JSON.stringify([
+      a.title,
+      a.text,
+      a.category,
+      a.sources,
+      a.kind,
+      a.date,
+      a.editorialChangeAt,
+    ]);
   return {
     kind: "compared",
     added: edition.articles.filter((a) => !previous.has(a.eventId!)),

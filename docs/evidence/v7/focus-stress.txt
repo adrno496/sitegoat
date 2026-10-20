@@ -1,0 +1,54 @@
+[WebServer] (node:84032) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:84066) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 15 tests using 2 workers
+
+(node:84095) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84094) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (3.8s)
+  ✓   2 [chromium] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (4.1s)
+(node:84231) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84232) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   4 [chromium] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (3.1s)
+  ✓   3 [chromium] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (3.1s)
+(node:84245) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84244) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   5 [chromium] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (2.1s)
+(node:84267) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   6 [webkit] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (4.5s)
+(node:84280) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   7 [webkit] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (2.9s)
+(node:84292) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   8 [webkit] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (3.4s)
+(node:84306) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 [webkit] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (3.0s)
+(node:84334) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  11 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (2.0s)
+  ✓  10 [webkit] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (3.3s)
+(node:84353) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84355) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (1.9s)
+  ✓  12 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (1.9s)
+(node:84384) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84385) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  14 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (1.9s)
+  ✓  15 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (1.9s)
+
+  15 passed (33.8s)

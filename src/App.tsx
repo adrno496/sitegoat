@@ -92,6 +92,9 @@ import {
 import { CollectionView } from "./features/CollectionView";
 import { classifyFuture } from "./features/future/routing";
 import type { FutureFile } from "./features/future/import";
+const UnifiedWorkspace = lazy(
+  () => import("./features/unified/UnifiedWorkspace"),
+);
 const FutureView = lazy(() => import("./features/future/FutureView"));
 const FutureImportDialog = lazy(() => import("./features/future/ImportDialog"));
 type Tab =
@@ -120,39 +123,6 @@ const normalize = (s: string) =>
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLocaleLowerCase("fr");
-function Orbital() {
-  return (
-    <svg className="orbital" viewBox="0 0 460 400" aria-hidden="true">
-      <g fill="none" stroke="currentColor" strokeWidth="1">
-        <circle cx="240" cy="190" r="142" />
-        <ellipse cx="240" cy="190" rx="142" ry="54" />
-        <ellipse cx="240" cy="190" rx="142" ry="103" />
-        <ellipse cx="240" cy="190" rx="54" ry="142" />
-        <ellipse cx="240" cy="190" rx="103" ry="142" />
-        <path d="M98 190h284M240 48v284" />
-        <ellipse
-          cx="240"
-          cy="190"
-          rx="205"
-          ry="66"
-          transform="rotate(-30 240 190)"
-        />
-      </g>
-      <circle cx="73" cy="273" r="6" fill="#dca77d" />
-      <circle cx="371" cy="90" r="5" fill="#f0e9d9" />
-      <text
-        x="240"
-        y="207"
-        textAnchor="middle"
-        fill="#f0e9d9"
-        fontFamily="Georgia,serif"
-        fontSize="49"
-      >
-        360°
-      </text>
-    </svg>
-  );
-}
 export default function App() {
   const data = useLibrary();
   const allEditions = useMemo(
@@ -163,6 +133,7 @@ export default function App() {
       }),
     [data.editions],
   );
+  const [futureTarget, setFutureTarget] = useState("");
   const [tab, setTab] = useState<Tab>("today");
   const [selected, setSelected] = useState<string | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<string>();
@@ -234,7 +205,6 @@ export default function App() {
       ),
     [editions],
   );
-  const latest = displayedEditions[0];
   const searchableEditions = currentEditions(editions);
   const current = allEditions.find((e) => e.id === selected);
   const categories = [...new Set(editions.flatMap((e) => e.categories))].sort();
@@ -243,6 +213,12 @@ export default function App() {
   ]
     .sort()
     .reverse();
+  const openFutureDocument = useCallback((id?: string) => {
+    setFutureTarget(id || "");
+    setSelected(null);
+    setSelectedDay(null);
+    setTab("future");
+  }, []);
   const run = useCallback(
     (action: () => Promise<unknown>, success?: string) => {
       setBusy(true);
@@ -291,6 +267,16 @@ export default function App() {
           prospective.push(file);
           continue;
         }
+        if (
+          file.type &&
+          ![
+            "text/html",
+            "application/xhtml+xml",
+            "text/plain",
+            "application/octet-stream",
+          ].includes(file.type)
+        )
+          throw new Error("Type de fichier incohérent : HTML attendu.");
         const edition = inCollection(
           await inspectHTML(file.name, file.bytes, file.demo),
           destination,
@@ -509,6 +495,7 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: "instant" });
   }
   function navigate(next: Tab) {
+    setFutureTarget("");
     setSelectedArticle(undefined);
     readerHistory.reset();
     setSelected(null);
@@ -625,16 +612,8 @@ export default function App() {
     else list = sortEditions(list);
     return list;
   }, [allEditions, query, category, month, sort, libraryMode]);
-  const readCount = data.states.filter(
-    (s) =>
-      s.articleId === "edition" &&
-      s.read &&
-      editions.some((e) => e.id === s.editionId),
-  ).length;
-  const articleCount = useMemo(
-    () => indexArticles(editions).length,
-    [editions],
-  );
+  const indexedArticles = useMemo(() => indexArticles(editions), [editions]);
+  const articleCount = indexedArticles.length;
   const favorites = data.states.filter(
     (s) => s.favorite && editions.some((e) => e.id === s.editionId),
   );
@@ -926,10 +905,14 @@ export default function App() {
               {t.id === "articles" && <small>{articleCount}</small>}
               {isCollection(t.id) && (
                 <small>
-                  {
-                    editions.filter((e) => e.collection === t.id && !e.archived)
-                      .length
-                  }
+                  {editions.filter((e) => e.collection === t.id && !e.archived)
+                    .length +
+                    indexedArticles.filter(
+                      (i) =>
+                        !i.edition.collection &&
+                        !i.edition.archived &&
+                        i.article.sourceWatch === t.id,
+                    ).length}
                 </small>
               )}
             </button>
@@ -1067,7 +1050,10 @@ export default function App() {
           ))}
           {data.ready && tab === "future" && !current && !selectedDay && (
             <Suspense fallback={<p>Ouverture de Le Futur…</p>}>
-              <FutureView onImport={() => fileRef.current?.click()} />
+              <FutureView
+                initialDocumentId={futureTarget}
+                onImport={() => fileRef.current?.click()}
+              />
             </Suspense>
           )}
           {!data.ready ? (
@@ -1107,270 +1093,170 @@ export default function App() {
             <>
               {tab === "today" && (
                 <>
-                  <div className="welcome-row">
-                    <div>
-                      <p className="eyebrow">LE FIL DE VOTRE CURIOSITÉ</p>
-                      <h1>
-                        Une veille. <em>Une mémoire.</em>
-                      </h1>
-                    </div>
-                    <p className="today-date">
-                      {new Intl.DateTimeFormat("fr-FR", {
-                        weekday: "long",
-                        day: "numeric",
-                        month: "long",
-                        timeZone: "Europe/Paris",
-                      }).format(new Date())}
-                      <span>Votre bibliothèque personnelle</span>
-                    </p>
-                  </div>
-                  <section className="hero">
-                    <div className="hero-copy">
-                      <p className="eyebrow">
-                        {latest
-                          ? "DERNIÈRE ÉDITION DISPONIBLE"
-                          : "BIENVENUE DANS JOURNAL 360°"}
-                        <span className="hero-label">
-                          {latest?.demo
-                            ? "DÉMONSTRATION"
-                            : latest
-                              ? "VOTRE JOURNAL"
-                              : "LOCAL & PRIVÉ"}
-                        </span>
-                      </p>
-                      <h2>
-                        {latest ? (
-                          latest.title
-                        ) : (
-                          <>
-                            Les idées passent.
-                            <br />
-                            <em>Gardez le fil.</em>
-                          </>
-                        )}
-                      </h2>
-                      <p>
-                        {latest
-                          ? latest.excerpt
-                          : "Importez vos journaux HTML. Retrouvez vos lectures, reliez les sujets et construisez votre mémoire, une édition après l’autre."}
-                      </p>
-                      <button
-                        className="hero-button"
-                        onClick={() =>
-                          latest
-                            ? openEdition(latest.id)
-                            : fileRef.current?.click()
-                        }
-                      >
-                        {latest
-                          ? "Lire cette édition"
-                          : "Importer mon premier journal"}
-                        <ArrowRight size={18} />
-                      </button>
-                      <div className="hero-footer">
-                        {latest ? (
-                          <>
-                            <Clock size={14} />
-                            {dateLabel(latest.date)}
-                            <span>·</span>
-                            {latest.articles.length
-                              ? `${latest.articles.length} articles indexés`
-                              : "Lecture intégrale"}
-                          </>
-                        ) : (
-                          <>
-                            <ShieldCheck size={14} />
-                            Aucun compte requis pour commencer
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    <div className="hero-visual">
-                      <Orbital />
-                      <span className="visual-caption">
-                        L’ACTUALITÉ CHANGE.
-                        <br />
-                        VOTRE MÉMOIRE RESTE.
-                      </span>
-                    </div>
-                  </section>
-                  <section
-                    className="metric-strip"
-                    aria-label="Votre bibliothèque en chiffres"
-                  >
-                    {[
-                      {
-                        value: displayedEditions.length,
-                        label: "Éditions conservées",
-                        icon: Library,
-                      },
-                      {
-                        value: articleCount,
-                        label: "Articles indexés",
-                        icon: FileText,
-                      },
-                      {
-                        value: data.notes.filter((n) =>
-                          editions.some((e) => e.id === n.editionId),
-                        ).length,
-                        label: "Notes & décisions",
-                        icon: Bookmark,
-                      },
-                      { value: readCount, label: "Éditions lues", icon: Check },
-                    ].map((m) => (
-                      <div className="metric" key={m.label}>
-                        <m.icon size={19} />
-                        <div>
-                          <strong>{String(m.value).padStart(2, "0")}</strong>
-                          <span>{m.label}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </section>
-                  <div className="section-title">
-                    <div>
-                      <p className="eyebrow">À PORTÉE DE MAIN</p>
-                      <h2>Vos dernières éditions</h2>
-                    </div>
-                    <button
-                      className="text-button"
-                      onClick={() => navigate("library")}
-                    >
-                      Toute la bibliothèque
-                      <ArrowRight size={17} />
-                    </button>
-                  </div>
-                  {displayedEditions.length ? (
-                    <div className="edition-grid">
-                      {renderCards(
-                        displayedEditions
-                          .slice(0, 3)
-                          .flatMap((e) =>
-                            e.dayKey
-                              ? editions.filter(
-                                  (v) =>
-                                    v.dayKey &&
-                                    v.dayKey === e.dayKey &&
-                                    !v.archived,
-                                )
-                              : [e],
-                          ),
-                      )}
-                    </div>
-                  ) : (
-                    <div className="empty-library">
-                      <span className="empty-icon">
-                        <BookOpen size={28} />
-                      </span>
+                  <Suspense
+                    fallback={
                       <div>
-                        <h3>Votre première édition vous attend.</h3>
-                        <p>
-                          Un fichier HTML suffit. Sa mise en page, son texte et
-                          votre regard, au même endroit.
-                        </p>
+                        <h1>Journal 360° Unifié</h1>
+                        <p role="status">Ouverture du journal unifié…</p>
                       </div>
-                      <button
-                        className="secondary"
-                        onClick={() => run(importDemo)}
-                      >
-                        Essayer avec 2 éditions démo
-                        <ArrowUpRight size={16} />
-                      </button>
-                    </div>
-                  )}
-                  <div className="bottom-panels">
-                    <section className="memory-teaser">
-                      <p className="eyebrow">PLUS QU’UNE COLLECTION</p>
-                      <h2>
-                        Faites le lien
-                        <br />
-                        <em>entre les éditions.</em>
-                      </h2>
-                      <p>
-                        Vos favoris, vos notes et les événements communs
-                        deviennent une mémoire que vous pouvez retrouver.
-                      </p>
+                    }
+                  >
+                    <UnifiedWorkspace
+                      editions={allEditions}
+                      onOpen={openEdition}
+                      onDay={openDay}
+                      onNavigate={navigate}
+                      onImport={() => fileRef.current?.click()}
+                      onFuture={openFutureDocument}
+                    />
+                    <div className="section-title">
+                      <div>
+                        <p className="eyebrow">À PORTÉE DE MAIN</p>
+                        <h2>Vos dernières éditions</h2>
+                      </div>
                       <button
                         className="text-button"
-                        onClick={() => navigate("memory")}
+                        onClick={() => navigate("library")}
                       >
-                        Explorer ma mémoire
+                        Toute la bibliothèque
                         <ArrowRight size={17} />
                       </button>
-                      <span className="teaser-lines" aria-hidden="true">
-                        <i />
-                        <i />
-                        <i />
-                      </span>
-                    </section>
-                    <section className="quiet-panel">
-                      <div className="section-title">
-                        <h3>
-                          {recent
-                            ? "Reprendre une lecture"
-                            : "Pensé pour vous suivre"}
-                        </h3>
-                        <BookOpen size={20} />
+                    </div>
+                    {displayedEditions.length ? (
+                      <div className="edition-grid">
+                        {renderCards(
+                          displayedEditions
+                            .slice(0, 3)
+                            .flatMap((e) =>
+                              e.dayKey
+                                ? editions.filter(
+                                    (v) =>
+                                      v.dayKey &&
+                                      v.dayKey === e.dayKey &&
+                                      !v.archived,
+                                  )
+                                : [e],
+                            ),
+                        )}
                       </div>
-                      {recent ? (
-                        <>
-                          <p className="muted">
-                            Dernière ouverture enregistrée, sans estimation
-                            fictive de progression.
+                    ) : (
+                      <div className="empty-library">
+                        <span className="empty-icon">
+                          <BookOpen size={28} />
+                        </span>
+                        <div>
+                          <h3>Votre première édition vous attend.</h3>
+                          <p>
+                            Un fichier HTML suffit. Sa mise en page, son texte
+                            et votre regard, au même endroit.
                           </p>
-                          <h3>{resumeEdition?.title}</h3>
-                          <button
-                            className="secondary"
-                            onClick={() =>
-                              resumeEdition && openEdition(resumeEdition.id)
-                            }
-                          >
-                            Reprendre
-                            <ArrowRight size={16} />
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <div className="feature-row">
-                            <WifiOff />
-                            <div>
-                              <strong>Votre bibliothèque, hors ligne</strong>
-                              <p>Après le premier chargement et l’import.</p>
+                        </div>
+                        <button
+                          className="secondary"
+                          onClick={() => run(importDemo)}
+                        >
+                          Essayer avec 2 éditions démo
+                          <ArrowUpRight size={16} />
+                        </button>
+                      </div>
+                    )}
+                    <div className="bottom-panels">
+                      <section className="memory-teaser">
+                        <p className="eyebrow">PLUS QU’UNE COLLECTION</p>
+                        <h2>
+                          Faites le lien
+                          <br />
+                          <em>entre les éditions.</em>
+                        </h2>
+                        <p>
+                          Vos favoris, vos notes et les événements communs
+                          deviennent une mémoire que vous pouvez retrouver.
+                        </p>
+                        <button
+                          className="text-button"
+                          onClick={() => navigate("memory")}
+                        >
+                          Explorer ma mémoire
+                          <ArrowRight size={17} />
+                        </button>
+                        <span className="teaser-lines" aria-hidden="true">
+                          <i />
+                          <i />
+                          <i />
+                        </span>
+                      </section>
+                      <section className="quiet-panel">
+                        <div className="section-title">
+                          <h3>
+                            {recent
+                              ? "Reprendre une lecture"
+                              : "Pensé pour vous suivre"}
+                          </h3>
+                          <BookOpen size={20} />
+                        </div>
+                        {recent ? (
+                          <>
+                            <p className="muted">
+                              Dernière ouverture enregistrée, sans estimation
+                              fictive de progression.
+                            </p>
+                            <h3>{resumeEdition?.title}</h3>
+                            <button
+                              className="secondary"
+                              onClick={() =>
+                                resumeEdition && openEdition(resumeEdition.id)
+                              }
+                            >
+                              Reprendre
+                              <ArrowRight size={16} />
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <div className="feature-row">
+                              <WifiOff />
+                              <div>
+                                <strong>Votre bibliothèque, hors ligne</strong>
+                                <p>Après le premier chargement et l’import.</p>
+                              </div>
                             </div>
-                          </div>
-                          <div className="feature-row">
-                            <Download />
-                            <div>
-                              <strong>Une sauvegarde que vous gardez</strong>
-                              <p>Exportez vos éditions et vos annotations.</p>
+                            <div className="feature-row">
+                              <Download />
+                              <div>
+                                <strong>Une sauvegarde que vous gardez</strong>
+                                <p>Exportez vos éditions et vos annotations.</p>
+                              </div>
                             </div>
-                          </div>
-                          <div className="feature-row">
-                            <ShieldCheck />
-                            <div>
-                              <strong>Des originaux préservés</strong>
-                              <p>Vos fichiers HTML restent inchangés.</p>
+                            <div className="feature-row">
+                              <ShieldCheck />
+                              <div>
+                                <strong>Des originaux préservés</strong>
+                                <p>Vos fichiers HTML restent inchangés.</p>
+                              </div>
                             </div>
-                          </div>
-                        </>
-                      )}
-                    </section>
-                  </div>
-                  {editions.length > 0 && !lastBackup && !lastCloud && (
-                    <p className="backup-reminder">
-                      <Download size={16} />
-                      Pensez à exporter une sauvegarde : le stockage d’un
-                      navigateur peut être perdu.
-                      <button
-                        className="text-button"
-                        onClick={() =>
-                          run(localBackup, "Archive de sauvegarde téléchargée.")
-                        }
-                      >
-                        Sauvegarder
-                      </button>
-                    </p>
-                  )}
+                          </>
+                        )}
+                      </section>
+                    </div>
+                    {editions.length > 0 && !lastBackup && !lastCloud && (
+                      <p className="backup-reminder">
+                        <Download size={16} />
+                        Pensez à exporter une sauvegarde : le stockage d’un
+                        navigateur peut être perdu.
+                        <button
+                          className="text-button"
+                          onClick={() =>
+                            run(
+                              localBackup,
+                              "Archive de sauvegarde téléchargée.",
+                            )
+                          }
+                        >
+                          Sauvegarder
+                        </button>
+                      </p>
+                    )}
+                  </Suspense>
                 </>
               )}
               {tab === "library" && (

@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Archive,
   ArrowUpRight,
-  Download,
   FileText,
   Plus,
   Search,
@@ -15,10 +14,8 @@ import {
   sortEditions,
   type Edition,
 } from "../data/model";
-import { normalizeArticleSearch } from "../data/articles";
-import { db } from "../data/db";
-import { download } from "./backup";
-import { extractVscodePrompt, vscodePromptFilename } from "./vscodePrompt";
+import { indexArticles, normalizeArticleSearch } from "../data/articles";
+import { PromptAccess } from "./unified/PromptAccess";
 
 export function CollectionView({
   collection,
@@ -30,7 +27,7 @@ export function CollectionView({
   collection: Collection;
   editions: Edition[];
   onImport: () => void;
-  onOpen: (id: string) => void;
+  onOpen: (id: string, articleId?: string) => void;
   onUpdate: (
     id: string,
     patch: Partial<Pick<Edition, "archived" | "deleted">>,
@@ -38,41 +35,23 @@ export function CollectionView({
 }) {
   const [query, setQuery] = useState("");
   const [mode, setMode] = useState<"active" | "archived" | "trash">("active");
-  const [exporting, setExporting] = useState<string | null>(null);
-  const [exportStatus, setExportStatus] = useState({ id: "", message: "" });
-  async function exportPrompt(edition: Edition) {
-    setExporting(edition.id);
-    setExportStatus({ id: edition.id, message: "" });
-    try {
-      const original = await db.originals.get(edition.id);
-      if (!original)
-        throw new Error("Le HTML original est indisponible sur cet appareil.");
-      const prompt = extractVscodePrompt(original.bytes);
-      if (!prompt)
-        throw new Error(
-          "Aucun prompt VS Code identifiable dans ce document. Ouvrez le HTML pour le vérifier.",
-        );
-      download(
-        new Blob([prompt], { type: "text/markdown;charset=utf-8" }),
-        vscodePromptFilename(edition.filename),
-      );
-      setExportStatus({
-        id: edition.id,
-        message: "Téléchargement du prompt lancé.",
-      });
-    } catch (error) {
-      setExportStatus({
-        id: edition.id,
-        message:
-          error instanceof Error
-            ? error.message
-            : "Téléchargement impossible. Réessayez.",
-      });
-    } finally {
-      setExporting(null);
-    }
-  }
   const info = collections.find((item) => item.id === collection)!;
+  const unifiedItems = useMemo(
+    () =>
+      indexArticles(editions).filter(
+        (i) =>
+          i.edition.unified &&
+          !i.edition.collection &&
+          i.article.sourceWatch === collection &&
+          (mode === "archived"
+            ? i.edition.archived
+            : mode === "active" && !i.edition.archived) &&
+          normalizeArticleSearch(
+            i.article.title + " " + i.article.text,
+          ).includes(normalizeArticleSearch(query).trim()),
+      ),
+    [editions, collection, mode, query],
+  );
   const documents = sortEditions(
     editions.filter(
       (edition) =>
@@ -132,8 +111,40 @@ export function CollectionView({
         {documents.length} document{documents.length !== 1 ? "s" : ""} · Chaque
         HTML est conservé séparément.
       </p>
-      {documents.length ? (
+      {unifiedItems.length > 0 && (
+        <p>
+          {unifiedItems.length} article(s) de l’édition unifiée, sans copie de
+          l’original. Historique et restauration dans Bibliothèque.
+        </p>
+      )}
+      {documents.length || unifiedItems.length ? (
         <div className="edition-grid">
+          {unifiedItems.map((item) => (
+            <article className="collection-card" key={item.key}>
+              <p className="eyebrow">{info.label} · ÉDITION UNIFIÉE</p>
+              <h2>{item.article.title}</h2>
+              <p>{item.article.text.slice(0, 400)}</p>
+              <p className="muted">
+                {dateLabel(item.edition.date)} · original conservé dans
+                Bibliothèque
+              </p>
+              <button
+                className="text-button"
+                onClick={() => onOpen(item.edition.id, item.article.id)}
+              >
+                Ouvrir l’article dans le HTML <ArrowUpRight size={16} />
+              </button>
+              {collection === "sentinel" &&
+                item.edition.unified?.promptAssets.some(
+                  (p) => p.eventId === item.article.eventId,
+                ) && (
+                  <PromptAccess
+                    edition={item.edition}
+                    eventId={item.article.eventId}
+                  />
+                )}
+            </article>
+          ))}
           {documents.map((edition) => (
             <article className="collection-card" key={edition.id}>
               <div className="collection-card-top">
@@ -170,18 +181,7 @@ export function CollectionView({
                       Ouvrir le HTML
                       <ArrowUpRight size={16} />
                     </button>
-                    {collection === "sentinel" && (
-                      <button
-                        className="text-button"
-                        disabled={exporting !== null}
-                        onClick={() => void exportPrompt(edition)}
-                      >
-                        <Download size={16} />
-                        {exporting === edition.id
-                          ? "Préparation du prompt…"
-                          : "Télécharger le prompt VS Code (.md)"}
-                      </button>
-                    )}
+
                     <button
                       className="text-button"
                       onClick={() =>
@@ -201,10 +201,8 @@ export function CollectionView({
                   </>
                 )}
               </div>
-              {exportStatus.id === edition.id && (
-                <p className="muted" role="status">
-                  {exportStatus.message}
-                </p>
+              {collection === "sentinel" && mode !== "trash" && (
+                <PromptAccess key={edition.sha256} edition={edition} />
               )}
             </article>
           ))}

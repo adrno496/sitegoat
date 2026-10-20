@@ -1,0 +1,13 @@
+
+> journal360-mobile@2.0.7 test:performance
+> vitest run --config vitest.performance.config.ts
+
+
+ RUN  v5.0.4 /private/tmp/journal360-v7-rollback-43f8b56
+
+
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+   Start at  18:24:17
+   Duration  42.83s (tests 97%, environment 2%)
+

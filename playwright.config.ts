@@ -22,7 +22,7 @@ export default defineConfig({
     { name: "webkit", use: { ...devices["Desktop Safari"] } },
     {
       name: "chromium-mobile",
-      testMatch: /(?:^|\/)(?:google-ai|v6)[^/]*\.spec\.ts$/,
+      testMatch: /(?:^|\/)(?:google-ai|v[67])[^/]*\.spec\.ts$/,
       use: { ...devices["Pixel 7"] },
     },
   ],

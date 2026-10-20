@@ -1,14 +1,36 @@
+import { validateUnified } from "../data/unified";
+export interface VscodePrompt {
+  id: string;
+  title: string;
+  content: string;
+  filename: string;
+  eventId?: string;
+  sha256?: string;
+  product?: string;
+}
 /** Read the imported document as inert data; never mount it or run its scripts. */
-export function extractVscodePrompt(bytes: Uint8Array): string | null {
+export function extractVscodePrompts(bytes: Uint8Array): VscodePrompt[] {
   const document = new DOMParser().parseFromString(
     new TextDecoder().decode(bytes),
     "text/html",
   );
+  const unifiedBlock = document.querySelector(
+    'script#unifiedData[type="application/json"]',
+  );
+  if (unifiedBlock) {
+    const payload = validateUnified(
+      JSON.parse(unifiedBlock.textContent || "null"),
+    );
+    return payload.promptAssets.map((asset) => ({
+      ...asset,
+      id: asset.promptId,
+    }));
+  }
   const explicit = document.querySelectorAll(
-    "textarea#fullPrompt, textarea#vscodePrompt, textarea#promptVscode, [data-prompt-vscode]",
+    ":is(textarea,pre)#fullPrompt, :is(textarea,pre)#vscodePrompt, :is(textarea,pre)#promptVscode, :is(textarea,pre)[data-prompt-vscode]",
   );
   const blocks = new Set<Element>(explicit);
-  if (!blocks.size) {
+  {
     for (const heading of document.querySelectorAll("h1,h2,h3,h4,summary")) {
       if (
         !/prompt/i.test(heading.textContent || "") ||
@@ -29,20 +51,34 @@ export function extractVscodePrompt(bytes: Uint8Array): string | null {
       }
     }
   }
-  const prompts = new Set(
-    [...blocks]
-      .map((block) =>
-        block instanceof HTMLTextAreaElement
-          ? block.value
-          : block.textContent || "",
-      )
-      .filter((text) => text.trim()),
-  );
-  if (prompts.size > 1)
-    throw new Error(
-      "Plusieurs prompts ont été trouvés. Ouvrez le HTML pour choisir le prompt à exporter.",
-    );
-  return [...prompts][0] ?? null;
+  const prompts = new Map<string, string>();
+  for (const block of blocks) {
+    const content =
+      block instanceof HTMLTextAreaElement
+        ? block.value
+        : block.textContent || "";
+    const title = (
+      block.getAttribute("aria-label") ||
+      block.closest("section,article")?.querySelector("h1,h2,h3,h4")
+        ?.textContent ||
+      ""
+    )
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 500);
+    if (content.trim() && !prompts.has(content)) prompts.set(content, title);
+  }
+  return [...prompts].map(([content, title], index) => ({
+    id: `legacy-${index + 1}`,
+    title: title || `Prompt VS Code ${index + 1}`,
+    content,
+    filename: `prompt-${index + 1}.md`,
+  }));
+}
+// Compatibility helper: a singular export never guesses among multiple prompts.
+export function extractVscodePrompt(bytes: Uint8Array): string | null {
+  const prompts = extractVscodePrompts(bytes);
+  return prompts.length === 1 ? prompts[0].content : null;
 }
 
 export function vscodePromptFilename(filename: string): string {

@@ -1,0 +1,36 @@
+[WebServer] (node:41874) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:41881) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 21 tests using 1 worker
+
+(node:41882) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/v6-collections.spec.ts:41:1 › IA majeur et Sentinel : imports dirigés, documents de même date, doublons séparés et retour du lecteur (1.8s)
+  ✓   2 [chromium] › tests/e2e/v6-collections.spec.ts:82:1 › destination modifiable à l’import, recherche, archives, corbeille et mode hors ligne (1.3s)
+  ✓   3 [chromium] › tests/e2e/v6-collections.spec.ts:135:1 › navigation mobile visible et accessibilité des deux nouveaux espaces (1.3s)
+  ✓   4 [chromium] › tests/e2e/v6-collections.spec.ts:172:1 › Sentinel : télécharge le prompt Markdown exact depuis une carte existante, même hors ligne (1.5s)
+  ✓   5 [chromium] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (1.2s)
+  ✓   6 [chromium] › tests/e2e/v7-unified.spec.ts:104:1 › V7 : mobile, clavier, thèmes, absence de données, sources, reduced motion et radar comparable (3.6s)
+  ✓   7 [chromium] › tests/e2e/v7-unified.spec.ts:179:1 › V7 : HTML hostile lu sans scripts, question publique conservée, prompt privé non transmis (730ms)
+(node:42075) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   8 [webkit] › tests/e2e/v6-collections.spec.ts:41:1 › IA majeur et Sentinel : imports dirigés, documents de même date, doublons séparés et retour du lecteur (2.4s)
+  ✓   9 [webkit] › tests/e2e/v6-collections.spec.ts:82:1 › destination modifiable à l’import, recherche, archives, corbeille et mode hors ligne (1.7s)
+  ✓  10 [webkit] › tests/e2e/v6-collections.spec.ts:135:1 › navigation mobile visible et accessibilité des deux nouveaux espaces (1.8s)
+  ✓  11 [webkit] › tests/e2e/v6-collections.spec.ts:172:1 › Sentinel : télécharge le prompt Markdown exact depuis une carte existante, même hors ligne (1.8s)
+  ✓  12 [webkit] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (1.8s)
+  ✓  13 [webkit] › tests/e2e/v7-unified.spec.ts:104:1 › V7 : mobile, clavier, thèmes, absence de données, sources, reduced motion et radar comparable (4.9s)
+  ✓  14 [webkit] › tests/e2e/v7-unified.spec.ts:179:1 › V7 : HTML hostile lu sans scripts, question publique conservée, prompt privé non transmis (1.2s)
+(node:42192) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  15 [chromium-mobile] › tests/e2e/v6-collections.spec.ts:41:1 › IA majeur et Sentinel : imports dirigés, documents de même date, doublons séparés et retour du lecteur (1.6s)
+  ✓  16 [chromium-mobile] › tests/e2e/v6-collections.spec.ts:82:1 › destination modifiable à l’import, recherche, archives, corbeille et mode hors ligne (1.3s)
+  ✓  17 [chromium-mobile] › tests/e2e/v6-collections.spec.ts:135:1 › navigation mobile visible et accessibilité des deux nouveaux espaces (1.4s)
+  ✓  18 [chromium-mobile] › tests/e2e/v6-collections.spec.ts:172:1 › Sentinel : télécharge le prompt Markdown exact depuis une carte existante, même hors ligne (1.5s)
+  ✓  19 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (1.3s)
+  ✓  20 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:104:1 › V7 : mobile, clavier, thèmes, absence de données, sources, reduced motion et radar comparable (5.7s)
+  ✓  21 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:179:1 › V7 : HTML hostile lu sans scripts, question publique conservée, prompt privé non transmis (8.0s)
+
+  21 passed (51.4s)

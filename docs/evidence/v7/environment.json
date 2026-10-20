@@ -1,0 +1,16 @@
+{
+  "node": "v24.21.0",
+  "platform": "darwin",
+  "arch": "arm64",
+  "sourceArchiveRestoredFiles": 430,
+  "reference": "43f8b567e50521555f1772d0a9a853d4209f3d22",
+  "recordedAtUTC": "2026-10-20T20:57:34.362Z",
+  "clientTimezone": "Europe/Paris",
+  "browsers": {
+    "chromium": "156.0.8078.4",
+    "webkit": "27.2"
+  },
+  "playwright": "1.64.0",
+  "macOS": "15.7.9",
+  "darwinRelease": "24.6.0"
+}

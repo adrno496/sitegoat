@@ -1,0 +1,27 @@
+
+ RUN  v5.0.4 /Users/dreano/Downloads/veille/veille
+
+ ❯ tests/v7-integrity.unit.test.ts (1 test | 1 failed) 50ms
+   × V7 : une enveloppe complète conserve ses identités, preuves et prompts entiers 49ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  23:30:13
+   Duration  486ms (environment 61%, import 16%, tests 13%, transform 5%, setup 4%, worker 1%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/v7-integrity.unit.test.ts > V7 : une enveloppe complète conserve ses identités, preuves et prompts entiers
+Error: Prompt tronqué ou checksum Markdown invalide.
+ ❯ inspectHTML src/features/import.ts:108:15
+    106|         (await hash(new TextEncoder().encode(prompt.content))) !== pro…
+    107|       )
+    108|         throw new Error("Prompt tronqué ou checksum Markdown invalide.…
+       |               ^
+    109|     for (const payload of unified.futureDocuments) validateFuture(payl…
+    110|   }
+ ❯ tests/v7-integrity.unit.test.ts:15:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

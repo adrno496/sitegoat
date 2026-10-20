@@ -3,7 +3,7 @@ import { readingChanges, changesLabel } from "../data/readingChanges";
 import type { Edition, Note, ReadingState } from "../data/model";
 import { dateLabel, sizeLabel } from "../data/model";
 import { resolveDay } from "../data/day";
-import { SLOTS, verifiedLabel } from "../data/editorial";
+import { scheduleFor, verifiedLabel } from "../data/editorial";
 import { validateSourceUrl } from "./sourceUrl";
 import { Star } from "lucide-react";
 
@@ -59,7 +59,7 @@ export function DayCard({
       </p>
       {!!current.slotsIncluded?.length && (
         <div className="day-slots">
-          {SLOTS.map((slot) => (
+          {scheduleFor(current).map((slot) => (
             <span
               key={slot}
               className={
@@ -179,7 +179,7 @@ export function DayView({
         {versions.length} versions · {assessment.status} · {selected.dayKey}
       </p>
       <div className="day-slots">
-        {SLOTS.map((slot) => (
+        {scheduleFor(selected).map((slot) => (
           <span key={slot}>
             {slot} :{" "}
             {selected.slotsIncluded?.includes(slot)

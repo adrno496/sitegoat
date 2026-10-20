@@ -1,0 +1,28 @@
+
+ RUN  v5.0.4 /Users/dreano/Downloads/veille/veille
+
+ ❯ tests/unified-v7.unit.test.ts (14 tests | 1 failed) 909ms
+   × P4 : les publications économiques sont ordonnées par instant réel malgré des décalages ISO différents 25ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unified-v7.unit.test.ts > P4 : les publications économiques sont ordonnées par instant réel malgré des décalages ISO différents
+AssertionError: expected 100 to be 101 // Object.is equality
+
+- Expected
++ Received
+
+- 101
++ 100
+
+ ❯ tests/unified-v7.unit.test.ts:305:54
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 13 passed (14)
+   Start at  23:00:53
+   Duration  1.67s (tests 59%, environment 29%, import 7%, transform 4%, setup 1%)
+

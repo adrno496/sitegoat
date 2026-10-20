@@ -1,0 +1,97 @@
+[
+  {
+    "file": "src/features/googleAi.ts",
+    "sha256": "f70f13a6cdb35e9692c108ec05c34a1176792f372a95ca3fbf6d8380cfb651ac",
+    "unchanged": true
+  },
+  {
+    "file": "src/features/GoogleAiDialog.tsx",
+    "sha256": "a755a2f601a70e9934477a8e0345092c01fc03a9d513da61287eab0995a9050e",
+    "unchanged": true
+  },
+  {
+    "file": "src/features/googleAiSession.ts",
+    "sha256": "e152d6fcf6267b1d2b4103e83776e2bc598b3278e2305d047409710445e70d79",
+    "unchanged": true
+  },
+  {
+    "file": "src/features/future/import.ts",
+    "sha256": "083a3968abcf03ea928fa6d8a8c80e0137c67df890eb96836e81ab0625db7722",
+    "unchanged": true
+  },
+  {
+    "file": "src/features/future/schema.ts",
+    "sha256": "e6d21af3c25f44b2e49120a4bd4868ee726c2b2f8cad53a303328652f45c33d2",
+    "unchanged": true
+  },
+  {
+    "file": "src/features/future/db.ts",
+    "sha256": "6e350368124565ea0c43cea6598f902741430f39c1ff6e4ff44ce2fccb82aab9",
+    "unchanged": true
+  },
+  {
+    "file": "src/features/future/backup.ts",
+    "sha256": "1eeea597589b616e5e0ccc35ee3fc98d48a25edc294c79369f0dd68a00542058",
+    "unchanged": true
+  },
+  {
+    "file": "src/data/db.ts",
+    "sha256": "9635831fe8e2a86c070984add73b4895fba2fdb6c6aacb9be24abf48d578038d",
+    "unchanged": true
+  },
+  {
+    "file": "src/features/cloud.ts",
+    "sha256": "989a5398732e012146e16c8c3160ee0258a3ac9e2630ac7090c133737c69d7ae",
+    "unchanged": true
+  },
+  {
+    "file": "src/features/sync.ts",
+    "sha256": "54adbe41788e1dfb433611ca8521302d875cbf489f8f3a61e6c9cbe087060ba2",
+    "unchanged": true
+  },
+  {
+    "file": "src/sw.ts",
+    "sha256": "7f818e5abb9af0641ced6c3f5adf7c81cbbffe4f7e03b4ec1d35968ed467cf39",
+    "unchanged": true
+  },
+  {
+    "file": "vercel.json",
+    "sha256": "076c92da3300b4e9c738569f174c7be0a87039b6da7de284de1e43611a897d3d",
+    "unchanged": true
+  },
+  {
+    "file": "package.json",
+    "sha256": "262c98d8c544afa30b8cf32b5901b9d280337cec4c558d01fada946c8449aeea",
+    "unchanged": true
+  },
+  {
+    "file": "package-lock.json",
+    "sha256": "7585c5c554c937fab41c2a46b1897ef5ed5e6d4b3d66d4647bdfa1431c4e89d8",
+    "unchanged": true
+  },
+  {
+    "file": "src/styles.css",
+    "sha256": "5f8a6271dc72c62178a754f91715c30a24fe7b0470e21fa573779bca3c776126",
+    "unchanged": true
+  },
+  {
+    "file": "src/features/future/FutureTimeline.tsx",
+    "sha256": "b23f44215f752d54fa9843465a86ebbfc40076b773515d5ea793ed6f681020dc",
+    "unchanged": true
+  },
+  {
+    "file": "src/features/future/FutureScenarioCompare.tsx",
+    "sha256": "be0416baf82711fd383d5e73e4931ed36d07a6842bb9167a29f756cb7711e5cb",
+    "unchanged": true
+  },
+  {
+    "file": "src/features/future/FutureSignals.tsx",
+    "sha256": "bbb1692517336d9bf8a2b7fde658c4b15ba6f3b257dcab3b615aa5c439f28eb1",
+    "unchanged": true
+  },
+  {
+    "file": "src/features/future/FutureActions.tsx",
+    "sha256": "05aa0f3aa1457d96e07ed7fd12d5373194dd53359fc2817d46704cc59be550d9",
+    "unchanged": true
+  }
+]

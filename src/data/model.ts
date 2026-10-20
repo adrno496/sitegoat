@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { unifiedSchema } from "./unified";
 import {
   calendarSchema,
   dayKeySchema,
@@ -17,6 +18,10 @@ export const articleSchema = z.object({
   kind: z
     .enum(["news", "business", "hypothesis", "technical", "decision"])
     .optional(),
+  sourceWatch: z
+    .enum(["journal360", "future", "sentinel", "ai-major"])
+    .optional(),
+  editorialChangeAt: z.string().optional(),
 });
 export const editionSchema = z.object({
   id: z.uuid(),
@@ -46,10 +51,13 @@ export const editionSchema = z.object({
   dayKey: dayKeySchema.optional(),
   externalEditionId: z.string().max(200).optional(),
   externalRevision: z.number().int().min(1).max(1_000_000).optional(),
-  slotsIncluded: z.array(slotSchema).max(3).optional(),
+  scheduleId: z.enum(["legacy-3", "paris-v7-8"]).optional(),
+  editionSlot: slotSchema.optional(),
+  unified: unifiedSchema.optional(),
+  slotsIncluded: z.array(slotSchema).max(8).optional(),
   declaredCumulativeStatus: cumulativeSchema.optional(),
   cumulativeStatus: cumulativeSchema.optional(),
-  missingSlots: z.array(slotSchema).max(3).optional(),
+  missingSlots: z.array(slotSchema).max(8).optional(),
   retiredEventIds: z.array(z.string().max(200)).max(2000).optional(),
   independent: z.boolean().optional(),
   supersedes: z.uuid().optional(),

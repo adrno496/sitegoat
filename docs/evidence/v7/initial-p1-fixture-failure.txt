@@ -1,0 +1,61 @@
+
+ RUN  v5.0.4 /Users/dreano/Downloads/veille/veille
+
+ ❯ tests/unified-v7.unit.test.ts (6 tests | 4 failed) 310ms
+   × P1 : huit éditions, arrivée désordonnée, cumul contrôlé, doublon, archive 21 h et états intacts 61ms
+   × P1 : une chaîne absente reste partielle, une première apparition ne peut pas être réécrite 26ms
+   × P1/P2 : les huit fichiers autonomes correspondent au contrat et conservent les vrais premiers créneaux 194ms
+   × P2 : détecte un doublon intentionnel, une correction sans preuve et un prompt tronqué 21ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unified-v7.unit.test.ts > P1 : huit éditions, arrivée désordonnée, cumul contrôlé, doublon, archive 21 h et états intacts
+Error: Vérification ou publication datée dans le futur.
+ ❯ validateUnified src/data/unified.ts:60:282
+
+ ❯ inspectHTML src/features/import.ts:88:7
+ ❯ add tests/unified-v7.unit.test.ts:18:73
+ ❯ tests/unified-v7.unit.test.ts:19:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unified-v7.unit.test.ts > P1 : une chaîne absente reste partielle, une première apparition ne peut pas être réécrite
+Error: Vérification ou publication datée dans le futur.
+ ❯ validateUnified src/data/unified.ts:60:282
+
+ ❯ inspectHTML src/features/import.ts:88:7
+ ❯ tests/unified-v7.unit.test.ts:34:76
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unified-v7.unit.test.ts > P1/P2 : les huit fichiers autonomes correspondent au contrat et conservent les vrais premiers créneaux
+Error: Vérification ou publication datée dans le futur.
+ ❯ validateUnified src/data/unified.ts:60:282
+
+ ❯ inspectHTML src/features/import.ts:88:7
+ ❯ tests/unified-v7.unit.test.ts:43:277
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unified-v7.unit.test.ts > P2 : détecte un doublon intentionnel, une correction sans preuve et un prompt tronqué
+AssertionError: expected [Function] to throw error including 'tronqué' but got 'Vérification ou publication datée dan…'
+
+Expected: "tronqué"
+Received: "Vérification ou publication datée dans le futur."
+
+ ❯ tests/unified-v7.unit.test.ts:48:161
+     46|  const duplicate=fixture();duplicate.items.push(duplicate.items[0]);ex…
+     47|  const correction=fixture();correction.items[0].corrections[0].sourceI…
+     48|  const truncated=fixture();truncated.promptAssets[0].content=truncated…
+       |                                                                                                                                                                 ^
+     49| });
+     50| it('P2 : rejette plans mélangés, jalons observés futurs, séries incomp…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  4 failed | 56 passed (60)
+   Start at  18:27:23
+   Duration  2.80s (tests 55%, environment 26%, import 11%, transform 5%, setup 2%)
+

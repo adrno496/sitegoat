@@ -17,7 +17,7 @@ import {
 import { LocalRepository } from "../data/db";
 const manifestSchema = z.object({
   format: z.literal("journal360"),
-  formatVersion: z.union([z.literal(1), z.literal(2)]),
+  formatVersion: z.union([z.literal(1), z.literal(2), z.literal(3)]),
   appVersion: z.string(),
   generatedAt: z.iso.datetime(),
   privacyWarning: z.string(),
@@ -41,11 +41,11 @@ export async function exportBackup(
   const manifest = JSON.stringify(
     manifestSchema.parse({
       format: "journal360",
-      formatVersion: data.editions.some(
-        (e) => e.schemaVersion === 2 || e.dayKey,
-      )
-        ? 2
-        : 1,
+      formatVersion: data.editions.some((e) => e.unified)
+        ? 3
+        : data.editions.some((e) => e.schemaVersion === 2 || e.dayKey)
+          ? 2
+          : 1,
       appVersion: APP_VERSION,
       generatedAt: now(),
       privacyWarning:
@@ -91,6 +91,11 @@ export async function inspectBackup(bytes: Uint8Array): Promise<BackupData> {
     throw new Error("Trop de fichiers dans cette archive.");
   let total = 0;
   for (const entry of entries) {
+    if (
+      Reflect.get(entry, "unsafeOriginalName") &&
+      Reflect.get(entry, "unsafeOriginalName") !== entry.name
+    )
+      throw new Error("Chemin ZIP non autorisé.");
     if (entry.dir) continue;
     const internal = Reflect.get(entry, "_data") as
       { uncompressedSize?: number } | undefined;
@@ -167,7 +172,25 @@ export async function restoreBackup(
         if (same) {
           mapping.set(e.id, same.id);
           if (mode === "sync" && newer(e, same))
-            await repository.editions.put({ ...e, id: same.id });
+            await repository.editions.put({
+              ...e,
+              ...(same.unified && !e.unified
+                ? {
+                    unified: same.unified,
+                    scheduleId: same.scheduleId,
+                    editionSlot: same.editionSlot,
+                    slotsIncluded: same.slotsIncluded,
+                    missingSlots: same.missingSlots,
+                    externalEditionId: same.externalEditionId,
+                    externalRevision: same.externalRevision,
+                    sourceVerifiedAt: same.sourceVerifiedAt,
+                    declaredCumulativeStatus: same.declaredCumulativeStatus,
+                    cumulativeStatus: same.cumulativeStatus,
+                    articles: same.articles,
+                  }
+                : {}),
+              id: same.id,
+            });
           continue;
         }
         const id = exact

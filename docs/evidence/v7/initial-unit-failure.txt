@@ -1,0 +1,49 @@
+
+> journal360-mobile@2.0.7 lint
+> eslint .
+
+
+/Users/dreano/Downloads/veille/veille/src/features/Reader.tsx
+  284:6  warning  React Hook useEffect has a missing dependency: 'edition.unified'. Either include it or remove the dependency array. If 'setMode' needs the current value of 'edition.unified', you can also switch to useReducer instead of useState and read 'edition.unified' in the reducer  react-hooks/exhaustive-deps
+
+✖ 1 problem (0 errors, 1 warning)
+
+
+> journal360-mobile@2.0.7 typecheck
+> tsc -b
+
+
+> journal360-mobile@2.0.7 test
+> vitest run
+
+
+ RUN  v5.0.4 /Users/dreano/Downloads/veille/veille
+
+ ❯ tests/unified-v7.unit.test.ts (8 tests | 1 failed) 2024ms
+   × P6 : archive historique restaurable et métadonnées V7 préservées face à un ancien snapshot simulé 8ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unified-v7.unit.test.ts > P6 : archive historique restaurable et métadonnées V7 préservées face à un ancien snapshot simulé
+Error: Chemin ZIP non autorisé.
+ ❯ inspectBackup src/features/backup.ts:110:13
+    108|       !/^files\/[a-f0-9-]{36}\.html$/.test(entry.name)
+    109|     )
+    110|       throw new Error("Chemin ZIP non autorisé.");
+       |             ^
+    111|   }
+    112|   const file = zip.file("manifest.json");
+ ❯ tests/unified-v7.unit.test.ts:146:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 20 passed (21)
+      Tests  1 failed | 273 passed (274)
+   Start at  18:38:51
+   Duration  7.73s (tests 50%, environment 34%, import 11%, transform 3%, setup 2%)
+
+Environment  jsdom was created 21 times · 15.19s total, 34% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+

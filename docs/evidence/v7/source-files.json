@@ -1,0 +1,230 @@
+[
+  {
+    "file": "README.md",
+    "sha256": "7e41246416627f2a2d554bb1cdc1e1be0e7deca1b2295edc281ed291a9141e71"
+  },
+  {
+    "file": "docs/JOURNAL360_UNIFIED_V7.schema.json",
+    "sha256": "f1d34b4f4cd73dad3bd419442ff60ae9181b042223270382ad8f509de52a14a1"
+  },
+  {
+    "file": "docs/JOURNAL360_V7_IMPORT_GUIDE.md",
+    "sha256": "5f734980e0918979eaa635b2110b7b4962f57bad8bd9a4c278e4cc765567995a"
+  },
+  {
+    "file": "playwright.config.ts",
+    "sha256": "ebef0073afd9ed3d8a4c407d79179807147099a8106fbd7f872d1b1c1b00cf65"
+  },
+  {
+    "file": "public/examples/unified/J360_2026-10-19_SENTINEL_audit-a_VSCODE.md",
+    "sha256": "96726a189174922ee2ef4b622d7576c17c76e52d6d46074332962c1abfbd4af9"
+  },
+  {
+    "file": "public/examples/unified/J360_2026-10-19_SENTINEL_audit-b_VSCODE.md",
+    "sha256": "1cbf477ab72376ec3725b53c51dfc860929bdd4c479cae8e2d11e4ed884e5892"
+  },
+  {
+    "file": "public/examples/unified/JOURNAL360_2026-10-19_EDITION_08H00.html",
+    "sha256": "461f464f7f8fdc44926b256afb83d53c4905a530c7e2b4858101453f7c3112e5"
+  },
+  {
+    "file": "public/examples/unified/JOURNAL360_2026-10-19_EDITION_10H00.html",
+    "sha256": "cdc0d6783754e686d858b6bc2ba11bfed9ad203641e0cbef6026ee61fecd6be3"
+  },
+  {
+    "file": "public/examples/unified/JOURNAL360_2026-10-19_EDITION_12H00.html",
+    "sha256": "fe69b266017c88e0a8c79553751d7dd2dfa11d828145672603fba2dc83246e17"
+  },
+  {
+    "file": "public/examples/unified/JOURNAL360_2026-10-19_EDITION_14H00.html",
+    "sha256": "0250f00ef58c0932c57f1b1532078e158e51f8e6dbe4fbd9486bc0ddbecce4cd"
+  },
+  {
+    "file": "public/examples/unified/JOURNAL360_2026-10-19_EDITION_16H00.html",
+    "sha256": "044c2760bf29aab6bbd1d703bfae0953a4c45b42a57048b2a513116233b52037"
+  },
+  {
+    "file": "public/examples/unified/JOURNAL360_2026-10-19_EDITION_18H00.html",
+    "sha256": "765dae543dce6ec66d81374292000b204fb078fd5ab37e65db47da176e995e01"
+  },
+  {
+    "file": "public/examples/unified/JOURNAL360_2026-10-19_EDITION_20H00.html",
+    "sha256": "ed5d0141f4f6961e2c02b60d9b2b752b3980941a00d36187cd9090a8c301711d"
+  },
+  {
+    "file": "public/examples/unified/JOURNAL360_2026-10-19_EDITION_22H00.html",
+    "sha256": "8256a0464040d75ed4c9c80588b1384f4510220a5698fc3f4ed7dedc80d9b6a5"
+  },
+  {
+    "file": "public/examples/unified/README.md",
+    "sha256": "f75ae7210830bdc14f1d7380102b84cb34ed88e03f4f6c2966029f1449dbe362"
+  },
+  {
+    "file": "public/examples/unified/edition-0800.json",
+    "sha256": "d288f3be28773507e922209c59693dbd8875b318331323ef8763d3712d3902dd"
+  },
+  {
+    "file": "public/examples/unified/edition-1000.json",
+    "sha256": "623b449f112c81148aaa47fab3f8108121b0ec703a0c74793294a84f50ec8aaf"
+  },
+  {
+    "file": "public/examples/unified/edition-1200.json",
+    "sha256": "dc36f398bb21e272e4aa7c7aed8f8788be568f3865e8b9a2584a27338f5ec40b"
+  },
+  {
+    "file": "public/examples/unified/edition-1400.json",
+    "sha256": "51e880d70a0fbb8b12d405d66de2e1c79627fb87809914cc2e3d7e407eff377d"
+  },
+  {
+    "file": "public/examples/unified/edition-1600.json",
+    "sha256": "283fa534d2182393862dd3cfeaf450498d7e143cd05f4bafafc72754d48e8f58"
+  },
+  {
+    "file": "public/examples/unified/edition-1800.json",
+    "sha256": "9a5fbfe37b8f228ea9298d10bd94fd4a1acb78340ad2df8a3fc1273d8f6829d4"
+  },
+  {
+    "file": "public/examples/unified/edition-2000.json",
+    "sha256": "86d66446aa87cb9af1131b6532368cbe14d04f6197161f510bb4bd46da5fc83f"
+  },
+  {
+    "file": "public/examples/unified/edition-2200.json",
+    "sha256": "2b2a4f920d6934fe962914fe929c0e866157b14c8c210eda95be50a39810dd0b"
+  },
+  {
+    "file": "scripts/capture-unified-local.mjs",
+    "sha256": "4de3cdbc914b3f0e414a9d08b14e662376f83610006879d5e44d99b95cda90d3"
+  },
+  {
+    "file": "scripts/check-v7-mutants.mjs",
+    "sha256": "1626ae5887dcf673e047aa93dda99cc959c19cfdf712889bba311932e698ca90"
+  },
+  {
+    "file": "scripts/export-unified-schema.mjs",
+    "sha256": "6b41775308a5fc15778419904ea369499f77e76394e2881a6c62ad8b529cb675"
+  },
+  {
+    "file": "scripts/generate-unified-examples.mjs",
+    "sha256": "079f580d1f5276e25f1bfc6b869ff72a629f79375485faba76a0ca733f54fd2d"
+  },
+  {
+    "file": "scripts/measure-unified-local.mjs",
+    "sha256": "c6029467c44320dd387dd0ae2daa82b6e2fa3dc7c1586015ba56afffb7242eb8"
+  },
+  {
+    "file": "scripts/measure-unified-search.mjs",
+    "sha256": "b08a650d3ce5044be17903028c826f38b0e0b123e8d3c75f664f66aa9ea22620"
+  },
+  {
+    "file": "scripts/package-v7-evidence.mjs",
+    "sha256": "adafb160d6383d7bd472a95c3758b930dafaa8000bfab5c0013ceb9a92751cc8"
+  },
+  {
+    "file": "src/App.tsx",
+    "sha256": "ac8dcc6de8a9ad1a093be09b90828edaa1e9963314e3768471ed69d444eb94d1"
+  },
+  {
+    "file": "src/data/articles.ts",
+    "sha256": "540b126d20fd56b16cac51fd2460723ea30cd31bdea2b71a0404958273562cb6"
+  },
+  {
+    "file": "src/data/day.ts",
+    "sha256": "3065e4abf405518d377f6f7b2fbad1f1b23e620d23c577cb8709c8eee8fe2ea7"
+  },
+  {
+    "file": "src/data/editorial.ts",
+    "sha256": "2fa34de0d52f6a98df5ee8dc99fde1caf68e237700a153c4543ec068916e6354"
+  },
+  {
+    "file": "src/data/model.ts",
+    "sha256": "530aab819768b9c0909b60120e76e2bc9ce8a4ab20f12367468a76b091bd6fb9"
+  },
+  {
+    "file": "src/data/readingChanges.ts",
+    "sha256": "51db6bd52107f25d2933e923c56ac9cf2c358a565b5758bf2476f86a1ea5c3c4"
+  },
+  {
+    "file": "src/data/unified.ts",
+    "sha256": "23ab3f0bbdc9c5613ae0028db3bccecce6d820617d193b5720a96c64ccaef539"
+  },
+  {
+    "file": "src/features/ArticlesView.tsx",
+    "sha256": "eed071a70ec8c73106abd743a8f5d89bd1f18afb274e711ab682e5cfd462ddd0"
+  },
+  {
+    "file": "src/features/CollectionView.tsx",
+    "sha256": "c8dc3137c8aaed6c9178f4dcc29d919ad5fc43391f5438fb48e657842c00c685"
+  },
+  {
+    "file": "src/features/DayView.tsx",
+    "sha256": "a3e3e787e49433f776c30f404265c935be1d408a595e07f4778fc72031fdede9"
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "sha256": "6e2c36327804601265496dc7f1b97eae51e8c5bd6db6a2016ddae1eef66d0fbc"
+  },
+  {
+    "file": "src/features/backup.ts",
+    "sha256": "f050a443320c41aa4ce1a895e762fddefeb90f449a1152708dd89c9bb12a5650"
+  },
+  {
+    "file": "src/features/future/FutureView.tsx",
+    "sha256": "f9194dd75ddcaf1c8b10446d406a93faf75c12260135b2252e55d8094792f4d4"
+  },
+  {
+    "file": "src/features/import.ts",
+    "sha256": "dc493551edc6f742eab39fa8c9e3083222b10f76e5e52d9f5b105e7e4014b63d"
+  },
+  {
+    "file": "src/features/unified/EconomyRadar.tsx",
+    "sha256": "ea5ac4992ea1442096e639587b77a1b3851ffab56a0bbb45402971208d09d379"
+  },
+  {
+    "file": "src/features/unified/FutureBridge.tsx",
+    "sha256": "b0fd3f06896ae6199d2f77e1bbb0da46fc7ebd10fb435476e4858d24e562ec41"
+  },
+  {
+    "file": "src/features/unified/PromptAccess.tsx",
+    "sha256": "0f0f17fbfa4baf7a63760f433c2644431536b2e4bfbd9122e0c32b8e354f98df"
+  },
+  {
+    "file": "src/features/unified/UnifiedSearch.tsx",
+    "sha256": "45148bd3ea9d0c69f55ccf0c9796593d3c94665f3633ed25182e86e9dc01cb8f"
+  },
+  {
+    "file": "src/features/unified/UnifiedWorkspace.tsx",
+    "sha256": "3a621f8244ac8ac03b97095681fb3ff1b929bf334a86af78df1aae2db7669a20"
+  },
+  {
+    "file": "src/features/unified/selectors.ts",
+    "sha256": "db01de70549d39655e7d0679ba5692637716ec5dbd1c18d906883232f291d36a"
+  },
+  {
+    "file": "src/features/unified/unified.css",
+    "sha256": "0c9102b085049e72eb77db8776f294c4f75ca08f2d0e9717ffeeab5e3762044f"
+  },
+  {
+    "file": "src/features/vscodePrompt.ts",
+    "sha256": "9c1c4f3d8f0628d3781145ac353e7db3f424677d03f637751d67c257877ec3c9"
+  },
+  {
+    "file": "tests/e2e/v6-collections.spec.ts",
+    "sha256": "26d053a18e6e57b50251646796226ae7a96ee6546a30332e856aea38f22e9f2f"
+  },
+  {
+    "file": "tests/e2e/v7-unified.spec.ts",
+    "sha256": "8be7ad8c092829611def68b03fdf975076a6889c07f55151974a7749e7c9fd41"
+  },
+  {
+    "file": "tests/unified-v7.unit.test.ts",
+    "sha256": "5cb86a6d55be95ffac7b48bbbb7b2719d95331a5e19c1969839a85b179426a02"
+  },
+  {
+    "file": "tests/v7-integrity.unit.test.ts",
+    "sha256": "442d26ef23617a57c0679a50d497d27f91a723bbd23426186e15d788774de117"
+  },
+  {
+    "file": "tests/vscode-prompt.unit.test.ts",
+    "sha256": "78bc7b030b463c2c19f1cea9e01983c3babbce58ea362500720edb7886fb43e1"
+  }
+]

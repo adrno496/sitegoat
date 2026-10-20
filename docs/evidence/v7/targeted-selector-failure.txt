@@ -1,0 +1,159 @@
+[WebServer] (node:76109) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:76116) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 14 tests using 2 workers
+
+(node:76118) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:76117) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/app.spec.ts:247:1 › responsive, thèmes et accessibilité sur six largeurs (10.3s)
+(node:76244) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   2 [chromium] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (12.1s)
+(node:76365) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   4 [chromium] › tests/e2e/v7-unified.spec.ts:111:1 › V7 : mobile, clavier, thèmes, absence de données, sources, reduced motion et radar comparable (4.9s)
+  ✓   5 [chromium] › tests/e2e/v7-unified.spec.ts:186:1 › V7 : HTML hostile lu sans scripts, question publique conservée, prompt privé non transmis (1.0s)
+  ✓   3 [webkit] › tests/e2e/app.spec.ts:247:1 › responsive, thèmes et accessibilité sur six largeurs (9.5s)
+  ✓   6 [chromium] › tests/e2e/v7-unified.spec.ts:240:1 › V7 : adaptateur Future explicite, JSON validé puis import indépendant sans écriture croisée (2.6s)
+(node:76480) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   7 [webkit] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (11.8s)
+(node:76757) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   8 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (11.4s)
+(node:76793) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 [webkit] › tests/e2e/v7-unified.spec.ts:111:1 › V7 : mobile, clavier, thèmes, absence de données, sources, reduced motion et radar comparable (7.3s)
+  ✓  11 [webkit] › tests/e2e/v7-unified.spec.ts:186:1 › V7 : HTML hostile lu sans scripts, question publique conservée, prompt privé non transmis (1.4s)
+  ✓  10 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:111:1 › V7 : mobile, clavier, thèmes, absence de données, sources, reduced motion et radar comparable (8.0s)
+  ✓  12 [webkit] › tests/e2e/v7-unified.spec.ts:240:1 › V7 : adaptateur Future explicite, JSON validé puis import indépendant sans écriture croisée (2.7s)
+  ✓  13 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:186:1 › V7 : HTML hostile lu sans scripts, question publique conservée, prompt privé non transmis (8.0s)
+  ✓  14 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:240:1 › V7 : adaptateur Future explicite, JSON validé puis import indépendant sans écriture croisée (2.4s)
+
+
+  1) [chromium] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale 
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('.collection-card')
+    Expected: 1
+    Received: 2
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toHaveCount" locator('.collection-card') with timeout 10000ms
+      - waiting for locator('.collection-card')
+        24 × locator resolved to 2 elements
+           - unexpected value "2"
+
+
+       97 |   await expect(page.locator(".article-detail .prompt-card")).toHaveCount(2);
+       98 |   await nav(page, "Sentinel");
+    >  99 |   await expect(page.locator(".collection-card")).toHaveCount(1);
+          |                                                  ^
+      100 |   await expect(page.locator(".collection-card .prompt-card")).toHaveCount(2);
+      101 |   await nav(page, "IA majeur");
+      102 |   await expect(page.locator(".collection-card h2")).toHaveText(
+        at /Users/dreano/Downloads/veille/veille/tests/e2e/v7-unified.spec.ts:99:50
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v7-unified-V7-huit-imports-8733c--exacts-et-recherche-locale-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v7-unified-V7-huit-imports-8733c--exacts-et-recherche-locale-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v7-unified-V7-huit-imports-8733c--exacts-et-recherche-locale-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v7-unified-V7-huit-imports-8733c--exacts-et-recherche-locale-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [webkit] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale 
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('.collection-card')
+    Expected: 1
+    Received: 2
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toHaveCount" locator('.collection-card') with timeout 10000ms
+      - waiting for locator('.collection-card')
+        24 × locator resolved to 2 elements
+           - unexpected value "2"
+
+
+       97 |   await expect(page.locator(".article-detail .prompt-card")).toHaveCount(2);
+       98 |   await nav(page, "Sentinel");
+    >  99 |   await expect(page.locator(".collection-card")).toHaveCount(1);
+          |                                                  ^
+      100 |   await expect(page.locator(".collection-card .prompt-card")).toHaveCount(2);
+      101 |   await nav(page, "IA majeur");
+      102 |   await expect(page.locator(".collection-card h2")).toHaveText(
+        at /Users/dreano/Downloads/veille/veille/tests/e2e/v7-unified.spec.ts:99:50
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v7-unified-V7-huit-imports-8733c--exacts-et-recherche-locale-webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v7-unified-V7-huit-imports-8733c--exacts-et-recherche-locale-webkit/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v7-unified-V7-huit-imports-8733c--exacts-et-recherche-locale-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v7-unified-V7-huit-imports-8733c--exacts-et-recherche-locale-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium-mobile] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale 
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('.collection-card')
+    Expected: 1
+    Received: 2
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toHaveCount" locator('.collection-card') with timeout 10000ms
+      - waiting for locator('.collection-card')
+        24 × locator resolved to 2 elements
+           - unexpected value "2"
+
+
+       97 |   await expect(page.locator(".article-detail .prompt-card")).toHaveCount(2);
+       98 |   await nav(page, "Sentinel");
+    >  99 |   await expect(page.locator(".collection-card")).toHaveCount(1);
+          |                                                  ^
+      100 |   await expect(page.locator(".collection-card .prompt-card")).toHaveCount(2);
+      101 |   await nav(page, "IA majeur");
+      102 |   await expect(page.locator(".collection-card h2")).toHaveText(
+        at /Users/dreano/Downloads/veille/veille/tests/e2e/v7-unified.spec.ts:99:50
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v7-unified-V7-huit-imports-8733c--exacts-et-recherche-locale-chromium-mobile/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v7-unified-V7-huit-imports-8733c--exacts-et-recherche-locale-chromium-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v7-unified-V7-huit-imports-8733c--exacts-et-recherche-locale-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v7-unified-V7-huit-imports-8733c--exacts-et-recherche-locale-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    [chromium] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale 
+    [webkit] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale 
+    [chromium-mobile] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale 
+  11 passed (54.9s)

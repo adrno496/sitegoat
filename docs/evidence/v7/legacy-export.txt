@@ -1,0 +1,9 @@
+
+ RUN  v5.0.4 /private/tmp/journal360-v7-rollback-43f8b56
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  18:39:41
+   Duration  1.18s (environment 69%, transform 11%, import 11%, tests 6%, setup 3%)
+

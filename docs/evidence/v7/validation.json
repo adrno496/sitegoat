@@ -1,0 +1,83 @@
+{
+  "overall": "PARTIAL",
+  "scope": "Local synthetic profiles only; no commit, push, deployment, remote migration or real cloud use.",
+  "recordedAtUTC": "2026-10-20T21:32:49.690779+00:00",
+  "root": "/Users/dreano/Downloads/veille/veille",
+  "branch": "codex/journal360-unified-v7",
+  "head": "43f8b567e50521555f1772d0a9a853d4209f3d22",
+  "environment": "environment.json",
+  "missionIntegrity": "mission-integrity.json",
+  "tests": {
+    "lint": "PASS",
+    "typecheck": "PASS",
+    "build": "PASS",
+    "unit": {
+      "status": "PASS",
+      "passed": 282,
+      "files": 22
+    },
+    "v7Targeted": {
+      "status": "PASS",
+      "passed": 18
+    },
+    "browser": {
+      "status": "PASS",
+      "startTime": "2026-10-20T21:23:06.878Z",
+      "duration": 373778.55899999995,
+      "expected": 202,
+      "skipped": 1,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "performanceCapacity": {
+      "status": "PASS",
+      "passed": 4
+    },
+    "negativeMutations": {
+      "status": "PASS",
+      "expectedFailures": 3,
+      "cleanPassedBeforeAndAfter": true
+    }
+  },
+  "artifacts": {
+    "sourceFiles": 57,
+    "protectedUnchanged": 19,
+    "sourceManifestSha256": "a0fdecbc3f8e7a55bd08d0b36bbc4a975f3de91b4f553548d91c5f98e31747e6",
+    "sourcePatchSha256": "a6be33a1bf399620dd817d3627fea4c1f89f75979e8dfb2ce95f4c197090a8d5",
+    "sourceReversePatchCheck": "PASS",
+    "sourceArchiveRestoredFiles": 430,
+    "actualIndexUntouched": true,
+    "examplesHtml": 8,
+    "promptMarkdown": 2
+  },
+  "resourceEquivalence": {
+    "status": "FAIL",
+    "reason": "Measured bundle, precache, heap checkpoints and shell LCP/CLS increase. No zero-performance-regression claim.",
+    "bundle": "bundle.json",
+    "before": "before/performance.json",
+    "after": "after/performance.json",
+    "search": "search-performance.json"
+  },
+  "acceptanceNotTested": [
+    "Real cloud and mixed deployed clients",
+    "Physical phone and Safari iOS file transfer",
+    "Human screen reader / usability in ten seconds",
+    "OS clipboard, actual print and native install/share",
+    "Full rollback of a real V7 user profile",
+    "Real-world economic and future source feeds"
+  ],
+  "compatibilityLimit": "New journal ZIP format 3 requires client coordination before real cloud use; legacy ZIP1/2 and Future v1 reads tested. No IndexedDB/SQL version change.",
+  "localDemo": "local-server.json",
+  "rollback": "../../JOURNAL360_V7_IMPORT_GUIDE.md",
+  "evidenceSha256": {
+    "final-static.txt": "e92101f77b561f2c8b1f438e8b4daf3bb8f3553593c975603b01112dde9f6646",
+    "final-v7.txt": "a2bd4c990a908421d0cbed0e64111753fc41c07a96ae390869a79900b1763bbe",
+    "final-browser.txt": "cf3402c62e33aec3e842cc57ab1e3c2125d08ced4f3a9a7890f92e477e752f99",
+    "final-browser.json": "71413b0875204dd1b72dbe3e83c9d66d6deea2e5f3dfc2bffbbdd40f208fd77e",
+    "final-performance.txt": "92780d6e02badf8377adb0f1de5513a65732fe657efe3a7808b4571e5da66875",
+    "final-package.txt": "1bb68c7e5444444059b2368e7be789f71914f3f4981f9fa48f5e03c6ef48809a",
+    "mutations.json": "0dd6083b4dfd3b316e08637c89b179c160b5a90c31e8f653b04c3eee98c589d7",
+    "demo/prompt-controls.json": "c87348bb6ea642b168d17472c2f8d8f0d395f021dc94f5dcdeac096cdb781ee3"
+  },
+  "publicationAuthorization": "Subsequent explicit user request: commit push sur le main production. Test results remain those of local validation; deployment completion not attested."
+}

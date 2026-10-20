@@ -1,7 +1,37 @@
 import { z } from "zod";
 export const SLOTS = ["08:00", "16:00", "21:00"] as const;
-export const slotSchema = z.enum(SLOTS);
+export const V7_SLOTS = [
+  "08:00",
+  "10:00",
+  "12:00",
+  "14:00",
+  "16:00",
+  "18:00",
+  "20:00",
+  "22:00",
+] as const;
+export const V7_SCHEDULE = "paris-v7-8" as const;
+export const slotSchema = z.enum([...V7_SLOTS, "21:00"]);
 export type Slot = z.infer<typeof slotSchema>;
+export function scheduleFor(edition: { scheduleId?: string }): readonly Slot[] {
+  return edition.scheduleId === V7_SCHEDULE ? V7_SLOTS : SLOTS;
+}
+export function parisClock(at = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Paris",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(at);
+  const get = (key: string) => parts.find((p) => p.type === key)!.value;
+  return {
+    date: `${get("year")}-${get("month")}-${get("day")}`,
+    time: `${get("hour")}:${get("minute")}`,
+  };
+}
 export const cumulativeSchema = z.enum(["COMPLETE", "PARTIAL", "UNKNOWN"]);
 export function validDate(value: string) {
   return (
@@ -21,7 +51,7 @@ export const dayKeySchema = z
     "Clé de journée invalide",
   );
 const uniqueSlots = z
-  .array(slotSchema)
+  .array(z.enum(SLOTS))
   .max(3)
   .refine((a) => new Set(a).size === a.length);
 const metadataSchema = z.object({

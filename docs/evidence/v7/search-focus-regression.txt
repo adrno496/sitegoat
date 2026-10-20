@@ -1,0 +1,405 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: v7-unified.spec.ts >> V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale
+- Location: tests/e2e/v7-unified.spec.ts:34:1
+
+# Error details
+
+```
+Error: expect(locator).toHaveCount(expected) failed
+
+Locator:  locator('.unified-workspace').locator('.unified-result')
+Expected: 2
+Received: 11
+Timeout:  10000ms
+
+Call log:
+  - Expect "toHaveCount" locator('.unified-workspace').locator('.unified-result') with timeout 10000ms
+  - waiting for locator('.unified-workspace').locator('.unified-result')
+    24 × locator resolved to 11 elements
+       - unexpected value "11"
+
+```
+
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - link "Aller au contenu" [ref=e4]:
+    - /url: "#main-content"
+  - complementary [ref=e5]:
+    - button "Journal 360, accueil" [ref=e6] [cursor=pointer]:
+      - generic [ref=e7]: J.
+      - generic [ref=e8]:
+        - text: JOURNAL 360°
+        - generic [ref=e9]: VOTRE MÉMOIRE DE VEILLE
+    - paragraph [ref=e11]: VOTRE ESPACE PERSONNEL
+    - navigation "Navigation principale" [ref=e12]:
+      - button "Aujourd’hui" [ref=e13] [cursor=pointer]
+      - button "Bibliothèque" [ref=e18] [cursor=pointer]:
+        - generic [ref=e22]: "1"
+      - button "Articles" [ref=e23] [cursor=pointer]:
+        - generic [ref=e28]: "4"
+      - button "IA majeur" [ref=e29] [cursor=pointer]:
+        - generic [ref=e41]: "1"
+      - button "Sentinel" [ref=e42] [cursor=pointer]:
+        - generic [ref=e46]: "1"
+      - button "Le Futur" [ref=e47] [cursor=pointer]
+      - button "Rechercher" [ref=e52] [cursor=pointer]
+      - button "Mémoire" [ref=e57] [cursor=pointer]
+      - button "Réglages" [ref=e61] [cursor=pointer]
+    - button "Importer une édition" [ref=e66] [cursor=pointer]
+    - generic [ref=e68]:
+      - generic [ref=e73]:
+        - strong [ref=e74]: Un espace à vous.
+        - paragraph [ref=e75]: Vos journaux restent privés.
+      - button "Stockage local actif" [ref=e76] [cursor=pointer]
+      - generic [ref=e80]: JOURNAL 360 MOBILE · v2.0.7
+  - generic [ref=e81]:
+    - banner [ref=e82]:
+      - generic [ref=e83]:
+        - generic [ref=e84]: Votre espace
+        - strong [ref=e87]: Aujourd’hui
+      - generic [ref=e88]:
+        - button "Mode local. Données sur cet appareil" [ref=e89] [cursor=pointer]:
+          - status [ref=e92]:
+            - strong [ref=e93]: Mode local
+            - generic [ref=e94]: Données sur cet appareil
+        - button "Activer le mode sombre" [ref=e95] [cursor=pointer]
+        - generic "Espace personnel" [ref=e98]: J
+    - main [ref=e99]:
+      - generic [ref=e100]:
+        - generic [ref=e101]:
+          - generic [ref=e102]:
+            - paragraph [ref=e103]: QUATRE UNIVERS · UNE JOURNÉE
+            - heading [active] [level=1] [ref=e104]:
+              - text: Journal 360°
+              - emphasis [ref=e105]: Unifié.
+            - paragraph [ref=e106]: 20 octobre 2026 · Europe/Paris
+          - generic [ref=e107]: EXEMPLE SYNTHÉTIQUE
+        - navigation "Explorer le journal unifié" [ref=e108]:
+          - button "Aujourd’hui en bref" [ref=e109] [cursor=pointer]
+          - button "Économie" [ref=e110] [cursor=pointer]
+          - button "Chronologie IA" [ref=e111] [cursor=pointer]
+          - button "Mes prompts .md" [ref=e112] [cursor=pointer]
+          - button "Recherche globale" [pressed] [ref=e113] [cursor=pointer]
+        - generic [ref=e114]:
+          - heading "Recherche globale locale" [level=2] [ref=e115]
+          - paragraph [ref=e116]: Articles, sources, signaux et scénarios Future, économie, jalons et prompts. Recherche textuelle sans accents ni casse ; aucun service IA n’est appelé.
+          - generic [ref=e117]:
+            - text: Rechercher partout
+            - searchbox "Rechercher partout" [ref=e118]
+          - group [ref=e119]:
+            - generic "Filtres de la recherche globale" [ref=e120] [cursor=pointer]
+            - option "Tous" [selected]
+            - option "Article"
+            - option "Jalon"
+            - option "Prompt"
+            - option "Économie"
+            - option "Tous" [selected]
+            - option "2026-09-30"
+            - option "2026-10-19"
+            - option "Tous" [selected]
+            - option "ai-major"
+            - option "future"
+            - option "journal360"
+            - option "sentinel"
+            - option "vscode"
+            - option "Tous" [selected]
+            - option "hypothesis"
+            - option "intégral"
+            - option "sourced"
+            - option "unknown"
+            - option "Tous" [selected]
+            - option "IA"
+            - option "Prompts"
+            - option "Prospective"
+            - option "Sécurité"
+            - option "Économie"
+            - option "Pertinence textuelle" [selected]
+            - option "Date"
+          - status [ref=e121]: 11 résultat(s) · aucun envoi externe
+          - button "Observation IA SYNTHÉTIQUE Article · 2026-10-19 · ai-major · sourced" [ref=e122] [cursor=pointer]:
+            - generic [ref=e123]: Observation IA SYNTHÉTIQUE
+            - generic [ref=e124]: Article · 2026-10-19 · ai-major · sourced
+          - button "Économie SYNTHÉTIQUE Article · 2026-10-19 · journal360 · sourced" [ref=e125] [cursor=pointer]:
+            - generic [ref=e126]: Économie SYNTHÉTIQUE
+            - generic [ref=e127]: Article · 2026-10-19 · journal360 · sourced
+          - button "Audit SENTINEL SYNTHÉTIQUE Article · 2026-10-19 · sentinel · sourced" [ref=e128] [cursor=pointer]:
+            - generic [ref=e129]: Audit SENTINEL SYNTHÉTIQUE
+            - generic [ref=e130]: Article · 2026-10-19 · sentinel · sourced
+          - button "Trajectoire future SYNTHÉTIQUE Article · 2026-10-19 · future · hypothesis" [ref=e131] [cursor=pointer]:
+            - generic [ref=e132]: Trajectoire future SYNTHÉTIQUE
+            - generic [ref=e133]: Article · 2026-10-19 · future · hypothesis
+          - button "Audit local synthétique audit-a Prompt · 2026-10-19 · sentinel · intégral" [ref=e134] [cursor=pointer]:
+            - generic [ref=e135]: Audit local synthétique audit-a
+            - generic [ref=e136]: Prompt · 2026-10-19 · sentinel · intégral
+          - button "Audit local synthétique audit-b Prompt · 2026-10-19 · vscode · intégral" [ref=e137] [cursor=pointer]:
+            - generic [ref=e138]: Audit local synthétique audit-b
+            - generic [ref=e139]: Prompt · 2026-10-19 · vscode · intégral
+          - button "Horizon 2030 SYNTHÉTIQUE Jalon · 2026-10-19 · future · hypothesis" [ref=e140] [cursor=pointer]:
+            - generic [ref=e141]: Horizon 2030 SYNTHÉTIQUE
+            - generic [ref=e142]: Jalon · 2026-10-19 · future · hypothesis
+          - button "Indice SYNTHÉTIQUE · FR Économie · 2026-09-30 · journal360 · unknown" [ref=e143] [cursor=pointer]:
+            - generic [ref=e144]: Indice SYNTHÉTIQUE · FR
+            - generic [ref=e145]: Économie · 2026-09-30 · journal360 · unknown
+          - button "Indice SYNTHÉTIQUE · EU Économie · 2026-09-30 · journal360 · unknown" [ref=e146] [cursor=pointer]:
+            - generic [ref=e147]: Indice SYNTHÉTIQUE · EU
+            - generic [ref=e148]: Économie · 2026-09-30 · journal360 · unknown
+          - button "Indice SYNTHÉTIQUE · US Économie · 2026-09-30 · journal360 · unknown" [ref=e149] [cursor=pointer]:
+            - generic [ref=e150]: Indice SYNTHÉTIQUE · US
+            - generic [ref=e151]: Économie · 2026-09-30 · journal360 · unknown
+          - button "Indice SYNTHÉTIQUE · CN Économie · 2026-09-30 · journal360 · unknown" [ref=e152] [cursor=pointer]:
+            - generic [ref=e153]: Indice SYNTHÉTIQUE · CN
+            - generic [ref=e154]: Économie · 2026-09-30 · journal360 · unknown
+      - generic [ref=e155]:
+        - generic [ref=e156]:
+          - paragraph [ref=e157]: À PORTÉE DE MAIN
+          - heading "Vos dernières éditions" [level=2] [ref=e158]
+        - button "Toute la bibliothèque" [ref=e159] [cursor=pointer]
+      - article [ref=e163]:
+        - paragraph [ref=e164]: JOURNÉE · 19 octobre 2026
+        - heading "Journal 360° UNIFIÉ — 2026-10-19 — 22:00 — SYNTHÉTIQUE" [level=3] [ref=e165]
+        - paragraph [ref=e166]: 0 actualités explicitement typées · 4 éléments indexés · 8 version(s) dans l’historique · une seule édition affichée
+        - paragraph [ref=e167]: CUMUL COMPLETE
+        - generic [ref=e168]:
+          - generic [ref=e169]: 08:00 inclus déclaré
+          - generic [ref=e170]: 10:00 inclus déclaré
+          - generic [ref=e171]: 12:00 inclus déclaré
+          - generic [ref=e172]: 14:00 inclus déclaré
+          - generic [ref=e173]: 16:00 inclus déclaré
+          - generic [ref=e174]: 18:00 inclus déclaré
+          - generic [ref=e175]: 20:00 inclus déclaré
+          - generic [ref=e176]: 22:00 inclus déclaré
+        - paragraph [ref=e177]: Dernière édition du jour · révision externe 8
+        - generic [ref=e178]:
+          - button "Lire Journal 360° UNIFIÉ — 2026-10-19 — 22:00 — SYNTHÉTIQUE" [ref=e179] [cursor=pointer]: Lire la dernière édition
+          - button "Historique des éditions" [ref=e180] [cursor=pointer]
+          - button "Ajouter aux favoris Journal 360° UNIFIÉ — 2026-10-19 — 22:00 — SYNTHÉTIQUE" [ref=e181] [cursor=pointer]
+      - generic [ref=e184]:
+        - generic [ref=e185]:
+          - paragraph [ref=e186]: PLUS QU’UNE COLLECTION
+          - heading [level=2] [ref=e187]:
+            - text: Faites le lien
+            - emphasis [ref=e188]: entre les éditions.
+          - paragraph [ref=e189]: Vos favoris, vos notes et les événements communs deviennent une mémoire que vous pouvez retrouver.
+          - button "Explorer ma mémoire" [ref=e190] [cursor=pointer]
+        - generic [ref=e193]:
+          - heading "Pensé pour vous suivre" [level=3] [ref=e195]
+          - generic [ref=e206]:
+            - strong [ref=e207]: Votre bibliothèque, hors ligne
+            - paragraph [ref=e208]: Après le premier chargement et l’import.
+          - generic [ref=e213]:
+            - strong [ref=e214]: Une sauvegarde que vous gardez
+            - paragraph [ref=e215]: Exportez vos éditions et vos annotations.
+          - generic [ref=e220]:
+            - strong [ref=e221]: Des originaux préservés
+            - paragraph [ref=e222]: Vos fichiers HTML restent inchangés.
+      - paragraph [ref=e223]:
+        - text: "Pensez à exporter une sauvegarde : le stockage d’un navigateur peut être perdu."
+        - button "Sauvegarder" [ref=e227] [cursor=pointer]
+    - contentinfo [ref=e228]:
+      - generic [ref=e229]: JOURNAL 360°
+      - paragraph [ref=e230]: La curiosité d’aujourd’hui. La mémoire de demain.
+      - generic [ref=e231]: PRIVÉ PAR DÉFAUT
+```
+
+# Test source
+
+```ts
+  1   | import { test, expect, type Page } from "@playwright/test";
+  2   | import AxeBuilder from "@axe-core/playwright";
+  3   | import { readFile } from "node:fs/promises";
+  4   | const exampleRoot = "public/examples/unified/";
+  5   | const slots = ["0800", "1000", "1200", "1400", "1600", "1800", "2000", "2200"];
+  6   | const filename = (slot: string) =>
+  7   |   `JOURNAL360_2026-10-19_EDITION_${slot.slice(0, 2)}H00.html`;
+  8   | async function nav(page: Page, label: string) {
+  9   |   await page
+  10  |     .locator(
+  11  |       (await page.locator(".sidebar").isVisible()) ? ".sidebar" : ".mobile-nav",
+  12  |     )
+  13  |     .getByRole("button", { name: label, exact: true })
+  14  |     .click();
+  15  | }
+  16  | async function importSlots(page: Page, values = slots) {
+  17  |   await page
+  18  |     .getByLabel("Fichiers HTML à importer")
+  19  |     .setInputFiles(values.map((s) => exampleRoot + filename(s)));
+  20  |   await page
+  21  |     .getByRole("button", {
+  22  |       name: "Enregistrer dans ma bibliothèque",
+  23  |       exact: true,
+  24  |     })
+  25  |     .click();
+  26  |   await expect(page.getByRole("dialog")).toHaveCount(0);
+  27  |   const close = page.getByRole("button", {
+  28  |     name: "Fermer la notification",
+  29  |     exact: true,
+  30  |   });
+  31  |   if (await close.isVisible()) await close.click();
+  32  | }
+  33  | const workspace = (page: Page) => page.locator(".unified-workspace");
+  34  | test("V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale", async ({
+  35  |   page,
+  36  |   context,
+  37  | }) => {
+  38  |   await page.goto("/");
+  39  |   await importSlots(page, ["2200"]);
+  40  |   await expect(page.locator(".day-card")).toContainText("PARTIAL");
+  41  |   await importSlots(page, [
+  42  |     "1600",
+  43  |     "0800",
+  44  |     "2000",
+  45  |     "1200",
+  46  |     "1800",
+  47  |     "1000",
+  48  |     "1400",
+  49  |   ]);
+  50  |   await expect(page.locator(".day-card")).toHaveCount(1);
+  51  |   await expect(page.locator(".day-card")).toContainText("COMPLETE");
+  52  |   await nav(page, "Aujourd’hui");
+  53  |   const w = workspace(page);
+  54  |   await expect(w).toContainText("SYNTHÉTIQUE");
+  55  |   await expect(w.locator(".unified-slots button")).toHaveCount(8);
+  56  |   await expect(w.locator(".unified-slots button:enabled")).toHaveCount(8);
+  57  |   for (const zone of ["France", "Europe / zone euro", "États-Unis", "Chine"])
+  58  |     await expect(
+  59  |       w.getByRole("heading", { name: zone, exact: true }),
+  60  |     ).toBeVisible();
+  61  |   await w.getByRole("button", { name: "Mes prompts .md", exact: true }).click();
+  62  |   await w.locator(".unified-result").first().click();
+  63  |   await expect(w.locator(".prompt-card")).toHaveCount(2);
+  64  |   const payload = JSON.parse(
+  65  |     await readFile(exampleRoot + "edition-2200.json", "utf8"),
+  66  |   );
+  67  |   await context.setOffline(true);
+  68  |   for (let i = 0; i < 2; i++) {
+  69  |     const card = w.locator(".prompt-card").nth(i);
+  70  |     const event = page.waitForEvent("download");
+  71  |     await card
+  72  |       .getByRole("button", {
+  73  |         name: "Télécharger le prompt VS Code (.md)",
+  74  |         exact: true,
+  75  |       })
+  76  |       .click();
+  77  |     const download = await event;
+  78  |     expect(download.suggestedFilename()).toBe(payload.promptAssets[i].filename);
+  79  |     expect(await readFile((await download.path())!, "utf8")).toBe(
+  80  |       payload.promptAssets[i].content,
+  81  |     );
+  82  |   }
+  83  |   await context.setOffline(false);
+  84  |   await w
+  85  |     .getByRole("button", { name: "Recherche globale", exact: true })
+  86  |     .click();
+  87  |   await w.getByLabel("Rechercher partout").fill("NE RIEN CHANGER");
+> 88  |   await expect(w.locator(".unified-result")).toHaveCount(2);
+      |                                              ^ Error: expect(locator).toHaveCount(expected) failed
+  89  |   await nav(page, "Articles");
+  90  |   await expect(page.locator(".articles-total")).toContainText("4 articles");
+  91  |   await page
+  92  |     .getByRole("button", {
+  93  |       name: "Lire ici : Audit SENTINEL SYNTHÉTIQUE",
+  94  |       exact: true,
+  95  |     })
+  96  |     .click();
+  97  |   await expect(page.locator(".article-detail .prompt-card")).toHaveCount(2);
+  98  |   await nav(page, "Sentinel");
+  99  |   const sentinel = page.getByRole("region", {
+  100 |     name: "Documents Sentinel",
+  101 |     exact: true,
+  102 |   });
+  103 |   await expect(sentinel.locator(".collection-card")).toHaveCount(1);
+  104 |   await expect(sentinel.locator(".collection-card .prompt-card")).toHaveCount(
+  105 |     2,
+  106 |   );
+  107 |   await expect(
+  108 |     page.locator('.sidebar button[aria-label="Sentinel"] small'),
+  109 |   ).toHaveText("1");
+  110 |   await nav(page, "IA majeur");
+  111 |   await expect(
+  112 |     page
+  113 |       .getByRole("region", { name: "Documents IA majeur", exact: true })
+  114 |       .locator(".collection-card h2"),
+  115 |   ).toHaveText("Observation IA SYNTHÉTIQUE");
+  116 |   await nav(page, "Bibliothèque");
+  117 |   await page
+  118 |     .getByRole("button", { name: "Historique des éditions", exact: true })
+  119 |     .click();
+  120 |   await expect(page.locator(".day-history>article")).toHaveCount(8);
+  121 | });
+  122 | test("V7 : mobile, clavier, thèmes, absence de données, sources, reduced motion et radar comparable", async ({
+  123 |   page,
+  124 | }, info) => {
+  125 |   await page.emulateMedia({ reducedMotion: "reduce" });
+  126 |   await page.goto("/");
+  127 |   const w = workspace(page);
+  128 |   await expect(w).toContainText("Aucune statistique importée");
+  129 |   await importSlots(page);
+  130 |   await nav(page, "Aujourd’hui");
+  131 |   for (const width of [320, 360, 390, 430, 768, 1024, 1440]) {
+  132 |     await page.setViewportSize({ width, height: 1000 });
+  133 |     expect(
+  134 |       await page.evaluate(
+  135 |         () => document.documentElement.scrollWidth <= innerWidth,
+  136 |       ),
+  137 |     ).toBe(true);
+  138 |   }
+  139 |   await w.getByRole("button", { name: "Économie", exact: true }).focus();
+  140 |   await page.keyboard.press("Enter");
+  141 |   await expect(w.getByLabel("Zone économique")).toBeVisible();
+  142 |   await w.getByLabel("Zone économique").selectOption("FR");
+  143 |   await expect(w.locator(".unified-zones>article")).toHaveCount(1);
+  144 |   await expect(w).toContainText("+1 points fictifs depuis 2026-08");
+  145 |   await expect(w).toContainText("2026-09-30");
+  146 |   await w.getByRole("button", { name: "Chronologie IA", exact: true }).click();
+  147 |   await w.getByRole("button", { name: "Faits observés", exact: true }).click();
+  148 |   await expect(w).toContainText("Aucun jalon importé");
+  149 |   await w.getByRole("button", { name: "Trajectoires", exact: true }).click();
+  150 |   await expect(
+  151 |     w.getByRole("heading", { name: "Horizon 2030 SYNTHÉTIQUE", exact: true }),
+  152 |   ).toBeVisible();
+  153 |   await w
+  154 |     .getByRole("button", { name: "Aujourd’hui en bref", exact: true })
+  155 |     .click();
+  156 |   for (const theme of ["light", "dark"]) {
+  157 |     if (theme === "dark")
+  158 |       await page
+  159 |         .getByRole("button", { name: "Activer le mode sombre", exact: true })
+  160 |         .click();
+  161 |     const results = await new AxeBuilder({ page })
+  162 |       .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
+  163 |       .analyze();
+  164 |     expect(
+  165 |       results.violations.map((v) => ({
+  166 |         id: v.id,
+  167 |         nodes: v.nodes.map((n) => n.target),
+  168 |       })),
+  169 |     ).toEqual([]);
+  170 |   }
+  171 |   expect(
+  172 |     await w.evaluate((root) =>
+  173 |       [...root.querySelectorAll("*")].some(
+  174 |         (el) => getComputedStyle(el).animationName !== "none",
+  175 |       ),
+  176 |     ),
+  177 |   ).toBe(false);
+  178 |   await page.screenshot({
+  179 |     path: info.outputPath("v7-desktop.png"),
+  180 |     fullPage: true,
+  181 |   });
+  182 |   await page.setViewportSize({ width: 390, height: 844 });
+  183 |   await page.screenshot({
+  184 |     path: info.outputPath("v7-mobile.png"),
+  185 |     fullPage: true,
+  186 |   });
+  187 |   await page.evaluate(async () => {
+  188 |     await navigator.serviceWorker.ready;
+```

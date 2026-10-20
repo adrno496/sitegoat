@@ -1,0 +1,38 @@
+{
+  "before": {
+    "javascriptTotalBytes": 961960,
+    "cssTotalBytes": 56136,
+    "initialHtmlAssets": [
+      {
+        "file": "/assets/index-DyRcYbUU.js",
+        "bytes": 875962
+      },
+      {
+        "file": "/assets/index-BF9m7CTE.css",
+        "bytes": 42125
+      }
+    ],
+    "assetCount": 7,
+    "dependencyManifestUnchanged": true
+  },
+  "after": {
+    "javascriptTotalBytes": 998558,
+    "cssTotalBytes": 61631,
+    "initialHtmlAssets": [
+      {
+        "file": "/assets/index-br1stZb0.js",
+        "bytes": 679737
+      },
+      {
+        "file": "/assets/import-BX4PeQko.js",
+        "bytes": 226196
+      },
+      {
+        "file": "/assets/index-BF9m7CTE.css",
+        "bytes": 42125
+      }
+    ],
+    "assetCount": 11,
+    "dependencyManifestUnchanged": true
+  }
+}
