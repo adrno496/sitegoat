@@ -1,0 +1,2109 @@
+[
+  {
+    "file": "src/App.tsx",
+    "line": 738,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className={`cover cover-${index % 3}`}",
+      "onClick={() => openEdition(edition.id)}",
+      "aria-label={`Lire ${edition.title}`}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 773,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"icon-button small\"",
+      "aria-label={`${data.states.find((s) => s.id === `${edition.id}:edition`)?.favorite ? \"Retirer des\" : \"Ajouter aux\"} favoris ${edition.title}`}",
+      "onClick={() =>\n            run(() =>\n              db.reading(edition.id, \"edition\", {\n                favorite: !data.states.find(\n                  (s) => s.id === `${edition.id}:edition`,\n                )?.favorite,\n              }),\n            )\n          }"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 798,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"title-button\"",
+      "onClick={() => openEdition(edition.id)}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 824,
+    "element": "button",
+    "label": "Restaurer",
+    "attributes": [
+      "className=\"text-button\"",
+      "onClick={() =>\n            run(\n              () =>\n                db.editions.update(edition.id, {\n                  deleted: false,\n                  updatedAt: now(),\n                }),\n              \"Édition restaurée.\",\n            )\n          }"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 841,
+    "element": "button",
+    "label": "Corbeille",
+    "attributes": [
+      "className=\"text-button subtle\"",
+      "onClick={() =>\n              run(\n                () =>\n                  db.editions.update(edition.id, {\n                    deleted: true,\n                    updatedAt: now(),\n                  }),\n                \"Édition déplacée dans la corbeille.\",\n              )\n            }"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 878,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"brand\"",
+      "onClick={() => navigate(\"today\")}",
+      "aria-label=\"Journal 360, accueil\""
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 893,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "key={t.id}",
+      "aria-label={t.label}",
+      "className={\n                tab === t.id && !selected ? \"nav-item selected\" : \"nav-item\"\n              }",
+      "aria-current={tab === t.id && !selected ? \"page\" : undefined}",
+      "onClick={() => navigate(t.id)}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 921,
+    "element": "button",
+    "label": "Importer une édition",
+    "attributes": [
+      "className=\"primary sidebar-import\"",
+      "onClick={() => fileRef.current?.click()}",
+      "disabled={busy}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 937,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"text-button\"",
+      "onClick={() => navigate(\"settings\")}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 956,
+    "element": "button",
+    "label": "JOURNAL",
+    "attributes": [
+      "className=\"mobile-brand\"",
+      "onClick={() => navigate(\"today\")}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 961,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"icon-button\"",
+      "aria-label={\n                theme === \"light\"\n                  ? \"Activer le mode sombre\"\n                  : \"Activer le mode clair\"\n              }",
+      "onClick={() =>\n                run(() =>\n                  db.preferences.put({\n                    key: \"theme\",\n                    value: theme === \"light\" ? \"dark\" : \"light\",\n                  }),\n                )\n              }"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 997,
+    "element": "button",
+    "label": "Mettre à jour",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() => void updateServiceWorker(true)}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 1117,
+    "element": "button",
+    "label": "Toute la bibliothèque",
+    "attributes": [
+      "className=\"text-button\"",
+      "onClick={() => navigate(\"library\")}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 1154,
+    "element": "button",
+    "label": "Essayer avec 2 éditions démo",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() => run(importDemo)}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 1175,
+    "element": "button",
+    "label": "Explorer ma mémoire",
+    "attributes": [
+      "className=\"text-button\"",
+      "onClick={() => navigate(\"memory\")}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 1204,
+    "element": "button",
+    "label": "Reprendre",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() =>\n                                resumeEdition && openEdition(resumeEdition.id)\n                              }"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 1246,
+    "element": "button",
+    "label": "Sauvegarder",
+    "attributes": [
+      "className=\"text-button\"",
+      "onClick={() =>\n                            run(\n                              localBackup,\n                              \"Archive de sauvegarde téléchargée.\",\n                            )\n                          }"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 1326,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "key={t.id}",
+      "aria-pressed={libraryMode === t.id}",
+      "onClick={() => setLibraryMode(t.id)}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 1335,
+    "element": "button",
+    "label": "Importer",
+    "attributes": [
+      "className=\"primary\"",
+      "onClick={() => fileRef.current?.click()}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 1356,
+    "element": "button",
+    "label": "Importer un HTML",
+    "attributes": [
+      "className=\"primary\"",
+      "onClick={() => fileRef.current?.click()}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 1392,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"secondary\"",
+      "key={c}",
+      "onClick={() => setQuery(c)}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 1428,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"result-row\"",
+      "key={e.id}",
+      "onClick={() => openEdition(e.id)}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 1452,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"result-row\"",
+      "key={`${e.id}:${a.id}`}",
+      "onClick={() => openEdition(e.id)}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 1476,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"result-row\"",
+      "key={n.id}",
+      "onClick={() => openEdition(n.editionId)}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 1536,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"memory-link\"",
+      "key={s.id}",
+      "onClick={() => openEdition(e.id)}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 1571,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"memory-link\"",
+      "key={n.id}",
+      "onClick={() => openEdition(n.editionId)}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 1603,
+    "element": "summary",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": []
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 1616,
+    "element": "button",
+    "label": "·",
+    "attributes": [
+      "className=\"text-button\"",
+      "onClick={() => openEdition(item.edition.id)}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 1675,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"timeline-row\"",
+      "key={e.id}",
+      "onClick={() => openEdition(e.id)}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 1703,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"timeline-row\"",
+      "key={e.id}",
+      "onClick={() => openEdition(e.id)}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 1790,
+    "element": "button",
+    "label": "Demander le stockage persistant",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() =>\n                          run(async () => {\n                            const persisted =\n                              await navigator.storage?.persist();\n                            setStorage({ ...storage, persisted });\n                            setToast(\n                              persisted\n                                ? \"Stockage persistant accordé par le navigateur.\"\n                                : \"Le navigateur n’a pas accordé le stockage persistant.\",\n                            );\n                          })\n                        }"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 1827,
+    "element": "button",
+    "label": "Exporter tout",
+    "attributes": [
+      "className=\"primary\"",
+      "onClick={() =>\n                            run(localBackup, \"Archive ZIP téléchargée.\")\n                          }"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 1836,
+    "element": "button",
+    "label": "Restaurer un ZIP",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() => restoreRef.current?.click()}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 1900,
+    "element": "button",
+    "label": "Ouvrir mes sauvegardes",
+    "attributes": [
+      "className=\"primary\"",
+      "disabled={!online || busy}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 1936,
+    "element": "button",
+    "label": "Synchroniser maintenant",
+    "attributes": [
+      "className=\"primary\"",
+      "disabled={!online || busy}",
+      "onClick={() => run(syncDevices)}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 1951,
+    "element": "button",
+    "label": "Sauvegarder dans Supabase",
+    "attributes": [
+      "className=\"primary\"",
+      "disabled={busy}",
+      "onClick={() =>\n                                run(\n                                  cloudBackup,\n                                  online\n                                    ? \"Sauvegarde privée envoyée.\"\n                                    : \"Sauvegarde mise en attente du réseau.\",\n                                )\n                              }"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 1966,
+    "element": "button",
+    "label": "Retrouver mes sauvegardes",
+    "attributes": [
+      "className=\"secondary\"",
+      "disabled={!online}",
+      "onClick={() => run(loadSnapshots)}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 2000,
+    "element": "button",
+    "label": "Restaurer",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() =>\n                                    run(async () => {\n                                      await remote.restore(session, s.id);\n                                    }, \"Sauvegarde cloud restaurée par fusion. Les notes en conflit sont conservées.\")\n                                  }"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 2013,
+    "element": "button",
+    "label": "Se déconnecter",
+    "attributes": [
+      "className=\"text-button\"",
+      "onClick={() =>\n                              run(async () => {\n                                const { error } = await cloud.auth.signOut({\n                                  scope: \"local\",\n                                });\n                                if (error) throw error;\n                                setSnapshots([]);\n                                setCloudStatus(\n                                  \"Aucune sauvegarde cloud active\",\n                                );\n                              }, \"Déconnecté. La bibliothèque locale est conservée.\")\n                            }"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 2082,
+    "element": "button",
+    "label": "Choisir un HTML sur cet appareil",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() => fileRef.current?.click()}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 2111,
+    "element": "button",
+    "label": "Importer les démonstrations",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() => run(importDemo)}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 2124,
+    "element": "button",
+    "label": "Papier clair",
+    "attributes": [
+      "aria-pressed={theme === \"light\"}",
+      "onClick={() =>\n                            run(() =>\n                              db.preferences.put({\n                                key: \"theme\",\n                                value: \"light\",\n                              }),\n                            )\n                          }"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 2138,
+    "element": "button",
+    "label": "Lecture sombre",
+    "attributes": [
+      "aria-pressed={theme === \"dark\"}",
+      "onClick={() =>\n                            run(() =>\n                              db.preferences.put({\n                                key: \"theme\",\n                                value: \"dark\",\n                              }),\n                            )\n                          }"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 2172,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "aria-current={tab === t.id && !selected ? \"page\" : undefined}",
+      "key={t.id}",
+      "onClick={() => navigate(t.id)}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 2182,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"mobile-import\"",
+      "aria-label=\"Importer un fichier HTML\"",
+      "onClick={() => fileRef.current?.click()}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 2299,
+    "element": "button",
+    "label": "Annuler",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() => setRestoration(null)}"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 2305,
+    "element": "button",
+    "label": "Fusionner la sauvegarde",
+    "attributes": [
+      "className=\"primary\"",
+      "onClick={() =>\n                  run(async () => {\n                    const result = await restoreBackup(db, restoration);\n                    setRestoration(null);\n                    setToast(\n                      `${result.added} éditions restaurées · ${result.conflicts} notes en conflit conservées.`,\n                    );\n                  })\n                }"
+    ]
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 2327,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"icon-button\"",
+      "aria-label=\"Fermer la notification\"",
+      "onClick={() => setToast(\"\")}"
+    ]
+  },
+  {
+    "file": "src/features/ArticlesView.tsx",
+    "line": 130,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"text-button article-google\"",
+      "disabled={!!loadingQuestion}",
+      "aria-label={`Question Google : ${item.article.title}`}",
+      "onClick={() => void prepareQuestion(item)}"
+    ]
+  },
+  {
+    "file": "src/features/ArticlesView.tsx",
+    "line": 235,
+    "element": "summary",
+    "label": "Filtres et tri",
+    "attributes": []
+  },
+  {
+    "file": "src/features/ArticlesView.tsx",
+    "line": 306,
+    "element": "button",
+    "label": "Effacer les filtres",
+    "attributes": [
+      "className=\"text-button\"",
+      "onClick={() =>\n                    changeFilter(() => {\n                      setQuery(\"\");\n                      setCategory(\"\");\n                      setGroup(\"\");\n                      setStatus(\"\");\n                    })\n                  }"
+    ]
+  },
+  {
+    "file": "src/features/ArticlesView.tsx",
+    "line": 338,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"article-index-link\"",
+      "aria-label={`Ouvrir dans le journal : ${item.article.title}`}",
+      "onClick={() => onOpen(item.edition.id, item.article.id)}"
+    ]
+  },
+  {
+    "file": "src/features/ArticlesView.tsx",
+    "line": 355,
+    "element": "button",
+    "label": "Retour aux articles",
+    "attributes": [
+      "className=\"text-button\"",
+      "onClick={back}"
+    ]
+  },
+  {
+    "file": "src/features/ArticlesView.tsx",
+    "line": 372,
+    "element": "button",
+    "label": "Favori",
+    "attributes": [
+      "className=\"secondary\"",
+      "aria-pressed={\n                          !!stateOf(current.edition.id, current.article.id)\n                            ?.favorite\n                        }",
+      "onClick={() =>\n                          onReading(current.edition.id, current.article.id, {\n                            favorite: !stateOf(\n                              current.edition.id,\n                              current.article.id,\n                            )?.favorite,\n                          })\n                        }"
+    ]
+  },
+  {
+    "file": "src/features/ArticlesView.tsx",
+    "line": 390,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"secondary\"",
+      "aria-pressed={\n                          !!stateOf(current.edition.id, current.article.id)\n                            ?.read\n                        }",
+      "onClick={() =>\n                          onReading(current.edition.id, current.article.id, {\n                            read: !stateOf(\n                              current.edition.id,\n                              current.article.id,\n                            )?.read,\n                          })\n                        }"
+    ]
+  },
+  {
+    "file": "src/features/ArticlesView.tsx",
+    "line": 410,
+    "element": "button",
+    "label": "Ouvrir le journal d’origine",
+    "attributes": [
+      "className=\"text-button\"",
+      "onClick={() =>\n                          onOpen(current.edition.id, current.article.id)\n                        }"
+    ]
+  },
+  {
+    "file": "src/features/ArticlesView.tsx",
+    "line": 483,
+    "element": "button",
+    "label": "Article précédent",
+    "attributes": [
+      "className=\"secondary\"",
+      "disabled={position <= 0}",
+      "onClick={() => open(filtered[position - 1].key)}"
+    ]
+  },
+  {
+    "file": "src/features/ArticlesView.tsx",
+    "line": 494,
+    "element": "button",
+    "label": "Article suivant",
+    "attributes": [
+      "className=\"secondary\"",
+      "disabled={position === filtered.length - 1}",
+      "onClick={() => open(filtered[position + 1].key)}"
+    ]
+  },
+  {
+    "file": "src/features/ArticlesView.tsx",
+    "line": 516,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"title-button\"",
+      "onClick={() =>\n                                  onOpen(item.edition.id, item.article.id)\n                                }"
+    ]
+  },
+  {
+    "file": "src/features/ArticlesView.tsx",
+    "line": 537,
+    "element": "button",
+    "label": "Lire dans le journal",
+    "attributes": [
+      "className=\"text-button\"",
+      "onClick={() =>\n                                  onOpen(item.edition.id, item.article.id)\n                                }"
+    ]
+  },
+  {
+    "file": "src/features/ArticlesView.tsx",
+    "line": 546,
+    "element": "button",
+    "label": "Lire ici",
+    "attributes": [
+      "className=\"text-button\"",
+      "aria-label={`Lire ici : ${item.article.title}`}",
+      "onClick={() => open(item.key)}"
+    ]
+  },
+  {
+    "file": "src/features/ArticlesView.tsx",
+    "line": 568,
+    "element": "button",
+    "label": "Page précédente",
+    "attributes": [
+      "className=\"secondary\"",
+      "disabled={visiblePage === 0}",
+      "onClick={() => {\n                            setPage(visiblePage - 1);\n                            listHeading.current?.focus();\n                          }}"
+    ]
+  },
+  {
+    "file": "src/features/ArticlesView.tsx",
+    "line": 582,
+    "element": "button",
+    "label": "Page suivante",
+    "attributes": [
+      "className=\"secondary\"",
+      "disabled={visiblePage === pageCount - 1}",
+      "onClick={() => {\n                            setPage(visiblePage + 1);\n                            listHeading.current?.focus();\n                          }}"
+    ]
+  },
+  {
+    "file": "src/features/ArticlesView.tsx",
+    "line": 614,
+    "element": "button",
+    "label": "Importer une veille",
+    "attributes": [
+      "className=\"primary\"",
+      "onClick={onImport}"
+    ]
+  },
+  {
+    "file": "src/features/CollectionView.tsx",
+    "line": 76,
+    "element": "button",
+    "label": "Importer dans",
+    "attributes": [
+      "className=\"primary\"",
+      "onClick={onImport}"
+    ]
+  },
+  {
+    "file": "src/features/CollectionView.tsx",
+    "line": 100,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "key={item.id}",
+      "aria-pressed={mode === item.id}",
+      "onClick={() => setMode(item.id)}"
+    ]
+  },
+  {
+    "file": "src/features/CollectionView.tsx",
+    "line": 131,
+    "element": "button",
+    "label": "Ouvrir l’article dans le HTML",
+    "attributes": [
+      "className=\"text-button\"",
+      "onClick={() => onOpen(item.edition.id, item.article.id)}"
+    ]
+  },
+  {
+    "file": "src/features/CollectionView.tsx",
+    "line": 155,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"title-button\"",
+      "onClick={() => onOpen(edition.id)}"
+    ]
+  },
+  {
+    "file": "src/features/CollectionView.tsx",
+    "line": 169,
+    "element": "button",
+    "label": "Restaurer",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() => onUpdate(edition.id, { deleted: false })}"
+    ]
+  },
+  {
+    "file": "src/features/CollectionView.tsx",
+    "line": 177,
+    "element": "button",
+    "label": "Ouvrir le HTML",
+    "attributes": [
+      "className=\"text-button\"",
+      "onClick={() => onOpen(edition.id)}"
+    ]
+  },
+  {
+    "file": "src/features/CollectionView.tsx",
+    "line": 185,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"text-button\"",
+      "onClick={() =>\n                        onUpdate(edition.id, { archived: !edition.archived })\n                      }"
+    ]
+  },
+  {
+    "file": "src/features/CollectionView.tsx",
+    "line": 194,
+    "element": "button",
+    "label": "Corbeille",
+    "attributes": [
+      "className=\"text-button\"",
+      "onClick={() => onUpdate(edition.id, { deleted: true })}"
+    ]
+  },
+  {
+    "file": "src/features/CollectionView.tsx",
+    "line": 227,
+    "element": "button",
+    "label": "Importer un HTML dans",
+    "attributes": [
+      "className=\"primary\"",
+      "onClick={onImport}"
+    ]
+  },
+  {
+    "file": "src/features/DayView.tsx",
+    "line": 101,
+    "element": "button",
+    "label": "Lire la dernière édition",
+    "attributes": [
+      "className=\"primary\"",
+      "onClick={() => onOpen(current.id)}",
+      "aria-label={`Lire ${current.title}`}"
+    ]
+  },
+  {
+    "file": "src/features/DayView.tsx",
+    "line": 108,
+    "element": "button",
+    "label": "Historique des éditions",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() => onHistory(current.dayKey!)}"
+    ]
+  },
+  {
+    "file": "src/features/DayView.tsx",
+    "line": 115,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"icon-button\"",
+      "aria-label={`${favoriteIds.includes(current.id) ? \"Retirer des\" : \"Ajouter aux\"} favoris ${current.title}`}",
+      "onClick={() => onFavorite(current.id)}"
+    ]
+  },
+  {
+    "file": "src/features/DayView.tsx",
+    "line": 127,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"text-button\"",
+      "onClick={() =>\n              onMove(\n                versions.map((e) => e.id),\n                !current.deleted,\n              )\n            }"
+    ]
+  },
+  {
+    "file": "src/features/DayView.tsx",
+    "line": 163,
+    "element": "button",
+    "label": "Bibliothèque",
+    "attributes": [
+      "onClick={onBack}"
+    ]
+  },
+  {
+    "file": "src/features/DayView.tsx",
+    "line": 182,
+    "element": "button",
+    "label": "Retour à la bibliothèque",
+    "attributes": [
+      "className=\"text-button\"",
+      "onClick={onBack}"
+    ]
+  },
+  {
+    "file": "src/features/DayView.tsx",
+    "line": 208,
+    "element": "button",
+    "label": "Lire cette version",
+    "attributes": [
+      "className=\"primary\"",
+      "onClick={() => onOpen(selected.id)}"
+    ]
+  },
+  {
+    "file": "src/features/DayView.tsx",
+    "line": 212,
+    "element": "button",
+    "label": "Dernière version fiable",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() => {\n              setSelectedId(day.reliable!.id);\n              onOpen(day.reliable!.id);\n            }}"
+    ]
+  },
+  {
+    "file": "src/features/DayView.tsx",
+    "line": 263,
+    "element": "summary",
+    "label": "Empreinte de l’original",
+    "attributes": []
+  },
+  {
+    "file": "src/features/DayView.tsx",
+    "line": 266,
+    "element": "button",
+    "label": "Consulter la révision",
+    "attributes": [
+      "className=\"secondary\"",
+      "aria-pressed={selected.id === edition.id}",
+      "onClick={() => {\n                setSelectedId(edition.id);\n                setCategory(\"all\");\n              }}"
+    ]
+  },
+  {
+    "file": "src/features/DayView.tsx",
+    "line": 335,
+    "element": "button",
+    "label": "Ouvrir la version annotée",
+    "attributes": [
+      "className=\"text-button\"",
+      "onClick={() => onOpen(note.editionId)}"
+    ]
+  },
+  {
+    "file": "src/features/GoogleAiDialog.tsx",
+    "line": 121,
+    "element": "button",
+    "label": "Annuler",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={onDismiss}"
+    ]
+  },
+  {
+    "file": "src/features/GoogleAiDialog.tsx",
+    "line": 124,
+    "element": "button",
+    "label": "Rechercher sur Google",
+    "attributes": [
+      "className=\"primary\"",
+      "disabled={!launch}",
+      "onClick={() => open(false)}"
+    ]
+  },
+  {
+    "file": "src/features/GoogleAiDialog.tsx",
+    "line": 131,
+    "element": "button",
+    "label": "Copier la question",
+    "attributes": [
+      "className=\"secondary\"",
+      "disabled={!valid}",
+      "onClick={() => void copy()}"
+    ]
+  },
+  {
+    "file": "src/features/GoogleAiDialog.tsx",
+    "line": 138,
+    "element": "button",
+    "label": "Ouvrir Google Mode IA",
+    "attributes": [
+      "className=\"secondary\"",
+      "disabled={!!privacyIssue}",
+      "onClick={() => open(true)}"
+    ]
+  },
+  {
+    "file": "src/features/ImportDialog.tsx",
+    "line": 124,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"icon-button\"",
+      "aria-label=\"Annuler l’import\"",
+      "disabled={busy}",
+      "onClick={onClose}"
+    ]
+  },
+  {
+    "file": "src/features/ImportDialog.tsx",
+    "line": 396,
+    "element": "button",
+    "label": "Annuler",
+    "attributes": [
+      "className=\"secondary\"",
+      "disabled={busy}",
+      "onClick={onClose}"
+    ]
+  },
+  {
+    "file": "src/features/ImportDialog.tsx",
+    "line": 399,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"primary\"",
+      "disabled={\n              busy ||\n              candidates.some(\n                (c) =>\n                  !dayKeyOf(\n                    inCollection(\n                      {\n                        ...c.edition,\n                        date: metadata[c.edition.id]\n                          ? metadata[c.edition.id].date || null\n                          : c.edition.date,\n                      },\n                      destinations[c.edition.id] ||\n                        c.edition.collection ||\n                        \"library\",\n                    ),\n                  ) &&\n                  choices[c.edition.id] === \"version\" &&\n                  !parents[c.edition.id],\n              )\n            }",
+      "onClick={() => void commit()}"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 331,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"text-button\"",
+      "onClick={onBack}"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 336,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"icon-button\"",
+      "aria-label=\"Édition plus récente\"",
+      "disabled={index === 0}",
+      "onClick={() => onOpen(editions[index - 1].id)}"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 344,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"icon-button\"",
+      "aria-label=\"Édition plus ancienne\"",
+      "disabled={index === editions.length - 1}",
+      "onClick={() => onOpen(editions[index + 1].id)}"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 371,
+    "element": "button",
+    "label": "Dernière version fiable",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() => onOpen(day.reliable!.id)}"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 378,
+    "element": "button",
+    "label": "Historique des éditions",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() => onDay?.(dayKeyOf(edition)!)}"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 393,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className={state?.favorite ? \"secondary active\" : \"secondary\"}",
+      "onClick={() =>\n            run(() =>\n              db.reading(edition.id, \"edition\", { favorite: !state?.favorite }),\n            )\n          }"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 404,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() =>\n            run(() => db.reading(edition.id, \"edition\", { read: !state?.read }))\n          }"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 413,
+    "element": "button",
+    "label": "Original intact",
+    "attributes": [
+      "className=\"secondary\"",
+      "disabled={!bytes}",
+      "onClick={() => bytes && download(blobOf(bytes), edition.filename)}"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 421,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() =>\n            run(\n              () =>\n                db.transaction(\"rw\", db.editions, async () => {\n                  const ids = day\n                    ? day.versions.map((v) => v.edition.id)\n                    : [edition.id];\n                  const updatedAt = now();\n                  for (const id of ids)\n                    await db.editions.update(id, {\n                      archived: !edition.archived,\n                      updatedAt,\n                    });\n                }),\n              edition.archived ? \"Édition désarchivée.\" : \"Édition archivée.\",\n            )\n          }"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 451,
+    "element": "button",
+    "label": "Sécurisé",
+    "attributes": [
+      "aria-pressed={mode === \"safe\"}",
+      "onClick={() =>\n            run(async () => {\n              await db.preferences.put({\n                key: `reader-trust-${edition.id}`,\n                value: \"safe\",\n              });\n              setMode(\"safe\");\n            })\n          }"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 466,
+    "element": "button",
+    "label": "Texte indexé",
+    "attributes": [
+      "aria-pressed={mode === \"text\"}",
+      "onClick={() => setMode(\"text\")}"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 470,
+    "element": "button",
+    "label": "Interactif",
+    "attributes": [
+      "aria-pressed={mode === \"interactive\"}",
+      "onClick={() => setConfirm(true)}"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 488,
+    "element": "summary",
+    "label": "information(s) de compatibilité",
+    "attributes": []
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 512,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"icon-button reader-back\"",
+      "aria-label={backLabel}",
+      "onClick={onBack}"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 522,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"secondary\"",
+      "aria-pressed={mode === \"interactive\"}",
+      "onClick={() => {\n                  if (mode !== \"interactive\") setConfirm(true);\n                  else\n                    run(async () => {\n                      await db.preferences.put({\n                        key: `reader-trust-${edition.id}`,\n                        value: \"safe\",\n                      });\n                      setMode(\"safe\");\n                    });\n                }}"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 547,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"icon-button\"",
+      "aria-label=\"Dézoomer le HTML\"",
+      "disabled={htmlZoom <= 40}",
+      "onClick={() => setHtmlZoom(Math.max(40, htmlZoom - 10))}"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 558,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"icon-button\"",
+      "aria-label=\"Zoomer le HTML\"",
+      "disabled={htmlZoom >= 200}",
+      "onClick={() => setHtmlZoom(Math.min(200, htmlZoom + 10))}"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 566,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"icon-button\"",
+      "aria-label=\"Recharger le HTML\"",
+      "onClick={() => setFrameRevision((revision) => revision + 1)}"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 576,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"secondary reader-reduce\"",
+      "aria-expanded={expanded}",
+      "onClick={() => setExpanded(!expanded)}"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 598,
+    "element": "summary",
+    "label": "Questions Google disponibles ( )",
+    "attributes": []
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 604,
+    "element": "button",
+    "label": "Préparer la question",
+    "attributes": [
+      "className=\"secondary\"",
+      "key={question}",
+      "onClick={() => prepareQuestion(question)}"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 618,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"icon-button\"",
+      "aria-label=\"Réduire le texte\"",
+      "onClick={() => setFont(Math.max(14, font - 2))}"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 625,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"icon-button\"",
+      "aria-label=\"Agrandir le texte\"",
+      "onClick={() => setFont(Math.min(32, font + 2))}"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 648,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() =>\n                          run(() =>\n                            db.reading(edition.id, a.id, {\n                              favorite: !states.find(\n                                (s) =>\n                                  s.editionId === edition.id &&\n                                  s.articleId === a.id,\n                              )?.favorite,\n                            }),\n                          )\n                        }"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 670,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() =>\n                          run(() =>\n                            db.reading(edition.id, a.id, {\n                              read: !states.find(\n                                (s) =>\n                                  s.editionId === edition.id &&\n                                  s.articleId === a.id,\n                              )?.read,\n                            }),\n                          )\n                        }"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 692,
+    "element": "button",
+    "label": "Annoter cet article",
+    "attributes": [
+      "className=\"text-button\"",
+      "onClick={() => {\n                          setArticle(a.id);\n                          document.getElementById(\"note-body\")?.focus();\n                        }}"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 749,
+    "element": "button",
+    "label": "Afficher le texte conservé",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() => setMode(\"text\")}"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 851,
+    "element": "button",
+    "label": "Rester en mode sécurisé",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() => setConfirm(false)}"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 854,
+    "element": "button",
+    "label": "Je fais confiance à ce fichier",
+    "attributes": [
+      "className=\"primary\"",
+      "onClick={() =>\n                    run(async () => {\n                      await db.preferences.put({\n                        key: `reader-trust-${edition.id}`,\n                        value: \"interactive\",\n                      });\n                      setMode(\"interactive\");\n                      setConfirm(false);\n                    })\n                  }"
+    ]
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 877,
+    "element": "summary",
+    "label": "Prompts Markdown de cette édition",
+    "attributes": []
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "line": 932,
+    "element": "button",
+    "label": "Enregistrer la note",
+    "attributes": [
+      "className=\"primary\"",
+      "disabled={!note.trim()}",
+      "type=\"submit\""
+    ]
+  },
+  {
+    "file": "src/features/ReadingUpdates.tsx",
+    "line": 8,
+    "element": "summary",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": []
+  },
+  {
+    "file": "src/features/SyncIndicator.tsx",
+    "line": 101,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"status-chip sync-indicator\"",
+      "data-state={label}",
+      "disabled={running}",
+      "onClick={owner && online ? onSync : onSettings}",
+      "aria-label={`${label}. ${detail}${owner && !autoSync ? \". Synchronisation automatique désactivée\" : \"\"}`}",
+      "title={\n        error ||\n        `${detail}${!autoSync && owner ? \" · Synchronisation automatique désactivée\" : \"\"}`\n      }"
+    ]
+  },
+  {
+    "file": "src/features/diagnostics.tsx",
+    "line": 51,
+    "element": "summary",
+    "label": "Consulter les événements",
+    "attributes": []
+  },
+  {
+    "file": "src/features/diagnostics.tsx",
+    "line": 58,
+    "element": "button",
+    "label": "Exporter le diagnostic expurgé",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() =>\n          download(\n            new Blob([JSON.stringify(entries, null, 2)], {\n              type: \"application/json\",\n            }),\n            \"journal360-diagnostic-expurge.json\",\n          )\n        }"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureActions.tsx",
+    "line": 108,
+    "element": "summary",
+    "label": "Effort et scénarios concernés",
+    "attributes": []
+  },
+  {
+    "file": "src/features/future/FutureActions.tsx",
+    "line": 171,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"secondary\"",
+      "disabled={busy}"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureDetail.tsx",
+    "line": 123,
+    "element": "button",
+    "label": "← Tous les dossiers",
+    "attributes": [
+      "onClick={onBack}"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureDetail.tsx",
+    "line": 161,
+    "element": "summary",
+    "label": "Historique local complet ( )",
+    "attributes": []
+  },
+  {
+    "file": "src/features/future/FutureDetail.tsx",
+    "line": 178,
+    "element": "button",
+    "label": "← Tous les dossiers",
+    "attributes": [
+      "className=\"text-button future-back\"",
+      "onClick={onBack}"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureDetail.tsx",
+    "line": 198,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"secondary\"",
+      "aria-pressed={personal.favorite}",
+      "onClick={() => patch({ favorite: !personal.favorite })}"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureDetail.tsx",
+    "line": 222,
+    "element": "summary",
+    "label": "Exports, original et empreinte",
+    "attributes": []
+  },
+  {
+    "file": "src/features/future/FutureDetail.tsx",
+    "line": 224,
+    "element": "button",
+    "label": "Exporter JSON",
+    "attributes": [
+      "onClick={() =>\n                run(async () => {\n                  download(\n                    blobOf(\n                      new TextEncoder().encode(JSON.stringify(p, null, 2)),\n                      \"application/json\",\n                    ),\n                    p.documentId + \".json\",\n                  );\n                })\n              }"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureDetail.tsx",
+    "line": 239,
+    "element": "button",
+    "label": "Exporter HTML portable",
+    "attributes": [
+      "onClick={() =>\n                run(async () => {\n                  download(\n                    blobOf(\n                      new TextEncoder().encode(renderFutureHTML(p)),\n                      \"text/html\",\n                    ),\n                    p.documentId + \".html\",\n                  );\n                })\n              }"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureDetail.tsx",
+    "line": 254,
+    "element": "button",
+    "label": "Télécharger l’original",
+    "attributes": [
+      "onClick={() =>\n                run(async () => {\n                  if (!chosen || !activeVersion) return;\n                  const o = await futureDb.originals.get(chosen);\n                  if (o)\n                    download(\n                      blobOf(\n                        o.bytes,\n                        activeVersion.kind === \"json\"\n                          ? \"application/json\"\n                          : \"text/html\",\n                      ),\n                      activeVersion.filename,\n                    );\n                })\n              }"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureDetail.tsx",
+    "line": 275,
+    "element": "button",
+    "label": "Voir l’aperçu HTML isolé",
+    "attributes": [
+      "ref={previewButton}",
+      "onClick={() =>\n                  run(async () =>\n                    setPreview(\n                      radarReaderHTML(\n                        new TextEncoder().encode(\n                          renderFutureHTML(p).replace(\n                            \"</head>\",\n                            \"<style>*,*::before,*::after{animation:none!important;transition:none!important}</style></head>\",\n                          ),\n                        ),\n                      ),\n                    ),\n                  )\n                }"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureDetail.tsx",
+    "line": 315,
+    "element": "button",
+    "label": "Fermer l’aperçu",
+    "attributes": [
+      "onClick={() => {\n              setPreview(\"\");\n              previewButton.current?.focus();\n            }}"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureEvidence.tsx",
+    "line": 32,
+    "element": "summary",
+    "label": "Lire le texte complet",
+    "attributes": []
+  },
+  {
+    "file": "src/features/future/FuturePersonalNotes.tsx",
+    "line": 57,
+    "element": "button",
+    "label": "Enregistrer ma décision",
+    "attributes": [
+      "className=\"secondary\""
+    ]
+  },
+  {
+    "file": "src/features/future/FuturePersonalNotes.tsx",
+    "line": 82,
+    "element": "button",
+    "label": "Ajouter ma note",
+    "attributes": [
+      "disabled={busy}",
+      "className=\"primary\""
+    ]
+  },
+  {
+    "file": "src/features/future/FutureScenarioCompare.tsx",
+    "line": 25,
+    "element": "summary",
+    "label": "Hypothèses et conditions",
+    "attributes": []
+  },
+  {
+    "file": "src/features/future/FutureScenarioCompare.tsx",
+    "line": 36,
+    "element": "summary",
+    "label": "Voir les objections",
+    "attributes": []
+  },
+  {
+    "file": "src/features/future/FutureScenarioCompare.tsx",
+    "line": 40,
+    "element": "summary",
+    "label": "Voir les sources",
+    "attributes": []
+  },
+  {
+    "file": "src/features/future/FutureScenarioCompare.tsx",
+    "line": 76,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "aria-pressed={detailed}",
+      "onClick={() => setDetailed((v) => !v)}"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureSignals.tsx",
+    "line": 57,
+    "element": "summary",
+    "label": "Sources, contrôle déclaré et objections",
+    "attributes": []
+  },
+  {
+    "file": "src/features/future/FutureSources.tsx",
+    "line": 106,
+    "element": "button",
+    "label": "Enregistrer ma revue personnelle",
+    "attributes": [
+      "className=\"secondary\""
+    ]
+  },
+  {
+    "file": "src/features/future/FutureTimeline.tsx",
+    "line": 84,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "key={year}",
+      "ref={(el) => {\n              buttons.current[i] = el;\n            }}",
+      "aria-pressed={active === year}",
+      "onKeyDown={(e) => key(e, i)}",
+      "onClick={() => select(year)}"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureTimeline.tsx",
+    "line": 101,
+    "element": "button",
+    "label": "← Horizon précédent",
+    "attributes": [
+      "onClick={() => select(periods[index - 1])}",
+      "disabled={index === 0}"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureTimeline.tsx",
+    "line": 110,
+    "element": "button",
+    "label": "Horizon suivant →",
+    "attributes": [
+      "onClick={() => select(periods[index + 1])}",
+      "disabled={index === periods.length - 1}"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureTimeline.tsx",
+    "line": 147,
+    "element": "summary",
+    "label": "D’où vient cette affirmation ?",
+    "attributes": []
+  },
+  {
+    "file": "src/features/future/FutureTimeline.tsx",
+    "line": 175,
+    "element": "button",
+    "label": "Afficher 12 jalons de plus ( restants)",
+    "attributes": [
+      "onClick={() => setLimit((n) => n + 12)}"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureTimeline.tsx",
+    "line": 183,
+    "element": "summary",
+    "label": "Relations déclarées entre les jalons ( )",
+    "attributes": []
+  },
+  {
+    "file": "src/features/future/FutureView.tsx",
+    "line": 192,
+    "element": "button",
+    "label": "Importer un dossier",
+    "attributes": [
+      "className=\"primary\"",
+      "onClick={onImport}"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureView.tsx",
+    "line": 215,
+    "element": "summary",
+    "label": "Sauvegarde et ressources",
+    "attributes": []
+  },
+  {
+    "file": "src/features/future/FutureView.tsx",
+    "line": 217,
+    "element": "button",
+    "label": "Sauvegarder Le Futur",
+    "attributes": [
+      "className=\"secondary\"",
+      "disabled={busy}",
+      "onClick={() =>\n              run(async () => {\n                download(\n                  await exportFutureBackup(futureDb),\n                  \"Le-Futur-\" + new Date().toISOString().slice(0, 10) + \".zip\",\n                );\n                setMessage(\n                  \"Sauvegarde exportée : elle contient vos originaux et vos notes privés.\",\n                );\n              })\n            }"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureView.tsx",
+    "line": 234,
+    "element": "button",
+    "label": "Restaurer Le Futur",
+    "attributes": [
+      "className=\"secondary\"",
+      "disabled={busy}",
+      "onClick={() => restoreRef.current?.click()}"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureView.tsx",
+    "line": 313,
+    "element": "summary",
+    "label": "Comparer les révisions et l’historique",
+    "attributes": []
+  },
+  {
+    "file": "src/features/future/FutureView.tsx",
+    "line": 317,
+    "element": "button",
+    "label": "— révision : voir les différences\n                        et l’historique",
+    "attributes": [
+      "className=\"text-button\"",
+      "onClick={() => open(d.documentId, \"changes\")}"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureView.tsx",
+    "line": 364,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "key={key}",
+      "onClick={() => {\n                  if (matches[0]) open(matches[0].documentId, key);\n                  else document.getElementById(\"future-empty-state\")?.focus();\n                }}"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureView.tsx",
+    "line": 386,
+    "element": "summary",
+    "label": "Filtres · actif(s)",
+    "attributes": []
+  },
+  {
+    "file": "src/features/future/FutureView.tsx",
+    "line": 464,
+    "element": "button",
+    "label": "Effacer les filtres",
+    "attributes": [
+      "onClick={clearFilters}"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureView.tsx",
+    "line": 485,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "ref={(el) => {\n                        if (el) cardRefs.current.set(d.documentId, el);\n                        else cardRefs.current.delete(d.documentId);\n                      }}",
+      "className=\"future-title\"",
+      "onClick={() => open(d.documentId)}"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureView.tsx",
+    "line": 531,
+    "element": "button",
+    "label": "Effacer les filtres",
+    "attributes": [
+      "onClick={clearFilters}"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureView.tsx",
+    "line": 538,
+    "element": "button",
+    "label": "Choisir un fichier HTML ou JSON",
+    "attributes": [
+      "className=\"primary\"",
+      "onClick={onImport}"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureView.tsx",
+    "line": 551,
+    "element": "button",
+    "label": "Page précédente",
+    "attributes": [
+      "disabled={currentPage === 0}",
+      "onClick={() => setPage((p) => p - 1)}"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureView.tsx",
+    "line": 560,
+    "element": "button",
+    "label": "Page suivante",
+    "attributes": [
+      "disabled={(currentPage + 1) * 20 >= matches.length}",
+      "onClick={() => setPage((p) => p + 1)}"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureView.tsx",
+    "line": 587,
+    "element": "button",
+    "label": "Annuler",
+    "attributes": [
+      "disabled={busy}",
+      "onClick={() => setArchive(null)}"
+    ]
+  },
+  {
+    "file": "src/features/future/FutureView.tsx",
+    "line": 590,
+    "element": "button",
+    "label": "Fusionner Le Futur",
+    "attributes": [
+      "className=\"primary\"",
+      "disabled={busy}",
+      "onClick={() =>\n                  run(async () => {\n                    const count = await restoreFutureBackup(futureDb, archive);\n                    setArchive(null);\n                    setMessage(\n                      `${count} révisions restaurées. États personnels fusionnés.`,\n                    );\n                  })\n                }"
+    ]
+  },
+  {
+    "file": "src/features/future/ImportDialog.tsx",
+    "line": 200,
+    "element": "summary",
+    "label": "Prévisualiser les données",
+    "attributes": []
+  },
+  {
+    "file": "src/features/future/ImportDialog.tsx",
+    "line": 236,
+    "element": "button",
+    "label": "Transférer ce journal vers Bibliothèque",
+    "attributes": [
+      "className=\"secondary\"",
+      "disabled={busy}",
+      "onClick={() => onJournal(c.file)}"
+    ]
+  },
+  {
+    "file": "src/features/future/ImportDialog.tsx",
+    "line": 252,
+    "element": "button",
+    "label": "Annuler",
+    "attributes": [
+      "disabled={busy}",
+      "className=\"secondary\"",
+      "onClick={onClose}"
+    ]
+  },
+  {
+    "file": "src/features/future/ImportDialog.tsx",
+    "line": 255,
+    "element": "button",
+    "label": "Importer fichier(s) compatibles",
+    "attributes": [
+      "className=\"primary\"",
+      "disabled={!ready || busy}",
+      "onClick={async () => {\n              setBusy(true);\n              setError(\"\");\n              try {\n                const result = await futureDb.importBatch(\n                  eligible.map((r) => r.candidate),\n                  new Set(\n                    eligible\n                      .filter((r) =>\n                        confirmed.has(confirmationKey(r.candidate)),\n                      )\n                      .map((r) => r.candidate.payload!.documentId),\n                  ),\n                  migrations,\n                );\n                const ignored =\n                  result.ignored +\n                  rows.filter((r) => r.preview.status === \"duplicate\").length;\n                onDone(\n                  `${result.added} dossiers ou révisions importés · ${ignored} doublon${ignored > 1 ? \"s\" : \"\"} ignoré${ignored > 1 ? \"s\" : \"\"}. Les fichiers incompatibles n’ont pas été importés.`,\n                );\n              } catch (e) {\n                setError(e instanceof Error ? e.message : String(e));\n              } finally {\n                setBusy(false);\n              }\n            }}"
+    ]
+  },
+  {
+    "file": "src/features/unified/EconomyRadar.tsx",
+    "line": 139,
+    "element": "summary",
+    "label": "Source, définition et décision générale",
+    "attributes": []
+  },
+  {
+    "file": "src/features/unified/FutureBridge.tsx",
+    "line": 83,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"secondary\"",
+      "key={id}",
+      "aria-pressed={kind === id}",
+      "onClick={() => setKind(id)}"
+    ]
+  },
+  {
+    "file": "src/features/unified/FutureBridge.tsx",
+    "line": 99,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"secondary\"",
+      "key={y}",
+      "aria-pressed={horizon === y}",
+      "onClick={() => setHorizon(y)}"
+    ]
+  },
+  {
+    "file": "src/features/unified/FutureBridge.tsx",
+    "line": 128,
+    "element": "summary",
+    "label": "Preuves, objections et invalidation",
+    "attributes": []
+  },
+  {
+    "file": "src/features/unified/FutureBridge.tsx",
+    "line": 148,
+    "element": "button",
+    "label": "Ouvrir l’article lié",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() =>\n                  onOpen(\n                    i.origin.id,\n                    i.origin.unified!.items.find(\n                      (a) => a.eventId === i.eventId,\n                    )!.id,\n                  )\n                }"
+    ]
+  },
+  {
+    "file": "src/features/unified/FutureBridge.tsx",
+    "line": 164,
+    "element": "button",
+    "label": "Ouvrir le dossier lié",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() => onFuture(i.futureDocumentId)}"
+    ]
+  },
+  {
+    "file": "src/features/unified/FutureBridge.tsx",
+    "line": 175,
+    "element": "button",
+    "label": "Afficher plus de jalons",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() => setInsightLimit((v) => v + 50)}"
+    ]
+  },
+  {
+    "file": "src/features/unified/FutureBridge.tsx",
+    "line": 196,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"unified-result\"",
+      "key={d.documentId}",
+      "onClick={() => onFuture(d.documentId)}"
+    ]
+  },
+  {
+    "file": "src/features/unified/FutureBridge.tsx",
+    "line": 208,
+    "element": "button",
+    "label": "Explorer tout l’atlas et ses versions",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() => onFuture()}"
+    ]
+  },
+  {
+    "file": "src/features/unified/FutureBridge.tsx",
+    "line": 213,
+    "element": "summary",
+    "label": "Transférer un dossier Future validé",
+    "attributes": []
+  },
+  {
+    "file": "src/features/unified/FutureBridge.tsx",
+    "line": 230,
+    "element": "summary",
+    "label": "Dossier embarqué :",
+    "attributes": []
+  },
+  {
+    "file": "src/features/unified/FutureBridge.tsx",
+    "line": 247,
+    "element": "button",
+    "label": "Exporter Future JSON :",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() => {\n                  try {\n                    const checked = validateFuture(p);\n                    download(\n                      new Blob([JSON.stringify(checked, null, 2)], {\n                        type: \"application/json\",\n                      }),\n                      \"Future-\" + p.documentId + \".json\",\n                    );\n                    setError(\"\");\n                  } catch (e) {\n                    setError(String(e));\n                  }\n                }}"
+    ]
+  },
+  {
+    "file": "src/features/unified/FutureBridge.tsx",
+    "line": 269,
+    "element": "button",
+    "label": "Afficher plus de dossiers embarqués",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() => setPackageLimit((v) => v + 20)}"
+    ]
+  },
+  {
+    "file": "src/features/unified/PromptAccess.tsx",
+    "line": 45,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"text-button\"",
+      "disabled={busy}",
+      "onClick={() => void load()}"
+    ]
+  },
+  {
+    "file": "src/features/unified/PromptAccess.tsx",
+    "line": 147,
+    "element": "summary",
+    "label": "Voir et sélectionner le prompt complet",
+    "attributes": []
+  },
+  {
+    "file": "src/features/unified/PromptAccess.tsx",
+    "line": 153,
+    "element": "button",
+    "label": "Copier",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() => void copy()}"
+    ]
+  },
+  {
+    "file": "src/features/unified/PromptAccess.tsx",
+    "line": 156,
+    "element": "button",
+    "label": "Sélectionner",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={select}"
+    ]
+  },
+  {
+    "file": "src/features/unified/PromptAccess.tsx",
+    "line": 161,
+    "element": "button",
+    "label": "Télécharger le prompt VS Code (.md)",
+    "attributes": [
+      "className=\"secondary\"",
+      "disabled={busy}",
+      "onClick={() => void save()}"
+    ]
+  },
+  {
+    "file": "src/features/unified/UnifiedSearch.tsx",
+    "line": 63,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"unified-result\"",
+      "key={e.id}",
+      "aria-pressed={selected === e.id}",
+      "onClick={() => setSelected(e.id)}"
+    ]
+  },
+  {
+    "file": "src/features/unified/UnifiedSearch.tsx",
+    "line": 82,
+    "element": "button",
+    "label": "Afficher plus de documents avec prompts",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() => setDocumentLimit((n) => n + 100)}"
+    ]
+  },
+  {
+    "file": "src/features/unified/UnifiedSearch.tsx",
+    "line": 313,
+    "element": "summary",
+    "label": "Filtres de la recherche globale",
+    "attributes": []
+  },
+  {
+    "file": "src/features/unified/UnifiedSearch.tsx",
+    "line": 354,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"unified-result\"",
+      "key={r.key}",
+      "onClick={r.open}"
+    ]
+  },
+  {
+    "file": "src/features/unified/UnifiedSearch.tsx",
+    "line": 362,
+    "element": "button",
+    "label": "Afficher 30 résultats de plus",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() => setLimit((n) => n + 30)}"
+    ]
+  },
+  {
+    "file": "src/features/unified/UnifiedWorkspace.tsx",
+    "line": 101,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"secondary\"",
+      "aria-pressed={panel === id}",
+      "key={id}",
+      "onClick={() => go(id)}"
+    ]
+  },
+  {
+    "file": "src/features/unified/UnifiedWorkspace.tsx",
+    "line": 158,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "className=\"primary\"",
+      "onClick={() =>\n                current ? onOpen(day.current?.id || current.id) : onImport()\n              }"
+    ]
+  },
+  {
+    "file": "src/features/unified/UnifiedWorkspace.tsx",
+    "line": 190,
+    "element": "button",
+    "label": "Libellé dynamique / icône : vérifier aria-label",
+    "attributes": [
+      "key={slot}",
+      "className=\"secondary\"",
+      "disabled={!receivedVersion}",
+      "aria-label={`${slot} · ${label}`}",
+      "onClick={() => receivedVersion && onOpen(receivedVersion.id)}"
+    ]
+  },
+  {
+    "file": "src/features/unified/UnifiedWorkspace.tsx",
+    "line": 234,
+    "element": "button",
+    "label": "↗",
+    "attributes": [
+      "className=\"text-button\"",
+      "key={id}",
+      "onClick={() => onOpen(latest!.id, i.id)}"
+    ]
+  },
+  {
+    "file": "src/features/unified/UnifiedWorkspace.tsx",
+    "line": 256,
+    "element": "button",
+    "label": "Tous les articles ( ) →",
+    "attributes": [
+      "className=\"text-button\"",
+      "onClick={() => onNavigate(\"articles\")}"
+    ]
+  },
+  {
+    "file": "src/features/unified/UnifiedWorkspace.tsx",
+    "line": 291,
+    "element": "button",
+    "label": "Lire et voir les sources",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() => onOpen(latest!.id, i.id)}"
+    ]
+  },
+  {
+    "file": "src/features/unified/UnifiedWorkspace.tsx",
+    "line": 356,
+    "element": "button",
+    "label": "Explorer",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() =>\n                        id === \"future\"\n                          ? go(\"timeline\")\n                          : onNavigate(tab as Destination)\n                      }"
+    ]
+  },
+  {
+    "file": "src/features/unified/UnifiedWorkspace.tsx",
+    "line": 393,
+    "element": "button",
+    "label": "Consulter les preuves",
+    "attributes": [
+      "className=\"text-button\"",
+      "onClick={() => onOpen(latest!.id, i.id)}"
+    ]
+  },
+  {
+    "file": "src/features/unified/UnifiedWorkspace.tsx",
+    "line": 400,
+    "element": "button",
+    "label": "Voir le prompt complet .md",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={openPrompts}"
+    ]
+  },
+  {
+    "file": "src/features/unified/UnifiedWorkspace.tsx",
+    "line": 415,
+    "element": "button",
+    "label": "Recherche IA et locale",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() => onNavigate(\"search\")}"
+    ]
+  },
+  {
+    "file": "src/features/unified/UnifiedWorkspace.tsx",
+    "line": 418,
+    "element": "button",
+    "label": "Prompts VS Code",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={openPrompts}"
+    ]
+  },
+  {
+    "file": "src/features/unified/UnifiedWorkspace.tsx",
+    "line": 421,
+    "element": "button",
+    "label": "Comparer les éditions",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() =>\n                current && dayKeyOf(current)\n                  ? onDay(dayKeyOf(current)!)\n                  : onNavigate(\"library\")\n              }"
+    ]
+  },
+  {
+    "file": "src/features/unified/UnifiedWorkspace.tsx",
+    "line": 431,
+    "element": "button",
+    "label": "Bibliothèque et archives",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() => onNavigate(\"library\")}"
+    ]
+  },
+  {
+    "file": "src/features/unified/UnifiedWorkspace.tsx",
+    "line": 434,
+    "element": "button",
+    "label": "Importer un HTML",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={onImport}"
+    ]
+  },
+  {
+    "file": "src/features/unified/UnifiedWorkspace.tsx",
+    "line": 437,
+    "element": "button",
+    "label": "Sauvegardes et confidentialité",
+    "attributes": [
+      "className=\"secondary\"",
+      "onClick={() => onNavigate(\"settings\")}"
+    ]
+  }
+]

@@ -1,0 +1,142 @@
+[
+  {
+    "file": "api/access.mjs",
+    "unchanged": true,
+    "sha256": "4b62341223fd8f20f12633a8c94a7392b02f0799e55df14904e93902572d90a4"
+  },
+  {
+    "file": "api/backup.mjs",
+    "unchanged": true,
+    "sha256": "91f00acd0aeca134db9d2506a7d70c1161b64336f6ed009061f91d1ffdf5fbd3"
+  },
+  {
+    "file": "package-lock.json",
+    "unchanged": true,
+    "sha256": "7585c5c554c937fab41c2a46b1897ef5ed5e6d4b3d66d4647bdfa1431c4e89d8"
+  },
+  {
+    "file": "package.json",
+    "unchanged": true,
+    "sha256": "262c98d8c544afa30b8cf32b5901b9d280337cec4c558d01fada946c8449aeea"
+  },
+  {
+    "file": "src/data/articles.ts",
+    "unchanged": true,
+    "sha256": "33e6ddc4a3bb9851d5d87351116263ac61212d629ede4cc13e231bce79c44595"
+  },
+  {
+    "file": "src/data/collections.ts",
+    "unchanged": true,
+    "sha256": "b93f0c34a64d7a08f4b56edb177b411651d16f848eb4c77c9ffab72028aa49cf"
+  },
+  {
+    "file": "src/data/day.ts",
+    "unchanged": true,
+    "sha256": "a21308f20c057df18d446c7d851d796aa7cec839747d01f3bdc66647190f1d1e"
+  },
+  {
+    "file": "src/data/db.ts",
+    "unchanged": true,
+    "sha256": "9635831fe8e2a86c070984add73b4895fba2fdb6c6aacb9be24abf48d578038d"
+  },
+  {
+    "file": "src/data/editorial.ts",
+    "unchanged": true,
+    "sha256": "2fa34de0d52f6a98df5ee8dc99fde1caf68e237700a153c4543ec068916e6354"
+  },
+  {
+    "file": "src/data/model.ts",
+    "unchanged": true,
+    "sha256": "530aab819768b9c0909b60120e76e2bc9ce8a4ab20f12367468a76b091bd6fb9"
+  },
+  {
+    "file": "src/data/readingChanges.ts",
+    "unchanged": true,
+    "sha256": "51db6bd52107f25d2933e923c56ac9cf2c358a565b5758bf2476f86a1ea5c3c4"
+  },
+  {
+    "file": "src/data/snapshot.ts",
+    "unchanged": true,
+    "sha256": "dc8b69a697051aec617b2c217ec6150255069e24074e4b880379499d65135a91"
+  },
+  {
+    "file": "src/data/unified.ts",
+    "unchanged": true,
+    "sha256": "23ab3f0bbdc9c5613ae0028db3bccecce6d820617d193b5720a96c64ccaef539"
+  },
+  {
+    "file": "src/features/Reader.tsx",
+    "unchanged": true,
+    "sha256": "6e2c36327804601265496dc7f1b97eae51e8c5bd6db6a2016ddae1eef66d0fbc"
+  },
+  {
+    "file": "src/features/backup.ts",
+    "unchanged": true,
+    "sha256": "f050a443320c41aa4ce1a895e762fddefeb90f449a1152708dd89c9bb12a5650"
+  },
+  {
+    "file": "src/features/cloud.ts",
+    "unchanged": true,
+    "sha256": "989a5398732e012146e16c8c3160ee0258a3ac9e2630ac7090c133737c69d7ae"
+  },
+  {
+    "file": "src/features/future/backup.ts",
+    "unchanged": true,
+    "sha256": "1eeea597589b616e5e0ccc35ee3fc98d48a25edc294c79369f0dd68a00542058"
+  },
+  {
+    "file": "src/features/future/db.ts",
+    "unchanged": true,
+    "sha256": "6e350368124565ea0c43cea6598f902741430f39c1ff6e4ff44ce2fccb82aab9"
+  },
+  {
+    "file": "src/features/future/import.ts",
+    "unchanged": true,
+    "sha256": "083a3968abcf03ea928fa6d8a8c80e0137c67df890eb96836e81ab0625db7722"
+  },
+  {
+    "file": "src/features/future/schema.ts",
+    "unchanged": true,
+    "sha256": "e6d21af3c25f44b2e49120a4bd4868ee726c2b2f8cad53a303328652f45c33d2"
+  },
+  {
+    "file": "src/features/googleAi.ts",
+    "unchanged": true,
+    "sha256": "f70f13a6cdb35e9692c108ec05c34a1176792f372a95ca3fbf6d8380cfb651ac"
+  },
+  {
+    "file": "src/features/googleAiSession.ts",
+    "unchanged": true,
+    "sha256": "e152d6fcf6267b1d2b4103e83776e2bc598b3278e2305d047409710445e70d79"
+  },
+  {
+    "file": "src/features/import.ts",
+    "unchanged": true,
+    "sha256": "dc493551edc6f742eab39fa8c9e3083222b10f76e5e52d9f5b105e7e4014b63d"
+  },
+  {
+    "file": "src/features/readerHistory.ts",
+    "unchanged": true,
+    "sha256": "f0fec995ab05ab994d74914eea3f13d340ff7c1dc4fc2ada7291eda9d08aef19"
+  },
+  {
+    "file": "src/features/sync.ts",
+    "unchanged": true,
+    "sha256": "54adbe41788e1dfb433611ca8521302d875cbf489f8f3a61e6c9cbe087060ba2"
+  },
+  {
+    "file": "src/sw.ts",
+    "unchanged": true,
+    "sha256": "7f818e5abb9af0641ced6c3f5adf7c81cbbffe4f7e03b4ec1d35968ed467cf39"
+  },
+  {
+    "file": "supabase/migrations/202610130001_private_backups.sql",
+    "unchanged": true,
+    "sha256": "6992f490c24e42cfba201a2da7825b3305b2e8f53c28e7b10f5ad761af93fc6f"
+  },
+  {
+    "file": "vercel.json",
+    "unchanged": true,
+    "sha256": "076c92da3300b4e9c738569f174c7be0a87039b6da7de284de1e43611a897d3d"
+  }
+]

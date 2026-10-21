@@ -1,3 +1,8 @@
+import {
+  InterfaceProvider,
+  InterfaceSettings,
+  useInterface,
+} from "./features/interfacePreferences";
 import { APP_VERSION } from "./config";
 import { Diagnostics, recordDiagnostic } from "./features/diagnostics";
 import { currentEditions, dayKeyOf } from "./data/day";
@@ -124,6 +129,46 @@ const normalize = (s: string) =>
     .replace(/[\u0300-\u036f]/g, "")
     .toLocaleLowerCase("fr");
 export default function App() {
+  return (
+    <InterfaceProvider>
+      <JournalApp />
+    </InterfaceProvider>
+  );
+}
+function JournalApp() {
+  const {
+    preferences: { options: interfaceOptions },
+  } = useInterface();
+  const [extraNavigation, setExtraNavigation] = useState(false);
+  useEffect(() => setExtraNavigation(false), [interfaceOptions.secondaryNav]);
+  const [workspaceReady, setWorkspaceReady] = useState(false);
+  const onWorkspaceReady = useCallback(() => setWorkspaceReady(true), []);
+  const visibleTabs = tabs.filter(
+    (t) =>
+      interfaceOptions.secondaryNav ||
+      extraNavigation ||
+      !["ai-major", "sentinel", "memory"].includes(t.id),
+  );
+  const readerReturn = useRef<{
+    scroll: number;
+    element: HTMLElement | null;
+    tab: Tab;
+  }>({
+    scroll: 0,
+    element: null,
+    tab: "library",
+  });
+  function restoreReaderContext() {
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        readerReturn.current.element?.focus({ preventScroll: true });
+        window.scrollTo({
+          top: readerReturn.current.scroll,
+          behavior: "instant",
+        });
+      }),
+    );
+  }
   const data = useLibrary();
   const allEditions = useMemo(
     () =>
@@ -478,21 +523,17 @@ export default function App() {
     if (edition) {
       setReadingUpdates(readingChanges(edition, allEditions, data.states));
       run(() => db.reading(edition.id, "edition", { openedAt: now() }));
-    } else
-      setTab((current) =>
-        current === "articles" || isCollection(current) ? current : "library",
-      );
-    window.scrollTo({ top: 0, behavior: "instant" });
+    } else setTab(readerReturn.current.tab);
+    if (id) window.scrollTo({ top: 0, behavior: "instant" });
+    else restoreReaderContext();
   });
   function backFromReader() {
     setSelectedArticle(undefined);
     readerHistory.back();
     setSelected(null);
     setSelectedDay(null);
-    setTab((current) =>
-      current === "articles" || isCollection(current) ? current : "library",
-    );
-    window.scrollTo({ top: 0, behavior: "instant" });
+    setTab(readerReturn.current.tab);
+    restoreReaderContext();
   }
   function navigate(next: Tab) {
     setFutureTarget("");
@@ -512,6 +553,17 @@ export default function App() {
   function openEdition(id: string, articleId?: string) {
     const edition = allEditions.find((e) => e.id === id);
     if (!edition) return;
+    if (!selected)
+      readerReturn.current = {
+        scroll: window.scrollY,
+        element: document.activeElement as HTMLElement | null,
+        tab:
+          tab === "articles" ||
+          isCollection(tab) ||
+          (tab === "today" && !!edition.unified)
+            ? tab
+            : "library",
+      };
     setSelectedArticle(articleId);
     readerHistory.open(id);
     setReadingUpdates(
@@ -889,7 +941,7 @@ export default function App() {
         <div className="sidebar-rule" />
         <p className="sidebar-caption">VOTRE ESPACE PERSONNEL</p>
         <nav aria-label="Navigation principale">
-          {tabs.map((t) => (
+          {visibleTabs.map((t) => (
             <button
               key={t.id}
               aria-label={t.label}
@@ -917,6 +969,15 @@ export default function App() {
               )}
             </button>
           ))}
+          {!interfaceOptions.secondaryNav && (
+            <button
+              className="text-button"
+              onClick={() => setExtraNavigation(!extraNavigation)}
+              aria-expanded={extraNavigation}
+            >
+              Autres espaces
+            </button>
+          )}
         </nav>
         <button
           className="primary sidebar-import"
@@ -1048,6 +1109,28 @@ export default function App() {
               />
             </div>
           ))}
+          {data.ready && tab === "today" && (
+            <div hidden={!!current || !!selectedDay}>
+              <Suspense
+                fallback={
+                  <div>
+                    <h1>Journal 360° Unifié</h1>
+                    <p role="status">Ouverture du journal unifié…</p>
+                  </div>
+                }
+              >
+                <UnifiedWorkspace
+                  editions={allEditions}
+                  onReady={onWorkspaceReady}
+                  onOpen={openEdition}
+                  onDay={openDay}
+                  onNavigate={navigate}
+                  onImport={() => fileRef.current?.click()}
+                  onFuture={openFutureDocument}
+                />
+              </Suspense>
+            </div>
+          )}
           {data.ready && tab === "future" && !current && !selectedDay && (
             <Suspense fallback={<p>Ouverture de Le Futur…</p>}>
               <FutureView
@@ -1071,11 +1154,13 @@ export default function App() {
               notes={data.notes}
               onBack={backFromReader}
               backLabel={
-                tab === "articles"
-                  ? "Retour aux articles"
-                  : isCollection(tab)
-                    ? `Retour à ${collections.find((collection) => collection.id === tab)!.label}`
-                    : undefined
+                tab === "today" && !!current.unified
+                  ? "Retour à Aujourd’hui"
+                  : tab === "articles"
+                    ? "Retour aux articles"
+                    : isCollection(tab)
+                      ? `Retour à ${collections.find((collection) => collection.id === tab)!.label}`
+                      : undefined
               }
               onOpen={openEdition}
               onDay={openDay}
@@ -1091,24 +1176,19 @@ export default function App() {
             />
           ) : (
             <>
-              {tab === "today" && (
+              {tab === "today" && workspaceReady && (
                 <>
                   <Suspense
                     fallback={
                       <div>
                         <h1>Journal 360° Unifié</h1>
-                        <p role="status">Ouverture du journal unifié…</p>
+                        <div>
+                          <h1>Journal 360° Unifié</h1>
+                          <p role="status">Ouverture du journal unifié…</p>
+                        </div>
                       </div>
                     }
                   >
-                    <UnifiedWorkspace
-                      editions={allEditions}
-                      onOpen={openEdition}
-                      onDay={openDay}
-                      onNavigate={navigate}
-                      onImport={() => fileRef.current?.click()}
-                      onFuture={openFutureDocument}
-                    />
                     <div className="section-title">
                       <div>
                         <p className="eyebrow">À PORTÉE DE MAIN</p>
@@ -1761,6 +1841,7 @@ export default function App() {
                     "Votre appareil, vos originaux, votre compte.",
                   )}
                   <div className="settings-grid">
+                    <InterfaceSettings />
                     <section className="quiet-panel">
                       <h2>
                         <HardDrive size={21} /> Stockage de cet appareil
@@ -2168,7 +2249,7 @@ export default function App() {
         </footer>
       </div>
       <nav className="mobile-nav" aria-label="Navigation mobile">
-        {tabs.map((t) => (
+        {visibleTabs.map((t) => (
           <button
             aria-current={tab === t.id && !selected ? "page" : undefined}
             key={t.id}
@@ -2178,6 +2259,14 @@ export default function App() {
             <span>{t.label}</span>
           </button>
         ))}
+        {!interfaceOptions.secondaryNav && (
+          <button
+            onClick={() => setExtraNavigation(!extraNavigation)}
+            aria-expanded={extraNavigation}
+          >
+            Autres espaces
+          </button>
+        )}
       </nav>
       <button
         className="mobile-import"

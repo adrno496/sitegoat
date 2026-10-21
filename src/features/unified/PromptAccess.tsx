@@ -1,3 +1,4 @@
+import { summaryPreview } from "../eventPresentation";
 import { useState, useRef } from "react";
 import type { Edition } from "../../data/model";
 import { hash } from "../../data/model";
@@ -139,6 +140,10 @@ export function PromptCard({
   return (
     <article className="prompt-card">
       <h3>{p.title}</h3>
+      <p className="prompt-preview">
+        {summaryPreview(p.content.split(/\n\s*\n/)[0]).slice(0, 240)}
+        {p.content.split(/\n\s*\n/)[0].length > 240 ? "…" : ""}
+      </p>
       <p className="small-note">
         Texte intégral · privé à cet appareil · aucune exécution ni envoi à
         Google

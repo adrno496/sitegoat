@@ -1,0 +1,77 @@
+[
+  {
+    "project": "chromium",
+    "measurements": [
+      {
+        "count": 500,
+        "htmlBytes": 425843,
+        "snapshotsImported": 1,
+        "articlesPerSnapshot": 500,
+        "importMs": 398,
+        "renderMs": 200,
+        "openArticlesAndQueryMs": 217,
+        "heap": 31200000
+      },
+      {
+        "count": 2000,
+        "htmlBytes": 1277529,
+        "snapshotsImported": 3,
+        "articlesPerSnapshot": 500,
+        "importMs": 1208,
+        "renderMs": 497,
+        "openArticlesAndQueryMs": 640,
+        "heap": 31200000
+      }
+    ]
+  },
+  {
+    "project": "webkit",
+    "measurements": [
+      {
+        "count": 500,
+        "htmlBytes": 425843,
+        "snapshotsImported": 1,
+        "articlesPerSnapshot": 500,
+        "importMs": 386,
+        "renderMs": 241,
+        "openArticlesAndQueryMs": 245,
+        "heap": null
+      },
+      {
+        "count": 2000,
+        "htmlBytes": 1277529,
+        "snapshotsImported": 3,
+        "articlesPerSnapshot": 500,
+        "importMs": 1156,
+        "renderMs": 441,
+        "openArticlesAndQueryMs": 549,
+        "heap": null
+      }
+    ]
+  },
+  {
+    "project": "chromium-mobile",
+    "measurements": [
+      {
+        "count": 500,
+        "htmlBytes": 425843,
+        "snapshotsImported": 1,
+        "articlesPerSnapshot": 500,
+        "importMs": 404,
+        "renderMs": 196,
+        "openArticlesAndQueryMs": 219,
+        "heap": 31200000
+      },
+      {
+        "count": 2000,
+        "htmlBytes": 1277529,
+        "snapshotsImported": 3,
+        "articlesPerSnapshot": 500,
+        "importMs": 863,
+        "renderMs": 918,
+        "openArticlesAndQueryMs": 724,
+        "heap": 31200000
+      }
+    ]
+  }
+]

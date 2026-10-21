@@ -1,3 +1,5 @@
+import { EventCard } from "./EventCard";
+import { summaryPreview } from "./eventPresentation";
 import { useMemo, useState } from "react";
 import {
   Archive,
@@ -120,30 +122,15 @@ export function CollectionView({
       {documents.length || unifiedItems.length ? (
         <div className="edition-grid">
           {unifiedItems.map((item) => (
-            <article className="collection-card" key={item.key}>
-              <p className="eyebrow">{info.label} · ÉDITION UNIFIÉE</p>
-              <h2>{item.article.title}</h2>
-              <p>{item.article.text.slice(0, 400)}</p>
-              <p className="muted">
-                {dateLabel(item.edition.date)} · original conservé dans
-                Bibliothèque
-              </p>
-              <button
-                className="text-button"
-                onClick={() => onOpen(item.edition.id, item.article.id)}
-              >
-                Ouvrir l’article dans le HTML <ArrowUpRight size={16} />
-              </button>
-              {collection === "sentinel" &&
-                item.edition.unified?.promptAssets.some(
-                  (p) => p.eventId === item.article.eventId,
-                ) && (
-                  <PromptAccess
-                    edition={item.edition}
-                    eventId={item.article.eventId}
-                  />
-                )}
-            </article>
+            <EventCard
+              key={item.key}
+              className="collection-card"
+              item={item.edition.unified!.items.find(
+                (i) => i.eventId === item.article.eventId,
+              )!}
+              edition={item.edition}
+              onOriginal={() => onOpen(item.edition.id, item.article.id)}
+            />
           ))}
           {documents.map((edition) => (
             <article className="collection-card" key={edition.id}>
@@ -162,7 +149,9 @@ export function CollectionView({
               <p className="muted">
                 {dateLabel(edition.date)} · {sizeLabel(edition.size)}
               </p>
-              <p className="collection-excerpt">{edition.excerpt}</p>
+              <p className="collection-excerpt">
+                {summaryPreview(edition.excerpt)}
+              </p>
               <p className="collection-filename">{edition.filename}</p>
               <div className="collection-card-actions">
                 {mode === "trash" ? (

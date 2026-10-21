@@ -39,7 +39,7 @@ test("T01/T04/T09/T15 : SEUL fichier 22 h dans une base vide, huit événements 
   for (const letter of "ABCDEFGH")
     await expect(
       page.getByRole("button", {
-        name: `Lire ici : Événement ${letter} SYNTHÉTIQUE`,
+        name: `Événement ${letter} SYNTHÉTIQUE`,
         exact: true,
       }),
     ).toBeVisible();

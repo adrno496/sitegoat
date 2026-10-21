@@ -1,0 +1,19 @@
+{
+  "source": "real supplied 08h/10h files, isolated browser, no cloud",
+  "tenOnly": {
+    "current": "21 octobre 2026 · 10:00",
+    "highlights": 6,
+    "eightSlotDisabled": true
+  },
+  "errors": [],
+  "after08": {
+    "current": "21 octobre 2026 · 10:00"
+  },
+  "returnToToday": false,
+  "opened08": {
+    "actualOriginal08Verified": true,
+    "editionSlot": "08:00",
+    "note": "Exact supplied 08 h title was observed locally; imported document content is not published."
+  },
+  "localScreenshot": "/tmp/sitegoat-audit-baseline-today.png"
+}

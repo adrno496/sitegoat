@@ -1,0 +1,15 @@
+{
+  "reference": {
+    "jsBytes": 1006818,
+    "cssBytes": 61992,
+    "precacheKiB": 1414.63
+  },
+  "candidate": {
+    "jsBytes": 1018633,
+    "cssBytes": 63326,
+    "precacheKiB": 1427.48
+  },
+  "jsGrowthPercent": 1.1734990832503955,
+  "precacheGrowthPercent": 0.9083647314138688,
+  "note": "Local short-run measures; baseline V8 artifact matches reference build hashes, no new threshold declared retrospectively."
+}

@@ -149,11 +149,22 @@ test("articles : pagination et recherche dans tout l’index", async ({
     page
       .getByRole("navigation", { name: "Sommaire des articles" })
       .getByRole("button"),
-  ).toHaveCount(35);
+  ).toHaveCount(30);
   await page
     .getByRole("button", { name: "Page suivante", exact: true })
     .click();
   await expect(page.locator(".article-card")).toHaveCount(5);
+  await expect(
+    page
+      .getByRole("navigation", { name: "Sommaire des articles" })
+      .getByRole("button"),
+  ).toHaveCount(5);
+  await expect(
+    page.getByRole("button", {
+      name: "Ouvrir dans le journal : Sujet 35",
+      exact: true,
+    }),
+  ).toBeVisible();
   await page.getByLabel("Rechercher un article").fill("Sujet 35");
   await expect(page.locator(".article-card")).toHaveCount(1);
   await expect(page.locator(".article-card h2")).toHaveText("Sujet 35");

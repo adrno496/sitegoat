@@ -106,6 +106,17 @@ test("V7 : huit imports désordonnés, un cumul, huit originaux, prompts multipl
   await nav(page, "Articles");
   await expect(page.locator(".articles-total")).toContainText("4 articles");
   await page
+    .locator(".article-secondary-actions")
+    .filter({
+      has: page.getByRole("button", {
+        name: "Lire ici : Audit SENTINEL SYNTHÉTIQUE",
+        exact: true,
+        includeHidden: true,
+      }),
+    })
+    .getByText("Autres lectures et question", { exact: true })
+    .click();
+  await page
     .getByRole("button", {
       name: "Lire ici : Audit SENTINEL SYNTHÉTIQUE",
       exact: true,
@@ -118,6 +129,12 @@ test("V7 : huit imports désordonnés, un cumul, huit originaux, prompts multipl
     exact: true,
   });
   await expect(sentinel.locator(".collection-card")).toHaveCount(1);
+  await sentinel
+    .getByRole("button", { name: "Développer", exact: true })
+    .click();
+  await sentinel
+    .getByRole("button", { name: "Lire l’article complet", exact: true })
+    .click();
   await expect(sentinel.locator(".collection-card .prompt-card")).toHaveCount(
     2,
   );
@@ -251,6 +268,17 @@ test("V7 : HTML hostile lu sans scripts, question publique conservée, prompt pr
   ).toBe(false);
   await nav(page, "Articles");
   await page
+    .locator(".article-secondary-actions")
+    .filter({
+      has: page.getByRole("button", {
+        name: "Question Google : Observation IA SYNTHÉTIQUE",
+        exact: true,
+        includeHidden: true,
+      }),
+    })
+    .getByText("Autres lectures et question", { exact: true })
+    .click();
+  await page
     .getByRole("button", {
       name: "Question Google : Observation IA SYNTHÉTIQUE",
       exact: true,
@@ -291,6 +319,10 @@ test("V7 : adaptateur Future explicite, JSON validé puis import indépendant sa
   });
   await page.getByRole("button", { name: /Importer \d+ fichier/ }).click();
   await expect(page.locator(".future-title")).toHaveText(original.title);
+  await nav(page, "Réglages");
+  await page
+    .getByLabel("Profil d’interface", { exact: true })
+    .selectOption("complete");
   await nav(page, "Aujourd’hui");
   const futureCard = workspace(page)
     .locator(".unified-universes>article")

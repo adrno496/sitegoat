@@ -1,3 +1,5 @@
+import { EventCard } from "./EventCard";
+import { summaryPreview } from "./eventPresentation";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
@@ -333,20 +335,28 @@ export function ArticlesView({
                   HTML.
                 </p>
                 <ol>
-                  {filtered.map((item) => (
-                    <li key={item.key}>
-                      <button
-                        className="article-index-link"
-                        aria-label={`Ouvrir dans le journal : ${item.article.title}`}
-                        onClick={() => onOpen(item.edition.id, item.article.id)}
-                      >
-                        {item.article.title}
-                      </button>
-                      <small>
-                        {dateLabel(item.edition.date)} · {item.article.category}
-                      </small>
-                    </li>
-                  ))}
+                  {filtered
+                    .slice(
+                      visiblePage * PAGE_SIZE,
+                      (visiblePage + 1) * PAGE_SIZE,
+                    )
+                    .map((item) => (
+                      <li key={item.key}>
+                        <button
+                          className="article-index-link"
+                          aria-label={`Ouvrir dans le journal : ${item.article.title}`}
+                          onClick={() =>
+                            onOpen(item.edition.id, item.article.id)
+                          }
+                        >
+                          {item.article.title}
+                        </button>
+                        <small>
+                          {dateLabel(item.edition.date)} ·{" "}
+                          {item.article.category}
+                        </small>
+                      </li>
+                    ))}
                 </ol>
               </nav>
               <div className="articles-content">
@@ -509,59 +519,94 @@ export function ArticlesView({
                           visiblePage * PAGE_SIZE,
                           (visiblePage + 1) * PAGE_SIZE,
                         )
-                        .map((item) => (
-                          <article key={item.key} className="article-card">
-                            <p className="eyebrow">{item.article.category}</p>
-                            <h2>
-                              <button
-                                className="title-button"
-                                onClick={() =>
+                        .map((item) =>
+                          item.edition.unified ? (
+                            <div key={item.key}>
+                              <EventCard
+                                className="article-card"
+                                item={item.edition.unified.items.find(
+                                  (i) => i.eventId === item.article.eventId,
+                                )!}
+                                edition={item.edition}
+                                onOriginal={() =>
                                   onOpen(item.edition.id, item.article.id)
                                 }
-                              >
-                                {item.article.title}
-                              </button>
-                            </h2>
-                            <p className="article-excerpt">
-                              {item.article.text.slice(0, 240)}
-                              {item.article.text.length > 240 ? "…" : ""}
-                            </p>
-                            <div className="article-card-origin">
-                              <span>
-                                {dateLabel(item.edition.date)}
-                                {item.edition.archived ? " · Archive" : ""}
-                              </span>
-                              <span>{item.edition.title}</span>
+                              />
+                              <details className="article-secondary-actions">
+                                <summary>Autres lectures et question</summary>
+                                <button
+                                  className="text-button"
+                                  aria-label={`Lire ici : ${item.article.title}`}
+                                  onClick={() => open(item.key)}
+                                >
+                                  Lire ici
+                                </button>
+                                {questionButton(item)}
+                                <button
+                                  className="text-button"
+                                  onClick={() =>
+                                    onOpen(item.edition.id, item.article.id)
+                                  }
+                                >
+                                  Lire dans le journal
+                                </button>
+                              </details>
                             </div>
-                            <div className="article-card-footer">
-                              <button
-                                className="text-button"
-                                onClick={() =>
-                                  onOpen(item.edition.id, item.article.id)
-                                }
-                              >
-                                Lire dans le journal
-                                <ArrowRight size={16} />
-                              </button>
-                              <button
-                                className="text-button"
-                                aria-label={`Lire ici : ${item.article.title}`}
-                                onClick={() => open(item.key)}
-                              >
-                                Lire ici
-                              </button>
-                              {questionButton(item)}
-                              <span>
-                                {stateOf(item.edition.id, item.article.id)
-                                  ?.favorite && (
-                                  <Star size={15} aria-label="Favori" />
-                                )}
-                                {stateOf(item.edition.id, item.article.id)
-                                  ?.read && <Check size={15} aria-label="Lu" />}
-                              </span>
-                            </div>
-                          </article>
-                        ))}
+                          ) : (
+                            <article key={item.key} className="article-card">
+                              <p className="eyebrow">{item.article.category}</p>
+                              <h2>
+                                <button
+                                  className="title-button"
+                                  onClick={() =>
+                                    onOpen(item.edition.id, item.article.id)
+                                  }
+                                >
+                                  {item.article.title}
+                                </button>
+                              </h2>
+                              <p className="article-excerpt">
+                                {summaryPreview(item.article.text)}
+                              </p>
+                              <div className="article-card-origin">
+                                <span>
+                                  {dateLabel(item.edition.date)}
+                                  {item.edition.archived ? " · Archive" : ""}
+                                </span>
+                                <span>{item.edition.title}</span>
+                              </div>
+                              <div className="article-card-footer">
+                                <button
+                                  className="text-button"
+                                  onClick={() =>
+                                    onOpen(item.edition.id, item.article.id)
+                                  }
+                                >
+                                  Lire dans le journal
+                                  <ArrowRight size={16} />
+                                </button>
+                                <button
+                                  className="text-button"
+                                  aria-label={`Lire ici : ${item.article.title}`}
+                                  onClick={() => open(item.key)}
+                                >
+                                  Lire ici
+                                </button>
+                                {questionButton(item)}
+                                <span>
+                                  {stateOf(item.edition.id, item.article.id)
+                                    ?.favorite && (
+                                    <Star size={15} aria-label="Favori" />
+                                  )}
+                                  {stateOf(item.edition.id, item.article.id)
+                                    ?.read && (
+                                    <Check size={15} aria-label="Lu" />
+                                  )}
+                                </span>
+                              </div>
+                            </article>
+                          ),
+                        )}
                     </div>
                     {pageCount > 1 && (
                       <div className="article-pagination">

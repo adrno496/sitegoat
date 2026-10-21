@@ -1,0 +1,62 @@
+{
+  "reference": "1845fc63181d355d3c2f8fca701e5b487edc6746",
+  "recordedUTC": "2026-10-21T14:10:20.073623+00:00",
+  "branch": "codex/v8-targeted-audit",
+  "authorization": "User explicitly requested all phases through final push to main production. No remote migration or personal profile access.",
+  "verdicts": {
+    "P0": "PASS",
+    "P1StructuredCardsAndPreferences": "PASS local",
+    "P1HistoricalArchives": "Preserved historical reading and original access; no narrative summary invented when absent",
+    "P2Automation": "PASS",
+    "P2PhysicalDevicesAndRealCloud": "NON TESTÉ",
+    "secretReview": "PARTIAL (raw scanner FAIL on unchanged synthetic positive control)",
+    "overall": "PARTIAL — requested primary fixes automated PASS, broader manual/production functional checks not run"
+  },
+  "commands": {
+    "lint": "PASS",
+    "typecheck": "PASS (also included in build)",
+    "build": "PASS",
+    "unit": {
+      "passed": 304,
+      "files": 25
+    },
+    "browser": {
+      "startTime": "2026-10-21T13:56:35.184Z",
+      "duration": 744770.424,
+      "expected": 229,
+      "skipped": 1,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "realHTMLUnit": "10 tests in optional real-file mode: five import/order cases on supplied HTML, five helper/capacity cases",
+    "realHTMLBrowser": {
+      "startTime": "2026-10-21T14:09:43.900Z",
+      "duration": 20203.299,
+      "expected": 6,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "capacityBrowser": "3/3 passed, 500 and 2000 articles in library, 500 per snapshot",
+    "regressionTargets": "24/24 passed"
+  },
+  "protectedUnchanged": 28,
+  "sourceFiles": 21,
+  "sourceManifestSha256": "630cdd42219a500d8ace91eea555a68bf02ce26caffcedb35de1477fcf18fd74",
+  "backup": {
+    "path": "/tmp/sitegoat-audit-reference-1845fc6.tar",
+    "sha256": "803936c6b34b528eed7b732c59937d94df6cc7383fcc23d8fa3702ccb2347b8b"
+  },
+  "sourcePatch": "Git diff/commit, no data schema change",
+  "rollback": "Revert the correction commit by a new reviewed commit on main; retain databases and originals. Preferences reset independently.",
+  "limits": [
+    "No physical phone or human screen-reader validation",
+    "No real production/cloud/personal profile tests or migrations",
+    "Single 2000-item JSON still rejected by existing 60000-node budget; capacity is four 500-item snapshots",
+    "Memory API is quantized in Chromium and unavailable in WebKit",
+    "Preferences concern Today previews, structured cards and secondary navigation; legacy and independent atlas functions remain accessible",
+    "Reload intentionally returns to latest valid edition, not an old reader visit",
+    "Raw secret scanner pre-existing synthetic test remains FAIL, no new prefix matches"
+  ],
+  "publication": "Authorized main push, deployment status to be verified via GitHub/Vercel after commit; no production functional certification."
+}

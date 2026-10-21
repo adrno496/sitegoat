@@ -1,0 +1,43 @@
+
+> journal360-mobile@2.0.7 test:e2e
+> playwright test --grep responsive :|articles : pagination|zéro.*source|V7 :
+
+[WebServer] (node:79397) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:79398) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 24 tests using 1 worker
+
+(node:79405) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/v6-articles.spec.ts:133:1 › articles : pagination et recherche dans tout l’index (810ms)
+  ✓   2 [chromium] › tests/e2e/v6-future-atlas.spec.ts:235:1 › Atlas : zéro, un, beaucoup de jalons, autres scénarios et absence de source (1.7s)
+  ✓   3 [chromium] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (1.4s)
+  ✓   4 [chromium] › tests/e2e/v7-unified.spec.ts:156:1 › V7 : mobile, clavier, thèmes, absence de données, sources, reduced motion et radar comparable (3.4s)
+  ✓   5 [chromium] › tests/e2e/v7-unified.spec.ts:231:1 › V7 : HTML hostile lu sans scripts, question publique conservée, prompt privé non transmis (818ms)
+  ✓   6 [chromium] › tests/e2e/v7-unified.spec.ts:296:1 › V7 : adaptateur Future explicite, JSON validé puis import indépendant sans écriture croisée (2.6s)
+  ✓   7 [chromium] › tests/e2e/v7-unified.spec.ts:347:1 › V7 : MIME incohérent refusé sans écriture puis import HTML valide conservé (7.5s)
+  ✓   8 [chromium] › tests/e2e/v7-unified.spec.ts:375:1 › V7 : chargement différé de l’accueil sans déplacer un bouton pendant le clic (633ms)
+(node:79524) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 [webkit] › tests/e2e/v6-articles.spec.ts:133:1 › articles : pagination et recherche dans tout l’index (1.2s)
+  ✓  10 [webkit] › tests/e2e/v6-future-atlas.spec.ts:235:1 › Atlas : zéro, un, beaucoup de jalons, autres scénarios et absence de source (1.8s)
+  ✓  11 [webkit] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (2.2s)
+  ✓  12 [webkit] › tests/e2e/v7-unified.spec.ts:156:1 › V7 : mobile, clavier, thèmes, absence de données, sources, reduced motion et radar comparable (4.4s)
+  ✓  13 [webkit] › tests/e2e/v7-unified.spec.ts:231:1 › V7 : HTML hostile lu sans scripts, question publique conservée, prompt privé non transmis (1.2s)
+  ✓  14 [webkit] › tests/e2e/v7-unified.spec.ts:296:1 › V7 : adaptateur Future explicite, JSON validé puis import indépendant sans écriture croisée (2.6s)
+  ✓  15 [webkit] › tests/e2e/v7-unified.spec.ts:347:1 › V7 : MIME incohérent refusé sans écriture puis import HTML valide conservé (7.6s)
+  ✓  16 [webkit] › tests/e2e/v7-unified.spec.ts:375:1 › V7 : chargement différé de l’accueil sans déplacer un bouton pendant le clic (798ms)
+(node:79667) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  17 [chromium-mobile] › tests/e2e/v6-articles.spec.ts:133:1 › articles : pagination et recherche dans tout l’index (801ms)
+  ✓  18 [chromium-mobile] › tests/e2e/v6-future-atlas.spec.ts:235:1 › Atlas : zéro, un, beaucoup de jalons, autres scénarios et absence de source (1.1s)
+  ✓  19 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (1.6s)
+  ✓  20 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:156:1 › V7 : mobile, clavier, thèmes, absence de données, sources, reduced motion et radar comparable (4.8s)
+  ✓  21 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:231:1 › V7 : HTML hostile lu sans scripts, question publique conservée, prompt privé non transmis (7.9s)
+  ✓  22 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:296:1 › V7 : adaptateur Future explicite, JSON validé puis import indépendant sans écriture croisée (2.6s)
+  ✓  23 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:347:1 › V7 : MIME incohérent refusé sans écriture puis import HTML valide conservé (535ms)
+  ✓  24 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:375:1 › V7 : chargement différé de l’accueil sans déplacer un bouton pendant le clic (661ms)
+
+  24 passed (1.1m)

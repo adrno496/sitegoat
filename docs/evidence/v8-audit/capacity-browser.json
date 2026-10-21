@@ -1,0 +1,371 @@
+{
+  "config": {
+    "argv": [
+      "/Users/dreano/.nvm/versions/node/v24.21.0/bin/node",
+      "/Users/dreano/Downloads/veille/veille/node_modules/.bin/playwright",
+      "test",
+      "tests/e2e/v8-audit.spec.ts",
+      "--grep",
+      "500 puis 2000"
+    ],
+    "configFile": "/Users/dreano/Downloads/veille/veille/playwright.config.ts",
+    "rootDir": "/Users/dreano/Downloads/veille/veille/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/dreano/Downloads/veille/veille/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/dreano/Downloads/veille/veille/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "/Users/dreano/Downloads/veille/veille/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/Users/dreano/Downloads/veille/veille/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "/Users/dreano/Downloads/veille/veille/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-mobile",
+        "name": "chromium-mobile",
+        "testDir": "/Users/dreano/Downloads/veille/veille/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "/(?:^|\\/)(?:google-ai|v[678])[^/]*\\.spec\\.ts$/"
+        ],
+        "timeout": 45000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/Users/dreano/Downloads/veille/veille/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "chromium",
+        "testDir": "/Users/dreano/Downloads/veille/veille/tests/e2e",
+        "snapshotDir": "/Users/dreano/Downloads/veille/veille/tests/e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 45000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4181",
+          "launchOptions": {
+            "proxy": {
+              "server": "http://127.0.0.1:4199",
+              "bypass": "127.0.0.1,localhost"
+            }
+          },
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36",
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "screen": {
+            "width": 1920,
+            "height": 1080
+          },
+          "deviceScaleFactor": 1,
+          "isMobile": false,
+          "hasTouch": false,
+          "defaultBrowserType": "chromium"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "chromium"
+      },
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/Users/dreano/Downloads/veille/veille/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "webkit",
+        "testDir": "/Users/dreano/Downloads/veille/veille/tests/e2e",
+        "snapshotDir": "/Users/dreano/Downloads/veille/veille/tests/e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 45000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4181",
+          "launchOptions": {
+            "proxy": {
+              "server": "http://127.0.0.1:4199",
+              "bypass": "127.0.0.1,localhost"
+            }
+          },
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Safari/605.1.15",
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "screen": {
+            "width": 1792,
+            "height": 1120
+          },
+          "deviceScaleFactor": 2,
+          "isMobile": false,
+          "hasTouch": false,
+          "defaultBrowserType": "webkit"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "webkit"
+      },
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/Users/dreano/Downloads/veille/veille/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "chromium-mobile",
+        "testDir": "/Users/dreano/Downloads/veille/veille/tests/e2e",
+        "snapshotDir": "/Users/dreano/Downloads/veille/veille/tests/e2e",
+        "testIgnore": [],
+        "testMatch": {},
+        "timeout": 45000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4181",
+          "launchOptions": {
+            "proxy": {
+              "server": "http://127.0.0.1:4199",
+              "bypass": "127.0.0.1,localhost"
+            }
+          },
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "userAgent": "Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Mobile Safari/537.36",
+          "viewport": {
+            "width": 412,
+            "height": 839
+          },
+          "screen": {
+            "width": 412,
+            "height": 915
+          },
+          "deviceScaleFactor": 2.625,
+          "isMobile": true,
+          "hasTouch": true,
+          "defaultBrowserType": "chromium"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "chromium-mobile"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/e2e-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "v8-audit.spec.ts",
+      "file": "v8-audit.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Audit P2 : import, rendu paginé et recherche de 500 puis 2000 articles synthétiques",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3627,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T13:47:19.466Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "capacity.json",
+                      "contentType": "application/json",
+                      "body": "WwogIHsKICAgICJjb3VudCI6IDUwMCwKICAgICJodG1sQnl0ZXMiOiA0MjU4NDMsCiAgICAic25hcHNob3RzSW1wb3J0ZWQiOiAxLAogICAgImFydGljbGVzUGVyU25hcHNob3QiOiA1MDAsCiAgICAiaW1wb3J0TXMiOiAzOTgsCiAgICAicmVuZGVyTXMiOiAyMDAsCiAgICAib3BlbkFydGljbGVzQW5kUXVlcnlNcyI6IDIxNywKICAgICJoZWFwIjogMzEyMDAwMDAKICB9LAogIHsKICAgICJjb3VudCI6IDIwMDAsCiAgICAiaHRtbEJ5dGVzIjogMTI3NzUyOSwKICAgICJzbmFwc2hvdHNJbXBvcnRlZCI6IDMsCiAgICAiYXJ0aWNsZXNQZXJTbmFwc2hvdCI6IDUwMCwKICAgICJpbXBvcnRNcyI6IDEyMDgsCiAgICAicmVuZGVyTXMiOiA0OTcsCiAgICAib3BlbkFydGljbGVzQW5kUXVlcnlNcyI6IDY0MCwKICAgICJoZWFwIjogMzEyMDAwMDAKICB9Cl0="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a4bc7f76bb0409b150ac-55f0c90c7f05f3a2dd40",
+          "file": "v8-audit.spec.ts",
+          "line": 279,
+          "column": 1
+        },
+        {
+          "title": "Audit P2 : import, rendu paginé et recherche de 500 puis 2000 articles synthétiques",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3729,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T13:47:23.653Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "capacity.json",
+                      "contentType": "application/json",
+                      "body": "WwogIHsKICAgICJjb3VudCI6IDUwMCwKICAgICJodG1sQnl0ZXMiOiA0MjU4NDMsCiAgICAic25hcHNob3RzSW1wb3J0ZWQiOiAxLAogICAgImFydGljbGVzUGVyU25hcHNob3QiOiA1MDAsCiAgICAiaW1wb3J0TXMiOiAzODYsCiAgICAicmVuZGVyTXMiOiAyNDEsCiAgICAib3BlbkFydGljbGVzQW5kUXVlcnlNcyI6IDI0NSwKICAgICJoZWFwIjogbnVsbAogIH0sCiAgewogICAgImNvdW50IjogMjAwMCwKICAgICJodG1sQnl0ZXMiOiAxMjc3NTI5LAogICAgInNuYXBzaG90c0ltcG9ydGVkIjogMywKICAgICJhcnRpY2xlc1BlclNuYXBzaG90IjogNTAwLAogICAgImltcG9ydE1zIjogMTE1NiwKICAgICJyZW5kZXJNcyI6IDQ0MSwKICAgICJvcGVuQXJ0aWNsZXNBbmRRdWVyeU1zIjogNTQ5LAogICAgImhlYXAiOiBudWxsCiAgfQpd"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a4bc7f76bb0409b150ac-3044f122b61eeaec07b8",
+          "file": "v8-audit.spec.ts",
+          "line": 279,
+          "column": 1
+        },
+        {
+          "title": "Audit P2 : import, rendu paginé et recherche de 500 puis 2000 articles synthétiques",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3854,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T13:47:28.134Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "capacity.json",
+                      "contentType": "application/json",
+                      "body": "WwogIHsKICAgICJjb3VudCI6IDUwMCwKICAgICJodG1sQnl0ZXMiOiA0MjU4NDMsCiAgICAic25hcHNob3RzSW1wb3J0ZWQiOiAxLAogICAgImFydGljbGVzUGVyU25hcHNob3QiOiA1MDAsCiAgICAiaW1wb3J0TXMiOiA0MDQsCiAgICAicmVuZGVyTXMiOiAxOTYsCiAgICAib3BlbkFydGljbGVzQW5kUXVlcnlNcyI6IDIxOSwKICAgICJoZWFwIjogMzEyMDAwMDAKICB9LAogIHsKICAgICJjb3VudCI6IDIwMDAsCiAgICAiaHRtbEJ5dGVzIjogMTI3NzUyOSwKICAgICJzbmFwc2hvdHNJbXBvcnRlZCI6IDMsCiAgICAiYXJ0aWNsZXNQZXJTbmFwc2hvdCI6IDUwMCwKICAgICJpbXBvcnRNcyI6IDg2MywKICAgICJyZW5kZXJNcyI6IDkxOCwKICAgICJvcGVuQXJ0aWNsZXNBbmRRdWVyeU1zIjogNzI0LAogICAgImhlYXAiOiAzMTIwMDAwMAogIH0KXQ=="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a4bc7f76bb0409b150ac-117890f4e34d105e3106",
+          "file": "v8-audit.spec.ts",
+          "line": 279,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-21T13:47:18.468Z",
+    "duration": 13708.621,
+    "expected": 3,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

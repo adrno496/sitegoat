@@ -1,3 +1,4 @@
+import { summaryPreview } from "../eventPresentation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { download } from "../backup";
 import { now } from "../../data/model";
@@ -493,7 +494,17 @@ export default function FutureView({
                       {d.title}
                     </button>
                   </h2>
-                  <p>{d.excerpt}</p>
+                  <p>{summaryPreview(d.excerpt)}</p>
+                  <details>
+                    <summary>Développer le résumé</summary>
+                    <p>{d.excerpt}</p>
+                    <button
+                      className="secondary"
+                      onClick={() => open(d.documentId)}
+                    >
+                      Lire le dossier complet
+                    </button>
+                  </details>
                   <div className="future-card-bottom">
                     <span>
                       {d.years.filter((y) => y !== "unspecified").join(" / ") ||

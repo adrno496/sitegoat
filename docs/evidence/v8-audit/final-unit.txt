@@ -1,0 +1,17 @@
+
+> journal360-mobile@2.0.7 test
+> vitest run
+
+
+ RUN  v5.0.4 /Users/dreano/Downloads/veille/veille
+
+
+ Test Files  25 passed (25)
+      Tests  304 passed (304)
+   Start at  15:56:27
+   Duration  7.43s (tests 56%, environment 30%, import 10%, setup 2%, transform 2%)
+
+Environment  jsdom was created 25 times · 15.67s total, 30% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+

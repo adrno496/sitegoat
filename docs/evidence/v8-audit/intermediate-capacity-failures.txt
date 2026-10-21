@@ -1,0 +1,162 @@
+
+> journal360-mobile@2.0.7 test:e2e
+> playwright test tests/e2e/v8-audit.spec.ts
+
+[WebServer] (node:70594) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:70601) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 15 tests using 1 worker
+
+(node:70702) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/v8-audit.spec.ts:53:1 › Audit P0/P1 : 10 h seul offline, huit cartes, résumés, fiches intégrales et trois Markdown exacts (2.8s)
+  ✓   2 [chromium] › tests/e2e/v8-audit.spec.ts:136:1 › Audit P0 : créneaux exacts, retour même filtre/position, historique navigateur et rechargement (1.9s)
+  ✓   3 [chromium] › tests/e2e/v8-audit.spec.ts:178:1 › Audit P1/P2 : profils réversibles, offline, sept largeurs, clavier, contraste et mouvement réduit (3.8s)
+  ✘   4 [chromium] › tests/e2e/v8-audit.spec.ts:279:1 › Audit P2 : import, rendu paginé et recherche de 500 puis 2000 articles synthétiques (13.9s)
+(node:70820) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   5 [chromium] › tests/e2e/v8-audit.spec.ts:360:1 › Audit P2 : texte hostile échappé et URL invalide rejetée sans perte (679ms)
+(node:70833) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   6 [webkit] › tests/e2e/v8-audit.spec.ts:53:1 › Audit P0/P1 : 10 h seul offline, huit cartes, résumés, fiches intégrales et trois Markdown exacts (4.2s)
+  ✓   7 [webkit] › tests/e2e/v8-audit.spec.ts:136:1 › Audit P0 : créneaux exacts, retour même filtre/position, historique navigateur et rechargement (2.7s)
+  ✓   8 [webkit] › tests/e2e/v8-audit.spec.ts:178:1 › Audit P1/P2 : profils réversibles, offline, sept largeurs, clavier, contraste et mouvement réduit (5.0s)
+  ✘   9 [webkit] › tests/e2e/v8-audit.spec.ts:279:1 › Audit P2 : import, rendu paginé et recherche de 500 puis 2000 articles synthétiques (13.8s)
+(node:71002) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  10 [webkit] › tests/e2e/v8-audit.spec.ts:360:1 › Audit P2 : texte hostile échappé et URL invalide rejetée sans perte (1.1s)
+(node:71023) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  11 [chromium-mobile] › tests/e2e/v8-audit.spec.ts:53:1 › Audit P0/P1 : 10 h seul offline, huit cartes, résumés, fiches intégrales et trois Markdown exacts (3.7s)
+  ✓  12 [chromium-mobile] › tests/e2e/v8-audit.spec.ts:136:1 › Audit P0 : créneaux exacts, retour même filtre/position, historique navigateur et rechargement (1.7s)
+  ✓  13 [chromium-mobile] › tests/e2e/v8-audit.spec.ts:178:1 › Audit P1/P2 : profils réversibles, offline, sept largeurs, clavier, contraste et mouvement réduit (5.4s)
+  ✘  14 [chromium-mobile] › tests/e2e/v8-audit.spec.ts:279:1 › Audit P2 : import, rendu paginé et recherche de 500 puis 2000 articles synthétiques (14.0s)
+(node:71290) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  15 [chromium-mobile] › tests/e2e/v8-audit.spec.ts:360:1 › Audit P2 : texte hostile échappé et URL invalide rejetée sans perte (671ms)
+
+
+  1) [chromium] › tests/e2e/v8-audit.spec.ts:279:1 › Audit P2 : import, rendu paginé et recherche de 500 puis 2000 articles synthétiques 
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('.articles-grid .event-card')
+    Expected: 1
+    Received: 0
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toHaveCount" locator('.articles-grid .event-card') with timeout 10000ms
+      - waiting for locator('.articles-grid .event-card')
+        23 × locator resolved to 0 elements
+           - unexpected value "0"
+
+
+      334 |       .getByRole("searchbox", { name: "Rechercher un article", exact: true })
+      335 |       .fill(`Charge SYNTHÉTIQUE ${count === 500 ? "2026-10-19" : "2026-10-16"} 499`);
+    > 336 |     await expect(page.locator(".articles-grid .event-card")).toHaveCount(1);
+          |                                                              ^
+      337 |     const queried = Date.now();
+      338 |     measures.push({
+      339 |       count,
+        at /Users/dreano/Downloads/veille/veille/tests/e2e/v8-audit.spec.ts:336:62
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v8-audit-Audit-P2-import-r-2c441--2000-articles-synthétiques-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v8-audit-Audit-P2-import-r-2c441--2000-articles-synthétiques-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v8-audit-Audit-P2-import-r-2c441--2000-articles-synthétiques-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v8-audit-Audit-P2-import-r-2c441--2000-articles-synthétiques-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [webkit] › tests/e2e/v8-audit.spec.ts:279:1 › Audit P2 : import, rendu paginé et recherche de 500 puis 2000 articles synthétiques 
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('.articles-grid .event-card')
+    Expected: 1
+    Received: 0
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toHaveCount" locator('.articles-grid .event-card') with timeout 10000ms
+      - waiting for locator('.articles-grid .event-card')
+        23 × locator resolved to 0 elements
+           - unexpected value "0"
+
+
+      334 |       .getByRole("searchbox", { name: "Rechercher un article", exact: true })
+      335 |       .fill(`Charge SYNTHÉTIQUE ${count === 500 ? "2026-10-19" : "2026-10-16"} 499`);
+    > 336 |     await expect(page.locator(".articles-grid .event-card")).toHaveCount(1);
+          |                                                              ^
+      337 |     const queried = Date.now();
+      338 |     measures.push({
+      339 |       count,
+        at /Users/dreano/Downloads/veille/veille/tests/e2e/v8-audit.spec.ts:336:62
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v8-audit-Audit-P2-import-r-2c441--2000-articles-synthétiques-webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v8-audit-Audit-P2-import-r-2c441--2000-articles-synthétiques-webkit/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v8-audit-Audit-P2-import-r-2c441--2000-articles-synthétiques-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v8-audit-Audit-P2-import-r-2c441--2000-articles-synthétiques-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium-mobile] › tests/e2e/v8-audit.spec.ts:279:1 › Audit P2 : import, rendu paginé et recherche de 500 puis 2000 articles synthétiques 
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('.articles-grid .event-card')
+    Expected: 1
+    Received: 0
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toHaveCount" locator('.articles-grid .event-card') with timeout 10000ms
+      - waiting for locator('.articles-grid .event-card')
+        23 × locator resolved to 0 elements
+           - unexpected value "0"
+
+
+      334 |       .getByRole("searchbox", { name: "Rechercher un article", exact: true })
+      335 |       .fill(`Charge SYNTHÉTIQUE ${count === 500 ? "2026-10-19" : "2026-10-16"} 499`);
+    > 336 |     await expect(page.locator(".articles-grid .event-card")).toHaveCount(1);
+          |                                                              ^
+      337 |     const queried = Date.now();
+      338 |     measures.push({
+      339 |       count,
+        at /Users/dreano/Downloads/veille/veille/tests/e2e/v8-audit.spec.ts:336:62
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v8-audit-Audit-P2-import-r-2c441--2000-articles-synthétiques-chromium-mobile/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v8-audit-Audit-P2-import-r-2c441--2000-articles-synthétiques-chromium-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v8-audit-Audit-P2-import-r-2c441--2000-articles-synthétiques-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v8-audit-Audit-P2-import-r-2c441--2000-articles-synthétiques-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    [chromium] › tests/e2e/v8-audit.spec.ts:279:1 › Audit P2 : import, rendu paginé et recherche de 500 puis 2000 articles synthétiques 
+    [webkit] › tests/e2e/v8-audit.spec.ts:279:1 › Audit P2 : import, rendu paginé et recherche de 500 puis 2000 articles synthétiques 
+    [chromium-mobile] › tests/e2e/v8-audit.spec.ts:279:1 › Audit P2 : import, rendu paginé et recherche de 500 puis 2000 articles synthétiques 
+  12 passed (1.3m)

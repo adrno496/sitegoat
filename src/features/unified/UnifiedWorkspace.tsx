@@ -1,5 +1,14 @@
+import { EventCard } from "../EventCard";
+import { useInterface } from "../interfacePreferences";
 import { SnapshotStatus } from "../SnapshotStatus";
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import type { Edition } from "../../data/model";
 import { dateLabel } from "../../data/model";
 import { indexArticles } from "../../data/articles";
@@ -25,7 +34,9 @@ export default function UnifiedWorkspace({
   onNavigate,
   onImport,
   onFuture,
+  onReady,
 }: {
+  onReady?: () => void;
   editions: Edition[];
   onOpen: (id: string, article?: string) => void;
   onDay: (key: string) => void;
@@ -33,7 +44,14 @@ export default function UnifiedWorkspace({
   onImport: () => void;
   onFuture: (id?: string) => void;
 }) {
+  useEffect(() => onReady?.(), [onReady]);
   const [panel, setPanel] = useState("overview");
+  const [firstSeen, setFirstSeen] = useState("");
+  const [eventSort, setEventSort] = useState("importance");
+  const [eventLimit, setEventLimit] = useState(30);
+  const {
+    preferences: { options },
+  } = useInterface();
   const heading = useRef<HTMLHeadingElement>(null);
   const futureCatalog = useFutureCatalog();
   const previousPanel = useRef(panel);
@@ -70,10 +88,19 @@ export default function UnifiedWorkspace({
     setPanel(value);
   }, []);
   const openPrompts = useCallback(() => go("prompts"), [go]);
-  const highlights =
-    p?.items.filter((i) => i.importance !== "context").slice(0, 6) || [];
+  const importance = { major: 0, important: 1, context: 2 };
+  const highlights = [...(p?.items || [])]
+    .filter((i) => !firstSeen || i.firstSeenSlot === firstSeen)
+    .sort((a, b) =>
+      eventSort === "newest"
+        ? b.firstSeenSlot.localeCompare(a.firstSeenSlot) ||
+          b.lastChangedAt.localeCompare(a.lastChangedAt)
+        : importance[a.importance] - importance[b.importance],
+    );
   return (
-    <div className="unified-workspace">
+    <div
+      className={`unified-workspace${options.help ? "" : " interface-essential"}`}
+    >
       <header className="unified-masthead">
         <div>
           <p className="eyebrow">QUATRE UNIVERS · UNE JOURNÉE</p>
@@ -142,7 +169,25 @@ export default function UnifiedWorkspace({
                 {!assessment?.snapshot && ` · Cumul ${day.status}`}
               </p>
               {assessment?.snapshot && (
-                <SnapshotStatus assessment={assessment} />
+                <>
+                  <p>
+                    {p?.items.length} événements · Intégrité{" "}
+                    {assessment.snapshot.integrity} · Autonomie{" "}
+                    {assessment.snapshot.autonomy} · Couverture{" "}
+                    {assessment.snapshot.coverage}
+                  </p>
+                  {assessment.issues.map((issue, index) => (
+                    <p className="warning" key={index}>
+                      {issue}
+                    </p>
+                  ))}
+                  <details open={options.technical || undefined}>
+                    <summary>
+                      Diagnostics documentaires et historique d’import
+                    </summary>
+                    <SnapshotStatus assessment={assessment} />
+                  </details>
+                </>
               )}
               {current && current.date !== clock.date && (
                 <p className="warning">
@@ -150,7 +195,7 @@ export default function UnifiedWorkspace({
                   dernière journée disponible.
                 </p>
               )}
-              <p>
+              <p className="interface-help">
                 Le fichier expose ce que son producteur a déclaré. Aucun accès
                 aux sources ni collecte automatique n’est simulé.
               </p>
@@ -185,18 +230,33 @@ export default function UnifiedWorkspace({
                   ? "À venir"
                   : p
                     ? "Non importé (facultatif)"
-                    : "Manquant";
+                    : "Non reçue";
               return (
                 <button
                   key={slot}
                   className="secondary"
                   disabled={!receivedVersion}
-                  aria-label={`${slot} · ${label}`}
+                  aria-label={`${slot} · ${label} · ${current?.date || clock.date} Europe/Paris · ${receivedVersion?.unified?.items.length ?? receivedVersion?.articles.length ?? 0} événements`}
+                  aria-current={
+                    !!receivedVersion && receivedVersion.id === current?.id
+                      ? "true"
+                      : undefined
+                  }
                   onClick={() => receivedVersion && onOpen(receivedVersion.id)}
                 >
                   <b>{slot}</b>
                   <span>
                     {label}
+                    {!!receivedVersion && receivedVersion.id === current?.id
+                      ? " · Courante"
+                      : ""}
+                    {receivedVersion && (
+                      <span>
+                        {receivedVersion.unified?.items.length ??
+                          receivedVersion.articles.length}{" "}
+                        événements · {receivedVersion.date} · Europe/Paris
+                      </span>
+                    )}
                     {p && (
                       <span>
                         {p.slotsIncluded.some((s) => s === slot)
@@ -215,7 +275,7 @@ export default function UnifiedWorkspace({
               V7 comprend huit rendez-vous de 08 à 22 h.
             </p>
           )}
-          <section className="unified-digest">
+          <section className="unified-digest interface-help">
             <p className="eyebrow">COMPRENDRE AVANT D’EXPLORER</p>
             <h2>Le monde en 60 secondes</h2>
             {p?.synthesis.text ? (
@@ -260,123 +320,169 @@ export default function UnifiedWorkspace({
                 Tous les articles ({items.length}) →
               </button>
             </div>
-            <div className="unified-highlights">
-              {highlights.length ? (
-                highlights.map((i) => (
-                  <article className="unified-panel" key={i.eventId}>
-                    <span className="unified-badge">
-                      {i.category} ·{" "}
-                      {i.evidenceStatus === "hypothesis"
-                        ? "Hypothèse"
-                        : i.evidenceStatus === "sourced"
-                          ? "Sourcé selon le fichier"
-                          : "Non vérifié"}
-                    </span>
-                    <h3>{i.title}</h3>
-                    <p>{i.summary}</p>
-                    <dl>
-                      <dt>Ce qui a changé</dt>
-                      <dd>{i.changed || "Non renseigné"}</dd>
-                      <dt>Pourquoi cela compte</dt>
-                      <dd>{i.importanceReason || "Non renseigné"}</dd>
-                      <dt>Ce qu’on ignore</dt>
-                      <dd>{i.unknowns || "Non renseigné"}</dd>
-                    </dl>
-                    {i.corrections.length > 0 && (
-                      <p className="warning">
-                        Corrigé · {i.corrections.at(-1)!.at} ·{" "}
-                        {i.corrections.at(-1)!.reason}
-                      </p>
-                    )}
-                    <button
-                      className="secondary"
-                      onClick={() => onOpen(latest!.id, i.id)}
-                    >
-                      Lire et voir les sources
-                    </button>
-                  </article>
-                ))
-              ) : (
+            {p && (
+              <>
                 <p>
-                  Aucune priorité éditoriale qualifiée dans le format unifié.
-                  Tous les articles historiques restent accessibles.
+                  Édition ouverte : {p.editionSlot} · {p.editionDate} ·
+                  Europe/Paris. Les horaires ci-dessus ouvrent uniquement un
+                  fichier reçu. Le filtre ci-dessous sélectionne les événements
+                  de cette édition selon leur première apparition.
+                </p>
+                <div className="unified-filters">
+                  <label>
+                    Première apparition
+                    <select
+                      aria-label="Première apparition"
+                      value={firstSeen}
+                      onChange={(e) => {
+                        setFirstSeen(e.target.value);
+                        setEventLimit(30);
+                      }}
+                    >
+                      <option value="">Tous les événements</option>
+                      {V7_SLOTS.map((slot) => (
+                        <option value={slot} key={slot}>
+                          Apparus à {slot}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    Trier les événements
+                    <select
+                      aria-label="Trier les événements"
+                      value={eventSort}
+                      onChange={(e) => setEventSort(e.target.value)}
+                    >
+                      <option value="importance">Importance</option>
+                      <option value="newest">
+                        Première apparition la plus récente
+                      </option>
+                    </select>
+                  </label>
+                </div>
+                <p role="status">
+                  {highlights.length} événement(s) affichable(s) sur{" "}
+                  {p.items.length} dans l’édition {p.editionSlot}. Première
+                  apparition ≠ nouveauté factuelle certifiée.
+                </p>
+              </>
+            )}
+            <div className="unified-highlights event-list">
+              {highlights.slice(0, eventLimit).map((i) => (
+                <EventCard
+                  key={latest!.id + i.eventId}
+                  item={i}
+                  edition={latest!}
+                  onOriginal={() => onOpen(latest!.id, i.id)}
+                />
+              ))}
+              {!highlights.length && (
+                <p>
+                  {p
+                    ? "Aucun événement pour ce filtre."
+                    : "Aucun événement au format unifié. Tous les articles historiques restent accessibles."}
                 </p>
               )}
             </div>
+            {highlights.length > eventLimit && (
+              <button
+                className="secondary"
+                onClick={() => setEventLimit((n) => n + 30)}
+              >
+                Afficher plus d’événements ({highlights.length - eventLimit})
+              </button>
+            )}
           </section>
-          <section>
-            <h2>Les quatre univers</h2>
-            <div className="unified-universes">
-              {[
-                ["journal360", "Journal 360°", "articles"],
-                ["ai-major", "IA majeure", "ai-major"],
-                ["future", "Le Futur", "future"],
-                ["sentinel", "SENTINEL", "sentinel"],
-              ].map(([id, label, tab]) => {
-                const count = items.filter(
-                  (i) =>
-                    (i.article.sourceWatch ||
-                      i.edition.collection ||
-                      "journal360") === id,
-                ).length;
-                const members = items.filter(
-                  (i) =>
-                    (i.article.sourceWatch ||
-                      i.edition.collection ||
-                      "journal360") === id,
-                );
-                return (
-                  <article className="unified-panel" key={id}>
-                    <h3>{label}</h3>
-                    <p>
-                      {count} événements indexés
-                      {id === "future"
-                        ? ` · ${futureCatalog.error ? "Atlas indisponible" : futureCatalog.value === null ? "Lecture de l’atlas…" : futureCatalog.value.length + " dossier(s) prospectif(s)"}`
-                        : ""}{" "}
-                      ·{" "}
-                      {(id === "future" &&
-                        futureCatalog.value?.[0]?.updatedAt) ||
-                        members[0]?.edition.date ||
-                        "aucune édition reçue"}
-                    </p>
-                    <p>
-                      Nouveautés :{" "}
-                      {!assessment?.snapshot?.comparisonAvailable
-                        ? "comparaison NON DISPONIBLE"
-                        : p
-                          ? p.items.filter(
-                              (i) =>
-                                i.sourceWatch === id &&
-                                assessment!.snapshot!.newEventIds.includes(
-                                  i.eventId,
-                                ),
-                            ).length
-                          : "non qualifiées"}
-                    </p>
-                    <button
-                      className="secondary"
-                      onClick={() =>
-                        id === "future"
-                          ? go("timeline")
-                          : onNavigate(tab as Destination)
-                      }
-                    >
-                      Explorer {label}
-                    </button>
-                  </article>
-                );
-              })}
-            </div>
-          </section>
-          <EconomyRadar editions={editions} compact />
-          <FutureBridge
-            editions={editions}
-            onFuture={onFuture}
-            catalog={futureCatalog}
-            onOpen={onOpen}
-            compact
-          />
-          <section>
+          {options.kpis && (
+            <section>
+              <h2>Les quatre univers</h2>
+              <div className="unified-universes">
+                {[
+                  ["journal360", "Journal 360°", "articles"],
+                  ["ai-major", "IA majeure", "ai-major"],
+                  ["future", "Le Futur", "future"],
+                  ["sentinel", "SENTINEL", "sentinel"],
+                ].map(([id, label, tab]) => {
+                  const count = items.filter(
+                    (i) =>
+                      (i.article.sourceWatch ||
+                        i.edition.collection ||
+                        "journal360") === id,
+                  ).length;
+                  const members = items.filter(
+                    (i) =>
+                      (i.article.sourceWatch ||
+                        i.edition.collection ||
+                        "journal360") === id,
+                  );
+                  return (
+                    <article className="unified-panel" key={id}>
+                      <h3>{label}</h3>
+                      <p>
+                        {count} événements indexés
+                        {id === "future"
+                          ? ` · ${futureCatalog.error ? "Atlas indisponible" : futureCatalog.value === null ? "Lecture de l’atlas…" : futureCatalog.value.length + " dossier(s) prospectif(s)"}`
+                          : ""}{" "}
+                        ·{" "}
+                        {(id === "future" &&
+                          futureCatalog.value?.[0]?.updatedAt) ||
+                          members[0]?.edition.date ||
+                          "aucune édition reçue"}
+                      </p>
+                      <p>
+                        Nouveautés :{" "}
+                        {!assessment?.snapshot?.comparisonAvailable
+                          ? "comparaison NON DISPONIBLE"
+                          : p
+                            ? p.items.filter(
+                                (i) =>
+                                  i.sourceWatch === id &&
+                                  assessment!.snapshot!.newEventIds.includes(
+                                    i.eventId,
+                                  ),
+                              ).length
+                            : "non qualifiées"}
+                      </p>
+                      <button
+                        className="secondary"
+                        onClick={() =>
+                          id === "future"
+                            ? go("timeline")
+                            : onNavigate(tab as Destination)
+                        }
+                      >
+                        Explorer {label}
+                      </button>
+                    </article>
+                  );
+                })}
+              </div>
+            </section>
+          )}
+          {options.economy && <EconomyRadar editions={editions} compact />}
+          {options.timeline && (
+            <FutureBridge
+              editions={editions}
+              onFuture={onFuture}
+              catalog={futureCatalog}
+              onOpen={onOpen}
+              compact
+            />
+          )}
+          {options.prompts && (
+            <section>
+              <h2>Prompts de cette édition</h2>
+              <p>
+                {p?.promptAssets.length || 0} prompt(s) intégralement
+                conservé(s).
+              </p>
+              <button className="secondary" onClick={openPrompts}>
+                Lire et télécharger les prompts .md
+              </button>
+            </section>
+          )}
+          <section className="interface-help">
             <h2>Actions utiles</h2>
             <div className="unified-highlights">
               {p?.items

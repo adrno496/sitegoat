@@ -1,3 +1,5 @@
+import { summaryPreview } from "../eventPresentation";
+import { useInterface } from "../interfacePreferences";
 import { useState } from "react";
 import type { Edition } from "../../data/model";
 import { futureDb, type FutureDocument } from "../future/db";
@@ -26,6 +28,9 @@ export function FutureBridge({
   onOpen?: (id: string, article?: string) => void;
   compact?: boolean;
 }) {
+  const {
+    preferences: { options },
+  } = useInterface();
   const [kind, setKind] = useState("all"),
     [horizon, setHorizon] = useState(""),
     [error, setError] = useState(""),
@@ -114,35 +119,39 @@ export function FutureBridge({
               {i.synthetic ? "· SYNTHÉTIQUE" : ""}
             </span>
             <h3>{i.title}</h3>
-            <p>{i.description}</p>
+            <p>{summaryPreview(i.description)}</p>
             <p className="small-note">
               Original : {i.origin.editionSlot} · révision{" "}
               {i.origin.externalRevision} · {i.origin.date}
             </p>
-            <p>
-              Observation : {i.observedAt || "non établie"} · Publication :{" "}
-              {i.publishedAt || "non renseignée"} · Vérification :{" "}
-              {i.verifiedAt || "non renseignée"}
-            </p>
-            <details>
-              <summary>Preuves, objections et invalidation</summary>
-              <p>Objections : {i.objections || "Non renseignées"}</p>
+            <details open={options.sources || undefined}>
+              <summary>Développer le jalon</summary>
+              <p>{i.description}</p>
               <p>
-                Déclencheur : {i.trigger || "Non renseigné"} · Invalidation :{" "}
-                {i.invalidation || "Non renseignée"}
+                Observation : {i.observedAt || "non établie"} · Publication :{" "}
+                {i.publishedAt || "non renseignée"} · Vérification :{" "}
+                {i.verifiedAt || "non renseignée"}
               </p>
-              {i.evidence.length ? (
-                i.evidence.map((s) => (
-                  <p key={s.id}>
-                    <a href={s.url} target="_blank" rel="noopener noreferrer">
-                      {s.label}
-                    </a>{" "}
-                    · {s.publishedAt}
-                  </p>
-                ))
-              ) : (
-                <p>Aucune preuve fournie : hypothèse non certifiée.</p>
-              )}
+              <details>
+                <summary>Preuves, objections et invalidation</summary>
+                <p>Objections : {i.objections || "Non renseignées"}</p>
+                <p>
+                  Déclencheur : {i.trigger || "Non renseigné"} · Invalidation :{" "}
+                  {i.invalidation || "Non renseignée"}
+                </p>
+                {i.evidence.length ? (
+                  i.evidence.map((s) => (
+                    <p key={s.id}>
+                      <a href={s.url} target="_blank" rel="noopener noreferrer">
+                        {s.label}
+                      </a>{" "}
+                      · {s.publishedAt}
+                    </p>
+                  ))
+                ) : (
+                  <p>Aucune preuve fournie : hypothèse non certifiée.</p>
+                )}
+              </details>
             </details>
             {i.eventId && onOpen && (
               <button

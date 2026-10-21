@@ -1,3 +1,5 @@
+import { summaryPreview } from "../eventPresentation";
+import { useInterface } from "../interfacePreferences";
 import {
   useEffect,
   useMemo,
@@ -13,8 +15,11 @@ import {
   timelineItems,
   timelinePeriods,
 } from "./selectors";
-import { FutureEvidence, FutureText } from "./FutureEvidence";
+import { FutureEvidence } from "./FutureEvidence";
 export function FutureTimeline({ payload: p }: { payload: FuturePayload }) {
+  const {
+    preferences: { options },
+  } = useInterface();
   const items = useMemo(() => timelineItems(p), [p]),
     periods = useMemo(() => timelinePeriods(p), [p]);
   const [period, setPeriod] = useState(() =>
@@ -136,17 +141,18 @@ export function FutureTimeline({ payload: p }: { payload: FuturePayload }) {
                 {m.year} · {statusLabels[m.status]}
               </span>
               <h3>{m.title}</h3>
-              <FutureText text={m.description} />
+              <p>{summaryPreview(m.description)}</p>
+              <details open={options.sources || undefined}>
+                <summary>Développer le jalon et ses preuves</summary>
+                <p>{m.description}</p>
+                <FutureEvidence urls={m.evidenceUrls} payload={p} />
+              </details>
               <p className="future-caption">
                 {pathLabels[m.path]} · {m.scenario}
                 {m.observedAt
                   ? " · Observation déclarée le " + m.observedAt
                   : ""}
               </p>
-              <details>
-                <summary>D’où vient cette affirmation ?</summary>
-                <FutureEvidence urls={m.evidenceUrls} payload={p} />
-              </details>
               {p.visualization.links
                 .filter((l) => l.from === m.id)
                 .map((l, i) => (

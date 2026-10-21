@@ -1,3 +1,4 @@
+import { useInterface } from "../interfacePreferences";
 import { useState } from "react";
 import type { Edition } from "../../data/model";
 import {
@@ -14,6 +15,9 @@ export function EconomyRadar({
   editions: Edition[];
   compact?: boolean;
 }) {
+  const {
+    preferences: { options },
+  } = useInterface();
   const [zone, setZone] = useState(""),
     [period, setPeriod] = useState(""),
     [indicator, setIndicator] = useState("");
@@ -110,59 +114,74 @@ export function EconomyRadar({
                             }).format(e.value)}{" "}
                             <small>{e.unit}</small>
                           </p>
-                          <dl>
-                            <dt>Dernière statistique</dt>
-                            <dd>
-                              {e.statisticDate} · période {e.period} ·{" "}
-                              {e.frequency}
-                            </dd>
-                            <dt>Situation / raison</dt>
-                            <dd>{e.reading || "Non renseignée"}</dd>
-                            <dt>Variation comparable</dt>
-                            <dd>
-                              {delta === null
-                                ? "Non disponible"
-                                : `${delta > 0 ? "+" : ""}${new Intl.NumberFormat("fr-FR").format(delta)} ${e.unit} depuis ${e.comparison!.period}`}
-                            </dd>
-                            <dt>Risque / contre-argument</dt>
-                            <dd>
-                              {e.risk || "Non renseigné"} ·{" "}
-                              {e.counterArgument || "Non renseigné"}
-                            </dd>
-                            <dt>État de la donnée</dt>
-                            <dd>
-                              {stale} · publication {e.publishedAt} · contrôle{" "}
-                              {e.verifiedAt || "absent"}
-                            </dd>
-                          </dl>
-                          <details>
+                          <p>
+                            Période : {e.period} · Statistique :{" "}
+                            {e.statisticDate}
+                          </p>
+                          <p>
+                            Variation comparable :{" "}
+                            {delta === null
+                              ? "Non disponible"
+                              : `${delta > 0 ? "+" : ""}${new Intl.NumberFormat("fr-FR").format(delta)} ${e.unit} depuis ${e.comparison!.period}`}
+                          </p>
+                          <details open={options.sources || undefined}>
                             <summary>
-                              Source, définition et décision générale
+                              Développer la méthode, les limites et les sources
                             </summary>
-                            <p>
-                              {e.provider} · série {e.seriesCode} ·{" "}
-                              {e.definition}
-                            </p>
-                            {e.sourceRecords.map((s) => (
-                              <p key={s.id}>
-                                <a
-                                  href={s.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  {s.label}
-                                </a>{" "}
-                                · {s.publishedAt}
+                            <dl>
+                              <dt>Dernière statistique</dt>
+                              <dd>
+                                {e.statisticDate} · période {e.period} ·{" "}
+                                {e.frequency}
+                              </dd>
+                              <dt>Situation / raison</dt>
+                              <dd>{e.reading || "Non renseignée"}</dd>
+                              <dt>Variation comparable</dt>
+                              <dd>
+                                {delta === null
+                                  ? "Non disponible"
+                                  : `${delta > 0 ? "+" : ""}${new Intl.NumberFormat("fr-FR").format(delta)} ${e.unit} depuis ${e.comparison!.period}`}
+                              </dd>
+                              <dt>Risque / contre-argument</dt>
+                              <dd>
+                                {e.risk || "Non renseigné"} ·{" "}
+                                {e.counterArgument || "Non renseigné"}
+                              </dd>
+                              <dt>État de la donnée</dt>
+                              <dd>
+                                {stale} · publication {e.publishedAt} · contrôle{" "}
+                                {e.verifiedAt || "absent"}
+                              </dd>
+                            </dl>
+                            <details>
+                              <summary>
+                                Source, définition et décision générale
+                              </summary>
+                              <p>
+                                {e.provider} · série {e.seriesCode} ·{" "}
+                                {e.definition}
                               </p>
-                            ))}
-                            <p>
-                              Pour moi :{" "}
-                              {edition.unified?.synthetic
-                                ? "indéterminé (données fictives)"
-                                : e.personalAction ||
-                                  "aucune action établie"}{" "}
-                              · {e.personalReason}
-                            </p>
+                              {e.sourceRecords.map((s) => (
+                                <p key={s.id}>
+                                  <a
+                                    href={s.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    {s.label}
+                                  </a>{" "}
+                                  · {s.publishedAt}
+                                </p>
+                              ))}
+                              <p>
+                                Pour moi :{" "}
+                                {edition.unified?.synthetic
+                                  ? "indéterminé (données fictives)"
+                                  : e.personalAction ||
+                                    "aucune action établie"}{" "}
+                                · {e.personalReason}
+                              </p>
+                            </details>
                           </details>
                         </div>
                       );
