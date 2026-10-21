@@ -1,17 +1,36 @@
 import { it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { isolatedHTML, inspectHTML } from "../src/features/import";
+import { needsOriginalInteractions } from "../src/features/originalReading";
 import { dynamicFixture, readingHours } from "./helpers/dynamic-unified";
+const parse = (bytes: Uint8Array) =>
+  new DOMParser().parseFromString(new TextDecoder().decode(bytes), "text/html");
 it.each(readingHours)(
-  "une édition %s h dynamique est intégralement lisible sans script",
+  "édition %s h : styles, structure et ordre d’origine conservés, scripts désactivés",
   async (hour) => {
     const { bytes, p } = dynamicFixture(hour);
+    const original = parse(bytes),
+      before = bytes.slice();
     const edition = await inspectHTML(`dynamic-${hour}.html`, bytes);
     const doc = new DOMParser().parseFromString(
       isolatedHTML(bytes, false),
       "text/html",
     );
-    expect(doc.querySelector("[data-journal360-safe-unified]")).not.toBeNull();
+    expect(
+      [...doc.querySelectorAll("style")].map((s) => s.textContent),
+    ).toEqual(
+      [...original.querySelectorAll("style")].map((s) => s.textContent),
+    );
+    expect(doc.querySelector("#view")!.outerHTML).toBe(
+      original.querySelector("#view")!.outerHTML,
+    );
+    expect(doc.querySelector("#nav")!.outerHTML).toBe(
+      original.querySelector("#nav")!.outerHTML,
+    );
+    expect(doc.body.getAttributeNames()).toEqual(
+      original.body.getAttributeNames(),
+    );
+    expect(doc.querySelector("[data-journal360-safe-unified]")).toBeNull();
     expect(
       doc.querySelectorAll("script,iframe,object,embed,link"),
     ).toHaveLength(0);
@@ -20,85 +39,57 @@ it.each(readingHours)(
         .querySelector('meta[http-equiv="Content-Security-Policy"]')!
         .getAttribute("content"),
     ).toContain("script-src 'none'");
-    expect(
-      doc.querySelectorAll("article[data-journal360-article]"),
-    ).toHaveLength(p.items.length);
-    for (const i of p.items) {
-      const a = [...doc.querySelectorAll("article")].find(
-        (a) => a.getAttribute("data-journal360-article") === i.id,
-      )!;
-      expect(a.textContent).toContain(i.summary);
-      expect(a.textContent).toContain(i.plain);
-      expect(a.textContent).toContain(i.detail);
-    }
-    for (const pm of p.promptAssets)
-      expect(
-        [...doc.querySelectorAll("textarea")].map((t) => t.value),
-      ).toContain(pm.content);
-    expect(
-      [...doc.querySelectorAll("a")].every((a) =>
-        a.getAttribute("href")!.startsWith("about:srcdoc#"),
-      ),
-    ).toBe(true);
+    expect(needsOriginalInteractions(bytes, p)).toBe(true);
+    expect(bytes).toEqual(before);
     expect(edition.unified).toEqual(p);
   },
 );
-it("la sélection mène au bon récit canonique et conserve tous les autres", async () => {
-  const { bytes, p } = dynamicFixture("10");
-  const e = await inspectHTML("dynamic.html", bytes);
-  const target = e.articles.at(-1)!;
+it("le mode interactif garde le moteur, les données et les styles du fichier", () => {
+  const { bytes } = dynamicFixture("16"),
+    original = parse(bytes);
   const doc = new DOMParser().parseFromString(
-    isolatedHTML(bytes, false, target),
+    isolatedHTML(bytes, true),
     "text/html",
   );
-  expect(
-    doc.querySelector("article")!.getAttribute("data-journal360-article"),
-  ).toBe(target.id);
-  expect(doc.querySelector("article")!.textContent).toContain(
-    p.items.find((i) => i.id === target.id)!.detail,
+  expect(doc.querySelector("#unifiedData")!.textContent).toBe(
+    original.querySelector("#unifiedData")!.textContent,
   );
-  expect(doc.querySelectorAll("article")).toHaveLength(8);
+  for (const s of original.querySelectorAll("script"))
+    expect(
+      [...doc.querySelectorAll("script")].map((s) => s.textContent),
+    ).toContain(s.textContent);
+  expect([...doc.querySelectorAll("style")].map((s) => s.textContent)).toEqual(
+    [...original.querySelectorAll("style")].map((s) => s.textContent),
+  );
+  expect(
+    doc
+      .querySelector('meta[http-equiv="Content-Security-Policy"]')!
+      .getAttribute("content"),
+  ).toContain("connect-src 'none'");
 });
-it("une édition statique existante garde sa présentation ; le mode interactif reste explicite", () => {
+it("les magazines statiques restent affichables sans interactions", async () => {
   const bytes = new Uint8Array(
     readFileSync("tests/fixtures/v8/snapshot-22.html"),
   );
-  const staticDoc = new DOMParser().parseFromString(
+  const e = await inspectHTML("static.html", bytes);
+  expect(needsOriginalInteractions(bytes, e.unified)).toBe(false);
+  const doc = new DOMParser().parseFromString(
     isolatedHTML(bytes, false),
     "text/html",
   );
-  expect(staticDoc.querySelector("[data-journal360-safe-unified]")).toBeNull();
-  const dynamic = dynamicFixture("10").bytes;
-  const interactive = new DOMParser().parseFromString(
-    isolatedHTML(dynamic, true),
-    "text/html",
-  );
-  expect(
-    interactive.querySelector("[data-journal360-safe-unified]"),
-  ).toBeNull();
-  expect(interactive.querySelectorAll("script").length).toBeGreaterThan(0);
+  expect(doc.querySelectorAll("article").length).toBeGreaterThan(0);
+  expect(needsOriginalInteractions(bytes)).toBe(false);
 });
-it("texte hostile et fermeture textarea restent inertes dans la projection ; données invalides non projetées", () => {
-  const { p } = dynamicFixture("10");
-  p.items[0].detail =
-    '<img src=x onerror="globalThis.bad=true"><script>globalThis.bad=true</script>';
-  p.promptAssets[0].content =
-    '</textarea><img src=x onerror="globalThis.bad=true">';
-  const encode = (v: unknown) =>
-    new TextEncoder().encode(
-      `<main></main><script id="unifiedData" type="application/json">${JSON.stringify(v).replaceAll("<", "\\u003c")}</script>`,
-    );
+it("le HTML hostile reste inerte en mode sécurisé sans autorisation implicite", () => {
+  const bytes = new TextEncoder().encode(
+    '<main><h1>Original</h1><img src="https://example.org/x" onerror="globalThis.bad=true"><iframe src="https://example.org"></iframe></main><script>globalThis.bad=true</script>',
+  );
   const doc = new DOMParser().parseFromString(
-    isolatedHTML(encode(p), false),
+    isolatedHTML(bytes, false),
     "text/html",
   );
-  expect(doc.querySelectorAll("script,img,[onerror]")).toHaveLength(0);
-  expect([...doc.querySelectorAll("textarea")].map((t) => t.value)).toContain(
-    p.promptAssets[0].content,
+  expect(doc.querySelectorAll("script,iframe,[onerror],img[src]")).toHaveLength(
+    0,
   );
-  const invalid = new DOMParser().parseFromString(
-    isolatedHTML(encode({ ...p, schemaVersion: 999 }), false),
-    "text/html",
-  );
-  expect(invalid.querySelector("[data-journal360-safe-unified]")).toBeNull();
+  expect(doc.querySelector("main h1")!.textContent).toBe("Original");
 });

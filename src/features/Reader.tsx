@@ -21,6 +21,7 @@ import type { Edition, ReadingState, Note } from "../data/model";
 import { blobOf, dateLabel, now } from "../data/model";
 import { db } from "../data/db";
 import { isolatedHTML } from "./import";
+import { needsOriginalInteractions } from "./originalReading";
 import { useDialogFocus } from "./dialogFocus";
 import { download } from "./backup";
 import { GoogleAiSession } from "./googleAiSession";
@@ -106,6 +107,10 @@ export function Reader({
     () =>
       bytes ? isolatedHTML(bytes, mode === "interactive", initialArticle) : "",
     [bytes, mode, initialArticle],
+  );
+  const originalNeedsScripts = useMemo(
+    () => !!bytes && needsOriginalInteractions(bytes, edition.unified),
+    [bytes, edition.unified],
   );
   const [loadError, setLoadError] = useState("");
   const backTitle =
@@ -610,6 +615,20 @@ export function Reader({
               </button>
             ))}
           </details>
+        )}
+        {mode === "safe" && originalNeedsScripts && (
+          <aside className="original-html-notice" aria-label="HTML d’origine">
+            <p>
+              Cette édition utilise JavaScript pour afficher sa mise en page
+              d’origine. Son contenu et son organisation sont conservés.
+            </p>
+            <button className="primary" onClick={() => setConfirm(true)}>
+              Afficher le HTML d’origine
+            </button>
+            <button className="text-button" onClick={() => setMode("text")}>
+              Lire le texte sans scripts
+            </button>
+          </aside>
         )}
         {mode === "text" ? (
           <div className="text-reader">

@@ -1,0 +1,30 @@
+[WebServer] (node:52872) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:52884) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 15 tests using 1 worker
+
+(node:52997) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/v6-improvements.spec.ts:144:3 › Cloud simulé sans interception par le service worker › sync visible : en cours, échec, clic réessayer, succès daté, changements en attente et automatique désactivée (7.7s)
+  ✓   2 [chromium] › tests/e2e/v6.spec.ts:149:1 › V6 : dernière édition affichée malgré les avertissements, historique fiable et nouvelle journée conservés (29.5s)
+  ✓   3 [chromium] › tests/e2e/v8-reading.spec.ts:34:3 › Lecture réelle du cadre 08 h : HTML d’origine conservé, interactions uniquement après confirmation, offline (1.7s)
+  ✓   4 [chromium] › tests/e2e/v8-reading.spec.ts:34:3 › Lecture réelle du cadre 10 h : HTML d’origine conservé, interactions uniquement après confirmation, offline (2.4s)
+  ✓   5 [chromium] › tests/e2e/v8-reading.spec.ts:34:3 › Lecture réelle du cadre 16 h : HTML d’origine conservé, interactions uniquement après confirmation, offline (3.5s)
+(node:59244) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   6 [webkit] › tests/e2e/v6-improvements.spec.ts:144:3 › Cloud simulé sans interception par le service worker › sync visible : en cours, échec, clic réessayer, succès daté, changements en attente et automatique désactivée (8.8s)
+  ✓   7 [webkit] › tests/e2e/v6.spec.ts:149:1 › V6 : dernière édition affichée malgré les avertissements, historique fiable et nouvelle journée conservés (30.5s)
+  ✓   8 [webkit] › tests/e2e/v8-reading.spec.ts:34:3 › Lecture réelle du cadre 08 h : HTML d’origine conservé, interactions uniquement après confirmation, offline (7.3s)
+  ✓   9 [webkit] › tests/e2e/v8-reading.spec.ts:34:3 › Lecture réelle du cadre 10 h : HTML d’origine conservé, interactions uniquement après confirmation, offline (9.3s)
+  ✓  10 [webkit] › tests/e2e/v8-reading.spec.ts:34:3 › Lecture réelle du cadre 16 h : HTML d’origine conservé, interactions uniquement après confirmation, offline (14.2s)
+(node:65316) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  11 [chromium-mobile] › tests/e2e/v6-improvements.spec.ts:144:3 › Cloud simulé sans interception par le service worker › sync visible : en cours, échec, clic réessayer, succès daté, changements en attente et automatique désactivée (1.9s)
+  ✓  12 [chromium-mobile] › tests/e2e/v6.spec.ts:149:1 › V6 : dernière édition affichée malgré les avertissements, historique fiable et nouvelle journée conservés (1.8s)
+  ✓  13 [chromium-mobile] › tests/e2e/v8-reading.spec.ts:34:3 › Lecture réelle du cadre 08 h : HTML d’origine conservé, interactions uniquement après confirmation, offline (4.4s)
+  ✓  14 [chromium-mobile] › tests/e2e/v8-reading.spec.ts:34:3 › Lecture réelle du cadre 10 h : HTML d’origine conservé, interactions uniquement après confirmation, offline (4.2s)
+  ✓  15 [chromium-mobile] › tests/e2e/v8-reading.spec.ts:34:3 › Lecture réelle du cadre 16 h : HTML d’origine conservé, interactions uniquement après confirmation, offline (7.8s)
+
+  15 passed (2.4m)

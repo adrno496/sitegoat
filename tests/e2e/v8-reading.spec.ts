@@ -31,7 +31,7 @@ async function today(page: Page) {
     .click();
 }
 for (const hour of readingHours)
-  test(`Lecture réelle du cadre ${hour} h : tous les récits visibles sans activer les scripts, offline`, async ({
+  test(`Lecture réelle du cadre ${hour} h : HTML d’origine conservé, interactions uniquement après confirmation, offline`, async ({
     page,
     context,
   }, info) => {
@@ -51,46 +51,81 @@ for (const hour of readingHours)
       .click();
     const frame = page.frameLocator(".edition-frame");
     await expect(page.locator(".edition-frame")).toHaveAttribute("sandbox", "");
-    await expect(frame.locator("[data-journal360-safe-unified]")).toBeVisible();
-    await expect(frame.locator("article[data-journal360-article]")).toHaveCount(
-      p.items.length,
+    await expect(frame.locator("[data-journal360-safe-unified]")).toHaveCount(
+      0,
     );
-    for (const i of p.items) {
-      const a = frame.locator(`[data-journal360-article="${i.id}"]`);
-      await a
-        .getByRole("heading", { name: i.title, exact: true })
-        .scrollIntoViewIfNeeded();
-      await expect(
-        a.getByRole("heading", { name: i.title, exact: true }),
-      ).toBeVisible();
-      await expect(a).toContainText(i.plain);
-      await expect(a).toContainText(i.detail);
-    }
+    await expect(frame.locator("#view")).toBeEmpty();
     expect(await frame.locator("script").count()).toBe(0);
-    expect(
-      await frame
-        .locator("body")
-        .evaluate(() => Object.hasOwn(globalThis, "importedRendererRan")),
-    ).toBe(false);
-    for (const pm of p.promptAssets)
-      await expect(
-        frame.locator(`textarea[data-prompt-id="${pm.promptId}"]`),
-      ).toHaveValue(pm.content);
-    await frame
-      .getByRole("link", { name: p.items[0].title, exact: true })
+    await page
+      .getByRole("button", { name: "Afficher le HTML d’origine", exact: true })
+      .click();
+    const trust = page.getByRole("dialog", {
+      name: "Activer les interactions ?",
+    });
+    await trust
+      .getByRole("button", { name: "Rester en mode sécurisé", exact: true })
       .click();
     await expect(page.locator(".edition-frame")).toHaveAttribute("sandbox", "");
-    await expect(frame.locator("[data-journal360-safe-unified]")).toBeVisible();
-    await expect(frame.locator("h1")).toHaveText(p.title);
-    await page.screenshot({ path: info.outputPath("safe-reader.png") });
+    await page
+      .getByRole("button", { name: "Afficher le HTML d’origine", exact: true })
+      .click();
+    await trust
+      .getByRole("button", {
+        name: "Je fais confiance à ce fichier",
+        exact: true,
+      })
+      .click();
+    await expect(page.locator(".edition-frame")).toHaveAttribute(
+      "sandbox",
+      "allow-scripts",
+    );
+    await expect(page.locator(".original-html-notice")).toHaveCount(0);
+    await expect(frame.locator("#view")).not.toBeEmpty();
+    await expect(frame.locator("[data-journal360-safe-unified]")).toHaveCount(
+      0,
+    );
+    await expect(frame.locator("#nav button").first()).toBeVisible();
+    // Navigate with the publisher's own menu and article controls, not a host
+    // projection. All three real files use this native article list.
+    for (const i of p.items) {
+      await frame
+        .locator("#nav")
+        .getByRole("button", { name: /^(Articles|Tous les articles)$/ })
+        .click();
+      const card = frame.locator("#view article").filter({
+        has: frame.getByRole("heading", { name: i.title, exact: true }),
+      });
+      await card.getByRole("button", { name: /^Lire/ }).click();
+      await expect(
+        frame
+          .locator("#view")
+          .getByRole("heading", { name: i.title, exact: true }),
+      ).toBeVisible();
+      await expect(frame.locator("#view")).toContainText(i.plain);
+      await expect(frame.locator("#view")).toContainText(i.detail);
+    }
+    await page.screenshot({ path: info.outputPath("original-reader.png") });
     await page
       .getByRole("button", { name: "Réduire la lecture", exact: true })
       .click();
+    const originalDownload = page.waitForEvent("download");
+    await page
+      .getByRole("button", { name: "Original intact", exact: true })
+      .click();
+    expect(await readFile((await (await originalDownload).path())!)).toEqual(
+      dynamicFixture(hour).bytes,
+    );
     await page
       .locator(".reader")
       .getByRole("button", { name: "Aujourd’hui", exact: true })
       .click();
     await expect(page.locator(".unified-workspace")).toBeVisible();
+    await page
+      .getByRole("button", { name: "Lire la dernière édition", exact: true })
+      .click();
+    // A previous confirmation never silently enables scripts on a later visit.
+    await expect(page.locator(".edition-frame")).toHaveAttribute("sandbox", "");
+    await expect(page.locator(".original-html-notice")).toBeVisible();
   });
 test("Développer utilise toute la largeur de la page et Réduire rétablit la carte", async ({
   page,

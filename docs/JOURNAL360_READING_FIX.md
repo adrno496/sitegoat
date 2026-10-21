@@ -1,5 +1,7 @@
 # Journal 360 — correction de la lecture des éditions
 
+Rapport historique : la projection documentaire décrite ici a été retirée à la demande suivante. Voir [Lecture du HTML d'origine](JOURNAL360_ORIGINAL_HTML.md) pour le comportement actuel.
+
 Date : 21 octobre 2026. Référence : `85d280e238c89e8ad47c3776128e82277d5557a0`.
 Branche réversible : `codex/fix-unified-edition-reading`.
 

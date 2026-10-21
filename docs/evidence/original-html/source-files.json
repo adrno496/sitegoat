@@ -1,0 +1,30 @@
+[
+  {
+    "file": "src/features/Reader.tsx",
+    "sha256": "bffa8b70df5fdd32c17955c2716537d45e44c2d49bb5b665cada39d3e1757c20"
+  },
+  {
+    "file": "src/features/import.ts",
+    "sha256": "dc493551edc6f742eab39fa8c9e3083222b10f76e5e52d9f5b105e7e4014b63d"
+  },
+  {
+    "file": "src/features/originalReading.ts",
+    "sha256": "986b144dc3c770c072076b2267606c279670fd10761ee6fbef8750d1dbfc58b1"
+  },
+  {
+    "file": "src/styles.css",
+    "sha256": "b3258f205497b710c088e6db7e6f435a86ed59938fc4612c0c108a3a4b191ccf"
+  },
+  {
+    "file": "tests/e2e/v8-reading.spec.ts",
+    "sha256": "927bbcb46178798e21994664384358bb09d32f975d514c75ed115d079de4c719"
+  },
+  {
+    "file": "tests/helpers/dynamic-unified.ts",
+    "sha256": "8639c0c6e797e9db208030d4a980b25ee37595c62233e6d3f71d36a3717eedfb"
+  },
+  {
+    "file": "tests/unified-reading.unit.test.ts",
+    "sha256": "92613c0cb5f58ae9a1fb7184cf8c07a97e33be143d6e692d62d1eab7e4b1721f"
+  }
+]

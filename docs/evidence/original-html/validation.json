@@ -1,0 +1,21 @@
+{
+  "reference": "f222963ca8a3d58bbc726d590b6f9e19471d1856",
+  "lint": "PASS",
+  "buildAndTypecheck": "PASS",
+  "unitPassed": 310,
+  "realUnitPassed": 6,
+  "realBrowserPassed": 15,
+  "recheckPassed": 15,
+  "browser": {
+    "startTime": "2026-10-21T18:26:17.141Z",
+    "duration": 1037694.147,
+    "expected": 244,
+    "skipped": 1,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "sourceHashesUnchanged": true,
+  "noMigration": true,
+  "noPersonalProfileUsed": true,
+  "generatedHistoricalFilesRestored": 15
+}

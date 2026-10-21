@@ -1,0 +1,30 @@
+[WebServer] (node:94941) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:94942) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 15 tests using 1 worker
+
+(node:94947) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/v8-reading.spec.ts:34:3 › Lecture réelle du cadre 08 h : HTML d’origine conservé, interactions uniquement après confirmation, offline (3.6s)
+  ✓   2 [chromium] › tests/e2e/v8-reading.spec.ts:34:3 › Lecture réelle du cadre 10 h : HTML d’origine conservé, interactions uniquement après confirmation, offline (4.4s)
+  ✓   3 [chromium] › tests/e2e/v8-reading.spec.ts:34:3 › Lecture réelle du cadre 16 h : HTML d’origine conservé, interactions uniquement après confirmation, offline (7.1s)
+  ✓   4 [chromium] › tests/e2e/v8-reading.spec.ts:130:1 › Développer utilise toute la largeur de la page et Réduire rétablit la carte (1.2s)
+  ✓   5 [chromium] › tests/e2e/v8-reading.spec.ts:151:1 › 16 h : PARTIAL ne signifie pas contradiction ni article manquant ; prompts parent exacts (1.6s)
+(node:95208) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   6 [webkit] › tests/e2e/v8-reading.spec.ts:34:3 › Lecture réelle du cadre 08 h : HTML d’origine conservé, interactions uniquement après confirmation, offline (5.0s)
+  ✓   7 [webkit] › tests/e2e/v8-reading.spec.ts:34:3 › Lecture réelle du cadre 10 h : HTML d’origine conservé, interactions uniquement après confirmation, offline (5.6s)
+  ✓   8 [webkit] › tests/e2e/v8-reading.spec.ts:34:3 › Lecture réelle du cadre 16 h : HTML d’origine conservé, interactions uniquement après confirmation, offline (9.9s)
+  ✓   9 [webkit] › tests/e2e/v8-reading.spec.ts:130:1 › Développer utilise toute la largeur de la page et Réduire rétablit la carte (1.7s)
+  ✓  10 [webkit] › tests/e2e/v8-reading.spec.ts:151:1 › 16 h : PARTIAL ne signifie pas contradiction ni article manquant ; prompts parent exacts (2.6s)
+(node:95583) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  11 [chromium-mobile] › tests/e2e/v8-reading.spec.ts:34:3 › Lecture réelle du cadre 08 h : HTML d’origine conservé, interactions uniquement après confirmation, offline (2.7s)
+  ✓  12 [chromium-mobile] › tests/e2e/v8-reading.spec.ts:34:3 › Lecture réelle du cadre 10 h : HTML d’origine conservé, interactions uniquement après confirmation, offline (3.3s)
+  ✓  13 [chromium-mobile] › tests/e2e/v8-reading.spec.ts:34:3 › Lecture réelle du cadre 16 h : HTML d’origine conservé, interactions uniquement après confirmation, offline (7.0s)
+  ✓  14 [chromium-mobile] › tests/e2e/v8-reading.spec.ts:130:1 › Développer utilise toute la largeur de la page et Réduire rétablit la carte (1.7s)
+  ✓  15 [chromium-mobile] › tests/e2e/v8-reading.spec.ts:151:1 › 16 h : PARTIAL ne signifie pas contradiction ni article manquant ; prompts parent exacts (2.1s)
+
+  15 passed (1.1m)

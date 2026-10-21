@@ -1,0 +1,43 @@
+
+> journal360-mobile@2.0.7 test
+> vitest run --run tests/unified-reading.unit.test.ts
+
+
+ RUN  v5.0.4 /private/tmp/sitegoat-original-baseline-f222963
+
+ ❯ tests/unified-reading.unit.test.ts (6 tests | 3 failed) 3080ms
+   × édition 08 h : styles, structure et ordre d’origine conservés, scripts désactivés 1338ms
+   × édition 10 h : styles, structure et ordre d’origine conservés, scripts désactivés 617ms
+   × édition 16 h : styles, structure et ordre d’origine conservés, scripts désactivés 634ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unified-reading.unit.test.ts > édition 08 h : styles, structure et ordre d’origine conservés, scripts désactivés
+ FAIL  tests/unified-reading.unit.test.ts > édition 10 h : styles, structure et ordre d’origine conservés, scripts désactivés
+ FAIL  tests/unified-reading.unit.test.ts > édition 16 h : styles, structure et ordre d’origine conservés, scripts désactivés
+AssertionError: expected [ Array(1) ] to deeply equal [ Array(1) ]
+
+- Expected
++ Received
+
+  [
+-   "body{margin:0;padding:80px 80px 96px;background:#111;color:#eee}",
++   "*{box-sizing:border-box}html{color-scheme:light dark}body{margin:0;background:#0a0a0a;color:#eee;font:20px/1.7 system-ui,sans-serif}main{max-width:1050px;margin:auto;padding:88px 24px 32px}h1,h2,h3{line-height:1.25;overflow-wrap:anywhere}article,section{margin:30px 0;border-top:1px solid #aaa;padding-top:24px;scroll-margin-top:24px}p,li{overflow-wrap:anywhere;white-space:pre-wrap}a{color:#ffb4a8}a:focus-visible,summary:focus-visible,textarea:focus-visible{outline:3px solid #943122;outline-offset:3px}summary{cursor:pointer;min-height:44px;padding:10px 0}textarea{width:100%;min-height:220px;padding:16px;font:16px/1.6 monospace;white-space:pre-wrap;color:inherit;background:transparent;border:1px solid #777}nav a{display:block;padding:8px;min-height:44px}small{font-size:16px}.notice{border-left:4px solid #943122;padding:16px;background:#211917}body[data-mode=light]{background:#f8f6f0;color:#191919}body[data-mode=light] a{color:#943122}body[data-mode=light] .notice{background:#f0e6de}@media(max-width:600px){main{padding:88px 16px 24px}}",
+  ]
+
+ ❯ tests/unified-reading.unit.test.ts:21:7
+     19|     expect(
+     20|       [...doc.querySelectorAll("style")].map((s) => s.textContent),
+     21|     ).toEqual(
+       |       ^
+     22|       [...original.querySelectorAll("style")].map((s) => s.textContent…
+     23|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 3 passed (6)
+   Start at  20:25:04
+   Duration  7.97s (tests 44%, environment 37%, import 7%, setup 6%, transform 5%)
+

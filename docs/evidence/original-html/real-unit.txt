@@ -1,0 +1,13 @@
+
+> journal360-mobile@2.0.7 test
+> vitest run --run tests/unified-reading.unit.test.ts
+
+
+ RUN  v5.0.4 /Users/dreano/Downloads/veille/veille
+
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  18:11:48
+   Duration  5.04s (tests 53%, environment 34%, import 7%, transform 5%, setup 1%)
+
