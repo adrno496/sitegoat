@@ -3158,3 +3158,9 @@ textarea {
     scroll-behavior: auto !important;
   }
 }
+
+/* Expanded Today cards use the entire reading area, preserving the list context. */
+.event-list > .event-card[data-expanded="true"] {
+  grid-column: 1 / -1;
+  scroll-margin-top: 24px;
+}

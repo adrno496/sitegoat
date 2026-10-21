@@ -185,7 +185,10 @@ export default function UnifiedWorkspace({
                     <summary>
                       Diagnostics documentaires et historique d’import
                     </summary>
-                    <SnapshotStatus assessment={assessment} />
+                    <SnapshotStatus
+                      assessment={assessment}
+                      showIssues={false}
+                    />
                   </details>
                 </>
               )}

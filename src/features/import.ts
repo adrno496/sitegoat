@@ -1,3 +1,4 @@
+import { safeUnifiedReading } from "./safeUnifiedReading";
 import { classifyFuture } from "./future/routing";
 import { validateUnified } from "../data/unified";
 import { validateFuture } from "./future/import";
@@ -416,11 +417,13 @@ export function isolatedHTML(
   interactive: boolean,
   targetArticle?: Article,
 ) {
-  const doc = new DOMParser().parseFromString(
+  let doc = new DOMParser().parseFromString(
     new TextDecoder().decode(bytes),
     "text/html",
   );
   rememberReadingQuestions(bytes, doc);
+  const safeProjection = !interactive && safeUnifiedReading(doc, targetArticle);
+  if (safeProjection) doc = safeProjection;
   // Conserver les contrôles/calculatrices sans autoriser de soumission réseau.
   doc.querySelectorAll("form").forEach((form) => {
     const neutral = doc.createElement("div");
@@ -492,6 +495,7 @@ export function isolatedHTML(
       `(()=>{for(const method of ['pushState','replaceState']){const original=history[method].bind(history);history[method]=function(state,unused,url){try{return original(state,unused,url)}catch(error){if(error.name==='SecurityError'&&typeof url==='string'&&url.startsWith('#')){location.hash=url;return}throw error}}}})();`;
     csp.after(routing);
   }
-  if (targetArticle) prepareArticleNavigation(doc, targetArticle, interactive);
+  if (targetArticle && !safeProjection)
+    prepareArticleNavigation(doc, targetArticle, interactive);
   return "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;
 }

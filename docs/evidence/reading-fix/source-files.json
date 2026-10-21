@@ -1,0 +1,38 @@
+[
+  {
+    "file": "src/features/EventCard.tsx",
+    "sha256": "d777980b99339060e092e2e22f1a65d0cbd7b49663b388924a5d8c77d282940c"
+  },
+  {
+    "file": "src/features/SnapshotStatus.tsx",
+    "sha256": "8d3738bc811ca95946adfcf6d1b618c50ee34c311c5eed1416e14c738232acf4"
+  },
+  {
+    "file": "src/features/import.ts",
+    "sha256": "1999428a5b9dd4f7b716020a6671572286b2d7c0098d814a845a0246a75738cb"
+  },
+  {
+    "file": "src/features/safeUnifiedReading.ts",
+    "sha256": "68e7198cd50ba9b006a5446efe91236b05bda99753a52b1a527dce62f0695456"
+  },
+  {
+    "file": "src/features/unified/UnifiedWorkspace.tsx",
+    "sha256": "b11547b29916cf69624b218cc0afbdd26b6ec23cba9ffb196a60487dd7842536"
+  },
+  {
+    "file": "src/styles.css",
+    "sha256": "d50155f54997cc7f6c22e94ba660038523a79344b0e5eb4600ecf8fa2d3a4a71"
+  },
+  {
+    "file": "tests/e2e/v8-reading.spec.ts",
+    "sha256": "7bd5d6afcca4830911c148f77b1ae99c05e5c5fc798d5a01bb347bd49d2a13d4"
+  },
+  {
+    "file": "tests/helpers/dynamic-unified.ts",
+    "sha256": "71f54159bfe9a108dc1563a4c7243ad6e5724beb01074aed8b6acd1d2016dfea"
+  },
+  {
+    "file": "tests/unified-reading.unit.test.ts",
+    "sha256": "345cca97fa61edf9548250cc98e1dc04fb2202b358f89ff388299a6918c4232d"
+  }
+]

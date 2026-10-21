@@ -1,0 +1,6 @@
+{
+  "reference": "85d280e238c89e8ad47c3776128e82277d5557a0",
+  "command": "npm test -- --run tests/unified-reading.unit.test.ts",
+  "exitCode": 1,
+  "scope": "New regression suite on frozen reference code, synthetic data, isolated source copy with existing dependencies."
+}

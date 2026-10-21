@@ -1,5 +1,11 @@
 import type { Assessment } from "../data/day";
-export function SnapshotStatus({ assessment }: { assessment: Assessment }) {
+export function SnapshotStatus({
+  assessment,
+  showIssues = true,
+}: {
+  assessment: Assessment;
+  showIssues?: boolean;
+}) {
   const s = assessment.snapshot;
   if (!s) return null;
   return (
@@ -21,7 +27,9 @@ export function SnapshotStatus({ assessment }: { assessment: Assessment }) {
       <p>
         Intégrité : structure validée à l’import. Couverture des faits :{" "}
         {s.coverage === "PARTIAL"
-          ? "partielle ou contradictoire"
+          ? s.conflict
+            ? "partielle · versions locales en conflit"
+            : "partielle ; voir les motifs signalés"
           : "non certifiée (UNKNOWN)"}
         .
       </p>
@@ -46,11 +54,12 @@ export function SnapshotStatus({ assessment }: { assessment: Assessment }) {
           ? `${assessment.newEvents} événement(s) supplémentaire(s) dans votre historique · ${assessment.corrections} modification(s) de contenu comparées. Aucune nouveauté factuelle n’est certifiée.`
           : "Comparaison avec une édition antérieure : NON DISPONIBLE."}
       </p>
-      {assessment.issues.map((issue) => (
-        <p className="warning" key={issue}>
-          {issue}
-        </p>
-      ))}
+      {showIssues &&
+        assessment.issues.map((issue) => (
+          <p className="warning" key={issue}>
+            {issue}
+          </p>
+        ))}
     </div>
   );
 }

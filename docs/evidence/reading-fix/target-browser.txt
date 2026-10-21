@@ -1,0 +1,20 @@
+
+> journal360-mobile@2.0.7 test:e2e
+> playwright test tests/e2e/v8-reading.spec.ts --project=chromium
+
+[WebServer] (node:61187) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:61188) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 5 tests using 1 worker
+
+(node:61199) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/v8-reading.spec.ts:34:3 › Lecture réelle du cadre 08 h : tous les récits visibles sans activer les scripts, offline (2.7s)
+  ✓  2 [chromium] › tests/e2e/v8-reading.spec.ts:34:3 › Lecture réelle du cadre 10 h : tous les récits visibles sans activer les scripts, offline (2.3s)
+  ✓  3 [chromium] › tests/e2e/v8-reading.spec.ts:34:3 › Lecture réelle du cadre 16 h : tous les récits visibles sans activer les scripts, offline (2.8s)
+  ✓  4 [chromium] › tests/e2e/v8-reading.spec.ts:95:1 › Développer utilise toute la largeur de la page et Réduire rétablit la carte (1.1s)
+  ✓  5 [chromium] › tests/e2e/v8-reading.spec.ts:116:1 › 16 h : PARTIAL ne signifie pas contradiction ni article manquant ; prompts parent exacts (1.2s)
+
+  5 passed (13.6s)

@@ -1,4 +1,4 @@
-import { useId, useRef, useState } from "react";
+import { useId, useLayoutEffect, useRef, useState } from "react";
 import type { Edition } from "../data/model";
 import type { UnifiedEdition } from "../data/unified";
 import { summaryPreview } from "./eventPresentation";
@@ -30,13 +30,23 @@ export function EventCard({
   const id = useId(),
     title = useRef<HTMLButtonElement>(null);
   useDialogFocus(question, () => setQuestion(false));
+  useLayoutEffect(() => {
+    if (expanded)
+      title.current
+        ?.closest("article")
+        ?.scrollIntoView({ block: "start", behavior: "instant" });
+  }, [expanded]);
   function collapse() {
     setExpanded(false);
     setFull(false);
     title.current?.focus();
   }
   return (
-    <article className={`${className} event-card`} data-event-id={i.eventId}>
+    <article
+      className={`${className} event-card`}
+      data-event-id={i.eventId}
+      data-expanded={expanded}
+    >
       <div inert={question}>
         <p className="eyebrow">
           {i.category} ·{" "}

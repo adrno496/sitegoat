@@ -1,0 +1,67 @@
+
+> journal360-mobile@2.0.7 test
+> vitest run --run tests/unified-reading.unit.test.ts
+
+
+ RUN  v5.0.4 /private/tmp/sitegoat-reading-baseline-85d280e
+
+ ❯ tests/unified-reading.unit.test.ts (6 tests | 5 failed) 226ms
+   × une édition 08 h dynamique est intégralement lisible sans script 83ms
+   × une édition 10 h dynamique est intégralement lisible sans script 27ms
+   × une édition 16 h dynamique est intégralement lisible sans script 37ms
+   × la sélection mène au bon récit canonique et conserve tous les autres 33ms
+   × texte hostile et fermeture textarea restent inertes dans la projection ; données invalides non projetées 7ms
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 1 passed (6)
+   Start at  16:59:22
+   Duration  1.02s (environment 48%, tests 25%, transform 14%, import 11%, setup 3%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unified-reading.unit.test.ts > une édition 08 h dynamique est intégralement lisible sans script
+ FAIL  tests/unified-reading.unit.test.ts > une édition 10 h dynamique est intégralement lisible sans script
+ FAIL  tests/unified-reading.unit.test.ts > une édition 16 h dynamique est intégralement lisible sans script
+AssertionError: expected null not to be null
+ ❯ tests/unified-reading.unit.test.ts:14:69
+     12|       "text/html",
+     13|     );
+     14|     expect(doc.querySelector("[data-journal360-safe-unified]")).not.to…
+       |                                                                     ^
+     15|     expect(
+     16|       doc.querySelectorAll("script,iframe,object,embed,link"),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/unified-reading.unit.test.ts > la sélection mène au bon récit canonique et conserve tous les autres
+AssertionError: expected <article …(3)>…(5)</article> to have a length of 8 but got 1
+
+- Expected
++ Received
+
+- 8
++ 1
+
+ ❯ tests/unified-reading.unit.test.ts:60:43
+     58|     p.items.find((i) => i.id === target.id)!.detail,
+     59|   );
+     60|   expect(doc.querySelectorAll("article")).toHaveLength(8);
+       |                                           ^
+     61| });
+     62| it("une édition statique existante garde sa présentation ; le mode int…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/unified-reading.unit.test.ts > texte hostile et fermeture textarea restent inertes dans la projection ; données invalides non projetées
+AssertionError: expected [] to include '</textarea><img src=x onerror="global…'
+ ❯ tests/unified-reading.unit.test.ts:96:69
+     94|   );
+     95|   expect(doc.querySelectorAll("script,img,[onerror]")).toHaveLength(0);
+     96|   expect([...doc.querySelectorAll("textarea")].map((t) => t.value)).to…
+       |                                                                     ^
+     97|     p.promptAssets[0].content,
+     98|   );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+

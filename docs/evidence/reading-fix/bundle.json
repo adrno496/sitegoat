@@ -1,0 +1,13 @@
+{
+  "reference": {
+    "jsBytes": 1018633,
+    "cssBytes": 63326,
+    "precacheKiB": 1427.48
+  },
+  "candidate": {
+    "jsBytes": 1025394,
+    "cssBytes": 63410,
+    "precacheKiB": 1434.16
+  },
+  "note": "Build local ; aucune d\u00e9pendance ajout\u00e9e."
+}

@@ -1,0 +1,29 @@
+[
+  {
+    "name": "JOURNAL_360_V8_2026-10-21_EDITION_08H_AUTONOME.html",
+    "sha256": "3abe42106be4ce7285660816afdee28fefe584480b6750026ff54cf5f853999c",
+    "items": 4,
+    "economy": 4,
+    "futureInsights": 5,
+    "futureDocuments": 0,
+    "prompts": 2
+  },
+  {
+    "name": "JOURNAL_360_V8_2026-10-21_EDITION_10H_AUTONOME.html",
+    "sha256": "387532b53624143c92f1fbe6ecf7825c7af94466cae85a90ae77f3657dcaf9ec",
+    "items": 8,
+    "economy": 4,
+    "futureInsights": 6,
+    "futureDocuments": 0,
+    "prompts": 3
+  },
+  {
+    "name": "JOURNAL_360_V8_2026-10-21_EDITION_16H_AUTONOME.html",
+    "sha256": "8090b3c78c3916f643da81de3aede93f564b2d40d85f5ae25be9e4ae3c75e63a",
+    "items": 16,
+    "economy": 7,
+    "futureInsights": 8,
+    "futureDocuments": 0,
+    "prompts": 3
+  }
+]
