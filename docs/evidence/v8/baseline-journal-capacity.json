@@ -1,0 +1,59 @@
+{
+  "environment": "Node + jsdom + fake-indexeddb; RAM aux points de contrôle, pas pic garanti ni appareil mobile; remplissage aléatoire 32 KiB/version",
+  "measurements": [
+    {
+      "days": 30,
+      "versions": 90,
+      "rawBytes": 4432230,
+      "zipBytes": 3238912,
+      "importMs": 748.052958,
+      "groupingMs": 1.5053330000000642,
+      "exportMs": 297.3498340000001,
+      "inspectMs": 158.04008299999987,
+      "restoreMs": 23.844375000000127,
+      "maxCheckpointRssBytes": 471252992,
+      "checkpointsRssBytes": [
+        140853248,
+        394870784,
+        443088896,
+        471252992
+      ]
+    },
+    {
+      "days": 180,
+      "versions": 540,
+      "rawBytes": 26593380,
+      "zipBytes": 19434808,
+      "importMs": 5132.754417,
+      "groupingMs": 4.285249999999905,
+      "exportMs": 1633.6900840000008,
+      "inspectMs": 720.8298749999994,
+      "restoreMs": 140.50583300000108,
+      "maxCheckpointRssBytes": 742981632,
+      "checkpointsRssBytes": [
+        471269376,
+        528629760,
+        698269696,
+        742981632
+      ]
+    },
+    {
+      "days": 365,
+      "versions": 1095,
+      "rawBytes": 53925465,
+      "zipBytes": 39411670,
+      "importMs": 14399.745624999998,
+      "groupingMs": 8.022000000000844,
+      "exportMs": 3255.125666,
+      "inspectMs": 1410.5555420000019,
+      "restoreMs": 282.6284169999999,
+      "maxCheckpointRssBytes": 1152040960,
+      "checkpointsRssBytes": [
+        743079936,
+        787693568,
+        1055571968,
+        1152040960
+      ]
+    }
+  ]
+}

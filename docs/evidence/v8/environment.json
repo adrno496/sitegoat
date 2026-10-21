@@ -1,0 +1,21 @@
+{
+  "reference": "d3731ac8fa522e24a833c132b8d484423f275bdc",
+  "initialStatus": "clean",
+  "branch": "codex/journal360-autonomous-v8",
+  "root": "/Users/dreano/Downloads/veille/veille",
+  "sourceArchive": "/tmp/journal360-v8-reference-d3731ac.tar",
+  "sha256": "67c465575a94ed86381f9e59394ae0322109b6f16879e73a19b731af5231b78a",
+  "restoredTrackedFiles": 549,
+  "node": "v24.21.0",
+  "recordedAtUTC": "2026-10-21T05:02:07.985867+00:00",
+  "scope": "Tracked source only. No real user profile, environment secret or cloud data read/copied.",
+  "macOS": "15.7.9",
+  "darwin": "24.6.0 arm64",
+  "playwright": "1.64.0",
+  "browsers": {
+    "chromium": "156.0.8078.4",
+    "webkit": "27.2"
+  },
+  "clientDate": "2026-10-21",
+  "clientTimezone": "Europe/Paris"
+}

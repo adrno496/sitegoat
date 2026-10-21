@@ -1,0 +1,30 @@
+{
+  "scope": "Single synthetic 22h HTML imported into fresh isolated Chromium context. No private profile.",
+  "importedOffline": true,
+  "inputSha256": "1d9202e2e59ed3c18c1322b08452469da7706cd8a6b381693e98dc37458e292e",
+  "articles": "8 articles · 1 veille",
+  "importedFiles": 1,
+  "state": {
+    "integrity": "VALID",
+    "autonomy": "AUTONOMOUS",
+    "coverage": "UNKNOWN",
+    "history": "SINGLE_SNAPSHOT"
+  },
+  "economicRows": 4,
+  "insights": 2,
+  "prompts": [
+    {
+      "filename": "J360_2026-10-19_SENTINEL_audit-a_VSCODE.md",
+      "bytes": 1157,
+      "exact": true,
+      "sha256": "96726a189174922ee2ef4b622d7576c17c76e52d6d46074332962c1abfbd4af9"
+    },
+    {
+      "filename": "J360_2026-10-19_SENTINEL_audit-b_VSCODE.md",
+      "bytes": 1157,
+      "exact": true,
+      "sha256": "1cbf477ab72376ec3725b53c51dfc860929bdd4c479cae8e2d11e4ed884e5892"
+    }
+  ],
+  "externalRequests": 0
+}

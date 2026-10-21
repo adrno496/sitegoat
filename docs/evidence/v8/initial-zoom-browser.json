@@ -1,0 +1,738 @@
+{
+  "config": {
+    "argv": [
+      "/Users/dreano/.nvm/versions/node/v24.21.0/bin/node",
+      "/Users/dreano/Downloads/veille/veille/node_modules/.bin/playwright",
+      "test",
+      "tests/e2e/v8-snapshot.spec.ts",
+      "--workers=2"
+    ],
+    "configFile": "/Users/dreano/Downloads/veille/veille/playwright.config.ts",
+    "rootDir": "/Users/dreano/Downloads/veille/veille/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 2
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/dreano/Downloads/veille/veille/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/dreano/Downloads/veille/veille/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "/Users/dreano/Downloads/veille/veille/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/Users/dreano/Downloads/veille/veille/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "/Users/dreano/Downloads/veille/veille/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "chromium-mobile",
+        "name": "chromium-mobile",
+        "testDir": "/Users/dreano/Downloads/veille/veille/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "/(?:^|\\/)(?:google-ai|v[678])[^/]*\\.spec\\.ts$/"
+        ],
+        "timeout": 45000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/Users/dreano/Downloads/veille/veille/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "name": "chromium",
+        "testDir": "/Users/dreano/Downloads/veille/veille/tests/e2e",
+        "snapshotDir": "/Users/dreano/Downloads/veille/veille/tests/e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 45000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4181",
+          "launchOptions": {
+            "proxy": {
+              "server": "http://127.0.0.1:4199",
+              "bypass": "127.0.0.1,localhost"
+            }
+          },
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36",
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "screen": {
+            "width": 1920,
+            "height": 1080
+          },
+          "deviceScaleFactor": 1,
+          "isMobile": false,
+          "hasTouch": false,
+          "defaultBrowserType": "chromium"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "chromium"
+      },
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/Users/dreano/Downloads/veille/veille/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "name": "webkit",
+        "testDir": "/Users/dreano/Downloads/veille/veille/tests/e2e",
+        "snapshotDir": "/Users/dreano/Downloads/veille/veille/tests/e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 45000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4181",
+          "launchOptions": {
+            "proxy": {
+              "server": "http://127.0.0.1:4199",
+              "bypass": "127.0.0.1,localhost"
+            }
+          },
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Safari/605.1.15",
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "screen": {
+            "width": 1792,
+            "height": 1120
+          },
+          "deviceScaleFactor": 2,
+          "isMobile": false,
+          "hasTouch": false,
+          "defaultBrowserType": "webkit"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "webkit"
+      },
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/Users/dreano/Downloads/veille/veille/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "name": "chromium-mobile",
+        "testDir": "/Users/dreano/Downloads/veille/veille/tests/e2e",
+        "snapshotDir": "/Users/dreano/Downloads/veille/veille/tests/e2e",
+        "testIgnore": [],
+        "testMatch": {},
+        "timeout": 45000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4181",
+          "launchOptions": {
+            "proxy": {
+              "server": "http://127.0.0.1:4199",
+              "bypass": "127.0.0.1,localhost"
+            }
+          },
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "userAgent": "Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Mobile Safari/537.36",
+          "viewport": {
+            "width": 412,
+            "height": 839
+          },
+          "screen": {
+            "width": 412,
+            "height": 915
+          },
+          "deviceScaleFactor": 2.625,
+          "isMobile": true,
+          "hasTouch": true,
+          "defaultBrowserType": "chromium"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "chromium-mobile"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/e2e-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.0",
+    "workers": 2,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "v8-snapshot.spec.ts",
+      "file": "v8-snapshot.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "T01/T04/T09/T15 : SEUL fichier 22 h dans une base vide, huit événements et toutes les annexes offline",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2593,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T06:52:50.045Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1366a75670fa69f5efe4-6c97ca8e03285ea33bba",
+          "file": "v8-snapshot.spec.ts",
+          "line": 31,
+          "column": 1
+        },
+        {
+          "title": "T02/T03 : un seul 12 h ou 18 h, puis arrivée désordonnée sans rétrogradation",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1910,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T06:52:53.025Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1366a75670fa69f5efe4-f3f4c3b3642eca986d9e",
+          "file": "v8-snapshot.spec.ts",
+          "line": 124,
+          "column": 1
+        },
+        {
+          "title": "T16 : snapshot autonome clavier, axe, sept largeurs, zoom CSS 200 %, thèmes et mouvement réduit",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 1091,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at /Users/dreano/Downloads/veille/veille/tests/e2e/v8-snapshot.spec.ts:176:5",
+                    "location": {
+                      "file": "/Users/dreano/Downloads/veille/veille/tests/e2e/v8-snapshot.spec.ts",
+                      "column": 5,
+                      "line": 176
+                    },
+                    "snippet": "  174 |       () => document.documentElement.scrollWidth <= innerWidth,\n  175 |     ),\n> 176 |   ).toBe(true);\n      |     ^\n  177 |   await page.evaluate(() => (document.documentElement.style.zoom = \"1\"));\n  178 |   await w.getByRole(\"button\", { name: \"Chronologie IA\", exact: true }).focus();\n  179 |   await page.keyboard.press(\"Enter\");"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/dreano/Downloads/veille/veille/tests/e2e/v8-snapshot.spec.ts",
+                        "column": 5,
+                        "line": 176
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\n  174 |       () => document.documentElement.scrollWidth <= innerWidth,\n  175 |     ),\n> 176 |   ).toBe(true);\n      |     ^\n  177 |   await page.evaluate(() => (document.documentElement.style.zoom = \"1\"));\n  178 |   await w.getByRole(\"button\", { name: \"Chronologie IA\", exact: true }).focus();\n  179 |   await page.keyboard.press(\"Enter\");\n    at /Users/dreano/Downloads/veille/veille/tests/e2e/v8-snapshot.spec.ts:176:5"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T06:52:54.950Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/dreano/Downloads/veille/veille/test-results/v8-snapshot-T16-snapshot-a-7c697--thèmes-et-mouvement-réduit-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/dreano/Downloads/veille/veille/test-results/v8-snapshot-T16-snapshot-a-7c697--thèmes-et-mouvement-réduit-chromium/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/dreano/Downloads/veille/veille/test-results/v8-snapshot-T16-snapshot-a-7c697--thèmes-et-mouvement-réduit-chromium/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/dreano/Downloads/veille/veille/tests/e2e/v8-snapshot.spec.ts",
+                    "column": 5,
+                    "line": 176
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "1366a75670fa69f5efe4-902a677ba133257f0544",
+          "file": "v8-snapshot.spec.ts",
+          "line": 154,
+          "column": 1
+        },
+        {
+          "title": "T05/T06/T07 : omissions réelles avec provenance et conflit de révision visibles",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8241,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T06:52:56.801Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1366a75670fa69f5efe4-edea6426a2b35bd3312e",
+          "file": "v8-snapshot.spec.ts",
+          "line": 195,
+          "column": 1
+        },
+        {
+          "title": "T01/T04/T09/T15 : SEUL fichier 22 h dans une base vide, huit événements et toutes les annexes offline",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 3802,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T06:52:50.044Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1366a75670fa69f5efe4-5a793dc79f3b26b8ea0b",
+          "file": "v8-snapshot.spec.ts",
+          "line": 31,
+          "column": 1
+        },
+        {
+          "title": "T02/T03 : un seul 12 h ou 18 h, puis arrivée désordonnée sans rétrogradation",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 2820,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T06:52:54.397Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1366a75670fa69f5efe4-eb30dfab1af3a5fb5cb4",
+          "file": "v8-snapshot.spec.ts",
+          "line": 124,
+          "column": 1
+        },
+        {
+          "title": "T16 : snapshot autonome clavier, axe, sept largeurs, zoom CSS 200 %, thèmes et mouvement réduit",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "failed",
+                  "duration": 1600,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at /Users/dreano/Downloads/veille/veille/tests/e2e/v8-snapshot.spec.ts:176:5",
+                    "location": {
+                      "file": "/Users/dreano/Downloads/veille/veille/tests/e2e/v8-snapshot.spec.ts",
+                      "column": 5,
+                      "line": 176
+                    },
+                    "snippet": "  174 |       () => document.documentElement.scrollWidth <= innerWidth,\n  175 |     ),\n> 176 |   ).toBe(true);\n      |     ^\n  177 |   await page.evaluate(() => (document.documentElement.style.zoom = \"1\"));\n  178 |   await w.getByRole(\"button\", { name: \"Chronologie IA\", exact: true }).focus();\n  179 |   await page.keyboard.press(\"Enter\");"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/dreano/Downloads/veille/veille/tests/e2e/v8-snapshot.spec.ts",
+                        "column": 5,
+                        "line": 176
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\n  174 |       () => document.documentElement.scrollWidth <= innerWidth,\n  175 |     ),\n> 176 |   ).toBe(true);\n      |     ^\n  177 |   await page.evaluate(() => (document.documentElement.style.zoom = \"1\"));\n  178 |   await w.getByRole(\"button\", { name: \"Chronologie IA\", exact: true }).focus();\n  179 |   await page.keyboard.press(\"Enter\");\n    at /Users/dreano/Downloads/veille/veille/tests/e2e/v8-snapshot.spec.ts:176:5"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T06:52:57.230Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/dreano/Downloads/veille/veille/test-results/v8-snapshot-T16-snapshot-a-7c697--thèmes-et-mouvement-réduit-webkit/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/dreano/Downloads/veille/veille/test-results/v8-snapshot-T16-snapshot-a-7c697--thèmes-et-mouvement-réduit-webkit/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/dreano/Downloads/veille/veille/test-results/v8-snapshot-T16-snapshot-a-7c697--thèmes-et-mouvement-réduit-webkit/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/dreano/Downloads/veille/veille/tests/e2e/v8-snapshot.spec.ts",
+                    "column": 5,
+                    "line": 176
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "1366a75670fa69f5efe4-f1d9983d8144dcabb186",
+          "file": "v8-snapshot.spec.ts",
+          "line": 154,
+          "column": 1
+        },
+        {
+          "title": "T05/T06/T07 : omissions réelles avec provenance et conflit de révision visibles",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 8796,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T06:52:59.344Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1366a75670fa69f5efe4-5d4a3d5c258bc499e87a",
+          "file": "v8-snapshot.spec.ts",
+          "line": 195,
+          "column": 1
+        },
+        {
+          "title": "T01/T04/T09/T15 : SEUL fichier 22 h dans une base vide, huit événements et toutes les annexes offline",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1828,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T06:53:05.619Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1366a75670fa69f5efe4-75d62a24841045edb731",
+          "file": "v8-snapshot.spec.ts",
+          "line": 31,
+          "column": 1
+        },
+        {
+          "title": "T02/T03 : un seul 12 h ou 18 h, puis arrivée désordonnée sans rétrogradation",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1332,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T06:53:07.619Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1366a75670fa69f5efe4-2d46e58310e6cf136bab",
+          "file": "v8-snapshot.spec.ts",
+          "line": 124,
+          "column": 1
+        },
+        {
+          "title": "T16 : snapshot autonome clavier, axe, sept largeurs, zoom CSS 200 %, thèmes et mouvement réduit",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2023,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T06:53:08.957Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1366a75670fa69f5efe4-f6fd47a8b4318c851b14",
+          "file": "v8-snapshot.spec.ts",
+          "line": 154,
+          "column": 1
+        },
+        {
+          "title": "T05/T06/T07 : omissions réelles avec provenance et conflit de révision visibles",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1135,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-21T06:53:10.985Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1366a75670fa69f5efe4-da27d4188b8d7d3fda31",
+          "file": "v8-snapshot.spec.ts",
+          "line": 195,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-21T06:52:48.995Z",
+    "duration": 23192.676,
+    "expected": 10,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  }
+}

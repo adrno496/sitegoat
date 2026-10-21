@@ -1,6 +1,9 @@
 import { chromium } from "@playwright/test";
 import { readFile, writeFile } from "node:fs/promises";
-const [url, output] = process.argv.slice(2);
+const [url, output, requestedCount] = process.argv.slice(2);
+const count = requestedCount === undefined ? 200 : Number(requestedCount);
+if (!Number.isInteger(count) || count < 20 || count > 1000 || count % 20)
+  throw Error("Taille requise : multiple de 20, entre 20 et 1000");
 if (!url || new URL(url).hostname !== "127.0.0.1" || !output)
   throw Error("Localhost et fichier de preuve requis");
 const template = JSON.parse(
@@ -26,7 +29,7 @@ try {
     .getByRole("button", { name: "Le Futur", exact: true })
     .click();
   const start = performance.now();
-  for (let batch = 0; batch < 10; batch++) {
+  for (let batch = 0; batch < count / 20; batch++) {
     await page.getByLabel("Fichiers HTML à importer").setInputFiles(
       Array.from({ length: 20 }, (_, j) => {
         const i = batch * 20 + j;
@@ -37,7 +40,7 @@ try {
             JSON.stringify({
               ...template,
               documentId: `index-benchmark-${i}`,
-              title: `Index synthétique 200 dossier ${i}`,
+              title: `Index synthétique ${count} dossier ${i}`,
             }),
           ),
         };
@@ -68,19 +71,21 @@ try {
   await w
     .getByRole("button", { name: "Recherche globale", exact: true })
     .click();
-  await w.getByRole("status").filter({ hasText: "200 résultat(s)" }).waitFor();
+  await w
+    .getByRole("status")
+    .filter({ hasText: `${count} résultat(s)` })
+    .waitFor();
   const indexEntryMs = performance.now() - indexStart;
   const searchStart = performance.now();
   await w
     .getByLabel("Rechercher partout")
-    .fill("INDEX SYNTHETIQUE 200 dossier 42");
+    .fill(`INDEX SYNTHETIQUE ${count} dossier 42`);
   await w.locator(".unified-result").first().waitFor();
   const searchMs = performance.now() - searchStart;
   await cdp.send("HeapProfiler.collectGarbage");
   const result = {
-    environment:
-      "Desktop Chromium. 200 real UI imports of synthetic Future v1 JSON in a disposable browser context; no physical phone. Heap checkpoints after forced GC. No private data.",
-    documents: 200,
+    environment: `Desktop Chromium. ${count} real UI imports of synthetic Future v1 JSON in a disposable browser context; no physical phone. Heap checkpoints after forced GC. No private data.`,
+    documents: count,
     importMs,
     indexEntryMs,
     searchMs,

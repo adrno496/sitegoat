@@ -1,3 +1,4 @@
+import { SnapshotStatus } from "../SnapshotStatus";
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { Edition } from "../../data/model";
 import { dateLabel } from "../../data/model";
@@ -57,6 +58,9 @@ export default function UnifiedWorkspace({
         )
       : [],
     day = resolveDay(versions);
+  const assessment = day.versions.find(
+    (v) => v.edition.id === current?.id,
+  )?.assessment;
   const slots = current ? scheduleFor(current) : V7_SLOTS;
   const items = useMemo(
     () => indexArticles(editions.filter((e) => !e.deleted && !e.archived)),
@@ -111,6 +115,7 @@ export default function UnifiedWorkspace({
           editions={editions}
           onFuture={onFuture}
           catalog={futureCatalog}
+          onOpen={onOpen}
         />
       ) : panel === "prompts" ? (
         <PromptLibrary editions={editions} />
@@ -133,9 +138,12 @@ export default function UnifiedWorkspace({
               </h2>
               <p>
                 Vérification déclarée :{" "}
-                {current?.sourceVerifiedAt || "non renseignée"} · Cumul{" "}
-                {day.status}
+                {current?.sourceVerifiedAt || "non renseignée"}
+                {!assessment?.snapshot && ` · Cumul ${day.status}`}
               </p>
+              {assessment?.snapshot && (
+                <SnapshotStatus assessment={assessment} />
+              )}
               {current && current.date !== clock.date && (
                 <p className="warning">
                   Aucune édition du {clock.date} reçue. Vous consultez la
@@ -171,21 +179,31 @@ export default function UnifiedWorkspace({
               const pending =
                 (current?.date || clock.date) === clock.date &&
                 slot > clock.time;
+              const label = receivedVersion
+                ? "Disponible"
+                : pending
+                  ? "À venir"
+                  : p
+                    ? "Non importé (facultatif)"
+                    : "Manquant";
               return (
                 <button
                   key={slot}
                   className="secondary"
                   disabled={!receivedVersion}
-                  aria-label={`${slot} · ${receivedVersion ? "Disponible" : pending ? "À venir" : "Manquant"}`}
+                  aria-label={`${slot} · ${label}`}
                   onClick={() => receivedVersion && onOpen(receivedVersion.id)}
                 >
                   <b>{slot}</b>
                   <span>
-                    {receivedVersion
-                      ? "Disponible"
-                      : pending
-                        ? "À venir"
-                        : "Manquant"}
+                    {label}
+                    {p && (
+                      <span>
+                        {p.slotsIncluded.some((s) => s === slot)
+                          ? "Passage couvert selon le fichier"
+                          : "Couverture non déclarée"}
+                      </span>
+                    )}
                   </span>
                 </button>
               );
@@ -323,13 +341,17 @@ export default function UnifiedWorkspace({
                     </p>
                     <p>
                       Nouveautés :{" "}
-                      {p
-                        ? p.items.filter(
-                            (i) =>
-                              i.sourceWatch === id &&
-                              i.firstSeenSlot === p.editionSlot,
-                          ).length
-                        : "non qualifiées"}
+                      {!assessment?.snapshot?.comparisonAvailable
+                        ? "comparaison NON DISPONIBLE"
+                        : p
+                          ? p.items.filter(
+                              (i) =>
+                                i.sourceWatch === id &&
+                                assessment!.snapshot!.newEventIds.includes(
+                                  i.eventId,
+                                ),
+                            ).length
+                          : "non qualifiées"}
                     </p>
                     <button
                       className="secondary"
@@ -351,6 +373,7 @@ export default function UnifiedWorkspace({
             editions={editions}
             onFuture={onFuture}
             catalog={futureCatalog}
+            onOpen={onOpen}
             compact
           />
           <section>

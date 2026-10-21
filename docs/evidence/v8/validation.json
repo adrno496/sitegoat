@@ -1,0 +1,63 @@
+{
+  "recordedAtUTC": "2026-10-21T07:31:54.507231+00:00",
+  "verdicts": {
+    "prioritySingleSnapshot": "GO LOCAL",
+    "code": "GO LOCAL",
+    "automatedBrowsers": "PASS",
+    "realDevice": "NON TESTÉ",
+    "mockCloud": "PASS",
+    "realCloud": "NON TESTÉ",
+    "production": "HOLD — not authorized, not deployed",
+    "globalAcceptance": "PARTIAL",
+    "performanceGlobal": "PARTIAL — selected budgets pass; desktop CPU/LCP increases observed in short runs, not characterized on real devices"
+  },
+  "branch": "codex/journal360-autonomous-v8",
+  "reference": "d3731ac8fa522e24a833c132b8d484423f275bdc",
+  "commands": {
+    "lint": "PASS",
+    "typecheck": "PASS",
+    "unit": {
+      "passed": 294,
+      "files": 24
+    },
+    "build": "PASS",
+    "browser": {
+      "startTime": "2026-10-21T07:23:04.073Z",
+      "duration": 379125.3,
+      "expected": 214,
+      "skipped": 1,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "capacityTests": {
+      "passed": 4
+    },
+    "mutations": {
+      "expectedFailuresDetected": 5,
+      "cleanPassedBeforeAndAfter": true
+    },
+    "rawSecretScanner": "FAIL pre-existing synthetic positive control",
+    "secretReview": "PARTIAL, no new prefix matches"
+  },
+  "performanceBudgets": "PASS",
+  "singleSnapshotProof": "demo/t01.json",
+  "sourceFiles": 46,
+  "protectedUnchanged": 45,
+  "sourceManifestSha256": "1985726ae89d1932755ee153c7750d2759a9c45d2fb4430e05552364caf6e14b",
+  "sourcePatchSha256": "53917d72f13207c1cc522c8b9407eaf67de2fc7c8ed7519f8d6049146d8e6ed4",
+  "noCommitPushDeployMigration": true,
+  "limits": [
+    "Physical phone, human screen reader, native browser zoom and production cloud not tested",
+    "No factual coverage certification or real-world feeds",
+    "Legacy 365-day Node capacity is not 365x8 rich V7 snapshots in a real browser",
+    "No new ANNOUNCE enum or transverse 30-day view under the unchanged strict V7 contract; existing Future version comparator retained",
+    "Older clients may refuse ZIP3; separate journal/Future backups still required"
+  ],
+  "localDemo": "local-server.json",
+  "publicationAuthorization": {
+    "request": "commit push sur le main production final",
+    "scope": "Commit and push HEAD to main; follow production Vercel deployment",
+    "remoteMigrationAuthorized": false,
+    "note": "Verdicts and noCommitPushDeployMigration describe the earlier local validation checkpoint; functional production tests remain not run."
+  }
+}

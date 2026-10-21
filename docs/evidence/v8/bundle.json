@@ -1,0 +1,17 @@
+{
+  "before": {
+    "jsBytes": 998558,
+    "cssBytes": 61631
+  },
+  "after": {
+    "jsBytes": 1006818,
+    "cssBytes": 61992
+  },
+  "precacheKiB": {
+    "before": 1406.21,
+    "after": 1414.63
+  },
+  "jsGrowthPercent": 0.8271928120349603,
+  "precacheGrowthPercent": 0.5987725873091598,
+  "status": "PASS"
+}

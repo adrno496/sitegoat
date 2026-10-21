@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "limits": {
+    "jsAndPrecacheMaxGrowthPercent": 2,
+    "heapMaxGrowthPercent": 10,
+    "warmNavigationMaxGrowthPercent": 20,
+    "warmNavigationNoiseAllowanceMs": 10,
+    "indexOrQueryMaxMs": 500
+  },
+  "checks": [
+    {
+      "width": 1440,
+      "heapGrowthPercent": 0.2785268996066348,
+      "entryBeforeMs": 36.5071660000001,
+      "entryAfterMs": 35.60900000000015,
+      "heapBudgetPass": true,
+      "entryBudgetPass": true,
+      "overflow": false,
+      "externalRequests": 0
+    },
+    {
+      "width": 390,
+      "heapGrowthPercent": 0.25302776867675014,
+      "entryBeforeMs": 36.01966600000014,
+      "entryAfterMs": 35.27649999999994,
+      "heapBudgetPass": true,
+      "entryBudgetPass": true,
+      "overflow": false,
+      "externalRequests": 0
+    }
+  ],
+  "searchDocuments": [
+    100,
+    200,
+    1000
+  ]
+}

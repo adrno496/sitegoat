@@ -1,3 +1,4 @@
+import { assessSnapshot, type SnapshotAssessment } from "./snapshot";
 import type { Edition } from "./model";
 import { hash } from "./model";
 import { scheduleFor, V7_SCHEDULE, validDate, type Slot } from "./editorial";
@@ -38,6 +39,7 @@ function publicationMinute(e: Edition) {
   );
 }
 export interface Assessment {
+  snapshot?: SnapshotAssessment;
   status: "COMPLETE" | "PARTIAL" | "UNKNOWN";
   issues: string[];
   missingSlots: Slot[];
@@ -52,6 +54,20 @@ function events(e: Edition) {
   );
 }
 export function assessVersion(e: Edition, versions: Edition[]): Assessment {
+  if (e.unified)
+    return assessSnapshot(
+      e,
+      versions.filter(
+        (v) =>
+          v.id !== e.id &&
+          v.sha256 !== e.sha256 &&
+          !!v.unified &&
+          dayKeyOf(v) === dayKeyOf(e),
+      ),
+    );
+  return assessLegacyVersion(e, versions);
+}
+function assessLegacyVersion(e: Edition, versions: Edition[]): Assessment {
   const issues: string[] = [];
   const SLOTS = scheduleFor(e);
   const slots = e.slotsIncluded || [];

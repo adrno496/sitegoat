@@ -335,3 +335,31 @@
     overflow: visible;
   }
 }
+
+/* Long controls must also wrap when text/layout is enlarged independently of
+   media queries. These rules retain the normal desktop arrangement. */
+.unified-lead,
+.empty-library {
+  flex-wrap: wrap;
+}
+.unified-lead > div {
+  min-width: 0;
+  flex: 1 1 280px;
+  overflow-wrap: anywhere;
+}
+.unified-lead .primary,
+.empty-library .secondary {
+  max-width: 100%;
+  white-space: normal;
+  flex-shrink: 1;
+}
+.snapshot-status {
+  overflow-wrap: anywhere;
+}
+.unified-slots button span span {
+  display: block;
+}
+.snapshot-status .small-note {
+  font-size: 14px !important;
+  line-height: 1.5;
+}

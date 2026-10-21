@@ -5,13 +5,14 @@ import {
   normalizeArticleSearch as normalize,
 } from "../../data/articles";
 import { futureDb } from "../future/db";
-import { economicRows, latestUnified } from "./selectors";
+import { economicRows, unifiedVersions } from "./selectors";
 import { PromptAccess } from "./PromptAccess";
 export function PromptLibrary({ editions }: { editions: Edition[] }) {
   const [query, setQuery] = useState(""),
-    [selected, setSelected] = useState("");
+    [selected, setSelected] = useState(""),
+    [documentLimit, setDocumentLimit] = useState(100);
   const candidates = [
-    ...latestUnified(editions),
+    ...unifiedVersions(editions),
     ...editions.filter((e) => !e.unified),
   ].filter(
     (e) =>
@@ -20,15 +21,18 @@ export function PromptLibrary({ editions }: { editions: Edition[] }) {
         ? e.unified.promptAssets.length > 0
         : e.collection === "sentinel"),
   );
-  const filtered = candidates.filter((e) =>
-    normalize(
-      e.title +
-        " " +
-        e.text +
-        " " +
-        JSON.stringify(e.unified?.promptAssets || []),
-    ).includes(normalize(query)),
-  );
+  const needle = normalize(query).trim();
+  const filtered = !needle
+    ? candidates
+    : candidates.filter((e) =>
+        normalize(
+          e.title +
+            " " +
+            e.text +
+            " " +
+            JSON.stringify(e.unified?.promptAssets || []),
+        ).includes(needle),
+      );
   const edition = candidates.find((e) => e.id === selected);
   return (
     <section>
@@ -43,7 +47,10 @@ export function PromptLibrary({ editions }: { editions: Edition[] }) {
         <input
           type="search"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setDocumentLimit(100);
+          }}
         />
       </label>
       <p role="status">
@@ -52,7 +59,7 @@ export function PromptLibrary({ editions }: { editions: Edition[] }) {
       </p>
       <div className="unified-prompt-layout">
         <div>
-          {filtered.slice(0, 100).map((e) => (
+          {filtered.slice(0, documentLimit).map((e) => (
             <button
               className="unified-result"
               key={e.id}
@@ -62,6 +69,8 @@ export function PromptLibrary({ editions }: { editions: Edition[] }) {
               <b>{e.title}</b>
               <span>
                 {e.date || "Date inconnue"} ·{" "}
+                {e.editionSlot || "heure inconnue"} · révision{" "}
+                {e.externalRevision || e.revision} ·{" "}
                 {e.unified
                   ? e.unified.promptAssets.length + " prompts"
                   : "HTML ancien à inspecter"}
@@ -69,8 +78,13 @@ export function PromptLibrary({ editions }: { editions: Edition[] }) {
               </span>
             </button>
           ))}
-          {filtered.length > 100 && (
-            <p>100 documents affichés : précisez la recherche.</p>
+          {filtered.length > documentLimit && (
+            <button
+              className="secondary"
+              onClick={() => setDocumentLimit((n) => n + 100)}
+            >
+              Afficher plus de documents avec prompts
+            </button>
           )}
         </div>
         <div>
@@ -97,6 +111,7 @@ type Row = {
   status: string;
   theme: string;
   open: () => void;
+  alternatives?: Row[];
 };
 export function UnifiedSearch({
   editions,
@@ -180,6 +195,17 @@ export function UnifiedSearch({
           ?.evidenceStatus || "legacy",
       theme: i.article.category,
       open: () => onOpen(i.edition.id, i.article.id),
+      alternatives: i.history.map((h) => ({
+        key: i.key,
+        kind: "Article",
+        title: h.article.title,
+        text: h.article.text + " " + h.article.sources.join(" "),
+        date: h.edition.date || "",
+        source: h.article.sourceWatch || h.edition.collection || "journal360",
+        status: "historique",
+        theme: h.article.category,
+        open: () => onOpen(h.edition.id, h.article.id),
+      })),
     }));
     for (const { data: e, edition } of economicRows(editions))
       result.push({
@@ -193,10 +219,14 @@ export function UnifiedSearch({
         theme: "Économie",
         open: () => onOpen(edition.id),
       });
-    for (const e of latestUnified(editions)) {
-      for (const p of e.unified!.promptAssets)
+    const seen = new Set<string>();
+    for (const e of unifiedVersions(editions)) {
+      for (const p of e.unified!.promptAssets) {
+        const key = "prompt:" + p.promptId + e.date;
+        if (seen.has(key)) continue;
+        seen.add(key);
         result.push({
-          key: "prompt:" + p.promptId + e.date,
+          key,
           kind: "Prompt",
           title: p.title,
           text: p.content,
@@ -206,9 +236,13 @@ export function UnifiedSearch({
           theme: "Prompts",
           open: onPrompts,
         });
-      for (const i of e.unified!.futureInsights)
+      }
+      for (const i of e.unified!.futureInsights) {
+        const key = "insight:" + i.id + e.date;
+        if (seen.has(key)) continue;
+        seen.add(key);
         result.push({
-          key: "insight:" + i.id + e.date,
+          key,
           kind: "Jalon",
           title: i.title,
           text: JSON.stringify(i),
@@ -218,20 +252,37 @@ export function UnifiedSearch({
           theme: "Prospective",
           open: () => onOpen(e.id),
         });
+      }
+      for (const p of e.unified!.futureDocuments) {
+        const key = "embedded:" + p.documentId + ":" + p.revision;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        result.push({
+          key,
+          kind: "Dossier embarqué",
+          title: p.title,
+          text: JSON.stringify(p),
+          date: e.date || "",
+          source: "future",
+          status: p.status,
+          theme: "Prospective",
+          open: () => onOpen(e.id),
+        });
+      }
     }
     return [...result, ...futureRows];
   }, [editions, futureRows, onOpen, onPrompts]);
   const tokens = normalize(query).trim().split(/\s+/).filter(Boolean);
+  const matches = (r: Row) =>
+    (!kind || kind === r.kind) &&
+    (!date || r.date === date) &&
+    (!source || r.source === source) &&
+    (!status || r.status === status) &&
+    (!theme || r.theme === theme) &&
+    tokens.every((t) => normalize(r.title + " " + r.text).includes(t));
   const matching = rows
-    .filter(
-      (r) =>
-        (!kind || kind === r.kind) &&
-        (!date || r.date === date) &&
-        (!source || r.source === source) &&
-        (!status || r.status === status) &&
-        (!theme || r.theme === theme) &&
-        tokens.every((t) => normalize(r.title + " " + r.text).includes(t)),
-    )
+    .map((r) => [r, ...(r.alternatives || [])].find(matches))
+    .filter((r): r is Row => !!r)
     .sort((a, b) =>
       sort === "date"
         ? b.date.localeCompare(a.date)

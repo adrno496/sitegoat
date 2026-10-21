@@ -1,0 +1,26 @@
+{
+  "eventIds": [
+    "event-v8-A",
+    "event-v8-B",
+    "event-v8-C",
+    "event-v8-D",
+    "event-v8-E",
+    "event-v8-F",
+    "event-v8-G",
+    "event-v8-H"
+  ],
+  "economicZones": [
+    "FR",
+    "EU",
+    "US",
+    "CN"
+  ],
+  "insightIds": [
+    "insight-v8-0",
+    "insight-v8-1"
+  ],
+  "promptIds": [
+    "audit-a",
+    "audit-b"
+  ]
+}

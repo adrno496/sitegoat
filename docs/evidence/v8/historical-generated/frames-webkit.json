@@ -1,0 +1,7 @@
+{
+  "project": "webkit",
+  "environment": "headless local, reduced motion; not a physical phone or active animation benchmark",
+  "frames": 30,
+  "meanFrameMs": 31.966666666666665,
+  "maxFrameMs": 49
+}

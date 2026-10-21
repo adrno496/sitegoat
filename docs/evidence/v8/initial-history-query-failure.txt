@@ -1,0 +1,173 @@
+[WebServer] (node:21706) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:21707) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 30 tests using 2 workers
+
+(node:21709) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:21708) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   2 [chromium] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (1.6s)
+  ✓   1 [chromium] › tests/e2e/v8-snapshot.spec.ts:31:1 › T01/T04/T09/T15 : SEUL fichier 22 h dans une base vide, huit événements et toutes les annexes offline (2.1s)
+  ✓   4 [chromium] › tests/e2e/v8-snapshot.spec.ts:124:1 › T02/T03 : un seul 12 h ou 18 h, puis arrivée désordonnée sans rétrogradation (2.0s)
+  ✓   5 [chromium] › tests/e2e/v8-snapshot.spec.ts:154:1 › T16 : snapshot autonome clavier, axe, sept largeurs, zoom CSS 200 %, thèmes et mouvement réduit (2.3s)
+  ✓   3 [chromium] › tests/e2e/v7-unified.spec.ts:139:1 › V7 : mobile, clavier, thèmes, absence de données, sources, reduced motion et radar comparable (5.0s)
+  ✓   7 [chromium] › tests/e2e/v7-unified.spec.ts:214:1 › V7 : HTML hostile lu sans scripts, question publique conservée, prompt privé non transmis (1.0s)
+  ✓   8 [chromium] › tests/e2e/v7-unified.spec.ts:268:1 › V7 : adaptateur Future explicite, JSON validé puis import indépendant sans écriture croisée (2.6s)
+  ✓   9 [chromium] › tests/e2e/v7-unified.spec.ts:315:1 › V7 : MIME incohérent refusé sans écriture puis import HTML valide conservé (7.5s)
+  ✓  10 [chromium] › tests/e2e/v7-unified.spec.ts:343:1 › V7 : chargement différé de l’accueil sans déplacer un bouton pendant le clic (651ms)
+(node:21843) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  11 [webkit] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (2.5s)
+  ✘   6 [chromium] › tests/e2e/v8-snapshot.spec.ts:195:1 › T05/T06/T07 : omissions réelles avec provenance et conflit de révision visibles (18.1s)
+(node:21893) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  12 [webkit] › tests/e2e/v7-unified.spec.ts:139:1 › V7 : mobile, clavier, thèmes, absence de données, sources, reduced motion et radar comparable (5.2s)
+  ✓  14 [webkit] › tests/e2e/v7-unified.spec.ts:214:1 › V7 : HTML hostile lu sans scripts, question publique conservée, prompt privé non transmis (1.2s)
+  ✓  13 [webkit] › tests/e2e/v8-snapshot.spec.ts:31:1 › T01/T04/T09/T15 : SEUL fichier 22 h dans une base vide, huit événements et toutes les annexes offline (2.9s)
+  ✓  16 [webkit] › tests/e2e/v8-snapshot.spec.ts:124:1 › T02/T03 : un seul 12 h ou 18 h, puis arrivée désordonnée sans rétrogradation (2.3s)
+  ✓  15 [webkit] › tests/e2e/v7-unified.spec.ts:268:1 › V7 : adaptateur Future explicite, JSON validé puis import indépendant sans écriture croisée (2.8s)
+  ✓  17 [webkit] › tests/e2e/v8-snapshot.spec.ts:154:1 › T16 : snapshot autonome clavier, axe, sept largeurs, zoom CSS 200 %, thèmes et mouvement réduit (2.7s)
+  ✓  18 [webkit] › tests/e2e/v7-unified.spec.ts:315:1 › V7 : MIME incohérent refusé sans écriture puis import HTML valide conservé (7.5s)
+  ✓  20 [webkit] › tests/e2e/v7-unified.spec.ts:343:1 › V7 : chargement différé de l’accueil sans déplacer un bouton pendant le clic (792ms)
+(node:22006) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  21 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:34:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (1.6s)
+  ✓  22 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:139:1 › V7 : mobile, clavier, thèmes, absence de données, sources, reduced motion et radar comparable (5.6s)
+  ✘  19 [webkit] › tests/e2e/v8-snapshot.spec.ts:195:1 › T05/T06/T07 : omissions réelles avec provenance et conflit de révision visibles (18.7s)
+(node:22093) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  24 [chromium-mobile] › tests/e2e/v8-snapshot.spec.ts:31:1 › T01/T04/T09/T15 : SEUL fichier 22 h dans une base vide, huit événements et toutes les annexes offline (1.8s)
+  ✓  23 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:214:1 › V7 : HTML hostile lu sans scripts, question publique conservée, prompt privé non transmis (7.8s)
+  ✓  25 [chromium-mobile] › tests/e2e/v8-snapshot.spec.ts:124:1 › T02/T03 : un seul 12 h ou 18 h, puis arrivée désordonnée sans rétrogradation (1.4s)
+  ✓  26 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:268:1 › V7 : adaptateur Future explicite, JSON validé puis import indépendant sans écriture croisée (2.6s)
+  ✓  28 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:315:1 › V7 : MIME incohérent refusé sans écriture puis import HTML valide conservé (523ms)
+  ✓  27 [chromium-mobile] › tests/e2e/v8-snapshot.spec.ts:154:1 › T16 : snapshot autonome clavier, axe, sept largeurs, zoom CSS 200 %, thèmes et mouvement réduit (2.1s)
+  ✓  29 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:343:1 › V7 : chargement différé de l’accueil sans déplacer un bouton pendant le clic (683ms)
+  ✘  30 [chromium-mobile] › tests/e2e/v8-snapshot.spec.ts:195:1 › T05/T06/T07 : omissions réelles avec provenance et conflit de révision visibles (11.3s)
+
+
+  1) [chromium] › tests/e2e/v8-snapshot.spec.ts:195:1 › T05/T06/T07 : omissions réelles avec provenance et conflit de révision visibles 
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('.unified-workspace').locator('.unified-result')
+    Expected: 1
+    Received: 8
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toHaveCount" locator('.unified-workspace').locator('.unified-result') with timeout 10000ms
+      - waiting for locator('.unified-workspace').locator('.unified-result')
+        24 × locator resolved to 8 elements
+           - unexpected value "8"
+
+
+      253 |     .click();
+      254 |   await w.getByLabel("Rechercher partout").fill("Analyse détaillée A");
+    > 255 |   await expect(w.locator(".unified-result")).toHaveCount(1);
+          |                                              ^
+      256 |   await expect(w.locator(".unified-result")).toContainText("historique");
+      257 |   await nav(page, "Bibliothèque");
+      258 |   await page
+        at /Users/dreano/Downloads/veille/veille/tests/e2e/v8-snapshot.spec.ts:255:46
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v8-snapshot-T05-T06-T07-om-9f518-onflit-de-révision-visibles-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v8-snapshot-T05-T06-T07-om-9f518-onflit-de-révision-visibles-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v8-snapshot-T05-T06-T07-om-9f518-onflit-de-révision-visibles-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v8-snapshot-T05-T06-T07-om-9f518-onflit-de-révision-visibles-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [webkit] › tests/e2e/v8-snapshot.spec.ts:195:1 › T05/T06/T07 : omissions réelles avec provenance et conflit de révision visibles 
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('.unified-workspace').locator('.unified-result')
+    Expected: 1
+    Received: 8
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toHaveCount" locator('.unified-workspace').locator('.unified-result') with timeout 10000ms
+      - waiting for locator('.unified-workspace').locator('.unified-result')
+        24 × locator resolved to 8 elements
+           - unexpected value "8"
+
+
+      253 |     .click();
+      254 |   await w.getByLabel("Rechercher partout").fill("Analyse détaillée A");
+    > 255 |   await expect(w.locator(".unified-result")).toHaveCount(1);
+          |                                              ^
+      256 |   await expect(w.locator(".unified-result")).toContainText("historique");
+      257 |   await nav(page, "Bibliothèque");
+      258 |   await page
+        at /Users/dreano/Downloads/veille/veille/tests/e2e/v8-snapshot.spec.ts:255:46
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v8-snapshot-T05-T06-T07-om-9f518-onflit-de-révision-visibles-webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v8-snapshot-T05-T06-T07-om-9f518-onflit-de-révision-visibles-webkit/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v8-snapshot-T05-T06-T07-om-9f518-onflit-de-révision-visibles-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v8-snapshot-T05-T06-T07-om-9f518-onflit-de-révision-visibles-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium-mobile] › tests/e2e/v8-snapshot.spec.ts:195:1 › T05/T06/T07 : omissions réelles avec provenance et conflit de révision visibles 
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('.unified-workspace').locator('.unified-result')
+    Expected: 1
+    Received: 8
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toHaveCount" locator('.unified-workspace').locator('.unified-result') with timeout 10000ms
+      - waiting for locator('.unified-workspace').locator('.unified-result')
+        24 × locator resolved to 8 elements
+           - unexpected value "8"
+
+
+      253 |     .click();
+      254 |   await w.getByLabel("Rechercher partout").fill("Analyse détaillée A");
+    > 255 |   await expect(w.locator(".unified-result")).toHaveCount(1);
+          |                                              ^
+      256 |   await expect(w.locator(".unified-result")).toContainText("historique");
+      257 |   await nav(page, "Bibliothèque");
+      258 |   await page
+        at /Users/dreano/Downloads/veille/veille/tests/e2e/v8-snapshot.spec.ts:255:46
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v8-snapshot-T05-T06-T07-om-9f518-onflit-de-révision-visibles-chromium-mobile/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v8-snapshot-T05-T06-T07-om-9f518-onflit-de-révision-visibles-chromium-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v8-snapshot-T05-T06-T07-om-9f518-onflit-de-révision-visibles-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v8-snapshot-T05-T06-T07-om-9f518-onflit-de-révision-visibles-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    [chromium] › tests/e2e/v8-snapshot.spec.ts:195:1 › T05/T06/T07 : omissions réelles avec provenance et conflit de révision visibles 
+    [webkit] › tests/e2e/v8-snapshot.spec.ts:195:1 › T05/T06/T07 : omissions réelles avec provenance et conflit de révision visibles 
+    [chromium-mobile] › tests/e2e/v8-snapshot.spec.ts:195:1 › T05/T06/T07 : omissions réelles avec provenance et conflit de révision visibles 
+  27 passed (1.2m)

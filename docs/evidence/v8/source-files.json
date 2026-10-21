@@ -1,0 +1,186 @@
+[
+  {
+    "file": "README.md",
+    "sha256": "827a39e5fc42ef2abdd63c3f31f7fbcd17b21073dca84c20f15f2722ef941317"
+  },
+  {
+    "file": "docs/JOURNAL360_V7_IMPORT_GUIDE.md",
+    "sha256": "46ab67a23f2c3d6471624c08b57102ff252e6d7ce8ee956e605d429628850676"
+  },
+  {
+    "file": "docs/JOURNAL360_V8_IMPORT_GUIDE.md",
+    "sha256": "83def528e30f064da5d8692c68731b259c392cf7528a8c9179c024af7837199c"
+  },
+  {
+    "file": "docs/JOURNAL360_V8_PLAN.md",
+    "sha256": "75fb30baeffff757ed851256c4d61ae32fc97c1171ab598e3d9f06e181738a61"
+  },
+  {
+    "file": "docs/PROMPT_JOURNAL360_V8.md",
+    "sha256": "ad05f014d63876ee8fa2c38089c5184f50a37f4093452a8416a3f589c4c77707"
+  },
+  {
+    "file": "playwright.config.ts",
+    "sha256": "bc9a7f09ca6e6f4e3238ca9d559aefb2d67d57a6bf79de74bae0a896c732d628"
+  },
+  {
+    "file": "scripts/capture-v8-local.mjs",
+    "sha256": "a70e9914f174f8be8818139ab25515d446a22111932cd40b207b6ab2c52660ea"
+  },
+  {
+    "file": "scripts/check-v8-mutants.mjs",
+    "sha256": "88bd88c3bccae4f474679383c96840958e7533bf29a544f8c04e29d590cfe0bb"
+  },
+  {
+    "file": "scripts/generate-v8-snapshots.mjs",
+    "sha256": "f58559f028d9d6914b063b1fc30ecbf3d53653a78811db8f59f9fa079effcc34"
+  },
+  {
+    "file": "scripts/measure-unified-search.mjs",
+    "sha256": "f4661f4baeacd2c5f323102bccd5a664e903c270e3290a4710e1a6946210d3f4"
+  },
+  {
+    "file": "scripts/package-v8-evidence.mjs",
+    "sha256": "5744a577bd42d8d9726c94aeb3bfae05d1ace0283915ea57a597f5aeade5ae7d"
+  },
+  {
+    "file": "src/data/articles.ts",
+    "sha256": "33e6ddc4a3bb9851d5d87351116263ac61212d629ede4cc13e231bce79c44595"
+  },
+  {
+    "file": "src/data/day.ts",
+    "sha256": "a21308f20c057df18d446c7d851d796aa7cec839747d01f3bdc66647190f1d1e"
+  },
+  {
+    "file": "src/data/snapshot.ts",
+    "sha256": "dc8b69a697051aec617b2c217ec6150255069e24074e4b880379499d65135a91"
+  },
+  {
+    "file": "src/features/DayView.tsx",
+    "sha256": "f766fa9da63fd5d5e04db7509febbdf3fda21a117c893bda9b727a53e1f4a697"
+  },
+  {
+    "file": "src/features/ImportDialog.tsx",
+    "sha256": "a28b7c07183bf9008424c27ca3f2388141e7867a11b44158445da124c36fc15b"
+  },
+  {
+    "file": "src/features/SnapshotStatus.tsx",
+    "sha256": "910fc340f887721b369c58a99f704c256b442f97cc4bfd869335879947d66035"
+  },
+  {
+    "file": "src/features/unified/FutureBridge.tsx",
+    "sha256": "fadcd5a0c3ee3c99d478531fb17d78ae3311a3995edeb172b313eced9f755090"
+  },
+  {
+    "file": "src/features/unified/UnifiedSearch.tsx",
+    "sha256": "5b207106522b38d6d315bcbbdd8d98488bb6170ce4a20d79e247a574ffac183b"
+  },
+  {
+    "file": "src/features/unified/UnifiedWorkspace.tsx",
+    "sha256": "0ccd32a493d8db8c3e67e36141e26b926cedbd20e725ae8e80dd3d0407391122"
+  },
+  {
+    "file": "src/features/unified/selectors.ts",
+    "sha256": "36dc0cb9d184d2bb26034664a48db5877e082109ea724db310c1d3617df02c4b"
+  },
+  {
+    "file": "src/features/unified/unified.css",
+    "sha256": "7a1bf27653fd3637978e57fdadc45e4e83e333a4f127aa184bf23d9e71c21968"
+  },
+  {
+    "file": "tests/e2e/v7-unified.spec.ts",
+    "sha256": "e516bb6cbb461fa4dc221b19d932b8aa2727f773295a038e7bf12939723d8e16"
+  },
+  {
+    "file": "tests/e2e/v8-snapshot.spec.ts",
+    "sha256": "0ba89822f68b124981125dff5de3575e132bac60dcfe33944b6a5544c7b653be"
+  },
+  {
+    "file": "tests/fixtures/v8/J360_2026-10-19_SENTINEL_audit-a_VSCODE.md",
+    "sha256": "96726a189174922ee2ef4b622d7576c17c76e52d6d46074332962c1abfbd4af9"
+  },
+  {
+    "file": "tests/fixtures/v8/J360_2026-10-19_SENTINEL_audit-b_VSCODE.md",
+    "sha256": "1cbf477ab72376ec3725b53c51dfc860929bdd4c479cae8e2d11e4ed884e5892"
+  },
+  {
+    "file": "tests/fixtures/v8/expected.json",
+    "sha256": "8491cda8d2dc1de2a31f2adf62c2c1c7192109a7297e12082f877e5ed5d32952"
+  },
+  {
+    "file": "tests/fixtures/v8/snapshot-08.html",
+    "sha256": "dcceeb0b22548c608786a8f3aee1d7bc0f785ea04f93539677e90122cb85c8f0"
+  },
+  {
+    "file": "tests/fixtures/v8/snapshot-08.json",
+    "sha256": "f7d794256fe97f1593764b807ab3affa798fedf41cf93a9cffe8d7e80347c974"
+  },
+  {
+    "file": "tests/fixtures/v8/snapshot-10.html",
+    "sha256": "2f3960b2489f59c008e08615605e64e32be6e9f14f24024c3b2b104a01ee6db4"
+  },
+  {
+    "file": "tests/fixtures/v8/snapshot-10.json",
+    "sha256": "07dc7a9ed71274bb8e10d7c0d95b21ff5313da6fd0c8be92a4fdfc39c8e3b4db"
+  },
+  {
+    "file": "tests/fixtures/v8/snapshot-12.html",
+    "sha256": "65a4fd4b7360ae17181b5233f590a00c6c4fc33ff63b8d5d9863647dd34a5d88"
+  },
+  {
+    "file": "tests/fixtures/v8/snapshot-12.json",
+    "sha256": "1919b0b6f41dbcc5e8409a075327a05ac7d4d0583dc6774648f08d4775d1391d"
+  },
+  {
+    "file": "tests/fixtures/v8/snapshot-14.html",
+    "sha256": "3f6ebf4286e4355efd7716b55b9f280aaa98905563c9c9588e039f26511e6490"
+  },
+  {
+    "file": "tests/fixtures/v8/snapshot-14.json",
+    "sha256": "90b9c9d1369903ae48ba3f70650bc8ca3503ebdaaf0dfc7806f209a217c272a3"
+  },
+  {
+    "file": "tests/fixtures/v8/snapshot-16.html",
+    "sha256": "9f4143e09fd4ee9707209c2eadfa8e4698e11d2d5eb9f09b20124a82fd0077f0"
+  },
+  {
+    "file": "tests/fixtures/v8/snapshot-16.json",
+    "sha256": "fe283976f9b1364daea7ec2b114f2c0ee2bfb80081713e5ea784a9d0642c9cb7"
+  },
+  {
+    "file": "tests/fixtures/v8/snapshot-18.html",
+    "sha256": "343d5d697ef1ef8eee31e10503c829024e96b60ea8ed768c2a713d7353c5078a"
+  },
+  {
+    "file": "tests/fixtures/v8/snapshot-18.json",
+    "sha256": "c59daf569c98c22901e3d0b6fd6b23ec8f6d8d68398545238b12f1a1fa53f9df"
+  },
+  {
+    "file": "tests/fixtures/v8/snapshot-20.html",
+    "sha256": "ab36ff5705ecfe686dcc1bf622ba1c21f1e613b3ae082049693dfb334202d7a3"
+  },
+  {
+    "file": "tests/fixtures/v8/snapshot-20.json",
+    "sha256": "ab55a50d43f63de1d5eaa2f8afebe525477eefbe958b9eea4eace37e47a96ea6"
+  },
+  {
+    "file": "tests/fixtures/v8/snapshot-22.html",
+    "sha256": "1d9202e2e59ed3c18c1322b08452469da7706cd8a6b381693e98dc37458e292e"
+  },
+  {
+    "file": "tests/fixtures/v8/snapshot-22.json",
+    "sha256": "d039b4400f544e5cc09c6ccf1ade7b4ce1a2da1cf03965b735a408ffdc120696"
+  },
+  {
+    "file": "tests/unified-v7.unit.test.ts",
+    "sha256": "4ebade52ad01325ec659680c67b6a861204be1626f23a707fb5f20e280cc1da3"
+  },
+  {
+    "file": "tests/v8-fixture-integrity.unit.test.ts",
+    "sha256": "bde8b5df77e69cdcb7a7347bfd18b8ad8ffec0b5ebb42a978b112b8c7a7c2041"
+  },
+  {
+    "file": "tests/v8-snapshot.unit.test.ts",
+    "sha256": "fe2a31cf0b60ecfe2a0abafde08d67efca99797082957a71b9b358b0b25f4bdb"
+  }
+]

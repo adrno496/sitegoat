@@ -1,0 +1,7 @@
+{
+  "project": "chromium",
+  "environment": "headless local, reduced motion; not a physical phone or active animation benchmark",
+  "frames": 30,
+  "meanFrameMs": 16.07999999682109,
+  "maxFrameMs": 16.800000000000182
+}

@@ -1,5 +1,7 @@
 # Utiliser Journal 360 unifié V7 localement
 
+> Évolution locale V8 : la distinction entre autonomie documentaire, couverture et historique remplace les règles de chaîne ci-dessous pour les fichiers V7 natifs. Voir le [guide V8](JOURNAL360_V8_IMPORT_GUIDE.md). Le contrat V7 lui-même reste inchangé.
+
 ## Import principal
 
 Importer un HTML autonome via **Importer une édition**, destination Bibliothèque. Le bloc inerte `<script id="unifiedData" type="application/json">` contient le contrat `journal360.unified`, `schemaVersion: 7`, `scheduleId: paris-v7-8`, fuseau `Europe/Paris`. Le schéma exécutable et ses contrôles sont dans `src/data/unified.ts`. Le [schéma JSON structurel](JOURNAL360_UNIFIED_V7.schema.json) se régénère avec `node scripts/export-unified-schema.mjs` sous Node 24 ; les contrôles sémantiques Zod (temps, références, comparabilité, budgets et empreintes) restent obligatoires. Le programme est 08/10/12/14/16/18/20/22 ; le plan historique 08/16/21 reste distinct. Aucun changement de tâche ChatGPT n’est effectué.

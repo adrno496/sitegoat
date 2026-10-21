@@ -1,3 +1,4 @@
+import { SnapshotStatus } from "./SnapshotStatus";
 import { useState } from "react";
 import { X, FileText, AlertTriangle, Check, ArrowRight } from "lucide-react";
 import { useDialogFocus } from "./dialogFocus";
@@ -275,24 +276,31 @@ export function ImportDialog({
                       Révision externe{" "}
                       {c.edition.externalRevision ?? "inconnue"} ·{" "}
                       {(c.edition.slotsIncluded || []).join(" / ")} ·{" "}
-                      {assessment.status}
+                      {assessment.snapshot
+                        ? "snapshot documentaire"
+                        : assessment.status}
                     </p>
-                    <p>
-                      {assessment.newEvents} nouveaux événements identifiés ·{" "}
-                      {assessment.corrections} corrections textuelles ·{" "}
-                      {assessment.removedEvents} absences
-                    </p>
+                    {assessment.snapshot ? (
+                      <SnapshotStatus assessment={assessment} />
+                    ) : (
+                      <p>
+                        {assessment.newEvents} nouveaux événements identifiés ·{" "}
+                        {assessment.corrections} corrections textuelles ·{" "}
+                        {assessment.removedEvents} absences
+                      </p>
+                    )}
                     {older && (
                       <p className="warning">
                         Édition antérieure : conservée dans l’historique ; la
                         dernière édition restera affichée.
                       </p>
                     )}
-                    {assessment.issues.map((issue) => (
-                      <p className="warning" key={issue}>
-                        {issue}
-                      </p>
-                    ))}
+                    {!assessment.snapshot &&
+                      assessment.issues.map((issue) => (
+                        <p className="warning" key={issue}>
+                          {issue}
+                        </p>
+                      ))}
                     <p className="small-note">
                       Le contrôle compare les event_id disponibles, sans
                       certifier les déclarations éditoriales. L’original ne sera

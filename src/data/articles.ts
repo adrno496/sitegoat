@@ -7,6 +7,7 @@ export interface IndexedArticle {
   edition: Edition;
   group: string;
   versions: string[];
+  history: { edition: Edition; article: Article }[];
 }
 
 export const normalizeArticleSearch = (text: string) =>
@@ -33,6 +34,7 @@ export function indexArticles(editions: Edition[]): IndexedArticle[] {
         const identity = JSON.stringify([group, article.eventId || article.id]);
         const existing = indexed.get(identity);
         if (existing) {
+          existing.history.push({ edition, article });
           if (!existing.versions.includes(edition.id))
             existing.versions.push(edition.id);
         } else {
@@ -42,6 +44,7 @@ export function indexArticles(editions: Edition[]): IndexedArticle[] {
             edition,
             group,
             versions: [edition.id],
+            history: [],
           });
         }
       }
@@ -60,6 +63,10 @@ export function indexArticles(editions: Edition[]): IndexedArticle[] {
       item.article.eventId &&
       anchors.get(JSON.stringify([item.edition.date, item.article.eventId]));
     if (!anchor || anchor === item) return true;
+    anchor.history.push(
+      { edition: item.edition, article: item.article },
+      ...item.history,
+    );
     for (const id of item.versions)
       if (!anchor.versions.includes(id)) anchor.versions.push(id);
     return false;

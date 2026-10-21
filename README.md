@@ -4,6 +4,10 @@ Une bibliothèque personnelle de journaux HTML, en français, installable comme 
 
 Version publiée : [sitegoat.vercel.app](https://sitegoat.vercel.app). [Rapport de tests](TEST_REPORT.md).
 
+## V8 — snapshot autonome
+
+Un seul HTML tardif suffit pour les articles, données économiques, jalons et prompts réellement contenus. Les quatre diagnostics séparent intégrité, autonomie, couverture et historique reçu. Les versions intermédiaires sont facultatives ; aucune couverture factuelle totale n’est certifiée sans preuve indépendante. [Guide V8 et rollback](docs/JOURNAL360_V8_IMPORT_GUIDE.md) · [Plan et critères](docs/JOURNAL360_V8_PLAN.md). La publication V8 sur `main` a été autorisée séparément après validation locale ; les limites et résultats restent détaillés dans le [rapport V8](docs/JOURNAL360_V8_REPORT.md).
+
 ## Journal 360 unifié V7
 
 L’accueil réunit les huit éditions cumulatives **08/10/12/14/16/18/20/22**, les quatre univers, le radar économique FR/Europe/USA/Chine et la chronologie IA/Futur. Les états absents ou partiels restent visibles. La sous-navigation donne accès aux prompts multiples et à une recherche globale textuelle locale, en conservant les parcours historiques.

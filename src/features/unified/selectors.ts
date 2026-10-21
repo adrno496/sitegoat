@@ -70,10 +70,41 @@ export function economyFreshness(e: EconomicSnapshot, at = new Date()) {
       ? "Statistique révisée"
       : "Vérification déclarée";
 }
+function periodOrder(value: string): number | null {
+  if (/^\d{4}$/.test(value)) return +value * 12;
+  if (/^\d{4}-Q[1-4]$/.test(value))
+    return +value.slice(0, 4) * 12 + (+value.at(-1)! - 1) * 3;
+  if (/^\d{4}-(0[1-9]|1[0-2])$/.test(value))
+    return +value.slice(0, 4) * 12 + (+value.slice(5) - 1);
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value))
+    return Number.isFinite(Date.parse(value)) ? Date.parse(value) : null;
+  return null;
+}
 export function economicDelta(e: EconomicSnapshot) {
   return e.comparison &&
     e.comparison.definition === e.definition &&
-    e.comparison.unit === e.unit
+    e.comparison.unit === e.unit &&
+    e.comparison.period.length === e.period.length &&
+    periodOrder(e.period) !== null &&
+    periodOrder(e.comparison.period) !== null &&
+    periodOrder(e.comparison.period)! < periodOrder(e.period)!
     ? e.value - e.comparison.value
     : null;
+}
+
+// Ordered originals, never a rewritten/reconstructed snapshot. Used to retain
+// annexes omitted by a newer import, with the edition that actually contains them.
+export function unifiedVersions(editions: Edition[]) {
+  const groups = new Map<string, Edition[]>();
+  for (const e of editions.filter(
+    (e) => !e.deleted && !e.collection && e.unified,
+  )) {
+    const key = dayKeyOf(e)!;
+    const group = groups.get(key) || [];
+    group.push(e);
+    groups.set(key, group);
+  }
+  return [...groups.entries()]
+    .sort(([a], [b]) => b.localeCompare(a))
+    .flatMap(([, g]) => resolveDay(g).versions.map((v) => v.edition));
 }

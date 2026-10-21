@@ -36,13 +36,21 @@ it("P1 : huit éditions, arrivée désordonnée, cumul contrôlé, doublon, arch
       return (await a.editions.get(r.id))!;
     };
     const final = await add("2200");
-    expect(assessVersion(final, [final]).status).toBe("PARTIAL");
+    expect(assessVersion(final, [final])).toMatchObject({
+      status: "UNKNOWN",
+      snapshot: {
+        autonomy: "AUTONOMOUS",
+        coverage: "UNKNOWN",
+        history: "SINGLE_SNAPSHOT",
+      },
+    });
     for (const slot of V7_SLOTS.slice(0, 7)) await add(slot.replace(":", ""));
     await add("1000");
     const all = await a.editions.toArray();
     expect(all).toHaveLength(8);
     expect(resolveDay(all).current?.id).toBe(final.id);
-    expect(resolveDay(all).status).toBe("COMPLETE");
+    expect(resolveDay(all).status).toBe("UNKNOWN");
+    expect(assessVersion(final, all).snapshot?.history).toBe("FULL_CHAIN");
     expect(indexArticles(all)).toHaveLength(4);
     expect(
       indexArticles(all).find((i) => i.article.eventId === "event-v7-1")
@@ -78,11 +86,15 @@ it("P1 : huit éditions, arrivée désordonnée, cumul contrôlé, doublon, arch
     await b.delete();
   }
 });
-it("P1 : une chaîne absente reste partielle, une première apparition ne peut pas être réécrite", async () => {
+it("P1/V8 : une chaîne absente ne dégrade pas le contenu, une première apparition ne peut pas être réécrite", async () => {
   const first = await inspectHTML("x.html", bytes(fixture("0800"))),
     last = await inspectHTML("y.html", bytes(fixture()));
-  expect(assessVersion(last, [first, last]).status).toBe("PARTIAL");
+  expect(assessVersion(last, [first, last])).toMatchObject({
+    status: "UNKNOWN",
+    snapshot: { autonomy: "AUTONOMOUS", history: "SOME_VERSIONS_MISSING" },
+  });
   last.articles[0].firstSeenSlot = "10:00";
+  last.unified!.items[0].firstSeenSlot = "10:00";
   expect(assessVersion(last, [first, last]).issues.join(" ")).toContain(
     "Première apparition",
   );
@@ -278,7 +290,10 @@ it("P1 : 08→10→12→14→16→18→20→22, un seul événement introduit à
       await commitImport(db, e, raw, "day");
       const all = await db.editions.toArray();
       expect(resolveDay(all).current?.editionSlot).toBe(slot);
-      expect(resolveDay(all).status).toBe("COMPLETE");
+      expect(resolveDay(all).status).toBe("UNKNOWN");
+      expect(resolveDay(all).versions[0].assessment.snapshot?.autonomy).toBe(
+        "AUTONOMOUS",
+      );
     }
     const all = await db.editions.toArray(),
       rows = indexArticles(all);

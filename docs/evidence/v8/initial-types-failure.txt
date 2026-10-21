@@ -1,0 +1,9 @@
+
+> journal360-mobile@2.0.7 typecheck
+> tsc -b
+
+src/data/day.ts(89,20): error TS2339: Property 'sourcesNotVerified' does not exist on type 'never'.
+src/data/day.ts(93,18): error TS2339: Property 'items' does not exist on type 'never'.
+src/data/day.ts(93,30): error TS7006: Parameter 'i' implicitly has an 'any' type.
+src/features/unified/UnifiedWorkspace.tsx(202,51): error TS2345: Argument of type '"08:00" | "16:00" | "21:00" | "10:00" | "12:00" | "14:00" | "18:00" | "20:00" | "22:00"' is not assignable to parameter of type '"08:00" | "16:00" | "10:00" | "12:00" | "14:00" | "18:00" | "20:00" | "22:00"'.
+  Type '"21:00"' is not assignable to type '"08:00" | "16:00" | "10:00" | "12:00" | "14:00" | "18:00" | "20:00" | "22:00"'. Did you mean '"16:00"'?

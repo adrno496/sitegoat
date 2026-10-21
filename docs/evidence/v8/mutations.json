@@ -1,0 +1,54 @@
+{
+  "scope": "Disposable copies; expected fixture manifest is a synthetic witness, not a real-world registry",
+  "results": [
+    {
+      "name": "clean-before",
+      "exitCode": 0,
+      "expectedFailure": false,
+      "expectedReason": null,
+      "detected": true
+    },
+    {
+      "name": "removed-article",
+      "exitCode": 1,
+      "expectedFailure": true,
+      "expectedReason": "registre synthétique",
+      "detected": true
+    },
+    {
+      "name": "falsified-source",
+      "exitCode": 1,
+      "expectedFailure": true,
+      "expectedReason": "source du témoin",
+      "detected": true
+    },
+    {
+      "name": "broken-hash",
+      "exitCode": 1,
+      "expectedFailure": true,
+      "expectedReason": "tronqué",
+      "detected": true
+    },
+    {
+      "name": "exchanged-slot",
+      "exitCode": 1,
+      "expectedFailure": true,
+      "expectedReason": "Créneaux incohérents",
+      "detected": true
+    },
+    {
+      "name": "changed-event",
+      "exitCode": 1,
+      "expectedFailure": true,
+      "expectedReason": "texte intégral du témoin",
+      "detected": true
+    },
+    {
+      "name": "clean-restored",
+      "exitCode": 0,
+      "expectedFailure": false,
+      "expectedReason": null,
+      "detected": true
+    }
+  ]
+}

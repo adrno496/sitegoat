@@ -1,0 +1,16 @@
+[
+  {
+    width: 1440,
+    entryMedianMs: 36.5071660000001,
+    heapUsedBytes: 6920696,
+    externalRequests: 0,
+    overflow: false
+  },
+  {
+    width: 390,
+    entryMedianMs: 36.01966600000014,
+    heapUsedBytes: 6958920,
+    externalRequests: 0,
+    overflow: false
+  }
+]

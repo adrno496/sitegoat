@@ -1,0 +1,51 @@
+[WebServer] (node:4092) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:4095) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:4100) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › tests/e2e/v8-snapshot.spec.ts:31:1 › T01/T04/T09/T15 : SEUL fichier 22 h dans une base vide, huit événements et toutes les annexes offline (10.9s)
+
+
+  1) [chromium] › tests/e2e/v8-snapshot.spec.ts:31:1 › T01/T04/T09/T15 : SEUL fichier 22 h dans une base vide, huit événements et toutes les annexes offline 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator: locator('.unified-workspace').locator('[data-autonomy]')
+    Expected: "AUTONOMOUS"
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveAttribute" locator('.unified-workspace').locator('[data-autonomy]') with timeout 10000ms
+      - waiting for locator('.unified-workspace').locator('[data-autonomy]')
+
+
+      46 |   await nav(page, "Aujourd’hui");
+      47 |   const w = workspace(page);
+    > 48 |   await expect(w.locator("[data-autonomy]")).toHaveAttribute(
+         |                                              ^
+      49 |     "data-autonomy",
+      50 |     "AUTONOMOUS",
+      51 |   );
+        at /Users/dreano/Downloads/veille/veille/tests/e2e/v8-snapshot.spec.ts:48:46
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v8-snapshot-T01-T04-T09-T1-1e8d3--toutes-les-annexes-offline-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v8-snapshot-T01-T04-T09-T1-1e8d3--toutes-les-annexes-offline-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v8-snapshot-T01-T04-T09-T1-1e8d3--toutes-les-annexes-offline-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v8-snapshot-T01-T04-T09-T1-1e8d3--toutes-les-annexes-offline-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/e2e/v8-snapshot.spec.ts:31:1 › T01/T04/T09/T15 : SEUL fichier 22 h dans une base vide, huit événements et toutes les annexes offline 

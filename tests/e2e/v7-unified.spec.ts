@@ -37,7 +37,14 @@ test("V7 : huit imports désordonnés, un cumul, huit originaux, prompts multipl
 }) => {
   await page.goto("/");
   await importSlots(page, ["2200"]);
-  await expect(page.locator(".day-card")).toContainText("PARTIAL");
+  await expect(page.locator(".day-card [data-autonomy]")).toHaveAttribute(
+    "data-autonomy",
+    "AUTONOMOUS",
+  );
+  await expect(page.locator(".day-card")).toContainText(
+    "couverture des faits",
+    { ignoreCase: true },
+  );
   await importSlots(page, [
     "1600",
     "0800",
@@ -48,7 +55,14 @@ test("V7 : huit imports désordonnés, un cumul, huit originaux, prompts multipl
     "1400",
   ]);
   await expect(page.locator(".day-card")).toHaveCount(1);
-  await expect(page.locator(".day-card")).toContainText("COMPLETE");
+  await expect(page.locator(".day-card [data-history]")).toHaveAttribute(
+    "data-history",
+    "FULL_CHAIN",
+  );
+  await expect(page.locator(".day-card [data-coverage]")).toHaveAttribute(
+    "data-coverage",
+    "UNKNOWN",
+  );
   await nav(page, "Aujourd’hui");
   const w = workspace(page);
   await expect(w).toContainText("SYNTHÉTIQUE");

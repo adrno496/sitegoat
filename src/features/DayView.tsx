@@ -1,3 +1,4 @@
+import { SnapshotStatus } from "./SnapshotStatus";
 import { useMemo, useState } from "react";
 import { readingChanges, changesLabel } from "../data/readingChanges";
 import type { Edition, Note, ReadingState } from "../data/model";
@@ -49,14 +50,20 @@ export function DayCard({
         {versions.length} version(s) dans l’historique · une seule édition
         affichée
       </p>
-      <p className={`day-status ${day.status !== "COMPLETE" ? "warning" : ""}`}>
-        CUMUL{" "}
-        {day.status === "COMPLETE"
-          ? "COMPLETE"
-          : day.status === "PARTIAL"
-            ? "PARTIAL"
-            : "UNKNOWN"}
-      </p>
+      {currentAssessment.snapshot ? (
+        <SnapshotStatus assessment={currentAssessment} />
+      ) : (
+        <p
+          className={`day-status ${day.status !== "COMPLETE" ? "warning" : ""}`}
+        >
+          CUMUL{" "}
+          {day.status === "COMPLETE"
+            ? "COMPLETE"
+            : day.status === "PARTIAL"
+              ? "PARTIAL"
+              : "UNKNOWN"}
+        </p>
+      )}
       {!!current.slotsIncluded?.length && (
         <div className="day-slots">
           {scheduleFor(current).map((slot) => (
@@ -78,16 +85,18 @@ export function DayCard({
         Dernière édition du jour · révision externe{" "}
         {current.externalRevision ?? "inconnue"}
       </p>
-      {day.versions.some((v) => v.assessment.issues.length) && (
-        <p className="warning">
-          Conflit ou version partielle dans l’historique.
-        </p>
-      )}
-      {!!currentAssessment.missingSlots.length && (
-        <p className="warning">
-          Trous : {currentAssessment.missingSlots.join(" / ")}
-        </p>
-      )}
+      {!currentAssessment.snapshot &&
+        day.versions.some((v) => v.assessment.issues.length) && (
+          <p className="warning">
+            Conflit ou version partielle dans l’historique.
+          </p>
+        )}
+      {!currentAssessment.snapshot &&
+        !!currentAssessment.missingSlots.length && (
+          <p className="warning">
+            Trous : {currentAssessment.missingSlots.join(" / ")}
+          </p>
+        )}
       <div className="settings-actions">
         <button
           className="primary"
@@ -176,8 +185,11 @@ export function DayView({
       <p className="eyebrow">JOURNAL 360° · JOURNÉE PRIVÉE</p>
       <h1>Journée du {dateLabel(selected.date)}</h1>
       <p>
-        {versions.length} versions · {assessment.status} · {selected.dayKey}
+        {versions.length} versions ·{" "}
+        {assessment.snapshot ? "snapshot documentaire" : assessment.status} ·{" "}
+        {selected.dayKey}
       </p>
+      {assessment.snapshot && <SnapshotStatus assessment={assessment} />}
       <div className="day-slots">
         {scheduleFor(selected).map((slot) => (
           <span key={slot}>
@@ -196,7 +208,7 @@ export function DayView({
         <button className="primary" onClick={() => onOpen(selected.id)}>
           Lire cette version
         </button>
-        {day.reliable && (
+        {day.reliable && !selected.unified && (
           <button
             className="secondary"
             onClick={() => {
@@ -217,7 +229,8 @@ export function DayView({
               version locale {edition.revision}
             </h3>
             <p>
-              {result.status} · {edition.articles.length} éléments indexés ·{" "}
+              {result.snapshot ? "Snapshot documentaire" : result.status} ·{" "}
+              {edition.articles.length} éléments indexés ·{" "}
               {sizeLabel(edition.size)}
               {edition.deleted
                 ? " · Corbeille"
@@ -225,16 +238,21 @@ export function DayView({
                   ? " · Archive"
                   : ""}
             </p>
-            <p>
-              {result.newEvents} nouveaux événements identifiés ·{" "}
-              {result.corrections} corrections textuelles ·{" "}
-              {result.removedEvents} absences
-            </p>
-            {result.issues.map((issue) => (
-              <p className="warning" key={issue}>
-                {issue}
+            {result.snapshot ? (
+              <SnapshotStatus assessment={result} />
+            ) : (
+              <p>
+                {result.newEvents} nouveaux événements identifiés ·{" "}
+                {result.corrections} corrections textuelles ·{" "}
+                {result.removedEvents} absences
               </p>
-            ))}
+            )}
+            {!result.snapshot &&
+              result.issues.map((issue) => (
+                <p className="warning" key={issue}>
+                  {issue}
+                </p>
+              ))}
             <p className="small-note">
               Import {verifiedLabel(edition.importedAt)}
               {edition.sourceVerifiedAt

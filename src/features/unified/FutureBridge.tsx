@@ -5,7 +5,7 @@ import { useLive } from "../future/hooks";
 import { statusLabels } from "../future/schema";
 import { validateFuture } from "../future/import";
 import { download } from "../backup";
-import { latestUnified } from "./selectors";
+import { unifiedVersions } from "./selectors";
 export function useFutureCatalog() {
   return useLive(
     () => futureDb.documents.orderBy("updatedAt").reverse().toArray(),
@@ -17,26 +17,33 @@ export function FutureBridge({
   editions,
   onFuture,
   catalog,
+  onOpen,
   compact = false,
 }: {
   editions: Edition[];
   onFuture: (id?: string) => void;
   catalog: ReturnType<typeof useFutureCatalog>;
+  onOpen?: (id: string, article?: string) => void;
   compact?: boolean;
 }) {
   const [kind, setKind] = useState("all"),
     [horizon, setHorizon] = useState(""),
-    [error, setError] = useState("");
+    [error, setError] = useState(""),
+    [openPackage, setOpenPackage] = useState(""),
+    [insightLimit, setInsightLimit] = useState(50),
+    [packageLimit, setPackageLimit] = useState(20);
   const docs = catalog.value || [],
     loadError = catalog.error;
-  const insights = latestUnified(editions)
+  const insights = unifiedVersions(editions)
     .flatMap((e) =>
       e.unified!.futureInsights.map((i) => ({
         ...i,
         synthetic: e.unified!.synthetic,
+        origin: e,
+        key: e.date + ":" + i.id,
       })),
     )
-    .filter((i, index, all) => all.findIndex((x) => x.id === i.id) === index);
+    .filter((i, index, all) => all.findIndex((x) => x.key === i.key) === index);
   const rows = insights.filter(
     (i) =>
       (kind === "all" ||
@@ -46,9 +53,15 @@ export function FutureBridge({
       (!horizon ||
         (horizon === "2040+" ? i.year >= 2040 : String(i.year) === horizon)),
   );
-  const packages = latestUnified(editions).flatMap(
-    (e) => e.unified!.futureDocuments,
-  );
+  const packages = unifiedVersions(editions)
+    .flatMap((e) => e.unified!.futureDocuments.map((p) => ({ p, origin: e })))
+    .filter(
+      (x, index, all) =>
+        all.findIndex(
+          (y) =>
+            y.p.documentId === x.p.documentId && y.p.revision === x.p.revision,
+        ) === index,
+    );
   return (
     <section className="unified-timeline">
       <p className="eyebrow">OBSERVATIONS ET POSSIBILITÉS, DISTINCTES</p>
@@ -82,7 +95,7 @@ export function FutureBridge({
         role="group"
         aria-label="Horizons IA et Futur"
       >
-        {["", "2027", "2030", "2035", "2040+"].map((y) => (
+        {["", "2026", "2027", "2030", "2035", "2040+"].map((y) => (
           <button
             className="secondary"
             key={y}
@@ -94,14 +107,18 @@ export function FutureBridge({
         ))}
       </div>
       <div className="unified-insights">
-        {rows.slice(0, compact ? 3 : 50).map((i) => (
-          <article className="unified-panel" key={i.id}>
+        {rows.slice(0, compact ? 3 : insightLimit).map((i) => (
+          <article className="unified-panel" key={i.key}>
             <span className="unified-badge">
               {i.year} · {statusLabels[i.status]}{" "}
               {i.synthetic ? "· SYNTHÉTIQUE" : ""}
             </span>
             <h3>{i.title}</h3>
             <p>{i.description}</p>
+            <p className="small-note">
+              Original : {i.origin.editionSlot} · révision{" "}
+              {i.origin.externalRevision} · {i.origin.date}
+            </p>
             <p>
               Observation : {i.observedAt || "non établie"} · Publication :{" "}
               {i.publishedAt || "non renseignée"} · Vérification :{" "}
@@ -127,6 +144,21 @@ export function FutureBridge({
                 <p>Aucune preuve fournie : hypothèse non certifiée.</p>
               )}
             </details>
+            {i.eventId && onOpen && (
+              <button
+                className="secondary"
+                onClick={() =>
+                  onOpen(
+                    i.origin.id,
+                    i.origin.unified!.items.find(
+                      (a) => a.eventId === i.eventId,
+                    )!.id,
+                  )
+                }
+              >
+                Ouvrir l’article lié
+              </button>
+            )}
             {i.futureDocumentId &&
               docs.some((d) => d.documentId === i.futureDocumentId) && (
                 <button
@@ -139,6 +171,14 @@ export function FutureBridge({
           </article>
         ))}
       </div>
+      {!compact && rows.length > insightLimit && (
+        <button
+          className="secondary"
+          onClick={() => setInsightLimit((v) => v + 50)}
+        >
+          Afficher plus de jalons
+        </button>
+      )}
       {!rows.length && (
         <p>
           Aucun jalon importé pour cette sélection. Aucune trajectoire n’est
@@ -176,28 +216,63 @@ export function FutureBridge({
             Les notes et sauvegardes restent séparées ; aucune écriture
             simultanée entre bases.
           </p>
-          {packages.map((p) => (
+          {packages.slice(0, packageLimit).map(({ p, origin }) => (
+            <div key={p.documentId + ":" + p.revision}>
+              <details
+                onToggle={(event) => {
+                  const open = event.currentTarget.open;
+                  const key = p.documentId + ":" + p.revision;
+                  setOpenPackage((current) =>
+                    open ? key : current === key ? "" : current,
+                  );
+                }}
+              >
+                <summary>Dossier embarqué : {p.title}</summary>
+                <p>
+                  Original : {origin.editionSlot} · révision{" "}
+                  {origin.externalRevision}. Consultation sans import dans
+                  l’atlas.
+                </p>
+                {openPackage === p.documentId + ":" + p.revision && (
+                  <label>
+                    Contenu intégral du dossier
+                    <textarea
+                      readOnly
+                      value={JSON.stringify(p, null, 2)}
+                      rows={12}
+                    />
+                  </label>
+                )}
+              </details>
+              <button
+                className="secondary"
+                onClick={() => {
+                  try {
+                    const checked = validateFuture(p);
+                    download(
+                      new Blob([JSON.stringify(checked, null, 2)], {
+                        type: "application/json",
+                      }),
+                      "Future-" + p.documentId + ".json",
+                    );
+                    setError("");
+                  } catch (e) {
+                    setError(String(e));
+                  }
+                }}
+              >
+                Exporter Future JSON : {p.title}
+              </button>
+            </div>
+          ))}
+          {packages.length > packageLimit && (
             <button
               className="secondary"
-              key={p.documentId + ":" + p.revision}
-              onClick={() => {
-                try {
-                  const checked = validateFuture(p);
-                  download(
-                    new Blob([JSON.stringify(checked, null, 2)], {
-                      type: "application/json",
-                    }),
-                    "Future-" + p.documentId + ".json",
-                  );
-                  setError("");
-                } catch (e) {
-                  setError(String(e));
-                }
-              }}
+              onClick={() => setPackageLimit((v) => v + 20)}
             >
-              Exporter Future JSON : {p.title}
+              Afficher plus de dossiers embarqués
             </button>
-          ))}
+          )}
         </details>
       )}
       {error && <p role="alert">{error}</p>}

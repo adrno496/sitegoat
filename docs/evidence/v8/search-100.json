@@ -1,0 +1,12 @@
+{
+  "environment": "Desktop Chromium. 100 real UI imports of synthetic Future v1 JSON in a disposable browser context; no physical phone. Heap checkpoints after forced GC. No private data.",
+  "documents": 100,
+  "importMs": 1593.010792,
+  "indexEntryMs": 68.59016599999995,
+  "searchMs": 20.744250000000193,
+  "visibleMatches": 1,
+  "heapBeforeIndexBytes": 11115672,
+  "heapAfterIndexBytes": 13004004,
+  "indexAndSearchTaskSeconds": 0.046301999999999996,
+  "externalRequests": 0
+}

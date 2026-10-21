@@ -1,0 +1,66 @@
+- main:
+  - paragraph: QUATRE UNIVERS · UNE JOURNÉE
+  - heading "Journal 360° Unifié." [level=1]:
+    - text: Journal 360°
+    - emphasis: Unifié.
+  - paragraph: 21 octobre 2026 · Europe/Paris
+  - text: EXEMPLE SYNTHÉTIQUE
+  - navigation "Explorer le journal unifié":
+    - button "Aujourd’hui en bref"
+    - button "Économie"
+    - button "Chronologie IA"
+    - button "Mes prompts .md"
+    - button "Recherche globale" [pressed]
+  - heading "Recherche globale locale" [level=2]
+  - paragraph: Articles, sources, signaux et scénarios Future, économie, jalons et prompts. Recherche textuelle sans accents ni casse ; aucun service IA n’est appelé.
+  - text: Rechercher partout
+  - searchbox "Rechercher partout": alphav87
+  - group: Filtres de la recherche globale
+  - status: 1 résultat(s) · aucun envoi externe
+  - button "Événement H SYNTHÉTIQUE Article · 2026-10-19 · future · hypothesis"
+  - paragraph: À PORTÉE DE MAIN
+  - heading "Vos dernières éditions" [level=2]
+  - button "Toute la bibliothèque":
+    - text: Toute la bibliothèque
+    - img
+  - article:
+    - paragraph: JOURNÉE · 19 octobre 2026
+    - heading "Journal 360° V8 — 22:00 — SYNTHÉTIQUE" [level=3]
+    - paragraph: 0 actualités explicitement typées · 8 éléments indexés · 1 version(s) dans l’historique · une seule édition affichée
+    - group "État du snapshot":
+      - paragraph:
+        - strong: 8 articles disponibles
+        - text: · contenu autonome
+      - paragraph: "Intégrité : structure validée à l’import. Couverture des faits : non certifiée (UNKNOWN)."
+      - paragraph: "Historique : 1 fichier(s) distinct(s) importé(s) · snapshot unique."
+      - paragraph: "Historique intermédiaire non importé (facultatif) : 08:00 / 10:00 / 12:00 / 14:00 / 16:00 / 18:00 / 20:00. Cela ne signifie pas que des articles sont absents du fichier."
+      - paragraph: "Comparaison avec une édition antérieure : NON DISPONIBLE."
+    - text: 08:00 inclus déclaré 10:00 inclus déclaré 12:00 inclus déclaré 14:00 inclus déclaré 16:00 inclus déclaré 18:00 inclus déclaré 20:00 inclus déclaré 22:00 inclus déclaré
+    - paragraph: Dernière édition du jour · révision externe 8
+    - button "Lire Journal 360° V8 — 22:00 — SYNTHÉTIQUE": Lire la dernière édition
+    - button "Historique des éditions"
+    - button "Ajouter aux favoris Journal 360° V8 — 22:00 — SYNTHÉTIQUE":
+      - img
+  - paragraph: PLUS QU’UNE COLLECTION
+  - heading "Faites le lien entre les éditions." [level=2]:
+    - text: Faites le lien
+    - emphasis: entre les éditions.
+  - paragraph: Vos favoris, vos notes et les événements communs deviennent une mémoire que vous pouvez retrouver.
+  - button "Explorer ma mémoire":
+    - text: Explorer ma mémoire
+    - img
+  - heading "Pensé pour vous suivre" [level=3]
+  - img
+  - img
+  - strong: Votre bibliothèque, hors ligne
+  - paragraph: Après le premier chargement et l’import.
+  - img
+  - strong: Une sauvegarde que vous gardez
+  - paragraph: Exportez vos éditions et vos annotations.
+  - img
+  - strong: Des originaux préservés
+  - paragraph: Vos fichiers HTML restent inchangés.
+  - paragraph:
+    - img
+    - text: "Pensez à exporter une sauvegarde : le stockage d’un navigateur peut être perdu."
+    - button "Sauvegarder"
