@@ -1,7 +1,7 @@
 import { DisplayFilters } from "./v9/preferences";
 import { PublicGoogleLink } from "./PublicGoogleLink";
 import { EventCard } from "./EventCard";
-import { summaryPreview } from "./eventPresentation";
+import { editionDateTime, summaryPreview } from "./eventPresentation";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
@@ -66,9 +66,10 @@ export function ArticlesView({
     const item =
       items.find(
         (i) =>
-          i.article.eventId === target.eventId &&
+          (i.article.eventId || i.article.id) === target.eventId &&
           i.edition.id === target.editionId,
-      ) || items.find((i) => i.article.eventId === target.eventId);
+      ) ||
+      items.find((i) => (i.article.eventId || i.article.id) === target.eventId);
     if (item) {
       appliedTarget.current = target.ticket;
       setQuery("");
@@ -601,7 +602,7 @@ export function ArticlesView({
                           {item.article.title}
                         </button>
                         <small>
-                          {dateLabel(item.edition.date)} ·{" "}
+                          {editionDateTime(item.edition)} ·{" "}
                           {item.article.category}
                         </small>
                       </li>
@@ -617,23 +618,15 @@ export function ArticlesView({
                     </button>
                     <p className="eyebrow">
                       {current.article.category} ·{" "}
-                      {dateLabel(current.article.date || current.edition.date)}
+                      {editionDateTime(current.edition)}
                     </p>
                     <h2 ref={heading} tabIndex={-1}>
                       {current.article.title}
                     </h2>
                     <p className="muted">
-                      Dans {current.edition.title} ·{" "}
-                      {dateLabel(current.edition.date)}
+                      Dans {current.edition.title}
                       {current.edition.archived ? " · Archive" : ""}
                     </p>
-                    {currentItem && (
-                      <p>
-                        Fait : {currentItem.eventDate} · Publication :{" "}
-                        {currentItem.publishedAt} · Preuve :{" "}
-                        {currentItem.evidenceStatus} (déclarée)
-                      </p>
-                    )}
                     <PublicGoogleLink
                       question={currentItem?.publicResearchQuestion}
                     />
@@ -867,7 +860,7 @@ export function ArticlesView({
                               </p>
                               <div className="article-card-origin">
                                 <span>
-                                  {dateLabel(item.edition.date)}
+                                  {editionDateTime(item.edition)}
                                   {item.edition.archived ? " · Archive" : ""}
                                 </span>
                                 <span>{item.edition.title}</span>

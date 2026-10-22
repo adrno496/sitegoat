@@ -1,3 +1,9 @@
+import { dateLabel, type Edition } from "../data/model";
+
+export function editionDateTime(edition: Edition): string {
+  return `${dateLabel(edition.date)}${edition.editionSlot ? " " + edition.editionSlot.replace(":", "H") : ""}`;
+}
+
 // A prefix of the original text, never a generated summary. Decimal points and
 // French abbreviations do not end a sentence. Keep complete sentences even long.
 export function summaryPreview(text: string, maxSentences = 2): string {

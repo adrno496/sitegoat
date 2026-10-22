@@ -17,9 +17,9 @@ import { latestCurrent } from "./selectors";
 import { EconomyRadar } from "./EconomyRadar";
 import { FutureBridge, useFutureCatalog } from "./FutureBridge";
 import { PromptLibrary, UnifiedSearch } from "./UnifiedSearch";
-import { QuickNews } from "../v9/QuickNews";
 import "./unified.css";
 type Destination =
+  | "quick"
   | "articles"
   | "future"
   | "sentinel"
@@ -160,7 +160,7 @@ export default function UnifiedWorkspace({
             className="secondary"
             aria-pressed={panel === id}
             key={id}
-            onClick={() => go(id)}
+            onClick={() => (id === "quick" ? onNavigate("quick") : go(id))}
           >
             {label}
           </button>
@@ -194,12 +194,6 @@ export default function UnifiedWorkspace({
           onOpen={onOpen}
           onFuture={onFuture}
           onPrompts={openPrompts}
-        />
-      ) : panel === "quick" ? (
-        <QuickNews
-          editions={editions}
-          date={current?.date || undefined}
-          onArticle={onArticle}
         />
       ) : (
         <section>

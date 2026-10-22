@@ -81,16 +81,18 @@ test("V9 : Aujourd’hui épuré, Accueil, articles internes, 19 titres réels o
     expectedItem.detail,
   );
   await nav(page, "Aujourd’hui");
-  await w
-    .getByRole("button", { name: "Actualité rapide", exact: true })
-    .click();
-  await expect(w.locator(".brief-card")).toHaveCount(q.items.length);
-  await w.getByLabel("Rechercher un titre").fill(q.items[0].title);
-  await expect(w.locator(".brief-card")).toHaveCount(1);
+  await nav(page, "Actualité rapide");
+  const quick = page.locator(".quick-news");
+  await expect(quick.locator(".brief-card")).toHaveCount(
+    q.items.length + p.items.length,
+  );
+  await quick.getByLabel("Rechercher un titre").fill(q.items[0].title);
+  await expect(quick.locator(".brief-card")).toHaveCount(1);
   expect(
     new URL(
-      (await w.locator(".brief-card .google-search").getAttribute("href")) ||
-        "",
+      (await quick
+        .locator(".brief-card .google-search")
+        .getAttribute("href")) || "",
     ).searchParams.get("q"),
   ).toBe(q.items[0].googleQuery);
   await nav(page, "Accueil");
@@ -174,20 +176,11 @@ test("V9 : HTML original offline, filtres, accordéons, Google et source contrô
     .locator(".unified-workspace")
     .getByRole("button", { name: "Lire la dernière édition", exact: true })
     .click();
-  await expect(page.locator(".edition-frame")).toHaveAttribute("sandbox", "");
-  await page
-    .getByRole("button", { name: "Afficher le HTML d’origine", exact: true })
-    .click();
-  await page
-    .getByRole("button", {
-      name: "Je fais confiance à ce fichier",
-      exact: true,
-    })
-    .click();
   await expect(page.locator(".edition-frame")).toHaveAttribute(
     "sandbox",
     "allow-scripts",
   );
+  await expect(page.locator(".original-html-notice")).toHaveCount(0);
   const f = page.frameLocator(".edition-frame");
   for (const width of [360, 768, 1440]) {
     await page.setViewportSize({ width, height: 1000 });
@@ -375,6 +368,10 @@ test("V9 : filtres Articles combinables, calendrier de faits et affichage intég
     })
     .click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
+  await nav(page, "Paramètres");
+  await page
+    .getByLabel("Afficher les filtres et le tri", { exact: true })
+    .check();
   await nav(page, "Aujourd’hui");
   await page
     .locator(".unified-workspace")
@@ -382,25 +379,33 @@ test("V9 : filtres Articles combinables, calendrier de faits et affichage intég
     .click();
   await expect(page.locator(".brief-card")).toHaveCount(30);
   await expect(page.locator(".quick-news [role=status]")).toContainText(
-    "100 titre(s) sur 100",
+    `${100 + f.p.items.length} titre(s) sur ${100 + f.p.items.length}`,
   );
   await page.getByLabel("Rechercher un titre").fill("Titre SYNTHÉTIQUE 99");
   await expect(page.locator(".brief-card")).toHaveCount(1);
   await page.getByLabel("Rechercher un titre").fill("");
   await page
-    .getByRole("button", { name: "Tout afficher (100 titres)", exact: true })
+    .getByRole("button", {
+      name: `Tout afficher (${100 + f.p.items.length} titres)`,
+      exact: true,
+    })
     .click();
-  await expect(page.locator(".brief-card")).toHaveCount(100);
+  await expect(page.locator(".brief-card")).toHaveCount(100 + f.p.items.length);
   await page
-    .getByLabel("Thème des brèves", { exact: true })
+    .getByLabel("Thème des titres", { exact: true })
     .selectOption("Sciences");
   await expect(page.locator(".quick-news [role=status]")).toContainText(
-    "50 titre(s) sur 100",
+    `${50 + f.p.items.filter((i) => i.category === "Sciences").length} titre(s) sur ${100 + f.p.items.length}`,
   );
   await page
-    .getByRole("button", { name: "Tout afficher (50 titres)", exact: true })
+    .getByRole("button", {
+      name: `Tout afficher (${50 + f.p.items.filter((i) => i.category === "Sciences").length} titres)`,
+      exact: true,
+    })
     .click();
-  await expect(page.locator(".brief-card")).toHaveCount(50);
+  await expect(page.locator(".brief-card")).toHaveCount(
+    50 + f.p.items.filter((i) => i.category === "Sciences").length,
+  );
   await nav(page, "Articles");
   await page.locator(".articles-filter-options summary").click();
   const sample = f.p.items[0];
@@ -438,4 +443,79 @@ test("V9 : filtres Articles combinables, calendrier de faits et affichage intég
   );
   await page.getByLabel("Faits depuis le", { exact: true }).fill("2099-01-01");
   await expect(page.locator(".articles-grid .event-card")).toHaveCount(0);
+});
+
+test("V9 : onglet Actualité rapide, titres des articles automatiques, dates simples et HTML directement interactif", async ({
+  page,
+}) => {
+  const { p } = await add(page);
+  const root = page.locator(
+    (await page.locator(".sidebar").isVisible()) ? ".sidebar" : ".mobile-nav",
+  );
+  const names = await root.getByRole("button").allTextContents();
+  const today = names.findIndex((n) => n.trim() === "Aujourd’hui");
+  expect(names[today + 1].trim()).toBe("Actualité rapide");
+  expect(names[today + 2].trim()).toMatch(/^Articles(?:\d+)?$/);
+  await nav(page, "Actualité rapide");
+  await expect(page.locator(".brief-card")).toHaveCount(p.items.length + 1);
+  await page.getByLabel("Rechercher un titre").fill(p.items[0].title);
+  await expect(page.locator(".brief-card")).toHaveCount(1);
+  await page
+    .getByRole("button", { name: "Lire l’article détaillé", exact: true })
+    .click();
+  await expect(page.locator(".article-detail h2")).toHaveText(p.items[0].title);
+  await expect(page.locator(".article-detail")).not.toContainText("Preuve :");
+  await nav(page, "Articles");
+  await page
+    .getByRole("button", { name: "Retour aux articles", exact: true })
+    .click();
+  const card = page.locator(".articles-grid .event-card").first();
+  await expect(card.locator(".event-meta")).toHaveText(
+    `${new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeZone: "Europe/Paris" }).format(new Date(p.editionDate + "T12:00:00Z"))} ${p.editionSlot.replace(":", "H")}`,
+  );
+  await expect(card).not.toContainText("Première apparition :");
+  await expect(card.locator(".event-proof")).toHaveCount(0);
+  await nav(page, "Aujourd’hui");
+  await page
+    .locator(".unified-workspace")
+    .getByRole("button", { name: "Lire la dernière édition", exact: true })
+    .click();
+  await expect(page.locator(".edition-frame")).toHaveAttribute(
+    "sandbox",
+    "allow-scripts",
+  );
+  await expect(
+    page.getByRole("dialog", { name: "Activer les interactions ?" }),
+  ).toHaveCount(0);
+  const frame = page.frameLocator(".edition-frame");
+  await frame.locator('[data-panel="articles"]').click();
+  await expect(frame.locator("#articlesList>article")).toHaveCount(
+    p.items.length,
+  );
+  await nav(page, "Actualité rapide");
+  // An imported legacy document without quickBriefsData immediately adds its titles.
+  await page
+    .getByLabel("Fichiers HTML à importer")
+    .setInputFiles("tests/fixtures/edition-13.html");
+  await page
+    .getByRole("button", {
+      name: "Enregistrer dans ma bibliothèque",
+      exact: true,
+    })
+    .click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await nav(page, "Actualité rapide");
+  await page.getByLabel("Rechercher un titre").fill("");
+  await expect(page.locator(".brief-card")).toHaveCount(p.items.length + 4);
+  await page.reload();
+  await nav(page, "Actualité rapide");
+  await expect(page.locator(".brief-card")).toHaveCount(p.items.length + 4);
+  for (const width of [360, 768, 1440]) {
+    await page.setViewportSize({ width, height: 1000 });
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+  }
 });

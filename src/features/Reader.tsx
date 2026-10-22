@@ -71,7 +71,6 @@ export function Reader({
   onDay?: (dayKey: string) => void;
   run: (action: () => Promise<unknown>, success?: string) => void;
 }) {
-  const secureByDefault = !!edition.unified;
   // Editions are immutable by original hash. Reading states/notes refresh the
   // repository but must not reload the publisher’s current page.
   const [originalEdition] = useState(edition);
@@ -91,7 +90,7 @@ export function Reader({
   const [expanded, setExpanded] = useState(true);
   const [bytes, setBytes] = useState<Uint8Array>();
   const [mode, setMode] = useState<"safe" | "interactive" | "text">(
-    secureByDefault ? "safe" : "interactive",
+    "interactive",
   );
   const [confirm, setConfirm] = useState(false);
   const [originalActionOpen, setOriginalActionOpen] = useState(false);
@@ -271,7 +270,7 @@ export function Reader({
   useEffect(() => {
     setExpanded(true);
     setBytes(undefined);
-    setMode(secureByDefault ? "safe" : "interactive");
+    setMode("interactive");
     setNote("");
     setLoadError("");
     let canceled = false;
@@ -283,11 +282,7 @@ export function Reader({
         if (!canceled) {
           if (o) {
             setBytes(o.bytes);
-            setMode(
-              secureByDefault || trust?.value === "safe"
-                ? "safe"
-                : "interactive",
-            );
+            setMode(trust?.value === "safe" ? "safe" : "interactive");
           } else
             setLoadError(
               "Original manquant. La lecture textuelle reste disponible.",
@@ -300,7 +295,7 @@ export function Reader({
     return () => {
       canceled = true;
     };
-  }, [edition.id, secureByDefault]);
+  }, [edition.id]);
   useEffect(() => {
     if (!expanded || !surfaceRef.current) return;
     const surface = surfaceRef.current;

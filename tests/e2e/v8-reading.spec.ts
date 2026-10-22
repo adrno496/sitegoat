@@ -33,7 +33,7 @@ async function today(page: Page) {
     .click();
 }
 for (const hour of readingHours)
-  test(`Lecture réelle du cadre ${hour} h : HTML d’origine conservé, interactions uniquement après confirmation, offline`, async ({
+  test(`Lecture réelle du cadre ${hour} h : HTML d’origine conservé, interactions directes, offline`, async ({
     page,
     context,
   }, info) => {
@@ -52,31 +52,6 @@ for (const hour of readingHours)
       .getByRole("button", { name: "Lire la dernière édition", exact: true })
       .click();
     const frame = page.frameLocator(".edition-frame");
-    await expect(page.locator(".edition-frame")).toHaveAttribute("sandbox", "");
-    await expect(frame.locator("[data-journal360-safe-unified]")).toHaveCount(
-      0,
-    );
-    await expect(frame.locator("#view")).toBeEmpty();
-    expect(await frame.locator("script").count()).toBe(0);
-    await page
-      .getByRole("button", { name: "Afficher le HTML d’origine", exact: true })
-      .click();
-    const trust = page.getByRole("dialog", {
-      name: "Activer les interactions ?",
-    });
-    await trust
-      .getByRole("button", { name: "Rester en mode sécurisé", exact: true })
-      .click();
-    await expect(page.locator(".edition-frame")).toHaveAttribute("sandbox", "");
-    await page
-      .getByRole("button", { name: "Afficher le HTML d’origine", exact: true })
-      .click();
-    await trust
-      .getByRole("button", {
-        name: "Je fais confiance à ce fichier",
-        exact: true,
-      })
-      .click();
     await expect(page.locator(".edition-frame")).toHaveAttribute(
       "sandbox",
       "allow-scripts",
@@ -125,9 +100,11 @@ for (const hour of readingHours)
     await page
       .getByRole("button", { name: "Lire la dernière édition", exact: true })
       .click();
-    // A previous confirmation never silently enables scripts on a later visit.
-    await expect(page.locator(".edition-frame")).toHaveAttribute("sandbox", "");
-    await expect(page.locator(".original-html-notice")).toBeVisible();
+    await expect(page.locator(".edition-frame")).toHaveAttribute(
+      "sandbox",
+      "allow-scripts",
+    );
+    await expect(page.locator(".original-html-notice")).toHaveCount(0);
   });
 test("Développer utilise toute la largeur de la page et Réduire rétablit la carte", async ({
   page,

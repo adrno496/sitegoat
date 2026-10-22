@@ -3190,7 +3190,7 @@ textarea {
 .v9-watch-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,280px),1fr)); gap: 1rem; }
 .brief-list { display: grid; gap: .7rem; margin: 1rem 0; }
 .brief-card { padding: 1rem 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
-.brief-card h3 { font-size: 1.08rem; line-height: 1.5; margin: .4rem 0; }
+.brief-card h2 { font-size: 1.08rem; line-height: 1.5; margin: .4rem 0; }
 .event-public-actions { display: flex; flex-wrap: wrap; gap: .6rem; margin: .8rem 0; align-items: center; }
 a.secondary, a.primary { text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
 .event-proof { font-size: .8rem; color: var(--muted); }
@@ -3219,6 +3219,7 @@ a.secondary, a.primary { text-decoration: none; display: inline-flex; align-item
   .quick-news .unified-filters { display: grid; grid-template-columns: minmax(0,1fr); }
   .mobile-nav { flex-wrap: wrap; max-height: 42vh; overflow-y: auto; }
   .mobile-nav button { min-width: 0; flex: 1 0 18%; font-size: .65rem; }
+  .mobile-nav[data-expanded="false"] button { flex: 1 1 0; padding-inline: 2px; }
   .v9-table-scroll table { min-width: 600px; }
 }
 @media (prefers-reduced-motion: reduce) {

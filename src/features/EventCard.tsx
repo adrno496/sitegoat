@@ -3,7 +3,7 @@ import { PublicGoogleLink } from "./PublicGoogleLink";
 import { useId, useLayoutEffect, useRef, useState } from "react";
 import type { Edition } from "../data/model";
 import type { UnifiedEdition } from "../data/unified";
-import { summaryPreview } from "./eventPresentation";
+import { editionDateTime, summaryPreview } from "./eventPresentation";
 import { PromptAccess } from "./unified/PromptAccess";
 import { useInterface } from "./interfacePreferences";
 import { GoogleAiDialog } from "./GoogleAiDialog";
@@ -60,22 +60,8 @@ export function EventCard({
             : i.importance === "important"
               ? "Important"
               : "Contexte"}{" "}
-          · {i.eventDate}
         </p>
-        <p className="event-meta">
-          Première apparition : {i.firstSeenSlot} · Édition :{" "}
-          {edition.editionSlot} Europe/Paris
-          {i.corrections.length > 0 && " · Corrigé"}
-        </p>
-        <p className="event-proof">
-          Preuve :{" "}
-          {i.evidenceStatus === "sourced"
-            ? "Sourcé (déclaré)"
-            : i.evidenceStatus === "hypothesis"
-              ? "Hypothèse"
-              : "Non vérifié"}{" "}
-          · Publication : {i.publishedAt.slice(0, 10)}
-        </p>
+        <p className="event-meta">{editionDateTime(edition)}</p>
         {i.sourceRecords[0] && (
           <p className="small-note event-source">
             Source :{" "}

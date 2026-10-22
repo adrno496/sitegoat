@@ -1,3 +1,4 @@
+import { QuickNews } from "./features/v9/QuickNews";
 import { hydrateQuickBriefs } from "./features/hydrateQuickBriefs";
 import {
   DisplayFilters,
@@ -35,6 +36,7 @@ import { useRegisterSW } from "virtual:pwa-register/react";
 import type { Session } from "@supabase/supabase-js";
 import {
   Home,
+  Newspaper,
   Library,
   Search,
   BookOpen,
@@ -112,6 +114,7 @@ const FutureImportDialog = lazy(() => import("./features/future/ImportDialog"));
 type Tab =
   | "home"
   | "today"
+  | "quick"
   | "library"
   | "articles"
   | "search"
@@ -123,8 +126,9 @@ type Tab =
 const tabs = [
   { id: "home" as const, label: "Accueil", icon: Home },
   { id: "today" as const, label: "Aujourd’hui", icon: Home },
-  { id: "library" as const, label: "Bibliothèque", icon: Library },
+  { id: "quick" as const, label: "Actualité rapide", icon: Newspaper },
   { id: "articles" as const, label: "Articles", icon: FileText },
+  { id: "library" as const, label: "Bibliothèque", icon: Library },
   { id: "ai-major" as const, label: "IA majeur", icon: Brain },
   { id: "sentinel" as const, label: "Sentinel", icon: Shield },
   { id: "future" as const, label: "Le Futur", icon: Clock },
@@ -158,7 +162,7 @@ function JournalApp() {
   const visibleTabs = tabs.filter(
     (t) =>
       extraNavigation ||
-      ["home", "today", "articles", "settings"].includes(t.id),
+      ["home", "today", "quick", "articles", "settings"].includes(t.id),
   );
   const [importsDiagnosticOpen, setImportsDiagnosticOpen] = useState(false);
   const [todayPanel, setTodayPanel] = useState("overview");
@@ -1178,6 +1182,11 @@ function JournalApp() {
               </Suspense>
             </div>
           )}
+          {data.ready && tab === "quick" && (
+            <div hidden={!!current || !!selectedDay}>
+              <QuickNews editions={allEditions} onArticle={readArticle} />
+            </div>
+          )}
           {data.ready && tab === "future" && !current && !selectedDay && (
             <Suspense fallback={<p>Ouverture de Le Futur…</p>}>
               <FutureView
@@ -1205,13 +1214,15 @@ function JournalApp() {
                   ? "Retour à Paramètres"
                   : tab === "home"
                     ? "Retour à Accueil"
-                    : tab === "today" && !!current.unified
-                      ? "Retour à Aujourd’hui"
-                      : tab === "articles"
-                        ? "Retour aux articles"
-                        : isCollection(tab)
-                          ? `Retour à ${collections.find((collection) => collection.id === tab)!.label}`
-                          : undefined
+                    : tab === "quick"
+                      ? "Retour à Actualité rapide"
+                      : tab === "today" && !!current.unified
+                        ? "Retour à Aujourd’hui"
+                        : tab === "articles"
+                          ? "Retour aux articles"
+                          : isCollection(tab)
+                            ? `Retour à ${collections.find((collection) => collection.id === tab)!.label}`
+                            : undefined
               }
               onOpen={openEdition}
               onDay={openDay}
@@ -1235,8 +1246,8 @@ function JournalApp() {
                   onArticle={readArticle}
                   onImport={() => fileRef.current?.click()}
                   onToday={(panel = "overview") => {
-                    setTodayPanel(panel);
-                    navigate("today");
+                    setTodayPanel(panel === "quick" ? "overview" : panel);
+                    navigate(panel === "quick" ? "quick" : "today");
                   }}
                 />
               )}
@@ -2164,7 +2175,11 @@ function JournalApp() {
           <span>PRIVÉ PAR DÉFAUT</span>
         </footer>
       </div>
-      <nav className="mobile-nav" aria-label="Navigation mobile">
+      <nav
+        className="mobile-nav"
+        aria-label="Navigation mobile"
+        data-expanded={extraNavigation}
+      >
         {visibleTabs.map((t) => (
           <button
             aria-current={tab === t.id && !selected ? "page" : undefined}
