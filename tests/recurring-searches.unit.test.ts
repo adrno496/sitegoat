@@ -1,5 +1,6 @@
 import { expect, it } from "vitest";
 import {
+  defaultRecurringSearches,
   nextSearchAt,
   parseRecurringSearches,
   recurringGoogleUrl,
@@ -16,13 +17,26 @@ const search: RecurringSearch = {
 };
 
 it("conserve les thèmes, requêtes, fréquences et consultations sans modifier le texte", () => {
-  expect(parseRecurringSearches(null)).toEqual([]);
+  const defaults = defaultRecurringSearches();
+  expect(parseRecurringSearches(null)).toEqual(defaults);
+  expect(defaults).toHaveLength(10);
+  expect(new Set(defaults.map((s) => s.id)).size).toBe(10);
+  expect(parseRecurringSearches(serializeRecurringSearches(defaults))).toEqual(
+    defaults,
+  );
+  const custom = { ...search, theme: "Cybersécurité" };
+  const migrated = parseRecurringSearches(
+    JSON.stringify({ version: 1, items: [custom] }),
+  );
+  expect(migrated).toHaveLength(10);
+  expect(migrated[0]).toEqual(custom);
+  expect(parseRecurringSearches(serializeRecurringSearches([]))).toEqual([]);
   expect(parseRecurringSearches(serializeRecurringSearches([search]))).toEqual([
     search,
   ]);
   for (const raw of [
     "{",
-    '{"version":2,"items":[]}',
+    '{"version":3,"items":[]}',
     JSON.stringify({ version: 1, items: [{ ...search, cadence: "hourly" }] }),
     JSON.stringify({
       version: 1,

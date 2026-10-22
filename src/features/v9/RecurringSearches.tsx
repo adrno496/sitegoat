@@ -46,6 +46,7 @@ export function RecurringSearches({ themes }: { themes: string[] }) {
   const [theme, setTheme] = useState("");
   const [query, setQuery] = useState("");
   const [cadence, setCadence] = useState<SearchCadence>("daily");
+  const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<string | null>(null);
   const formId = useId();
 
@@ -64,6 +65,8 @@ export function RecurringSearches({ themes }: { themes: string[] }) {
     }
   }
   function reset() {
+    setFormOpen(false);
+    document.getElementById(`${formId}-trigger`)?.focus();
     setEditing(null);
     setTheme("");
     setQuery("");
@@ -113,7 +116,30 @@ export function RecurringSearches({ themes }: { themes: string[] }) {
         Google en un clic. Vos thèmes et vos dernières consultations restent
         enregistrés sur cet appareil.
       </p>
-      <form className="quiet-panel recurring-search-form" onSubmit={submit}>
+      <button
+        className="secondary"
+        type="button"
+        id={`${formId}-trigger`}
+        aria-expanded={formOpen}
+        aria-controls={`${formId}-form`}
+        onClick={() => {
+          if (formOpen) reset();
+          else {
+            setFormOpen(true);
+            requestAnimationFrame(() =>
+              document.getElementById(`${formId}-theme`)?.focus(),
+            );
+          }
+        }}
+      >
+        Ajouter une recherche
+      </button>
+      <form
+        id={`${formId}-form`}
+        hidden={!formOpen}
+        className="quiet-panel recurring-search-form"
+        onSubmit={submit}
+      >
         <h3>{editing ? "Modifier la recherche" : "Ajouter une recherche"}</h3>
         <label htmlFor={`${formId}-theme`}>Thème</label>
         <input
@@ -158,11 +184,9 @@ export function RecurringSearches({ themes }: { themes: string[] }) {
           <button className="primary" type="submit">
             {editing ? "Enregistrer les modifications" : "Ajouter la recherche"}
           </button>
-          {editing && (
-            <button className="secondary" type="button" onClick={reset}>
-              Annuler
-            </button>
-          )}
+          <button className="secondary" type="button" onClick={reset}>
+            Annuler
+          </button>
         </div>
       </form>
       {error && <p role="alert">{error}</p>}
@@ -217,11 +241,14 @@ export function RecurringSearches({ themes }: { themes: string[] }) {
                 <button
                   className="secondary"
                   onClick={() => {
+                    setFormOpen(true);
                     setEditing(search.id);
                     setTheme(search.theme);
                     setQuery(search.query);
                     setCadence(search.cadence);
-                    document.getElementById(`${formId}-theme`)?.focus();
+                    requestAnimationFrame(() =>
+                      document.getElementById(`${formId}-theme`)?.focus(),
+                    );
                   }}
                 >
                   Modifier

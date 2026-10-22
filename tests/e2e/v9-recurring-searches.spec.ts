@@ -25,6 +25,11 @@ test("Récurrent : thèmes, édition, recherche Google récente, persistance et 
   await expect(recurring).toBeFocused();
   await expect(recurring).toHaveAttribute("aria-selected", "true");
   const panel = page.getByRole("tabpanel", { name: "Récurrent", exact: true });
+  await expect(panel.locator(".recurring-search-form")).toBeHidden();
+  await expect(panel.locator(".recurring-search-card")).toHaveCount(10);
+  await panel
+    .getByRole("button", { name: "Ajouter une recherche", exact: true })
+    .click();
   await panel
     .getByLabel("Thème", { exact: true })
     .fill("Intelligence artificielle");
@@ -36,11 +41,15 @@ test("Récurrent : thèmes, édition, recherche Google récente, persistance et 
   await panel
     .getByRole("button", { name: "Ajouter la recherche", exact: true })
     .click();
-  await panel.getByLabel("Thème", { exact: true }).fill("Cybersécurité");
+  await expect(panel.locator(".recurring-search-form")).toBeHidden();
+  await panel
+    .getByRole("button", { name: "Ajouter une recherche", exact: true })
+    .click();
+  await panel.getByLabel("Thème", { exact: true }).fill("Ma veille cyber");
   await panel
     .getByRole("button", { name: "Ajouter la recherche", exact: true })
     .click();
-  await expect(panel.locator(".recurring-search-card")).toHaveCount(2);
+  await expect(panel.locator(".recurring-search-card")).toHaveCount(12);
   const card = panel.locator(".recurring-search-card").filter({
     has: page.getByRole("heading", {
       name: "Intelligence artificielle",
@@ -63,6 +72,7 @@ test("Récurrent : thèmes, édition, recherche Google récente, persistance et 
   await expect(card).toContainText("Dernière consultation :");
   await expect(card).toContainText("À jour");
   await card.getByRole("button", { name: "Modifier", exact: true }).click();
+  await expect(panel.locator(".recurring-search-form")).toBeVisible();
   await panel.getByLabel("Thème", { exact: true }).fill("IA et énergie");
   await panel.getByLabel("Fréquence", { exact: true }).selectOption("monthly");
   await panel
@@ -71,7 +81,7 @@ test("Récurrent : thèmes, édition, recherche Google récente, persistance et 
   await page.reload();
   await navigate(page, "Actualité rapide");
   await page.getByRole("tab", { name: "Récurrent", exact: true }).click();
-  await expect(panel.locator(".recurring-search-card")).toHaveCount(2);
+  await expect(panel.locator(".recurring-search-card")).toHaveCount(12);
   const edited = panel.locator(".recurring-search-card").filter({
     has: page.getByRole("heading", { name: "IA et énergie", exact: true }),
   });
@@ -103,14 +113,14 @@ test("Récurrent : thèmes, édition, recherche Google récente, persistance et 
     });
   }
   await edited.getByRole("button", { name: "Supprimer", exact: true }).click();
-  await expect(panel.locator(".recurring-search-card")).toHaveCount(1);
+  await expect(panel.locator(".recurring-search-card")).toHaveCount(11);
   await page.reload();
   await navigate(page, "Actualité rapide");
   await page.getByRole("tab", { name: "Récurrent", exact: true }).click();
-  await expect(panel.locator(".recurring-search-card")).toHaveCount(1);
-  await expect(panel.locator(".recurring-search-card")).toContainText(
-    "Cybersécurité",
-  );
+  await expect(panel.locator(".recurring-search-card")).toHaveCount(11);
+  await expect(
+    panel.getByRole("heading", { name: "Ma veille cyber", exact: true }),
+  ).toBeVisible();
   await page.getByRole("tab", { name: "Tous les titres", exact: true }).click();
   await expect(
     page.getByLabel("Rechercher un titre", { exact: true }),
@@ -132,6 +142,9 @@ test("Récurrent : stockage indisponible, recherches utilisables pendant la sess
   await navigate(page, "Actualité rapide");
   await page.getByRole("tab", { name: "Récurrent", exact: true }).click();
   const panel = page.getByRole("tabpanel", { name: "Récurrent", exact: true });
+  await panel
+    .getByRole("button", { name: "Ajouter une recherche", exact: true })
+    .click();
   await panel.getByLabel("Thème", { exact: true }).fill("Énergie");
   await panel
     .getByRole("button", { name: "Ajouter la recherche", exact: true })
@@ -139,8 +152,11 @@ test("Récurrent : stockage indisponible, recherches utilisables pendant la sess
   await expect(panel.getByRole("alert")).toContainText(
     "conservées pour cette session",
   );
-  await expect(panel.locator(".recurring-search-card")).toHaveCount(1);
+  await expect(panel.locator(".recurring-search-card")).toHaveCount(11);
   await expect(
-    panel.getByRole("link", { name: "Rechercher sur Google", exact: true }),
+    panel
+      .locator(".recurring-search-card")
+      .last()
+      .getByRole("link", { name: "Rechercher sur Google", exact: true }),
   ).toHaveAttribute("href", /q=%C3%89nergie/);
 });

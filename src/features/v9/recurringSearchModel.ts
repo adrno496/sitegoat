@@ -16,17 +16,93 @@ const searchSchema = z
     lastOpenedAt: z.iso.datetime().nullable(),
   })
   .strict();
-const schema = z
-  .object({ version: z.literal(1), items: z.array(searchSchema) })
-  .strict();
+const schema = z.discriminatedUnion("version", [
+  z.object({ version: z.literal(1), items: z.array(searchSchema) }).strict(),
+  z.object({ version: z.literal(2), items: z.array(searchSchema) }).strict(),
+]);
 export type RecurringSearch = z.infer<typeof searchSchema>;
 
+const preparedThemes: {
+  theme: string;
+  query: string;
+  cadence: SearchCadence;
+}[] = [
+  {
+    theme: "IA et agents",
+    query: "intelligence artificielle agents IA modèles nouveautés",
+    cadence: "daily",
+  },
+  {
+    theme: "Cybersécurité",
+    query: "cybersécurité vulnérabilités attaques correctifs",
+    cadence: "daily",
+  },
+  {
+    theme: "Économie et marchés",
+    query: "économie inflation taux banques centrales marchés",
+    cadence: "daily",
+  },
+  {
+    theme: "Géopolitique",
+    query: "géopolitique relations internationales conflits diplomatie",
+    cadence: "daily",
+  },
+  {
+    theme: "Énergie et climat",
+    query: "énergie transition énergétique climat innovations",
+    cadence: "daily",
+  },
+  {
+    theme: "Sciences et recherche",
+    query: "recherche scientifique découvertes nouvelles études",
+    cadence: "weekly",
+  },
+  {
+    theme: "Robotique",
+    query: "robotique robots humanoïdes automatisation nouveautés",
+    cadence: "weekly",
+  },
+  {
+    theme: "Espace",
+    query: "spatial satellites exploration spatiale lancements",
+    cadence: "weekly",
+  },
+  {
+    theme: "Santé et biotechnologies",
+    query: "santé biotechnologies recherche médicale avancées",
+    cadence: "weekly",
+  },
+  {
+    theme: "Prospective 2030",
+    query: "prospective 2030 tendances technologies scénarios futur",
+    cadence: "monthly",
+  },
+];
+export function defaultRecurringSearches(): RecurringSearch[] {
+  return preparedThemes.map((search, index) => ({
+    ...search,
+    id: `b79a8612-7d6c-4f90-8a31-${String(index + 1).padStart(12, "0")}`,
+    lastOpenedAt: null,
+  }));
+}
 export function parseRecurringSearches(raw: string | null): RecurringSearch[] {
-  if (raw === null) return [];
-  return schema.parse(JSON.parse(raw)).items;
+  if (raw === null) return defaultRecurringSearches();
+  const stored = schema.parse(JSON.parse(raw));
+  if (stored.version === 2) return stored.items;
+  // Seed existing installations once, preserving their custom themes. Version
+  // 2 also remembers intentional edits, deletions and an empty collection.
+  const themes = new Set(
+    stored.items.map((s) => s.theme.toLocaleLowerCase("fr")),
+  );
+  return [
+    ...stored.items,
+    ...defaultRecurringSearches().filter(
+      (s) => !themes.has(s.theme.toLocaleLowerCase("fr")),
+    ),
+  ];
 }
 export function serializeRecurringSearches(items: RecurringSearch[]) {
-  return JSON.stringify(schema.parse({ version: 1, items }));
+  return JSON.stringify(schema.parse({ version: 2, items }));
 }
 export function recurringGoogleUrl(
   search: Pick<RecurringSearch, "query" | "cadence">,
