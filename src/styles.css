@@ -3231,3 +3231,11 @@ a.secondary, a.primary { text-decoration: none; display: inline-flex; align-item
 .unified-masthead { flex-wrap: wrap; }
 .unified-masthead > div { min-width: 0; }
 .unified-badge { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+
+.quick-news-tabs { margin: 1rem 0 1.5rem; flex-wrap: wrap; }
+.quick-news-tabs [aria-selected="true"] { background: var(--ink); color: var(--surface); }
+.recurring-search-form { max-width: 680px; margin: 1.5rem 0; }
+.recurring-search-form > label { display: block; margin-top: 1rem; }
+.recurring-search-form > input, .recurring-search-form > select { width: 100%; }
+.recurring-search-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 1rem; }
+.recurring-search-card { min-width: 0; overflow-wrap: anywhere; }

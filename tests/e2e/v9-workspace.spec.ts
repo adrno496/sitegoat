@@ -378,7 +378,11 @@ test("V9 : filtres Articles combinables, calendrier de faits et affichage intég
     .getByRole("button", { name: "Actualité rapide", exact: true })
     .click();
   await expect(page.locator(".brief-card")).toHaveCount(30);
-  await expect(page.locator(".quick-news [role=status]")).toContainText(
+  await expect(
+    page
+      .getByRole("tabpanel", { name: "Tous les titres", exact: true })
+      .getByRole("status"),
+  ).toContainText(
     `${100 + f.p.items.length} titre(s) sur ${100 + f.p.items.length}`,
   );
   await page.getByLabel("Rechercher un titre").fill("Titre SYNTHÉTIQUE 99");
@@ -394,7 +398,11 @@ test("V9 : filtres Articles combinables, calendrier de faits et affichage intég
   await page
     .getByLabel("Thème des titres", { exact: true })
     .selectOption("Sciences");
-  await expect(page.locator(".quick-news [role=status]")).toContainText(
+  await expect(
+    page
+      .getByRole("tabpanel", { name: "Tous les titres", exact: true })
+      .getByRole("status"),
+  ).toContainText(
     `${50 + f.p.items.filter((i) => i.category === "Sciences").length} titre(s) sur ${100 + f.p.items.length}`,
   );
   await page
