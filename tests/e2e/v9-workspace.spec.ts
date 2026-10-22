@@ -346,12 +346,12 @@ test("V9 : panne du stockage des préférences, réglages conservés pour la ses
   );
 });
 
-test("V9 : filtres Articles combinables, calendrier de faits et pagination de 60 brèves synthétiques", async ({
+test("V9 : filtres Articles combinables, calendrier de faits et affichage intégral de 100 brèves synthétiques", async ({
   page,
 }) => {
   const f = interactiveV9Fixture();
   const original = JSON.stringify(f.q).replaceAll("<", "\\u003c");
-  f.q.items = Array.from({ length: 60 }, (_, n) => ({
+  f.q.items = Array.from({ length: 100 }, (_, n) => ({
     ...f.q.items[0],
     eventId: `synthetic.brief.${n}`,
     title: `Titre SYNTHÉTIQUE ${n}`,
@@ -364,7 +364,7 @@ test("V9 : filtres Articles combinables, calendrier de faits et pagination de 60
   );
   await page.goto("/");
   await page.getByLabel("Fichiers HTML à importer").setInputFiles({
-    name: "60-titres-synthetiques.html",
+    name: "100-titres-synthetiques.html",
     mimeType: "text/html",
     buffer: bytes,
   });
@@ -381,14 +381,26 @@ test("V9 : filtres Articles combinables, calendrier de faits et pagination de 60
     .getByRole("button", { name: "Actualité rapide", exact: true })
     .click();
   await expect(page.locator(".brief-card")).toHaveCount(30);
+  await expect(page.locator(".quick-news [role=status]")).toContainText(
+    "100 titre(s) sur 100",
+  );
+  await page.getByLabel("Rechercher un titre").fill("Titre SYNTHÉTIQUE 99");
+  await expect(page.locator(".brief-card")).toHaveCount(1);
+  await page.getByLabel("Rechercher un titre").fill("");
   await page
-    .getByRole("button", { name: "Afficher 30 titres de plus", exact: true })
+    .getByRole("button", { name: "Tout afficher (100 titres)", exact: true })
     .click();
-  await expect(page.locator(".brief-card")).toHaveCount(60);
+  await expect(page.locator(".brief-card")).toHaveCount(100);
   await page
     .getByLabel("Thème des brèves", { exact: true })
     .selectOption("Sciences");
-  await expect(page.locator(".brief-card")).toHaveCount(30);
+  await expect(page.locator(".quick-news [role=status]")).toContainText(
+    "50 titre(s) sur 100",
+  );
+  await page
+    .getByRole("button", { name: "Tout afficher (50 titres)", exact: true })
+    .click();
+  await expect(page.locator(".brief-card")).toHaveCount(50);
   await nav(page, "Articles");
   await page.locator(".articles-filter-options summary").click();
   const sample = f.p.items[0];

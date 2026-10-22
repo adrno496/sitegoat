@@ -113,6 +113,36 @@ describe("V9 compagnon distinct et conservation", () => {
     expect(indexQuickBriefs([earlier, later])[0].promoted).toBe(true);
     expect(resolveDay([earlier, later]).current?.editionSlot).toBe("10:00");
   });
+  it.each([100, 600])(
+    "accepte %i brèves distinctes sans plafond de quantité ni troncature",
+    async (count) => {
+      const { q, bytes } = v9Fixture();
+      const expanded = {
+        ...q,
+        items: Array.from({ length: count }, (_, n) => ({
+          ...q.items[0],
+          eventId: `synthetic.event.${n}`,
+          title: `Nouvelle distincte SYNTHÉTIQUE ${n}`,
+        })),
+      };
+      const html = new TextDecoder()
+        .decode(bytes)
+        .replace(
+          JSON.stringify(q).replaceAll("<", "\\u003c"),
+          JSON.stringify(expanded).replaceAll("<", "\\u003c"),
+        );
+      expect(
+        new TextEncoder().encode(JSON.stringify(expanded)).length,
+      ).toBeLessThan(512 * 1024);
+      const e = await inspectHTML(
+        "quantity.html",
+        new TextEncoder().encode(html),
+      );
+      expect(e.quickBriefs!.items).toHaveLength(count);
+      expect(indexQuickBriefs([e])).toHaveLength(count);
+      expect(e.unified!.items).toHaveLength(8);
+    },
+  );
   it("Google utilise uniquement une question publique contrôlée et encodée", () => {
     const q = "sources publiques : énergie & IA + France ?";
     expect(new URL(publicGoogleUrl(q)).searchParams.get("q")).toBe(q);

@@ -37,3 +37,7 @@ Avant un retour arrière sur votre bibliothèque personnelle, exporter les ZIP J
 - Google utilise les questions explicitement publiques et les contrôles de marqueurs sensibles existants ; aucune lecture des notes, sessions ou prompts pour composer une requête. Sans question sûre : entrée Google vierge. La détection de marqueurs n’est pas une preuve générale d’absence de secrets dans un texte arbitraire ; la source de vérité reste la séparation producteur public/privé.
 - Une série officielle avec vérification déclarée n’est pas revérifiée en ligne par le lecteur. Les graphiques ne prétendent pas certifier la véracité des valeurs. Séries homogènes séparées par méthode/unité/fréquence ; points manquants jamais inventés.
 - NON TESTÉ : lecteur d’écran humain, smartphone physique, profil utilisateur réel, synchronisation cloud privée ou production avec des données personnelles. Les parcours locaux utilisent des profils jetables et des réseaux externes bloqués. Aucun collecteur ou registre durable n’est simulé.
+
+## Correction 2.1.1
+
+Pour annuler seulement la suppression du plafond et le bouton « Tout afficher », préparer un `git revert` du commit de correction indiqué dans le compte rendu final, tester puis publier ce revert. Cela revient au comportement 2.1.0. Pour annuler également la refonte V9, annuler ensuite le commit `2f974253f1a978ffd432d010bffa9d9675f26dfb`. Aucun de ces retours ne demande de migration ni de purge des originaux.

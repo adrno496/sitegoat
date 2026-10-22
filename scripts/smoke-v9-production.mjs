@@ -1,7 +1,10 @@
 // Read-only public smoke check, isolated browser, no account and no imports.
 import { chromium, expect } from "@playwright/test";
-import { writeFileSync } from "node:fs";
+import { writeFileSync, readFileSync } from "node:fs";
 const expectedCommit = process.argv[2];
+const expectedVersion = JSON.parse(
+  readFileSync(new URL("../package.json", import.meta.url), "utf8"),
+).version;
 if (!/^[a-f0-9]{40}$/.test(expectedCommit || ""))
   throw Error("Provide the expected deployed Git commit SHA.");
 const output = process.argv[3];
@@ -31,7 +34,7 @@ try {
   });
   for (const name of ["Accueil", "Aujourd’hui", "Articles", "Paramètres"])
     await expect(main.getByRole("button", { name, exact: true })).toBeVisible();
-  await expect(page.locator(".sidebar")).toContainText("2.1.0");
+  await expect(page.locator(".sidebar")).toContainText(expectedVersion);
   await main.getByRole("button", { name: "Accueil", exact: true }).click();
   await expect(
     page.getByRole("heading", {
@@ -58,7 +61,7 @@ try {
         checkedAt: new Date().toISOString(),
         url: origin,
         httpStatus: response.status(),
-        applicationVersion: "2.1.0",
+        applicationVersion: expectedVersion,
         publicNavigation: "PASS",
         dashboard: "PASS",
         quickNewsEntry: "PASS",
@@ -80,7 +83,7 @@ try {
     ) + "\n",
   );
   console.log(
-    "PASS : interface publique 2.1.0, Accueil et Actualité rapide ; aucune donnée personnelle ni API cloud.",
+    "PASS : interface publique, Accueil et Actualité rapide ; aucune donnée personnelle ni API cloud.",
   );
 } finally {
   await context.close();

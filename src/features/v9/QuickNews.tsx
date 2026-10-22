@@ -195,9 +195,17 @@ export function QuickNews({
           ))}
       </div>
       {filtered.length > limit && (
-        <button className="secondary" onClick={() => setLimit((n) => n + 30)}>
-          Afficher 30 titres de plus
-        </button>
+        <div className="settings-actions">
+          <button className="secondary" onClick={() => setLimit((n) => n + 30)}>
+            Afficher 30 titres de plus
+          </button>
+          <button
+            className="secondary"
+            onClick={() => setLimit(filtered.length)}
+          >
+            Tout afficher ({filtered.length} titres)
+          </button>
+        </div>
       )}
       {!rows.length && (
         <p className="v9-empty">

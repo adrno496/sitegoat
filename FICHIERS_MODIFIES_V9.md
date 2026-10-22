@@ -78,7 +78,7 @@ Réserves : producteur/registre/automatisation externes non implémentés ; sér
 - [SPEC_PRODUCTEUR_J360_V9.md](SPEC_PRODUCTEUR_J360_V9.md) — nouveau
 - [docs/JOURNAL360_QUICKBRIEFS_V1.schema.json](docs/JOURNAL360_QUICKBRIEFS_V1.schema.json) — nouveau
 
-## Preuves et captures synthétiques (30)
+## Preuves et captures synthétiques (35)
 
 - [docs/evidence/v9/baseline-build.txt](docs/evidence/v9/baseline-build.txt) — nouveau
 - [docs/evidence/v9/baseline-e2e.txt](docs/evidence/v9/baseline-e2e.txt) — nouveau
@@ -111,4 +111,14 @@ Réserves : producteur/registre/automatisation externes non implémentés ; sér
 - [docs/evidence/v9/v9-target-browser.txt](docs/evidence/v9/v9-target-browser.txt) — nouveau
 - [docs/evidence/v9/source-files.json](docs/evidence/v9/source-files.json) — nouveau
 
-Total : 89 fichiers de livraison. Les 17 artefacts historiques réécrits par les tests ont été conservés à part puis remis à leur état initial ; ils ne font pas partie du diff. Sauvegarde initiale et logs intermédiaires : /Users/dreano/Downloads/sitegoat-v9-rollback-20261022.
+Total : 94 fichiers de livraison (2.1.0 et correction 2.1.1). Les 17 artefacts historiques réécrits par les tests ont été conservés à part puis remis à leur état initial ; ils ne font pas partie du diff. Sauvegarde initiale et logs intermédiaires : /Users/dreano/Downloads/sitegoat-v9-rollback-20261022.
+
+## Correction 2.1.1 — nombre de brèves
+
+Modification de quickBriefsSchema et de son schéma JSON exporté, QuickNews, des tests unitaires et E2E V9, des versions package/config, du contrôle de production et des guides/rapports. Aucun champ V7 ni stockage modifié. Preuves supplémentaires :
+
+- [docs/evidence/v9/quantity-lint.txt](docs/evidence/v9/quantity-lint.txt)
+- [docs/evidence/v9/quantity-build.txt](docs/evidence/v9/quantity-build.txt)
+- [docs/evidence/v9/quantity-unit.txt](docs/evidence/v9/quantity-unit.txt)
+- [docs/evidence/v9/quantity-e2e.txt](docs/evidence/v9/quantity-e2e.txt)
+- [docs/evidence/v9/quantity-e2e.json](docs/evidence/v9/quantity-e2e.json)

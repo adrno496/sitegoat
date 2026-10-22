@@ -5,7 +5,7 @@
   },
   {
     "path": "GUIDE_UTILISATEUR_V9.md",
-    "sha256": "cdd3cd17a7f804a8ad05ee5675e7f6e7b9bb8f9e97d1261a6e0c87ab8a1a3621"
+    "sha256": "b26c3b4f74a1d0e836ea4b11ce6372153a21bb50f79ce49fc31a47925037aa9e"
   },
   {
     "path": "PLAN_V9.md",
@@ -17,31 +17,31 @@
   },
   {
     "path": "RAPPORT_TESTS_V9.md",
-    "sha256": "8829331104da9011c772fcf6a3ff3c4f857ad0ae0453937ce37c39fd00678dad"
+    "sha256": "c22b597187f64606512e9f205d2023b916926424fa1d3319b5bbd18de6df60e1"
   },
   {
     "path": "README.md",
-    "sha256": "97b73da9f2a1955397aa188ea915e147ecd00e5ac3439341e794561b3a8d4982"
+    "sha256": "73c98e8460a9162a5b395ba64e5c6af266d404ff5ceed189682d3b9797ae4517"
   },
   {
     "path": "RISQUES_ET_ROLLBACK_V9.md",
-    "sha256": "e2c7b4dc6cb5b024dbb5d085bd380ee09df9bbe0aa975c0b256f6a0ee36b12aa"
+    "sha256": "90e29fdd478cd86f546baacb04249450c71e77a554b232ba3d2d1d043bdd1736"
   },
   {
     "path": "SPEC_PRODUCTEUR_J360_V9.md",
-    "sha256": "0afe660af9cf790115fcca81ab052ebd8244b513a84c581595b7fecf13ed31ce"
+    "sha256": "3ca908d8c62404f66b7f4c4d905f24e51ad2e5d1b34c260f8dc952065087dc68"
   },
   {
     "path": "docs/JOURNAL360_QUICKBRIEFS_V1.schema.json",
-    "sha256": "c1283957d2ce08709fab92f8319f9e8d08fe958b8ea6edd39816ec1f3b25a933"
+    "sha256": "05c69f336056415043d2d02a2cae3784c27a5d333bc5d4786753d41a456ecc9c"
   },
   {
     "path": "package-lock.json",
-    "sha256": "b447c1ed6e9936309a3b580c44ba20eb72dcb5c5f2ac83410ce7ed932a7a4bef"
+    "sha256": "4743a055def0fe605ab57186307782c47b2126f4d7ac662e11f1205f5f3067cd"
   },
   {
     "path": "package.json",
-    "sha256": "f7acf5f89ade9d67ea725d11d59c47b5c5ae22b464973a96dd6e88d9f38fe044"
+    "sha256": "d6e2dc4b8ce7ffaedcac0e65915e048fec0b2e0855515029891470eff49a754a"
   },
   {
     "path": "playwright.config.ts",
@@ -57,7 +57,7 @@
   },
   {
     "path": "scripts/smoke-v9-production.mjs",
-    "sha256": "24bfe5bc06de875f4a89d74076b6ebaf367b83ea49eaefc997540609936d8ebb"
+    "sha256": "1aa467a66ac6a2593a40a524dae99fb59058bf9374b6be2c6872b73d5af580bc"
   },
   {
     "path": "src/App.tsx",
@@ -65,7 +65,7 @@
   },
   {
     "path": "src/config.ts",
-    "sha256": "86bbad22e946e684644de8b30d1b5b91bb8e6354edfd1803a8f45b72a5569969"
+    "sha256": "761bc11cdb1d50b41222f2510ab164b4079e8b8da062cec5ae1142cbe597bdc7"
   },
   {
     "path": "src/data/model.ts",
@@ -77,7 +77,7 @@
   },
   {
     "path": "src/data/quickBriefsSchema.ts",
-    "sha256": "7e5856c999edaab28c4bc2de90180a9a41b3afa1d9e8f24669be0eb2df4d8bf7"
+    "sha256": "040a617002df8e038161a91585511f15c509d1ddfc3359571aafc0ae872daed9"
   },
   {
     "path": "src/features/ArticlesView.tsx",
@@ -149,7 +149,7 @@
   },
   {
     "path": "src/features/v9/QuickNews.tsx",
-    "sha256": "1ee4959c9561ee4ed1bf07adbcab99957f3676b37d231f0427cb81828359dbc9"
+    "sha256": "7221549c38f64c9c3bd88e513ea95e0e4d4ef34d4df1c1d7a80342f3cb6f81cf"
   },
   {
     "path": "src/features/v9/economicHistory.ts",
@@ -213,7 +213,7 @@
   },
   {
     "path": "tests/e2e/v9-workspace.spec.ts",
-    "sha256": "c07bfe9bf9331f72df16bedc0a97fa1009704400f36045d2c9031035c8d93b4b"
+    "sha256": "05a079ed0e868e39f88b569c6b686ed82a948eb12e833007d431a37b5ada12f6"
   },
   {
     "path": "tests/helpers/navigation.ts",
@@ -225,7 +225,7 @@
   },
   {
     "path": "tests/v9-contract.unit.test.ts",
-    "sha256": "298f8f1a4d32963c7b47c285adf392b31ab96e7ffde537569df0a86281a222fc"
+    "sha256": "5b0e77fad4670a229856c0eec5320044d7359f80883d98fdf100df12266bf055"
   },
   {
     "path": "tests/v9-history.unit.test.ts",

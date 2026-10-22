@@ -39,5 +39,25 @@
   },
   "realV8_2026_10_22_14h": "NOT AVAILABLE / NOT TESTED",
   "producer": "SPECIFIED, NOT IMPLEMENTED",
-  "deploymentProof": "/Users/dreano/Downloads/sitegoat-v9-rollback-20261022/evidence/production.json"
+  "deploymentProof": "/Users/dreano/Downloads/sitegoat-v9-rollback-20261022/evidence/production.json",
+  "quantityFollowup": {
+    "applicationVersion": "2.1.1",
+    "countCap": null,
+    "companionByteLimit": 524288,
+    "unitPassed": 322,
+    "verifiedSyntheticImportCounts": [
+      100,
+      600
+    ],
+    "e2e": {
+      "startTime": "2026-10-22T17:29:44.729Z",
+      "duration": 39539.043,
+      "expected": 12,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "fullLocalRegressionRerun": false,
+    "previousReleaseGitHubCI": "SUCCESS — 39810117157"
+  }
 }

@@ -33,7 +33,6 @@
       ]
     },
     "items": {
-      "maxItems": 500,
       "type": "array",
       "items": {
         "type": "object",

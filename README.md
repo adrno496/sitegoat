@@ -4,7 +4,7 @@ Une bibliothèque personnelle de journaux HTML, en français, installable comme 
 
 Version publiée : [sitegoat.vercel.app](https://sitegoat.vercel.app). [Rapport de tests](TEST_REPORT.md).
 
-## Sitegoat V9 — application 2.1.0
+## Sitegoat V9 — application 2.1.1
 
 Navigation principale : Accueil, Aujourd’hui, Articles, Paramètres. Le tableau de bord présente les faits importés, les changements et signaux documentés, des points économiques comparables ou un état d’historique insuffisant. Aujourd’hui privilégie les résumés par article ; les diagnostics et originaux par créneau se trouvent dans les paramètres avancés. Le menu Autres espaces conserve les destinations historiques.
 
@@ -145,3 +145,5 @@ Le Futur accepte des dossiers prospectifs HTML autonomes (`futureData`) ou JSON 
 [Guide et exemples](docs/FUTURE_IMPORT_GUIDE.md) · [Architecture](docs/FUTURE_ARCHITECTURE.md) · [Tests et limites](docs/FUTURE_TEST_REPORT.md) · [Rollback](docs/FUTURE_ROLLBACK.md).
 
 La refonte locale P0/P1 transforme Le Futur en atlas : résumé calculé, horizons au clavier, comparaison des scénarios et feuille de route personnelle. [Diff, captures, vérifications et limites](docs/FUTURE_ATLAS_REPORT.md).
+
+Actualité rapide : aucun plafond de quantité de titres. Une édition de 100 nouveautés ou davantage est acceptée et conservée intégralement, dans les budgets de taille du HTML et du compagnon JSON. L’affichage charge 30 titres au départ ; « Tout afficher » permet de lire toute la liste et la recherche porte toujours sur tous les titres importés. Aucun titre n’est inventé pour remplir une liste.

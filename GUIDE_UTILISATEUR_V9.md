@@ -1,6 +1,6 @@
 # Sitegoat V9 — guide utilisateur
 
-V9 désigne cette interface et son intégration éditoriale ; la version applicative est 2.1.0. Les documents V7 conservent leur format et leur autonomie.
+V9 désigne cette interface et son intégration éditoriale ; la version applicative est 2.1.1. Les documents V7 conservent leur format et leur autonomie.
 
 1. **Importer une édition** : choisir le HTML UTF-8, examiner les informations puis enregistrer. Un seul fichier cumulatif tardif suffit pour les articles, l’économie, les jalons, les prompts et les brèves réellement embarqués. Les anciennes journées et les originaux antérieurs restent conservés.
 2. **Accueil** : consulter jusqu’à six points essentiels issus des importations, les changements déclarés, les signaux conditionnels et les rubriques. La dernière actualisation indique l’heure d’import locale, pas la date des événements. Un graphique n’apparaît qu’avec au moins deux points officiels comparables ; sinon l’état « Historique insuffisant » explique la limite.
@@ -20,3 +20,5 @@ Limites : un document dynamique exige une confiance explicite pour ses scripts. 
 La notice du compagnon est conservée telle qu’importée. Une mention historique « Import Sitegoat NON TESTÉ » du producteur ne remplace pas les résultats applicatifs du rapport de tests V9.
 
 Pour les prompts qui dépassent 200000 octets ou les téléchargements propres à un producteur non reconnus par le lecteur, utilisez Mes prompts .md dans le site, ou Original intact. Le relais natif du cadre ne traite que les Markdown reconnus sous cette limite.
+
+Actualité rapide : aucun plafond de quantité de titres. Une édition de 100 nouveautés ou davantage est acceptée et conservée intégralement, dans les budgets de taille du HTML et du compagnon JSON. L’affichage charge 30 titres au départ ; « Tout afficher » permet de lire toute la liste et la recherche porte toujours sur tous les titres importés. Aucun titre n’est inventé pour remplir une liste.

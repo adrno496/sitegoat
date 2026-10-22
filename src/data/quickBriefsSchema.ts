@@ -54,7 +54,7 @@ export const quickBriefsSchema = z
     editionId: id,
     editionDate: calendarSchema,
     editionSlot: z.enum(V7_SLOTS),
-    items: z.array(quickBriefSchema).max(500),
+    items: z.array(quickBriefSchema),
     notice: z.string().max(4000),
   })
   .strict()
