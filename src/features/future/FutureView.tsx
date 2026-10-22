@@ -1,3 +1,4 @@
+import { DisplayFilters } from "../v9/preferences";
 import { summaryPreview } from "../eventPresentation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { download } from "../backup";
@@ -379,92 +380,98 @@ export default function FutureView({
             </h2>
             <span className="future-kicker">BIBLIOTHÈQUE PROSPECTIVE</span>
           </div>
-          <details
-            className="future-filter-panel"
-            open={filtersOpen}
-            onToggle={(e) => setFiltersOpen(e.currentTarget.open)}
-          >
-            <summary>Filtres · {activeFilters} actif(s)</summary>
-            <div className="future-filters">
-              <label>
-                Rechercher un dossier
-                <input
-                  type="search"
-                  value={search}
-                  placeholder="Scénario, signal, compétence…"
-                  onChange={(e) => {
-                    setSearch(e.target.value);
-                    setPage(0);
-                  }}
-                />
-              </label>
-              <label>
-                Statut
-                <select
-                  value={status}
-                  onChange={(e) => {
-                    setStatus(e.target.value);
-                    setPage(0);
-                  }}
-                >
-                  <option value="">Tous les statuts</option>
-                  {(["observed", "hypothesis", "scenario"] as const).map(
-                    (s) => (
-                      <option key={s} value={s}>
-                        {statusLabels[s]}
+          <div className="future-filters">
+            <label>
+              Rechercher un dossier
+              <input
+                type="search"
+                value={search}
+                placeholder="Scénario, signal, compétence…"
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setPage(0);
+                }}
+              />
+            </label>
+          </div>
+          <DisplayFilters>
+            <details
+              className="future-filter-panel"
+              open={filtersOpen}
+              onToggle={(e) => setFiltersOpen(e.currentTarget.open)}
+            >
+              <summary>Filtres · {activeFilters} actif(s)</summary>
+              <div className="future-filters">
+                <label>
+                  Statut
+                  <select
+                    value={status}
+                    onChange={(e) => {
+                      setStatus(e.target.value);
+                      setPage(0);
+                    }}
+                  >
+                    <option value="">Tous les statuts</option>
+                    {(["observed", "hypothesis", "scenario"] as const).map(
+                      (s) => (
+                        <option key={s} value={s}>
+                          {statusLabels[s]}
+                        </option>
+                      ),
+                    )}
+                  </select>
+                </label>
+                <label>
+                  Horizon
+                  <select
+                    value={year}
+                    onChange={(e) => {
+                      setYear(e.target.value);
+                      setPage(0);
+                    }}
+                  >
+                    <option value="">Tous les horizons</option>
+                    {["2027", "2030", "2035", "2040+", "unspecified"].map(
+                      (y) => (
+                        <option key={y} value={y}>
+                          {y === "unspecified" ? "Non précisé" : y}
+                        </option>
+                      ),
+                    )}
+                  </select>
+                </label>
+                <label>
+                  Décision éditoriale
+                  <select
+                    value={verdict}
+                    onChange={(e) => {
+                      setVerdict(e.target.value);
+                      setPage(0);
+                    }}
+                  >
+                    <option value="">Toutes les décisions</option>
+                    {Object.entries(verdicts).map(([k, v]) => (
+                      <option key={k} value={k}>
+                        {v}
                       </option>
-                    ),
-                  )}
-                </select>
-              </label>
-              <label>
-                Horizon
-                <select
-                  value={year}
-                  onChange={(e) => {
-                    setYear(e.target.value);
-                    setPage(0);
-                  }}
-                >
-                  <option value="">Tous les horizons</option>
-                  {["2027", "2030", "2035", "2040+", "unspecified"].map((y) => (
-                    <option key={y} value={y}>
-                      {y === "unspecified" ? "Non précisé" : y}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                Décision éditoriale
-                <select
-                  value={verdict}
-                  onChange={(e) => {
-                    setVerdict(e.target.value);
-                    setPage(0);
-                  }}
-                >
-                  <option value="">Toutes les décisions</option>
-                  {Object.entries(verdicts).map(([k, v]) => (
-                    <option key={k} value={k}>
-                      {v}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="future-check">
-                <input
-                  type="checkbox"
-                  checked={favorites}
-                  onChange={(e) => {
-                    setFavorites(e.target.checked);
-                    setPage(0);
-                  }}
-                />
-                Favoris
-              </label>
-              <button onClick={clearFilters}>Effacer les filtres</button>
-            </div>
-          </details>
+                    ))}
+                  </select>
+                </label>
+                <label className="future-check">
+                  <input
+                    type="checkbox"
+                    checked={favorites}
+                    onChange={(e) => {
+                      setFavorites(e.target.checked);
+                      setPage(0);
+                    }}
+                  />
+                  Favoris
+                </label>
+                <button onClick={clearFilters}>Effacer les filtres</button>
+              </div>
+            </details>
+          </DisplayFilters>
           <p aria-live="polite" className="future-results">
             {matches.length} résultat(s)
           </p>

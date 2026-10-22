@@ -10,6 +10,7 @@ const schema = z
     graphs: z.boolean(),
     detail: z.boolean(),
     secondaryActions: z.boolean(),
+    filters: z.boolean().default(false),
     homeHighlights: z.boolean(),
     homeChanges: z.boolean(),
     homeWatch: z.boolean(),
@@ -26,6 +27,7 @@ export const displayDefaults = (): DisplayPreferences => ({
   graphs: true,
   detail: false,
   secondaryActions: false,
+  filters: false,
   homeHighlights: true,
   homeChanges: true,
   homeWatch: true,
@@ -79,6 +81,10 @@ export function DisplayProvider({ children }: { children: ReactNode }) {
     </Context.Provider>
   );
 }
+export function DisplayFilters({ children }: { children: ReactNode }) {
+  const { display } = useDisplay();
+  return display.filters ? <>{children}</> : null;
+}
 export function DisplaySettings({ categories }: { categories: string[] }) {
   const { display: d, update, error } = useDisplay();
   const labels = {
@@ -87,6 +93,7 @@ export function DisplaySettings({ categories }: { categories: string[] }) {
     graphs: "Graphiques de l’Accueil",
     detail: "Détails des articles dépliés",
     secondaryActions: "Actions secondaires visibles",
+    filters: "Afficher les filtres et le tri",
     homeHighlights: "Accueil : points essentiels",
     homeChanges: "Accueil : ce qui change",
     homeWatch: "Accueil : à surveiller",

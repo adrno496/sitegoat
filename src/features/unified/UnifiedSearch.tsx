@@ -1,3 +1,4 @@
+import { DisplayFilters } from "../v9/preferences";
 import { indexQuickBriefs } from "../../data/quickBriefs";
 import { useMemo, useState, useEffect } from "react";
 import type { Edition } from "../../data/model";
@@ -327,44 +328,46 @@ export function UnifiedSearch({
           }}
         />
       </label>
-      <details>
-        <summary>Filtres de la recherche globale</summary>
-        <div className="unified-filters">
-          {[
-            ["Type", kind, setKind, rows.map((r) => r.kind)],
-            ["Date", date, setDate, rows.map((r) => r.date)],
-            ["Provenance", source, setSource, rows.map((r) => r.source)],
-            ["Statut", status, setStatus, rows.map((r) => r.status)],
-            ["Thème", theme, setTheme, rows.map((r) => r.theme)],
-          ].map(([label, value, set, options]) => (
-            <label key={String(label)}>
-              {String(label)}
-              <select
-                value={value as string}
-                onChange={(e) => {
-                  (set as (v: string) => void)(e.target.value);
-                  setLimit(30);
-                }}
-              >
-                <option value="">Tous</option>
-                {[...new Set(options as string[])]
-                  .filter(Boolean)
-                  .sort()
-                  .map((v) => (
-                    <option key={v}>{v}</option>
-                  ))}
+      <DisplayFilters>
+        <details>
+          <summary>Filtres de la recherche globale</summary>
+          <div className="unified-filters">
+            {[
+              ["Type", kind, setKind, rows.map((r) => r.kind)],
+              ["Date", date, setDate, rows.map((r) => r.date)],
+              ["Provenance", source, setSource, rows.map((r) => r.source)],
+              ["Statut", status, setStatus, rows.map((r) => r.status)],
+              ["Thème", theme, setTheme, rows.map((r) => r.theme)],
+            ].map(([label, value, set, options]) => (
+              <label key={String(label)}>
+                {String(label)}
+                <select
+                  value={value as string}
+                  onChange={(e) => {
+                    (set as (v: string) => void)(e.target.value);
+                    setLimit(30);
+                  }}
+                >
+                  <option value="">Tous</option>
+                  {[...new Set(options as string[])]
+                    .filter(Boolean)
+                    .sort()
+                    .map((v) => (
+                      <option key={v}>{v}</option>
+                    ))}
+                </select>
+              </label>
+            ))}
+            <label>
+              Tri
+              <select value={sort} onChange={(e) => setSort(e.target.value)}>
+                <option value="relevance">Pertinence textuelle</option>
+                <option value="date">Date</option>
               </select>
             </label>
-          ))}
-          <label>
-            Tri
-            <select value={sort} onChange={(e) => setSort(e.target.value)}>
-              <option value="relevance">Pertinence textuelle</option>
-              <option value="date">Date</option>
-            </select>
-          </label>
-        </div>
-      </details>
+          </div>
+        </details>
+      </DisplayFilters>
       {indexing && <p role="status">Indexation locale des dossiers Future…</p>}
       {error && <p role="alert">{error}</p>}
       <p role="status">{matching.length} résultat(s) · aucun envoi externe</p>

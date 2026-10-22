@@ -1,3 +1,4 @@
+import { useDisplay } from "../v9/preferences";
 import { PublicGoogleLink } from "../PublicGoogleLink";
 import { useInterface } from "../interfacePreferences";
 import { useState } from "react";
@@ -19,6 +20,7 @@ export function EconomyRadar({
   const {
     preferences: { options },
   } = useInterface();
+  const { display } = useDisplay();
   const [zone, setZone] = useState(""),
     [period, setPeriod] = useState(""),
     [indicator, setIndicator] = useState("");
@@ -42,7 +44,7 @@ export function EconomyRadar({
         sources importées ; aucune certification ni recommandation financière
         personnelle.
       </p>
-      {!compact && (
+      {!compact && display.filters && (
         <div className="unified-filters">
           <label>
             Zone économique

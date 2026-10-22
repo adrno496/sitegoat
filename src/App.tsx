@@ -1,5 +1,9 @@
 import { hydrateQuickBriefs } from "./features/hydrateQuickBriefs";
-import { DisplayProvider, DisplaySettings } from "./features/v9/preferences";
+import {
+  DisplayFilters,
+  DisplayProvider,
+  DisplaySettings,
+} from "./features/v9/preferences";
 import { Dashboard } from "./features/v9/Dashboard";
 import { ImportDiagnostics } from "./features/ImportDiagnostics";
 import {
@@ -1255,41 +1259,45 @@ function JournalApp() {
                         placeholder="Rechercher une édition, un sujet…"
                       />
                     </label>
-                    <label>
-                      <span className="sr-only">Rubrique</span>
-                      <select
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}
-                      >
-                        <option value="all">Toutes les rubriques</option>
-                        {categories.map((c) => (
-                          <option key={c}>{c}</option>
-                        ))}
-                      </select>
-                    </label>
-                    <label>
-                      <span className="sr-only">Mois</span>
-                      <select
-                        value={month}
-                        onChange={(e) => setMonth(e.target.value)}
-                      >
-                        <option value="all">Toutes les dates</option>
-                        {months.map((m) => (
-                          <option key={m}>{m}</option>
-                        ))}
-                      </select>
-                    </label>
-                    <label>
-                      <span className="sr-only">Trier</span>
-                      <select
-                        value={sort}
-                        onChange={(e) => setSort(e.target.value as typeof sort)}
-                      >
-                        <option value="date">Plus récentes</option>
-                        <option value="title">Par titre</option>
-                        <option value="import">Derniers imports</option>
-                      </select>
-                    </label>
+                    <DisplayFilters>
+                      <label>
+                        <span className="sr-only">Rubrique</span>
+                        <select
+                          value={category}
+                          onChange={(e) => setCategory(e.target.value)}
+                        >
+                          <option value="all">Toutes les rubriques</option>
+                          {categories.map((c) => (
+                            <option key={c}>{c}</option>
+                          ))}
+                        </select>
+                      </label>
+                      <label>
+                        <span className="sr-only">Mois</span>
+                        <select
+                          value={month}
+                          onChange={(e) => setMonth(e.target.value)}
+                        >
+                          <option value="all">Toutes les dates</option>
+                          {months.map((m) => (
+                            <option key={m}>{m}</option>
+                          ))}
+                        </select>
+                      </label>
+                      <label>
+                        <span className="sr-only">Trier</span>
+                        <select
+                          value={sort}
+                          onChange={(e) =>
+                            setSort(e.target.value as typeof sort)
+                          }
+                        >
+                          <option value="date">Plus récentes</option>
+                          <option value="title">Par titre</option>
+                          <option value="import">Derniers imports</option>
+                        </select>
+                      </label>
+                    </DisplayFilters>
                   </div>
                   <div className="library-subnav">
                     <div className="mode-tabs">

@@ -1,3 +1,4 @@
+import { DisplayFilters } from "./preferences";
 import { useMemo, useState } from "react";
 import type { Edition } from "../../data/model";
 import { indexQuickBriefs } from "../../data/quickBriefs";
@@ -61,60 +62,64 @@ export function QuickNews({
             }}
           />
         </label>
-        <label>
-          Thème des brèves
-          <select
-            aria-label="Thème des brèves"
-            value={theme}
-            onChange={(e) => {
-              setTheme(e.target.value);
-              setLimit(30);
-            }}
-          >
-            <option value="">Tous les thèmes</option>
-            {[...new Set(rows.map((r) => r.item.theme))].sort().map((t) => (
-              <option key={t}>{t}</option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Preuve des brèves
-          <select
-            aria-label="Preuve des brèves"
-            value={proof}
-            onChange={(e) => {
-              setProof(e.target.value);
-              setLimit(30);
-            }}
-          >
-            <option value="">Tous les statuts</option>
-            {[...new Set(rows.map((r) => r.item.evidenceStatus))]
-              .sort()
-              .map((t) => (
+        <DisplayFilters>
+          <label>
+            Thème des brèves
+            <select
+              aria-label="Thème des brèves"
+              value={theme}
+              onChange={(e) => {
+                setTheme(e.target.value);
+                setLimit(30);
+              }}
+            >
+              <option value="">Tous les thèmes</option>
+              {[...new Set(rows.map((r) => r.item.theme))].sort().map((t) => (
                 <option key={t}>{t}</option>
               ))}
-          </select>
-        </label>
-        <label>
-          Tri des brèves
-          <select
-            aria-label="Tri des brèves"
-            value={sort}
-            onChange={(e) => setSort(e.target.value)}
-          >
-            <option value="recent">Publication récente</option>
-            <option value="title">Titre</option>
-          </select>
-        </label>
+            </select>
+          </label>
+          <label>
+            Preuve des brèves
+            <select
+              aria-label="Preuve des brèves"
+              value={proof}
+              onChange={(e) => {
+                setProof(e.target.value);
+                setLimit(30);
+              }}
+            >
+              <option value="">Tous les statuts</option>
+              {[...new Set(rows.map((r) => r.item.evidenceStatus))]
+                .sort()
+                .map((t) => (
+                  <option key={t}>{t}</option>
+                ))}
+            </select>
+          </label>
+          <label>
+            Tri des brèves
+            <select
+              aria-label="Tri des brèves"
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+            >
+              <option value="recent">Publication récente</option>
+              <option value="title">Titre</option>
+            </select>
+          </label>
+        </DisplayFilters>
       </div>
-      <label>
-        <input
-          type="checkbox"
-          checked={promotions}
-          onChange={(e) => setPromotions(e.target.checked)}
-        />
-        Afficher aussi les brèves devenues articles
-      </label>
+      <DisplayFilters>
+        <label>
+          <input
+            type="checkbox"
+            checked={promotions}
+            onChange={(e) => setPromotions(e.target.checked)}
+          />
+          Afficher aussi les brèves devenues articles
+        </label>
+      </DisplayFilters>
       <p role="status">
         {filtered.length} titre(s) sur {rows.length} ·{" "}
         {rows.filter((r) => r.promoted).length} promotion(s), comptées dans les

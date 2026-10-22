@@ -1,4 +1,4 @@
-import { useDisplay } from "../v9/preferences";
+import { DisplayFilters, useDisplay } from "../v9/preferences";
 import {
   useCallback,
   useEffect,
@@ -224,56 +224,58 @@ export default function UnifiedWorkspace({
                 }}
               />
             </label>
-            <label>
-              Thème du jour
-              <select
-                aria-label="Thème du jour"
-                value={category}
-                onChange={(e) => {
-                  setCategory(e.target.value);
-                  setEventLimit(30);
-                }}
-              >
-                <option value="">Tous les thèmes</option>
-                {[...new Set(p?.items.map((i) => i.category))]
-                  .sort()
-                  .map((c) => (
-                    <option key={c}>{c}</option>
-                  ))}
-              </select>
-            </label>
-            <details>
-              <summary>Affiner et trier</summary>
+            <DisplayFilters>
               <label>
-                Première apparition
+                Thème du jour
                 <select
-                  aria-label="Première apparition"
-                  value={firstSeen}
+                  aria-label="Thème du jour"
+                  value={category}
                   onChange={(e) => {
-                    setFirstSeen(e.target.value);
+                    setCategory(e.target.value);
                     setEventLimit(30);
                   }}
                 >
-                  <option value="">Tous les événements</option>
-                  {V7_SLOTS.map((s) => (
-                    <option key={s} value={s}>
-                      Apparus à {s}
-                    </option>
-                  ))}
+                  <option value="">Tous les thèmes</option>
+                  {[...new Set(p?.items.map((i) => i.category))]
+                    .sort()
+                    .map((c) => (
+                      <option key={c}>{c}</option>
+                    ))}
                 </select>
               </label>
-              <label>
-                Trier les événements
-                <select
-                  aria-label="Trier les événements"
-                  value={eventSort}
-                  onChange={(e) => setEventSort(e.target.value)}
-                >
-                  <option value="importance">Importance</option>
-                  <option value="newest">Mise à jour la plus récente</option>
-                </select>
-              </label>
-            </details>
+              <details>
+                <summary>Affiner et trier</summary>
+                <label>
+                  Première apparition
+                  <select
+                    aria-label="Première apparition"
+                    value={firstSeen}
+                    onChange={(e) => {
+                      setFirstSeen(e.target.value);
+                      setEventLimit(30);
+                    }}
+                  >
+                    <option value="">Tous les événements</option>
+                    {V7_SLOTS.map((s) => (
+                      <option key={s} value={s}>
+                        Apparus à {s}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Trier les événements
+                  <select
+                    aria-label="Trier les événements"
+                    value={eventSort}
+                    onChange={(e) => setEventSort(e.target.value)}
+                  >
+                    <option value="importance">Importance</option>
+                    <option value="newest">Mise à jour la plus récente</option>
+                  </select>
+                </label>
+              </details>
+            </DisplayFilters>
           </div>
           <p role="status">{highlights.length} article(s)</p>
           <div className="unified-highlights event-list">

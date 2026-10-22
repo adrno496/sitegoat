@@ -1,3 +1,4 @@
+import { DisplayFilters } from "./v9/preferences";
 import { SnapshotStatus } from "./SnapshotStatus";
 import { useMemo, useState } from "react";
 import { readingChanges, changesLabel } from "../data/readingChanges";
@@ -283,18 +284,20 @@ export function DayView({
           Rechercher dans la journée
           <input value={query} onChange={(e) => setQuery(e.target.value)} />
         </label>
-        <label>
-          Rubrique du jour
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          >
-            <option value="all">Toutes les rubriques</option>
-            {categories.map((c) => (
-              <option key={c}>{c}</option>
-            ))}
-          </select>
-        </label>
+        <DisplayFilters>
+          <label>
+            Rubrique du jour
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
+              <option value="all">Toutes les rubriques</option>
+              {categories.map((c) => (
+                <option key={c}>{c}</option>
+              ))}
+            </select>
+          </label>
+        </DisplayFilters>
       </div>
       <p>
         {articles.length} résultat(s). Aucun article n’a été ajouté par le

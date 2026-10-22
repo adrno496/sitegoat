@@ -1,3 +1,4 @@
+import { DisplayFilters } from "./v9/preferences";
 import { PublicGoogleLink } from "./PublicGoogleLink";
 import { EventCard } from "./EventCard";
 import { summaryPreview } from "./eventPresentation";
@@ -331,156 +332,161 @@ export function ArticlesView({
                   />
                 </span>
               </label>
-              <details className="articles-filter-options">
-                <summary>
-                  Filtres et tri{category || group || status ? " · actifs" : ""}
-                </summary>
-                <div className="articles-filters">
-                  <label>
-                    Rubrique
-                    <select
-                      aria-label="Rubrique"
-                      value={category}
-                      onChange={(e) =>
-                        changeFilter(() => setCategory(e.target.value))
-                      }
-                    >
-                      <option value="">Toutes les rubriques</option>
-                      {categories.map((c) => (
-                        <option key={c}>{c}</option>
-                      ))}
-                    </select>
-                  </label>
-                  <label>
-                    Veille
-                    <select
-                      value={group}
-                      onChange={(e) =>
-                        changeFilter(() => setGroup(e.target.value))
-                      }
-                    >
-                      <option value="">Toutes les veilles</option>
-                      {groups.map(([key, e]) => (
-                        <option key={key} value={key}>
-                          {dateLabel(e.date)} · {e.title}
+              <DisplayFilters>
+                <details className="articles-filter-options">
+                  <summary>
+                    Filtres et tri
+                    {category || group || status ? " · actifs" : ""}
+                  </summary>
+                  <div className="articles-filters">
+                    <label>
+                      Rubrique
+                      <select
+                        aria-label="Rubrique"
+                        value={category}
+                        onChange={(e) =>
+                          changeFilter(() => setCategory(e.target.value))
+                        }
+                      >
+                        <option value="">Toutes les rubriques</option>
+                        {categories.map((c) => (
+                          <option key={c}>{c}</option>
+                        ))}
+                      </select>
+                    </label>
+                    <label>
+                      Veille
+                      <select
+                        value={group}
+                        onChange={(e) =>
+                          changeFilter(() => setGroup(e.target.value))
+                        }
+                      >
+                        <option value="">Toutes les veilles</option>
+                        {groups.map(([key, e]) => (
+                          <option key={key} value={key}>
+                            {dateLabel(e.date)} · {e.title}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label>
+                      État de lecture
+                      <select
+                        value={status}
+                        onChange={(e) =>
+                          changeFilter(() => setStatus(e.target.value))
+                        }
+                      >
+                        <option value="">Tous les articles</option>
+                        <option value="unread">Non lus</option>
+                        <option value="read">Lus</option>
+                        <option value="favorite">Favoris</option>
+                      </select>
+                    </label>
+                    <label>
+                      Univers
+                      <select
+                        aria-label="Univers"
+                        value={watch}
+                        onChange={(e) =>
+                          changeFilter(() => setWatch(e.target.value))
+                        }
+                      >
+                        <option value="">Tous les univers</option>
+                        <option value="journal360">Journal 360°</option>
+                        <option value="ai-major">IA majeures</option>
+                        <option value="sentinel">SENTINEL & AXDIA</option>
+                        <option value="future">Le Futur</option>
+                      </select>
+                    </label>
+                    <label>
+                      Preuve
+                      <select
+                        aria-label="Preuve"
+                        value={proof}
+                        onChange={(e) =>
+                          changeFilter(() => setProof(e.target.value))
+                        }
+                      >
+                        <option value="">Tous les statuts</option>
+                        <option value="sourced">Sourcé (déclaré)</option>
+                        <option value="unverified">Non vérifié</option>
+                        <option value="hypothesis">Hypothèse</option>
+                      </select>
+                    </label>
+                    <label>
+                      Importance
+                      <select
+                        aria-label="Importance"
+                        value={importance}
+                        onChange={(e) =>
+                          changeFilter(() => setImportance(e.target.value))
+                        }
+                      >
+                        <option value="">Toutes les importances</option>
+                        <option value="major">Majeur</option>
+                        <option value="important">Important</option>
+                        <option value="context">Contexte</option>
+                      </select>
+                    </label>
+                    <label>
+                      Faits depuis le
+                      <input
+                        type="date"
+                        value={from}
+                        onChange={(e) =>
+                          changeFilter(() => setFrom(e.target.value))
+                        }
+                      />
+                    </label>
+                    <label>
+                      Faits jusqu’au
+                      <input
+                        type="date"
+                        value={to}
+                        onChange={(e) =>
+                          changeFilter(() => setTo(e.target.value))
+                        }
+                      />
+                    </label>
+                    <label>
+                      Présentation
+                      <select
+                        aria-label="Présentation"
+                        value={layout}
+                        onChange={(e) =>
+                          changeFilter(() => setLayout(e.target.value))
+                        }
+                      >
+                        <option value="themes">Thèmes</option>
+                        <option value="calendar">Calendrier des faits</option>
+                        <option value="timeline">
+                          Chronologie des publications
                         </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label>
-                    État de lecture
-                    <select
-                      value={status}
-                      onChange={(e) =>
-                        changeFilter(() => setStatus(e.target.value))
-                      }
-                    >
-                      <option value="">Tous les articles</option>
-                      <option value="unread">Non lus</option>
-                      <option value="read">Lus</option>
-                      <option value="favorite">Favoris</option>
-                    </select>
-                  </label>
-                  <label>
-                    Univers
-                    <select
-                      aria-label="Univers"
-                      value={watch}
-                      onChange={(e) =>
-                        changeFilter(() => setWatch(e.target.value))
-                      }
-                    >
-                      <option value="">Tous les univers</option>
-                      <option value="journal360">Journal 360°</option>
-                      <option value="ai-major">IA majeures</option>
-                      <option value="sentinel">SENTINEL & AXDIA</option>
-                      <option value="future">Le Futur</option>
-                    </select>
-                  </label>
-                  <label>
-                    Preuve
-                    <select
-                      aria-label="Preuve"
-                      value={proof}
-                      onChange={(e) =>
-                        changeFilter(() => setProof(e.target.value))
-                      }
-                    >
-                      <option value="">Tous les statuts</option>
-                      <option value="sourced">Sourcé (déclaré)</option>
-                      <option value="unverified">Non vérifié</option>
-                      <option value="hypothesis">Hypothèse</option>
-                    </select>
-                  </label>
-                  <label>
-                    Importance
-                    <select
-                      aria-label="Importance"
-                      value={importance}
-                      onChange={(e) =>
-                        changeFilter(() => setImportance(e.target.value))
-                      }
-                    >
-                      <option value="">Toutes les importances</option>
-                      <option value="major">Majeur</option>
-                      <option value="important">Important</option>
-                      <option value="context">Contexte</option>
-                    </select>
-                  </label>
-                  <label>
-                    Faits depuis le
-                    <input
-                      type="date"
-                      value={from}
-                      onChange={(e) =>
-                        changeFilter(() => setFrom(e.target.value))
-                      }
-                    />
-                  </label>
-                  <label>
-                    Faits jusqu’au
-                    <input
-                      type="date"
-                      value={to}
-                      onChange={(e) =>
-                        changeFilter(() => setTo(e.target.value))
-                      }
-                    />
-                  </label>
-                  <label>
-                    Présentation
-                    <select
-                      aria-label="Présentation"
-                      value={layout}
-                      onChange={(e) =>
-                        changeFilter(() => setLayout(e.target.value))
-                      }
-                    >
-                      <option value="themes">Thèmes</option>
-                      <option value="calendar">Calendrier des faits</option>
-                      <option value="timeline">
-                        Chronologie des publications
-                      </option>
-                    </select>
-                  </label>
-                  <label>
-                    Trier les articles
-                    <select
-                      aria-label="Trier les articles"
-                      value={sort}
-                      onChange={(e) =>
-                        changeFilter(() => setSort(e.target.value))
-                      }
-                    >
-                      <option value="date">Veilles les plus récentes</option>
-                      <option value="oldest">Veilles les plus anciennes</option>
-                      <option value="title">Titre de A à Z</option>
-                      <option value="importance">Importance</option>
-                      <option value="published">Publication récente</option>
-                    </select>
-                  </label>
-                </div>
-              </details>
+                      </select>
+                    </label>
+                    <label>
+                      Trier les articles
+                      <select
+                        aria-label="Trier les articles"
+                        value={sort}
+                        onChange={(e) =>
+                          changeFilter(() => setSort(e.target.value))
+                        }
+                      >
+                        <option value="date">Veilles les plus récentes</option>
+                        <option value="oldest">
+                          Veilles les plus anciennes
+                        </option>
+                        <option value="title">Titre de A à Z</option>
+                        <option value="importance">Importance</option>
+                        <option value="published">Publication récente</option>
+                      </select>
+                    </label>
+                  </div>
+                </details>
+              </DisplayFilters>
             </div>
             <div className="articles-results-bar">
               <p role="status">
