@@ -1,3 +1,7 @@
+import { hydrateQuickBriefs } from "./features/hydrateQuickBriefs";
+import { DisplayProvider, DisplaySettings } from "./features/v9/preferences";
+import { Dashboard } from "./features/v9/Dashboard";
+import { ImportDiagnostics } from "./features/ImportDiagnostics";
 import {
   InterfaceProvider,
   InterfaceSettings,
@@ -39,7 +43,6 @@ import {
   ShieldCheck,
   Cloud,
   CloudOff,
-  WifiOff,
   Check,
   Star,
   FileText,
@@ -103,6 +106,7 @@ const UnifiedWorkspace = lazy(
 const FutureView = lazy(() => import("./features/future/FutureView"));
 const FutureImportDialog = lazy(() => import("./features/future/ImportDialog"));
 type Tab =
+  | "home"
   | "today"
   | "library"
   | "articles"
@@ -113,6 +117,7 @@ type Tab =
   | "sentinel"
   | "future";
 const tabs = [
+  { id: "home" as const, label: "Accueil", icon: Home },
   { id: "today" as const, label: "Aujourd’hui", icon: Home },
   { id: "library" as const, label: "Bibliothèque", icon: Library },
   { id: "articles" as const, label: "Articles", icon: FileText },
@@ -121,7 +126,7 @@ const tabs = [
   { id: "future" as const, label: "Le Futur", icon: Clock },
   { id: "search" as const, label: "Rechercher", icon: Search },
   { id: "memory" as const, label: "Mémoire", icon: BookOpen },
-  { id: "settings" as const, label: "Réglages", icon: Settings },
+  { id: "settings" as const, label: "Paramètres", icon: Settings },
 ];
 const normalize = (s: string) =>
   s
@@ -131,7 +136,9 @@ const normalize = (s: string) =>
 export default function App() {
   return (
     <InterfaceProvider>
-      <JournalApp />
+      <DisplayProvider>
+        <JournalApp />
+      </DisplayProvider>
     </InterfaceProvider>
   );
 }
@@ -140,15 +147,26 @@ function JournalApp() {
     preferences: { options: interfaceOptions },
   } = useInterface();
   const [extraNavigation, setExtraNavigation] = useState(false);
-  useEffect(() => setExtraNavigation(false), [interfaceOptions.secondaryNav]);
-  const [workspaceReady, setWorkspaceReady] = useState(false);
-  const onWorkspaceReady = useCallback(() => setWorkspaceReady(true), []);
+  useEffect(
+    () => setExtraNavigation(interfaceOptions.secondaryNav),
+    [interfaceOptions.secondaryNav],
+  );
   const visibleTabs = tabs.filter(
     (t) =>
-      interfaceOptions.secondaryNav ||
       extraNavigation ||
-      !["ai-major", "sentinel", "memory"].includes(t.id),
+      ["home", "today", "articles", "settings"].includes(t.id),
   );
+  const [importsDiagnosticOpen, setImportsDiagnosticOpen] = useState(false);
+  const [todayPanel, setTodayPanel] = useState("overview");
+  const [articleTarget, setArticleTarget] = useState<{
+    eventId: string;
+    editionId: string;
+    ticket: number;
+  }>();
+  function readArticle(eventId: string, editionId: string) {
+    setArticleTarget({ eventId, editionId, ticket: Date.now() });
+    navigate("articles");
+  }
   const readerReturn = useRef<{
     scroll: number;
     element: HTMLElement | null;
@@ -179,7 +197,21 @@ function JournalApp() {
     [data.editions],
   );
   const [futureTarget, setFutureTarget] = useState("");
-  const [tab, setTab] = useState<Tab>("today");
+  const [tab, setTab] = useState<Tab>(() => {
+    try {
+      const saved = sessionStorage.getItem("journal360.navigation.v9");
+      return tabs.some((t) => t.id === saved) ? (saved as Tab) : "today";
+    } catch {
+      return "today";
+    }
+  });
+  useEffect(() => {
+    try {
+      sessionStorage.setItem("journal360.navigation.v9", tab);
+    } catch {
+      /* Navigation still works without storage. */
+    }
+  }, [tab]);
   const [selected, setSelected] = useState<string | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<string>();
   const [readingUpdates, setReadingUpdates] = useState<ReadingChanges>();
@@ -213,6 +245,19 @@ function JournalApp() {
   const fileRef = useRef<HTMLInputElement>(null);
   const restoreRef = useRef<HTMLInputElement>(null);
   const pendingSeen = useRef(new Set<string>());
+  const briefHydrationSeen = useRef(new Set<string>());
+  useEffect(() => {
+    if (!data.ready) return;
+    let active = true;
+    void hydrateQuickBriefs(db, allEditions, briefHydrationSeen.current).then(
+      (result) => {
+        if (active && result.errors.length) setToast(result.errors[0]);
+      },
+    );
+    return () => {
+      active = false;
+    };
+  }, [data.ready, allEditions]);
   const busyCloud = useRef(false);
   const theme =
     data.preferences.find((p) => p.key === "theme")?.value || "light";
@@ -557,12 +602,7 @@ function JournalApp() {
       readerReturn.current = {
         scroll: window.scrollY,
         element: document.activeElement as HTMLElement | null,
-        tab:
-          tab === "articles" ||
-          isCollection(tab) ||
-          (tab === "today" && !!edition.unified)
-            ? tab
-            : "library",
+        tab,
       };
     setSelectedArticle(articleId);
     readerHistory.open(id);
@@ -929,7 +969,7 @@ function JournalApp() {
       <aside className="sidebar">
         <button
           className="brand"
-          onClick={() => navigate("today")}
+          onClick={() => navigate("home")}
           aria-label="Journal 360, accueil"
         >
           <span className="brand-symbol">J.</span>
@@ -969,7 +1009,7 @@ function JournalApp() {
               )}
             </button>
           ))}
-          {!interfaceOptions.secondaryNav && (
+          {
             <button
               className="text-button"
               onClick={() => setExtraNavigation(!extraNavigation)}
@@ -977,7 +1017,7 @@ function JournalApp() {
             >
               Autres espaces
             </button>
-          )}
+          }
         </nav>
         <button
           className="primary sidebar-import"
@@ -1014,7 +1054,7 @@ function JournalApp() {
               {selected ? "Lecture" : tabs.find((t) => t.id === tab)?.label}
             </strong>
           </div>
-          <button className="mobile-brand" onClick={() => navigate("today")}>
+          <button className="mobile-brand" onClick={() => navigate("home")}>
             JOURNAL <b>360°</b>
           </button>
           <div className="topbar-actions">
@@ -1074,6 +1114,7 @@ function JournalApp() {
             }
           >
             <ArticlesView
+              target={articleTarget}
               active={
                 data.ready && tab === "articles" && !current && !selectedDay
               }
@@ -1121,7 +1162,9 @@ function JournalApp() {
               >
                 <UnifiedWorkspace
                   editions={allEditions}
-                  onReady={onWorkspaceReady}
+                  onDemo={() => run(importDemo)}
+                  initialPanel={todayPanel}
+                  onArticle={readArticle}
                   onOpen={openEdition}
                   onDay={openDay}
                   onNavigate={navigate}
@@ -1154,13 +1197,17 @@ function JournalApp() {
               notes={data.notes}
               onBack={backFromReader}
               backLabel={
-                tab === "today" && !!current.unified
-                  ? "Retour à Aujourd’hui"
-                  : tab === "articles"
-                    ? "Retour aux articles"
-                    : isCollection(tab)
-                      ? `Retour à ${collections.find((collection) => collection.id === tab)!.label}`
-                      : undefined
+                tab === "settings"
+                  ? "Retour à Paramètres"
+                  : tab === "home"
+                    ? "Retour à Accueil"
+                    : tab === "today" && !!current.unified
+                      ? "Retour à Aujourd’hui"
+                      : tab === "articles"
+                        ? "Retour aux articles"
+                        : isCollection(tab)
+                          ? `Retour à ${collections.find((collection) => collection.id === tab)!.label}`
+                          : undefined
               }
               onOpen={openEdition}
               onDay={openDay}
@@ -1176,168 +1223,18 @@ function JournalApp() {
             />
           ) : (
             <>
-              {tab === "today" && workspaceReady && (
-                <>
-                  <Suspense
-                    fallback={
-                      <div>
-                        <h1>Journal 360° Unifié</h1>
-                        <div>
-                          <h1>Journal 360° Unifié</h1>
-                          <p role="status">Ouverture du journal unifié…</p>
-                        </div>
-                      </div>
-                    }
-                  >
-                    <div className="section-title">
-                      <div>
-                        <p className="eyebrow">À PORTÉE DE MAIN</p>
-                        <h2>Vos dernières éditions</h2>
-                      </div>
-                      <button
-                        className="text-button"
-                        onClick={() => navigate("library")}
-                      >
-                        Toute la bibliothèque
-                        <ArrowRight size={17} />
-                      </button>
-                    </div>
-                    {displayedEditions.length ? (
-                      <div className="edition-grid">
-                        {renderCards(
-                          displayedEditions
-                            .slice(0, 3)
-                            .flatMap((e) =>
-                              e.dayKey
-                                ? editions.filter(
-                                    (v) =>
-                                      v.dayKey &&
-                                      v.dayKey === e.dayKey &&
-                                      !v.archived,
-                                  )
-                                : [e],
-                            ),
-                        )}
-                      </div>
-                    ) : (
-                      <div className="empty-library">
-                        <span className="empty-icon">
-                          <BookOpen size={28} />
-                        </span>
-                        <div>
-                          <h3>Votre première édition vous attend.</h3>
-                          <p>
-                            Un fichier HTML suffit. Sa mise en page, son texte
-                            et votre regard, au même endroit.
-                          </p>
-                        </div>
-                        <button
-                          className="secondary"
-                          onClick={() => run(importDemo)}
-                        >
-                          Essayer avec 2 éditions démo
-                          <ArrowUpRight size={16} />
-                        </button>
-                      </div>
-                    )}
-                    <div className="bottom-panels">
-                      <section className="memory-teaser">
-                        <p className="eyebrow">PLUS QU’UNE COLLECTION</p>
-                        <h2>
-                          Faites le lien
-                          <br />
-                          <em>entre les éditions.</em>
-                        </h2>
-                        <p>
-                          Vos favoris, vos notes et les événements communs
-                          deviennent une mémoire que vous pouvez retrouver.
-                        </p>
-                        <button
-                          className="text-button"
-                          onClick={() => navigate("memory")}
-                        >
-                          Explorer ma mémoire
-                          <ArrowRight size={17} />
-                        </button>
-                        <span className="teaser-lines" aria-hidden="true">
-                          <i />
-                          <i />
-                          <i />
-                        </span>
-                      </section>
-                      <section className="quiet-panel">
-                        <div className="section-title">
-                          <h3>
-                            {recent
-                              ? "Reprendre une lecture"
-                              : "Pensé pour vous suivre"}
-                          </h3>
-                          <BookOpen size={20} />
-                        </div>
-                        {recent ? (
-                          <>
-                            <p className="muted">
-                              Dernière ouverture enregistrée, sans estimation
-                              fictive de progression.
-                            </p>
-                            <h3>{resumeEdition?.title}</h3>
-                            <button
-                              className="secondary"
-                              onClick={() =>
-                                resumeEdition && openEdition(resumeEdition.id)
-                              }
-                            >
-                              Reprendre
-                              <ArrowRight size={16} />
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            <div className="feature-row">
-                              <WifiOff />
-                              <div>
-                                <strong>Votre bibliothèque, hors ligne</strong>
-                                <p>Après le premier chargement et l’import.</p>
-                              </div>
-                            </div>
-                            <div className="feature-row">
-                              <Download />
-                              <div>
-                                <strong>Une sauvegarde que vous gardez</strong>
-                                <p>Exportez vos éditions et vos annotations.</p>
-                              </div>
-                            </div>
-                            <div className="feature-row">
-                              <ShieldCheck />
-                              <div>
-                                <strong>Des originaux préservés</strong>
-                                <p>Vos fichiers HTML restent inchangés.</p>
-                              </div>
-                            </div>
-                          </>
-                        )}
-                      </section>
-                    </div>
-                    {editions.length > 0 && !lastBackup && !lastCloud && (
-                      <p className="backup-reminder">
-                        <Download size={16} />
-                        Pensez à exporter une sauvegarde : le stockage d’un
-                        navigateur peut être perdu.
-                        <button
-                          className="text-button"
-                          onClick={() =>
-                            run(
-                              localBackup,
-                              "Archive de sauvegarde téléchargée.",
-                            )
-                          }
-                        >
-                          Sauvegarder
-                        </button>
-                      </p>
-                    )}
-                  </Suspense>
-                </>
+              {tab === "home" && (
+                <Dashboard
+                  editions={allEditions}
+                  resumeId={resumeEdition?.id}
+                  onOpen={openEdition}
+                  onArticle={readArticle}
+                  onImport={() => fileRef.current?.click()}
+                  onToday={(panel = "overview") => {
+                    setTodayPanel(panel);
+                    navigate("today");
+                  }}
+                />
               )}
               {tab === "library" && (
                 <>
@@ -1841,7 +1738,18 @@ function JournalApp() {
                     "Votre appareil, vos originaux, votre compte.",
                   )}
                   <div className="settings-grid">
-                    <InterfaceSettings />
+                    <DisplaySettings categories={categories} />
+                    <details className="quiet-panel">
+                      <summary>Profils et options historiques</summary>
+                      <InterfaceSettings />
+                    </details>
+                    <ImportDiagnostics
+                      open={importsDiagnosticOpen}
+                      onToggle={setImportsDiagnosticOpen}
+                      editions={allEditions}
+                      onOpen={openEdition}
+                      onDay={openDay}
+                    />
                     <section className="quiet-panel">
                       <h2>
                         <HardDrive size={21} /> Stockage de cet appareil
@@ -2259,14 +2167,14 @@ function JournalApp() {
             <span>{t.label}</span>
           </button>
         ))}
-        {!interfaceOptions.secondaryNav && (
+        {
           <button
             onClick={() => setExtraNavigation(!extraNavigation)}
             aria-expanded={extraNavigation}
           >
             Autres espaces
           </button>
-        )}
+        }
       </nav>
       <button
         className="mobile-import"

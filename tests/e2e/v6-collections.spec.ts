@@ -1,15 +1,8 @@
+import { navigate as nav } from "../helpers/navigation";
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { v643HTML } from "../helpers/v643";
 import { readFile } from "node:fs/promises";
-async function nav(page: Page, label: string) {
-  await page
-    .locator(
-      (await page.locator(".sidebar").isVisible()) ? ".sidebar" : ".mobile-nav",
-    )
-    .getByRole("button", { name: label, exact: true })
-    .click();
-}
 async function importFile(
   page: Page,
   title = "Dossier commun",
@@ -155,7 +148,7 @@ test("navigation mobile visible et accessibilité des deux nouveaux espaces", as
       ),
     ).toBe(true);
     if (width < 700)
-      await expect(page.locator(".mobile-nav button:visible")).toHaveCount(9);
+      await expect(page.locator(".mobile-nav button:visible")).toHaveCount(11);
   }
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   await page.screenshot({

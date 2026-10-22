@@ -16,13 +16,11 @@ async function frame(page: Page) {
 }
 async function setup(page: Page) {
   await page.goto("/");
-  await page
-    .getByLabel("Fichiers HTML à importer")
-    .setInputFiles({
-      name: "diagnostic-google.html",
-      mimeType: "text/html",
-      buffer: Buffer.from(html),
-    });
+  await page.getByLabel("Fichiers HTML à importer").setInputFiles({
+    name: "diagnostic-google.html",
+    mimeType: "text/html",
+    buffer: Buffer.from(html),
+  });
   await page
     .getByRole("button", {
       name: "Enregistrer dans ma bibliothèque",

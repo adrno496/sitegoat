@@ -1,0 +1,12 @@
+
+> journal360-mobile@2.1.0 test:performance
+> vitest run --config vitest.performance.config.ts
+
+
+ RUN  v5.0.4 /Users/dreano/Downloads/veille/veille
+
+
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+   Start at  17:34:35
+   Duration  47.73s (tests 98%, environment 2%)

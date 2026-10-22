@@ -1,19 +1,11 @@
+import { navigate } from "../helpers/navigation";
 import { readerControl, readerTools } from "../helpers/reader";
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { readFileSync } from "node:fs";
 import { v6Html } from "../helpers/v6";
 async function nav(page: Page, label = "Bibliothèque") {
-  const back = page.getByRole("button", {
-    name: "Retour à la bibliothèque",
-    exact: true,
-  });
-  if (await back.isVisible()) await back.click();
-  const mobile = await page.locator(".mobile-nav").isVisible();
-  await page
-    .locator(mobile ? ".mobile-nav" : ".sidebar")
-    .getByRole("button", { name: label, exact: true })
-    .click();
+  return navigate(page, label);
 }
 async function importRevision(
   page: Page,

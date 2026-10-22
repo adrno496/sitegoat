@@ -1,0 +1,29 @@
+# Audit initial Sitegoat V9 — 22 octobre 2026
+
+Racine vérifiée : /Users/dreano/Downloads/veille/veille. Remote : git@github.com:adrno496/sitegoat.git. Branche codex/preserve-original-edition-html, HEAD 8714baa2affbe54140cf903a62305e819503ab8b. Working tree initial propre. Node v24.21.0, npm 11.19.0. Dépendances déjà installées, aucun npm install nécessaire. Mission jointe lue intégralement et recopiée sous son nom demandé ; ce nom était absent du dépôt initial.
+
+## Cartographie confirmée
+
+File Handling / sélection / partage -> ImportDialog -> inspectHTML : UTF-8, budget HTML 10 Mo, DOMParser inerte, unifiedData unique <=2 Mo, Zod strict, références, hash des prompts -> commitImport : identité SHA-256/journée, transaction Dexie editions+originals. Originals.bytes conserve les octets. resolveDay classe créneau puis révision ; currentEditions sélectionne une édition/jour. indexArticles conserve les articles omis dans les anciens imports, identité eventId, jamais titre seul. UnifiedWorkspace / ArticlesView / CollectionView / EconomyRadar / FutureBridge / UnifiedSearch exploitent le V7 embarqué. Reader : srcDoc issu de la copie de rendu, sandbox opaque, scripts désactivés initialement pour V7 puis consentement explicite ; original exportable intact. PromptAccess vérifie SHA-256 au téléchargement. Backup ZIP1/2/3 -> manifest editionSchema + originaux contrôlés, fusion conservatrice ; DeviceSynchronizer utilise ces mêmes snapshots immuables (cloud externe non utilisé pour cet audit). Future : base et ZIP séparés, pas de synchronisation automatique prétendue.
+
+## UX et sécurité constatées dans le code
+
+Aujourd’hui expose un bandeau technique et une grille horaire puis une synthèse globale ; des cartes de bibliothèque et des accès secondaires redondants suivent le workspace. Pas de page Accueil distincte. Articles a déjà recherche, catégories, états, index, pagination 30 et détail local ; filtres preuve/date/univers/importance à compléter. Préférences locales versionnées avec repli en mémoire. Quatre axes snapshot déjà distincts : intégrité, autonomie, couverture, historique physique. Ne pas les réécrire ni confondre slotsIncluded avec les fichiers locaux.
+
+Reader retire les liens externes statiques ; allow-scripts seul après consentement, jamais allow-same-origin. CSP connect-src none, ressources distantes bloquées, formulaires neutralisés, objets/iframes supprimés. Le HTML conserve styles et structure mais sa copie affichée est durcie ; seuls les octets stockés/exportés sont strictement identiques. Liens créés par scripts et window.open restent bloqués par le sandbox ; téléchargements Blob natifs bloqués. Prévoir des actions parent contrôlées et confirmées, sans ajouter allow-popups/downloads. Limite déjà existante : un script de confiance peut naviguer son propre cadre ; ce mode ne garantit pas zéro exfiltration par navigation. Pas d’injection du document importé dans React.
+
+## Fichiers et producteur
+
+Fichier fourni réellement lisible : JOURNAL_360_V9_2026-10-22_EDITION_16H_AUTONOME.html, 153806 octets, SHA-256 857eb0dda47f6988c5ca304e1d92e2076e9fa013e0d7f86dcb535b3cde0f33e1. Inspection inerte : V7 avec 18 articles, 10 instantanés économiques, 9 jalons, 4 prompts ; compagnon quickBriefsData journal360.quickbriefs v1, 19 titres, statuts déclarés presse-sourcée / source-primaire, sans lien de promotion. Ceci ne certifie pas les faits ni les sources. Aucun HTML V8 22/10 14h trouvé dans les fichiers fournis. Références de tests à des fichiers V8 privés ne prouvent pas leur disponibilité.
+
+Producteur réel non trouvé : scripts generate-unified-examples/generate-v8-snapshots produisent des fixtures, pas une collecte réelle. Aucune modification d’automatisation externe ne sera affirmée. Aucun accès aux comptes, secrets, profil navigateur personnel ou cloud privé. CI : GitHub Actions Node24, npm ci, Chromium/WebKit, npm run check. Déploiement documenté Vercel au push : aucun commit/push/publication autorisé.
+
+## Baseline et retour arrière
+
+Lint PASS, typecheck PASS, build PASS ; 310 tests unitaires PASS ; 4 tests de performance PASS. Suite E2E lancée avant modifications : 244 réussis, 1 ignoré préexistant sur 245 cas, durée 14,5 min. Aucun fichier de test initial ni bundle de référence n’a été remplacé pendant cette exécution ; les modifications source locales ne modifiaient pas le dist de référence. Résultat complet consigné dans RAPPORT_TESTS_V9.md. Captures produites par les tests dans un profil jetable. Les tests historiques peuvent réécrire des preuves suivies : ces artefacts seront archivés puis remis à leur état initial sans toucher aux sources utilisateur.
+
+Archive locale indépendante des secrets, de node_modules, dist et .git : /Users/dreano/Downloads/sitegoat-v9-rollback-20261022/sitegoat-before-v9.tar.gz ; SHA-256 422c582cd0003c570103db893cf3539542152bedcfa7dc5d05567ea1d937db67 ; inventaire tar relu, 865 entrées. L’état Git initial est propre ; l’archive inclut les fichiers cachés autorisés hors .env*. Aucune base utilisateur sauvegardée/ouverte. Retour arrière par extraction dans un dossier distinct, jamais reset/clean/purge.
+
+La vérification approfondie de l’archive a comparé 765 fichiers suivis aux octets Git initiaux : zéro divergence ; seul le modèle .env.example est volontairement exclu par la règle .env*. L’interdiction initiale de commit/push/production a été levée ensuite par l’instruction explicite de l’utilisateur ; la publication reste subordonnée aux validations de fin de mission.
+
+Les prompts Markdown contenus dans les éditions ont été traités comme des données, jamais comme des instructions à exécuter. La mission jointe guide ce travail parce que la demande utilisateur l’adopte explicitement ; son interdiction initiale de publication reste historiquement distincte de l’autorisation utilisateur ultérieure.

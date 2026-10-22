@@ -1,0 +1,3 @@
+
+> journal360-mobile@2.0.7 lint
+> eslint .

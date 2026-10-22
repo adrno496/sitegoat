@@ -1,5 +1,6 @@
 import { classifyFuture } from "./future/routing";
 import { validateUnified } from "../data/unified";
+import { extractQuickBriefs } from "../data/quickBriefs";
 import { validateFuture } from "./future/import";
 import {
   type Edition,
@@ -33,6 +34,7 @@ import {
 import { validateSourceUrl } from "./sourceUrl";
 import { LOCAL_FRAGMENT_LINK_BRIDGE } from "./frameNavigation";
 import { prepareArticleNavigation } from "./articleNavigation";
+import { readerActionBridge, readerAllowedLinks } from "./readerActions";
 const cleanText = (s: string) => s.replace(/\s+/g, " ").trim();
 const str = (s: unknown) => (typeof s === "string" ? s : "");
 function plain(s: unknown) {
@@ -99,6 +101,7 @@ export async function inspectHTML(
   const unified = unifiedBlocks.length
     ? validateUnified(JSON.parse(unifiedBlocks[0].textContent || "null"))
     : undefined;
+  const quickBriefs = extractQuickBriefs(document, unified);
   if (unified) {
     for (const prompt of unified.promptAssets)
       if (
@@ -300,6 +303,7 @@ export async function inspectHTML(
     deleted: false,
     sourceVerifiedAt,
     ...metadata,
+    quickBriefs,
   });
 }
 export async function commitImport(
@@ -415,6 +419,8 @@ export function isolatedHTML(
   bytes: Uint8Array,
   interactive: boolean,
   targetArticle?: Article,
+  edition?: Edition,
+  frameRevision = 0,
 ) {
   const doc = new DOMParser().parseFromString(
     new TextDecoder().decode(bytes),
@@ -432,7 +438,14 @@ export function isolatedHTML(
   doc
     .querySelectorAll("base,meta[http-equiv],iframe,object,embed,link")
     .forEach((e) => e.remove());
+  const allowedLinks = new Set(
+    interactive && edition?.unified ? readerAllowedLinks(edition) : [],
+  );
   doc.querySelectorAll("*").forEach((e) => {
+    if (interactive && edition?.unified && e.matches("a[href]")) {
+      const url = validateSourceUrl(e.getAttribute("href"));
+      if (url && allowedLinks.has(url)) e.setAttribute("data-j360-source", url);
+    }
     const googleAi =
       interactive && e.matches("a[href]")
         ? validateGoogleDestination(e.getAttribute("href")) ||
@@ -482,6 +495,11 @@ export function isolatedHTML(
   csp.content = `default-src 'none'; script-src ${interactive ? "'unsafe-inline'" : "'none'"}; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; media-src data: blob:; connect-src 'none'; object-src 'none'; frame-src 'none'; form-action 'none'; base-uri 'none'`;
   doc.head.prepend(csp);
   if (interactive) {
+    if (edition?.unified) {
+      const actions = doc.createElement("script");
+      actions.textContent = readerActionBridge(edition, frameRevision);
+      csp.after(actions);
+    }
     const googleAi = doc.createElement("script");
     googleAi.textContent = googleAiLinkBridge(location.origin);
     csp.after(googleAi);

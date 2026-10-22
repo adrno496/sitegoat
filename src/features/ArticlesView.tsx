@@ -1,3 +1,4 @@
+import { PublicGoogleLink } from "./PublicGoogleLink";
 import { EventCard } from "./EventCard";
 import { summaryPreview } from "./eventPresentation";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
@@ -27,6 +28,7 @@ import { PromptAccess } from "./unified/PromptAccess";
 const PAGE_SIZE = 30;
 export function ArticlesView({
   active,
+  target,
   editions,
   states,
   onOpen,
@@ -34,6 +36,7 @@ export function ArticlesView({
   onReading,
 }: {
   active: boolean;
+  target?: { eventId: string; editionId: string; ticket: number };
   editions: Edition[];
   states: ReadingState[];
   onOpen: (id: string, articleId?: string) => void;
@@ -50,6 +53,37 @@ export function ArticlesView({
   const [group, setGroup] = useState("");
   const [status, setStatus] = useState("");
   const [sort, setSort] = useState("date");
+  const [watch, setWatch] = useState("");
+  const [proof, setProof] = useState("");
+  const [importance, setImportance] = useState("");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [layout, setLayout] = useState("themes");
+  const appliedTarget = useRef(0);
+  useLayoutEffect(() => {
+    if (!active || !target || appliedTarget.current === target.ticket) return;
+    const item =
+      items.find(
+        (i) =>
+          i.article.eventId === target.eventId &&
+          i.edition.id === target.editionId,
+      ) || items.find((i) => i.article.eventId === target.eventId);
+    if (item) {
+      appliedTarget.current = target.ticket;
+      setQuery("");
+      setCategory("");
+      setGroup("");
+      setStatus("");
+      setWatch("");
+      setProof("");
+      setImportance("");
+      setFrom("");
+      setTo("");
+      setPage(0);
+      setSelected(item.key);
+      requestAnimationFrame(() => heading.current?.focus());
+    }
+  }, [active, target, items]);
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [googleQuestion, setGoogleQuestion] = useState<{
@@ -160,7 +194,16 @@ export function ArticlesView({
   const groups = [...groupMap.entries()];
   const filtered = items.filter((item) => {
     const state = stateOf(item.edition.id, item.article.id);
+    const u = item.edition.unified?.items.find(
+      (i) => i.eventId === item.article.eventId,
+    );
+    const date = u?.eventDate || item.article.date || "";
     return (
+      (!watch || item.article.sourceWatch === watch) &&
+      (!proof || u?.evidenceStatus === proof) &&
+      (!importance || u?.importance === importance) &&
+      (!from || date >= from) &&
+      (!to || (!!date && date <= to)) &&
       (!category || item.article.category === category) &&
       (!group || item.group === group) &&
       (!status ||
@@ -176,8 +219,63 @@ export function ArticlesView({
     filtered.sort((a, b) =>
       a.article.title.localeCompare(b.article.title, "fr"),
     );
+  else if (sort === "importance") {
+    const weight = (i: IndexedArticle) =>
+      ({ major: 0, important: 1, context: 2 })[
+        i.edition.unified?.items.find((a) => a.eventId === i.article.eventId)
+          ?.importance || "context"
+      ];
+    filtered.sort((a, b) => weight(a) - weight(b));
+  } else if (sort === "published")
+    filtered.sort((a, b) =>
+      (
+        b.edition.unified?.items.find((i) => i.eventId === b.article.eventId)
+          ?.publishedAt || ""
+      ).localeCompare(
+        a.edition.unified?.items.find((i) => i.eventId === a.article.eventId)
+          ?.publishedAt || "",
+      ),
+    );
   else if (sort === "oldest") filtered.reverse();
+  if (layout === "themes" && sort === "date")
+    filtered.sort(
+      (a, b) =>
+        a.article.category.localeCompare(b.article.category, "fr") ||
+        (b.edition.date || "").localeCompare(a.edition.date || ""),
+    );
+  if (layout === "calendar")
+    filtered.sort((a, b) =>
+      (
+        b.edition.unified?.items.find((i) => i.eventId === b.article.eventId)
+          ?.eventDate ||
+        b.article.date ||
+        ""
+      ).localeCompare(
+        a.edition.unified?.items.find((i) => i.eventId === a.article.eventId)
+          ?.eventDate ||
+          a.article.date ||
+          "",
+      ),
+    );
+  if (layout === "timeline")
+    filtered.sort((a, b) =>
+      (
+        b.edition.unified?.items.find((i) => i.eventId === b.article.eventId)
+          ?.publishedAt ||
+        b.edition.date ||
+        ""
+      ).localeCompare(
+        a.edition.unified?.items.find((i) => i.eventId === a.article.eventId)
+          ?.publishedAt ||
+          a.edition.date ||
+          a.edition.date ||
+          "",
+      ),
+    );
   const current = filtered.find((i) => i.key === selected);
+  const currentItem = current?.edition.unified?.items.find(
+    (i) => i.eventId === current.article.eventId,
+  );
   const position = current ? filtered.indexOf(current) : -1;
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const visiblePage = Math.min(page, pageCount - 1);
@@ -241,6 +339,7 @@ export function ArticlesView({
                   <label>
                     Rubrique
                     <select
+                      aria-label="Rubrique"
                       value={category}
                       onChange={(e) =>
                         changeFilter(() => setCategory(e.target.value))
@@ -283,8 +382,91 @@ export function ArticlesView({
                     </select>
                   </label>
                   <label>
+                    Univers
+                    <select
+                      aria-label="Univers"
+                      value={watch}
+                      onChange={(e) =>
+                        changeFilter(() => setWatch(e.target.value))
+                      }
+                    >
+                      <option value="">Tous les univers</option>
+                      <option value="journal360">Journal 360°</option>
+                      <option value="ai-major">IA majeures</option>
+                      <option value="sentinel">SENTINEL & AXDIA</option>
+                      <option value="future">Le Futur</option>
+                    </select>
+                  </label>
+                  <label>
+                    Preuve
+                    <select
+                      aria-label="Preuve"
+                      value={proof}
+                      onChange={(e) =>
+                        changeFilter(() => setProof(e.target.value))
+                      }
+                    >
+                      <option value="">Tous les statuts</option>
+                      <option value="sourced">Sourcé (déclaré)</option>
+                      <option value="unverified">Non vérifié</option>
+                      <option value="hypothesis">Hypothèse</option>
+                    </select>
+                  </label>
+                  <label>
+                    Importance
+                    <select
+                      aria-label="Importance"
+                      value={importance}
+                      onChange={(e) =>
+                        changeFilter(() => setImportance(e.target.value))
+                      }
+                    >
+                      <option value="">Toutes les importances</option>
+                      <option value="major">Majeur</option>
+                      <option value="important">Important</option>
+                      <option value="context">Contexte</option>
+                    </select>
+                  </label>
+                  <label>
+                    Faits depuis le
+                    <input
+                      type="date"
+                      value={from}
+                      onChange={(e) =>
+                        changeFilter(() => setFrom(e.target.value))
+                      }
+                    />
+                  </label>
+                  <label>
+                    Faits jusqu’au
+                    <input
+                      type="date"
+                      value={to}
+                      onChange={(e) =>
+                        changeFilter(() => setTo(e.target.value))
+                      }
+                    />
+                  </label>
+                  <label>
+                    Présentation
+                    <select
+                      aria-label="Présentation"
+                      value={layout}
+                      onChange={(e) =>
+                        changeFilter(() => setLayout(e.target.value))
+                      }
+                    >
+                      <option value="themes">Thèmes</option>
+                      <option value="calendar">Calendrier des faits</option>
+                      <option value="timeline">
+                        Chronologie des publications
+                      </option>
+                    </select>
+                  </label>
+                  <label>
                     Trier les articles
                     <select
+                      aria-label="Trier les articles"
                       value={sort}
                       onChange={(e) =>
                         changeFilter(() => setSort(e.target.value))
@@ -293,6 +475,8 @@ export function ArticlesView({
                       <option value="date">Veilles les plus récentes</option>
                       <option value="oldest">Veilles les plus anciennes</option>
                       <option value="title">Titre de A à Z</option>
+                      <option value="importance">Importance</option>
+                      <option value="published">Publication récente</option>
                     </select>
                   </label>
                 </div>
@@ -304,7 +488,15 @@ export function ArticlesView({
                 trouvé
                 {filtered.length !== 1 ? "s" : ""}
               </p>
-              {(query || category || group || status) && (
+              {(query ||
+                category ||
+                group ||
+                status ||
+                watch ||
+                proof ||
+                importance ||
+                from ||
+                to) && (
                 <button
                   className="text-button"
                   onClick={() =>
@@ -313,6 +505,11 @@ export function ArticlesView({
                       setCategory("");
                       setGroup("");
                       setStatus("");
+                      setWatch("");
+                      setProof("");
+                      setImportance("");
+                      setFrom("");
+                      setTo("");
                     })
                   }
                 >
@@ -324,6 +521,52 @@ export function ArticlesView({
               <p className="error" role="alert">
                 {questionError}
               </p>
+            )}
+            {layout === "calendar" && !current && (
+              <nav
+                className="v9-calendar"
+                aria-label="Calendrier des dates de faits disponibles"
+              >
+                <button
+                  className="secondary"
+                  onClick={() =>
+                    changeFilter(() => {
+                      setFrom("");
+                      setTo("");
+                    })
+                  }
+                >
+                  Toutes les dates
+                </button>
+                {[
+                  ...new Set(
+                    items.flatMap((i) => {
+                      const date =
+                        i.edition.unified?.items.find(
+                          (a) => a.eventId === i.article.eventId,
+                        )?.eventDate || i.article.date;
+                      return date ? [date] : [];
+                    }),
+                  ),
+                ]
+                  .sort()
+                  .reverse()
+                  .map((date) => (
+                    <button
+                      className="secondary"
+                      key={date}
+                      aria-pressed={from === date && to === date}
+                      onClick={() =>
+                        changeFilter(() => {
+                          setFrom(date);
+                          setTo(date);
+                        })
+                      }
+                    >
+                      {dateLabel(date)}
+                    </button>
+                  ))}
+              </nav>
             )}
             <div className="articles-browser">
               <nav className="article-index" aria-label="Sommaire des articles">
@@ -378,6 +621,16 @@ export function ArticlesView({
                       {dateLabel(current.edition.date)}
                       {current.edition.archived ? " · Archive" : ""}
                     </p>
+                    {currentItem && (
+                      <p>
+                        Fait : {currentItem.eventDate} · Publication :{" "}
+                        {currentItem.publishedAt} · Preuve :{" "}
+                        {currentItem.evidenceStatus} (déclarée)
+                      </p>
+                    )}
+                    <PublicGoogleLink
+                      question={currentItem?.publicResearchQuestion}
+                    />
                     <div className="article-actions">
                       <button
                         className="secondary"
@@ -438,7 +691,35 @@ export function ArticlesView({
                       />
                     )}
                     <div className="article-body">
-                      {current.article.text ? (
+                      {currentItem ? (
+                        <>
+                          <h3>Résumé</h3>
+                          <p>{currentItem.summary || "Non fourni"}</p>
+                          {currentItem.plain &&
+                            currentItem.plain !== currentItem.summary && (
+                              <>
+                                <h3>En clair</h3>
+                                <p>{currentItem.plain}</p>
+                              </>
+                            )}
+                          <h3>Analyse</h3>
+                          <p>{currentItem.detail || "Non fournie"}</p>
+                          <h3>Limites et objections documentées</h3>
+                          <p>{currentItem.unknowns || "Non fournies"}</p>
+                          <p>{currentItem.importanceReason}</p>
+                          {currentItem.actions.map((a, n) => (
+                            <p key={n}>
+                              {a.title} · {a.reason} · Risque : {a.risk}
+                            </p>
+                          ))}
+                          {currentItem.corrections.map((c, n) => (
+                            <p key={n} className="warning">
+                              Correction : {c.at} · {c.reason} ·{" "}
+                              {c.sourceIds.join(", ")}
+                            </p>
+                          ))}
+                        </>
+                      ) : current.article.text ? (
                         current.article.text
                           .split(/\n+|(?<=\.)\s+(?=\*\*[^*]+\*\*)/)
                           .map((paragraph, index) => (
@@ -513,7 +794,16 @@ export function ArticlesView({
                   </article>
                 ) : filtered.length ? (
                   <>
-                    <div className="articles-grid">
+                    <p className="small-note">
+                      Vue{" "}
+                      {layout === "themes"
+                        ? "par thèmes"
+                        : layout === "calendar"
+                          ? "calendrier des faits, dates décroissantes"
+                          : "chronologie des publications, dates décroissantes"}
+                      . Les dates inconnues ne sont pas déduites de l’import.
+                    </p>
+                    <div className="articles-grid" data-layout={layout}>
                       {filtered
                         .slice(
                           visiblePage * PAGE_SIZE,
@@ -528,6 +818,7 @@ export function ArticlesView({
                                   (i) => i.eventId === item.article.eventId,
                                 )!}
                                 edition={item.edition}
+                                onRead={() => open(item.key)}
                                 onOriginal={() =>
                                   onOpen(item.edition.id, item.article.id)
                                 }
@@ -575,6 +866,7 @@ export function ArticlesView({
                                 </span>
                                 <span>{item.edition.title}</span>
                               </div>
+                              <PublicGoogleLink />
                               <div className="article-card-footer">
                                 <button
                                   className="text-button"

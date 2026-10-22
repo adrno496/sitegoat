@@ -1,3 +1,4 @@
+import { indexQuickBriefs } from "../../data/quickBriefs";
 import { useMemo, useState, useEffect } from "react";
 import type { Edition } from "../../data/model";
 import {
@@ -207,6 +208,23 @@ export function UnifiedSearch({
         open: () => onOpen(h.edition.id, h.article.id),
       })),
     }));
+    for (const r of indexQuickBriefs(editions))
+      result.push({
+        key: "brief:" + r.key,
+        kind: "Brève",
+        title: r.item.title,
+        text: [
+          r.item.title,
+          r.item.theme,
+          r.item.source.publisher,
+          r.item.source.url,
+        ].join(" "),
+        date: r.item.publishedAt,
+        source: r.item.source.publisher,
+        status: r.item.evidenceStatus,
+        theme: r.item.theme,
+        open: () => onOpen(r.edition.id),
+      });
     for (const { data: e, edition } of economicRows(editions))
       result.push({
         key: "eco:" + e.id + e.period + edition.id,

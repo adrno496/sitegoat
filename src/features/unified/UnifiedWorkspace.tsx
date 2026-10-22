@@ -1,6 +1,4 @@
-import { EventCard } from "../EventCard";
-import { useInterface } from "../interfacePreferences";
-import { SnapshotStatus } from "../SnapshotStatus";
+import { useDisplay } from "../v9/preferences";
 import {
   useCallback,
   useEffect,
@@ -9,15 +7,17 @@ import {
   useRef,
   useState,
 } from "react";
+import { EventCard } from "../EventCard";
+import { useInterface } from "../interfacePreferences";
 import type { Edition } from "../../data/model";
 import { dateLabel } from "../../data/model";
-import { indexArticles } from "../../data/articles";
-import { resolveDay, dayKeyOf } from "../../data/day";
-import { parisClock, V7_SLOTS, scheduleFor } from "../../data/editorial";
+import { indexArticles, normalizeArticleSearch } from "../../data/articles";
+import { V7_SLOTS } from "../../data/editorial";
 import { latestCurrent } from "./selectors";
 import { EconomyRadar } from "./EconomyRadar";
 import { FutureBridge, useFutureCatalog } from "./FutureBridge";
 import { PromptLibrary, UnifiedSearch } from "./UnifiedSearch";
+import { QuickNews } from "../v9/QuickNews";
 import "./unified.css";
 type Destination =
   | "articles"
@@ -30,72 +30,81 @@ type Destination =
 export default function UnifiedWorkspace({
   editions,
   onOpen,
-  onDay,
   onNavigate,
   onImport,
   onFuture,
   onReady,
+  onArticle,
+  initialPanel = "overview",
+  onDemo,
 }: {
-  onReady?: () => void;
   editions: Edition[];
   onOpen: (id: string, article?: string) => void;
   onDay: (key: string) => void;
   onNavigate: (to: Destination) => void;
   onImport: () => void;
   onFuture: (id?: string) => void;
+  onReady?: () => void;
+  onArticle?: (eventId: string, editionId: string) => void;
+  initialPanel?: string;
+  onDemo?: () => void;
 }) {
   useEffect(() => onReady?.(), [onReady]);
-  const [panel, setPanel] = useState("overview");
-  const [firstSeen, setFirstSeen] = useState("");
-  const [eventSort, setEventSort] = useState("importance");
-  const [eventLimit, setEventLimit] = useState(30);
+  const [panel, setPanel] = useState(initialPanel),
+    [firstSeen, setFirstSeen] = useState(""),
+    [query, setQuery] = useState(""),
+    [category, setCategory] = useState(""),
+    [eventSort, setEventSort] = useState("importance"),
+    [eventLimit, setEventLimit] = useState(30);
+  useEffect(() => setPanel(initialPanel), [initialPanel]);
   const {
     preferences: { options },
   } = useInterface();
-  const heading = useRef<HTMLHeadingElement>(null);
-  const futureCatalog = useFutureCatalog();
-  const previousPanel = useRef(panel);
+  const heading = useRef<HTMLHeadingElement>(null),
+    previousPanel = useRef(panel),
+    futureCatalog = useFutureCatalog();
   useLayoutEffect(() => {
     if (previousPanel.current !== panel) {
       previousPanel.current = panel;
       heading.current?.focus();
     }
   }, [panel]);
-  const live = editions.filter((e) => !e.deleted && !e.archived),
-    current = latestCurrent(live),
-    latest = current?.unified ? current : undefined,
-    p = latest?.unified,
-    clock = parisClock();
-  const versions = current
-      ? live.filter(
-          (e) =>
-            !e.collection &&
-            (dayKeyOf(current)
-              ? dayKeyOf(e) === dayKeyOf(current)
-              : e.id === current.id),
-        )
-      : [],
-    day = resolveDay(versions);
-  const assessment = day.versions.find(
-    (v) => v.edition.id === current?.id,
-  )?.assessment;
-  const slots = current ? scheduleFor(current) : V7_SLOTS;
+  const { display } = useDisplay();
+  const current = latestCurrent(editions),
+    p = current?.unified;
   const items = useMemo(
     () => indexArticles(editions.filter((e) => !e.deleted && !e.archived)),
     [editions],
   );
-  const go = useCallback((value: string) => {
-    setPanel(value);
+  const go = useCallback((v: string) => {
+    setPanel(v);
+    setEventLimit(30);
   }, []);
   const openPrompts = useCallback(() => go("prompts"), [go]);
   const importance = { major: 0, important: 1, context: 2 };
-  const highlights = [...(p?.items || [])]
-    .filter((i) => !firstSeen || i.firstSeenSlot === firstSeen)
+  const highlights = (p?.items || [])
+    .filter(
+      (i) =>
+        (!firstSeen || i.firstSeenSlot === firstSeen) &&
+        (!category || i.category === category) &&
+        normalizeArticleSearch(
+          [
+            i.title,
+            i.summary,
+            i.plain,
+            i.detail,
+            ...i.sourceRecords.map((s) => s.publisher),
+          ].join(" "),
+        ).includes(normalizeArticleSearch(query)) &&
+        (panel !== "ai" || i.sourceWatch === "ai-major") &&
+        (panel !== "sentinel" || i.sourceWatch === "sentinel"),
+    )
     .sort((a, b) =>
       eventSort === "newest"
-        ? b.firstSeenSlot.localeCompare(a.firstSeenSlot) ||
-          b.lastChangedAt.localeCompare(a.lastChangedAt)
-        : importance[a.importance] - importance[b.importance],
+        ? b.lastChangedAt.localeCompare(a.lastChangedAt)
+        : Number(display.favorites.includes(b.category)) -
+            Number(display.favorites.includes(a.category)) ||
+          importance[a.importance] - importance[b.importance],
     );
   return (
     <div
@@ -103,27 +112,49 @@ export default function UnifiedWorkspace({
     >
       <header className="unified-masthead">
         <div>
-          <p className="eyebrow">QUATRE UNIVERS · UNE JOURNÉE</p>
+          <p className="eyebrow">VOTRE VEILLE QUOTIDIENNE</p>
           <h1 ref={heading} tabIndex={-1}>
-            Journal 360° <em>Unifié.</em>
+            Aujourd’hui
           </h1>
-          <p>{dateLabel(clock.date)} · Europe/Paris</p>
+          <p>
+            {current
+              ? dateLabel(current.date)
+              : "Importez votre première édition"}
+          </p>
         </div>
-        <span className="unified-badge">
-          {p?.synthetic
-            ? "EXEMPLE SYNTHÉTIQUE"
-            : current
-              ? "ÉDITIONS LOCALES"
-              : "EN ATTENTE D’IMPORT"}
-        </span>
+        {p?.synthetic && (
+          <span className="unified-badge">EXEMPLE SYNTHÉTIQUE</span>
+        )}
       </header>
+      {!current && (
+        <section className="empty-library">
+          <h2>Votre première édition vous attend.</h2>
+          <p>
+            Importez un fichier HTML ou explorez deux démonstrations
+            synthétiques.
+          </p>
+          <button className="secondary" onClick={onDemo}>
+            Essayer avec 2 éditions démo
+          </button>
+        </section>
+      )}
+      <div className="v9-read-latest">
+        <button
+          className="primary"
+          onClick={() => (current ? onOpen(current.id) : onImport())}
+        >
+          {current ? "Lire la dernière édition" : "Importer une édition"}
+        </button>
+      </div>
       <nav className="unified-controls" aria-label="Explorer le journal unifié">
         {[
-          ["overview", "Aujourd’hui en bref"],
+          ["overview", "À la une"],
           ["economy", "Économie"],
+          ["ai", "IA majeures"],
           ["timeline", "Chronologie IA"],
-          ["prompts", "Mes prompts .md"],
-          ["explore", "Recherche globale"],
+          ["sentinel", "SENTINEL & AXDIA"],
+          ["future", "Le Futur"],
+          ["quick", "Actualité rapide"],
         ].map(([id, label]) => (
           <button
             className="secondary"
@@ -135,9 +166,20 @@ export default function UnifiedWorkspace({
           </button>
         ))}
       </nav>
+      <details className="v9-reading-tools">
+        <summary>Prompts et recherche</summary>
+        <div className="unified-controls">
+          <button className="secondary" onClick={openPrompts}>
+            Mes prompts .md
+          </button>
+          <button className="secondary" onClick={() => go("explore")}>
+            Recherche globale
+          </button>
+        </div>
+      </details>
       {panel === "economy" ? (
         <EconomyRadar editions={editions} />
-      ) : panel === "timeline" ? (
+      ) : panel === "timeline" || panel === "future" ? (
         <FutureBridge
           editions={editions}
           onFuture={onFuture}
@@ -153,405 +195,164 @@ export default function UnifiedWorkspace({
           onFuture={onFuture}
           onPrompts={openPrompts}
         />
+      ) : panel === "quick" ? (
+        <QuickNews
+          editions={editions}
+          date={current?.date || undefined}
+          onArticle={onArticle}
+        />
       ) : (
-        <>
-          <section className="unified-lead">
-            <div>
-              <p className="eyebrow">DERNIÈRE ÉDITION EFFECTIVEMENT REÇUE</p>
-              <h2>
-                {current
-                  ? `${dateLabel(current.date)} · ${current.editionSlot || current.slotsIncluded?.at(-1) || "heure inconnue"}`
-                  : "Votre journée commence ici."}
-              </h2>
-              <p>
-                Vérification déclarée :{" "}
-                {current?.sourceVerifiedAt || "non renseignée"}
-                {!assessment?.snapshot && ` · Cumul ${day.status}`}
-              </p>
-              {assessment?.snapshot && (
-                <>
-                  <p>
-                    {p?.items.length} événements · Intégrité{" "}
-                    {assessment.snapshot.integrity} · Autonomie{" "}
-                    {assessment.snapshot.autonomy} · Couverture{" "}
-                    {assessment.snapshot.coverage}
-                  </p>
-                  {assessment.issues.map((issue, index) => (
-                    <p className="warning" key={index}>
-                      {issue}
-                    </p>
-                  ))}
-                  <details open={options.technical || undefined}>
-                    <summary>
-                      Diagnostics documentaires et historique d’import
-                    </summary>
-                    <SnapshotStatus
-                      assessment={assessment}
-                      showIssues={false}
-                    />
-                  </details>
-                </>
-              )}
-              {current && current.date !== clock.date && (
-                <p className="warning">
-                  Aucune édition du {clock.date} reçue. Vous consultez la
-                  dernière journée disponible.
-                </p>
-              )}
-              <p className="interface-help">
-                Le fichier expose ce que son producteur a déclaré. Aucun accès
-                aux sources ni collecte automatique n’est simulé.
-              </p>
-            </div>
+        <section>
+          <div className="section-title">
+            <h2>Aujourd’hui en bref</h2>
             <button
-              className="primary"
-              onClick={() =>
-                current ? onOpen(day.current?.id || current.id) : onImport()
-              }
+              className="text-button"
+              onClick={() => onNavigate("articles")}
             >
-              {current ? "Lire la dernière édition" : "Importer une édition"}
+              Tous les articles ({items.length}) →
             </button>
-          </section>
-          <div
-            className="unified-slots"
-            role="group"
-            aria-label="Éditions et créneaux de la journée"
-          >
-            {slots.map((slot) => {
-              const received = versions.filter(
-                (e) =>
-                  e.editionSlot === slot ||
-                  (!e.unified && e.slotsIncluded?.at(-1) === slot),
-              );
-              const receivedVersion = resolveDay(received).current;
-              const pending =
-                (current?.date || clock.date) === clock.date &&
-                slot > clock.time;
-              const label = receivedVersion
-                ? "Disponible"
-                : pending
-                  ? "À venir"
-                  : p
-                    ? "Non importé (facultatif)"
-                    : "Non reçue";
-              return (
-                <button
-                  key={slot}
-                  className="secondary"
-                  disabled={!receivedVersion}
-                  aria-label={`${slot} · ${label} · ${current?.date || clock.date} Europe/Paris · ${receivedVersion?.unified?.items.length ?? receivedVersion?.articles.length ?? 0} événements`}
-                  aria-current={
-                    !!receivedVersion && receivedVersion.id === current?.id
-                      ? "true"
-                      : undefined
-                  }
-                  onClick={() => receivedVersion && onOpen(receivedVersion.id)}
-                >
-                  <b>{slot}</b>
-                  <span>
-                    {label}
-                    {!!receivedVersion && receivedVersion.id === current?.id
-                      ? " · Courante"
-                      : ""}
-                    {receivedVersion && (
-                      <span>
-                        {receivedVersion.unified?.items.length ??
-                          receivedVersion.articles.length}{" "}
-                        événements · {receivedVersion.date} · Europe/Paris
-                      </span>
-                    )}
-                    {p && (
-                      <span>
-                        {p.slotsIncluded.some((s) => s === slot)
-                          ? "Passage couvert selon le fichier"
-                          : "Couverture non déclarée"}
-                      </span>
-                    )}
-                  </span>
-                </button>
-              );
-            })}
           </div>
-          {current && !current.unified && (
-            <p className="small-note">
-              Archive historique : son plan 08/16/21 est conservé. Le programme
-              V7 comprend huit rendez-vous de 08 à 22 h.
-            </p>
-          )}
-          <section className="unified-digest interface-help">
-            <p className="eyebrow">COMPRENDRE AVANT D’EXPLORER</p>
-            <h2>Le monde en 60 secondes</h2>
-            {p?.synthesis.text ? (
-              <>
-                <p>{p.synthesis.text}</p>
-                <p className="small-note">
-                  {p.synthesis.kind === "commentary"
-                    ? "Commentaire éditorial"
-                    : "Synthèse déclarée avec références"}
-                  {p.synthetic ? " · SYNTHÉTIQUE" : ""}
-                </p>
-                <div className="unified-controls">
-                  {p.synthesis.eventIds.slice(0, 8).map((id) => {
-                    const i = p.items.find((i) => i.eventId === id)!;
-                    return (
-                      <button
-                        className="text-button"
-                        key={id}
-                        onClick={() => onOpen(latest!.id, i.id)}
-                      >
-                        {i.title} ↗
-                      </button>
-                    );
-                  })}
-                </div>
-              </>
-            ) : (
+          <div className="unified-filters">
+            <label>
+              Rechercher dans les articles du jour
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  setEventLimit(30);
+                }}
+              />
+            </label>
+            <label>
+              Thème du jour
+              <select
+                aria-label="Thème du jour"
+                value={category}
+                onChange={(e) => {
+                  setCategory(e.target.value);
+                  setEventLimit(30);
+                }}
+              >
+                <option value="">Tous les thèmes</option>
+                {[...new Set(p?.items.map((i) => i.category))]
+                  .sort()
+                  .map((c) => (
+                    <option key={c}>{c}</option>
+                  ))}
+              </select>
+            </label>
+            <details>
+              <summary>Affiner et trier</summary>
+              <label>
+                Première apparition
+                <select
+                  aria-label="Première apparition"
+                  value={firstSeen}
+                  onChange={(e) => {
+                    setFirstSeen(e.target.value);
+                    setEventLimit(30);
+                  }}
+                >
+                  <option value="">Tous les événements</option>
+                  {V7_SLOTS.map((s) => (
+                    <option key={s} value={s}>
+                      Apparus à {s}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Trier les événements
+                <select
+                  aria-label="Trier les événements"
+                  value={eventSort}
+                  onChange={(e) => setEventSort(e.target.value)}
+                >
+                  <option value="importance">Importance</option>
+                  <option value="newest">Mise à jour la plus récente</option>
+                </select>
+              </label>
+            </details>
+          </div>
+          <p role="status">{highlights.length} article(s)</p>
+          <div className="unified-highlights event-list">
+            {highlights.slice(0, eventLimit).map((i) => (
+              <EventCard
+                key={current!.id + i.eventId}
+                item={i}
+                edition={current!}
+                onOriginal={() => onOpen(current!.id, i.id)}
+                onRead={
+                  onArticle
+                    ? () => onArticle(i.eventId, current!.id)
+                    : undefined
+                }
+              />
+            ))}
+            {!highlights.length && (
               <p>
-                Aucune synthèse sourcée importée. Retrouvez les articles et
-                originaux ci-dessous ; l’application n’invente pas une synthèse
-                d’actualité.
+                {p
+                  ? "Aucun article pour ces filtres."
+                  : "Aucun article unifié. Les éditions historiques restent dans Articles et Bibliothèque."}
               </p>
             )}
-          </section>
-          <section>
-            <div className="section-title">
-              <h2>Les faits à retenir</h2>
-              <button
-                className="text-button"
-                onClick={() => onNavigate("articles")}
-              >
-                Tous les articles ({items.length}) →
-              </button>
-            </div>
-            {p && (
-              <>
-                <p>
-                  Édition ouverte : {p.editionSlot} · {p.editionDate} ·
-                  Europe/Paris. Les horaires ci-dessus ouvrent uniquement un
-                  fichier reçu. Le filtre ci-dessous sélectionne les événements
-                  de cette édition selon leur première apparition.
-                </p>
-                <div className="unified-filters">
-                  <label>
-                    Première apparition
-                    <select
-                      aria-label="Première apparition"
-                      value={firstSeen}
-                      onChange={(e) => {
-                        setFirstSeen(e.target.value);
-                        setEventLimit(30);
-                      }}
-                    >
-                      <option value="">Tous les événements</option>
-                      {V7_SLOTS.map((slot) => (
-                        <option value={slot} key={slot}>
-                          Apparus à {slot}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label>
-                    Trier les événements
-                    <select
-                      aria-label="Trier les événements"
-                      value={eventSort}
-                      onChange={(e) => setEventSort(e.target.value)}
-                    >
-                      <option value="importance">Importance</option>
-                      <option value="newest">
-                        Première apparition la plus récente
-                      </option>
-                    </select>
-                  </label>
-                </div>
-                <p role="status">
-                  {highlights.length} événement(s) affichable(s) sur{" "}
-                  {p.items.length} dans l’édition {p.editionSlot}. Première
-                  apparition ≠ nouveauté factuelle certifiée.
-                </p>
-              </>
-            )}
-            <div className="unified-highlights event-list">
-              {highlights.slice(0, eventLimit).map((i) => (
-                <EventCard
-                  key={latest!.id + i.eventId}
-                  item={i}
-                  edition={latest!}
-                  onOriginal={() => onOpen(latest!.id, i.id)}
-                />
-              ))}
-              {!highlights.length && (
-                <p>
-                  {p
-                    ? "Aucun événement pour ce filtre."
-                    : "Aucun événement au format unifié. Tous les articles historiques restent accessibles."}
-                </p>
-              )}
-            </div>
-            {highlights.length > eventLimit && (
-              <button
-                className="secondary"
-                onClick={() => setEventLimit((n) => n + 30)}
-              >
-                Afficher plus d’événements ({highlights.length - eventLimit})
-              </button>
-            )}
-          </section>
-          {options.kpis && (
-            <section>
-              <h2>Les quatre univers</h2>
-              <div className="unified-universes">
-                {[
-                  ["journal360", "Journal 360°", "articles"],
-                  ["ai-major", "IA majeure", "ai-major"],
-                  ["future", "Le Futur", "future"],
-                  ["sentinel", "SENTINEL", "sentinel"],
-                ].map(([id, label, tab]) => {
-                  const count = items.filter(
-                    (i) =>
-                      (i.article.sourceWatch ||
-                        i.edition.collection ||
-                        "journal360") === id,
-                  ).length;
-                  const members = items.filter(
-                    (i) =>
-                      (i.article.sourceWatch ||
-                        i.edition.collection ||
-                        "journal360") === id,
-                  );
-                  return (
-                    <article className="unified-panel" key={id}>
-                      <h3>{label}</h3>
-                      <p>
-                        {count} événements indexés
-                        {id === "future"
-                          ? ` · ${futureCatalog.error ? "Atlas indisponible" : futureCatalog.value === null ? "Lecture de l’atlas…" : futureCatalog.value.length + " dossier(s) prospectif(s)"}`
-                          : ""}{" "}
-                        ·{" "}
-                        {(id === "future" &&
-                          futureCatalog.value?.[0]?.updatedAt) ||
-                          members[0]?.edition.date ||
-                          "aucune édition reçue"}
-                      </p>
-                      <p>
-                        Nouveautés :{" "}
-                        {!assessment?.snapshot?.comparisonAvailable
-                          ? "comparaison NON DISPONIBLE"
-                          : p
-                            ? p.items.filter(
-                                (i) =>
-                                  i.sourceWatch === id &&
-                                  assessment!.snapshot!.newEventIds.includes(
-                                    i.eventId,
-                                  ),
-                              ).length
-                            : "non qualifiées"}
-                      </p>
-                      <button
-                        className="secondary"
-                        onClick={() =>
-                          id === "future"
-                            ? go("timeline")
-                            : onNavigate(tab as Destination)
-                        }
-                      >
-                        Explorer {label}
-                      </button>
-                    </article>
-                  );
-                })}
-              </div>
-            </section>
-          )}
-          {options.economy && <EconomyRadar editions={editions} compact />}
-          {options.timeline && (
-            <FutureBridge
-              editions={editions}
-              onFuture={onFuture}
-              catalog={futureCatalog}
-              onOpen={onOpen}
-              compact
-            />
-          )}
-          {options.prompts && (
-            <section>
-              <h2>Prompts de cette édition</h2>
-              <p>
-                {p?.promptAssets.length || 0} prompt(s) intégralement
-                conservé(s).
-              </p>
-              <button className="secondary" onClick={openPrompts}>
-                Lire et télécharger les prompts .md
-              </button>
-            </section>
-          )}
-          <section className="interface-help">
-            <h2>Actions utiles</h2>
-            <div className="unified-highlights">
-              {p?.items
-                .flatMap((i) => i.actions.map((a) => ({ a, i })))
-                .slice(0, 3)
-                .map(({ a, i }) => (
-                  <article className="unified-panel" key={i.eventId + a.title}>
-                    <h3>{a.title}</h3>
-                    <p>{a.reason}</p>
-                    <p>
-                      Effort : {a.effort || "non documenté"} · Risque :{" "}
-                      {a.risk || "non documenté"}
-                    </p>
-                    <button
-                      className="text-button"
-                      onClick={() => onOpen(latest!.id, i.id)}
-                    >
-                      Consulter les preuves
-                    </button>
-                    {a.promptId && (
-                      <button className="secondary" onClick={openPrompts}>
-                        Voir le prompt complet .md
-                      </button>
-                    )}
-                  </article>
-                ))}
-              {!p?.items.some((i) => i.actions.length) && (
-                <p>
-                  Aucune action qualifiée fournie. Aucun emplacement n’est
-                  rempli artificiellement.
-                </p>
-              )}
-            </div>
-          </section>
-          <nav className="unified-controls" aria-label="Accès immédiat">
-            <button className="secondary" onClick={() => onNavigate("search")}>
-              Recherche IA et locale
-            </button>
-            <button className="secondary" onClick={openPrompts}>
-              Prompts VS Code
-            </button>
+          </div>
+          {highlights.length > eventLimit && (
             <button
               className="secondary"
-              onClick={() =>
-                current && dayKeyOf(current)
-                  ? onDay(dayKeyOf(current)!)
-                  : onNavigate("library")
-              }
+              onClick={() => setEventLimit((n) => n + 30)}
             >
-              Comparer les éditions
+              Afficher plus d’articles ({highlights.length - eventLimit})
             </button>
-            <button className="secondary" onClick={() => onNavigate("library")}>
-              Bibliothèque et archives
-            </button>
-            <button className="secondary" onClick={onImport}>
-              Importer un HTML
-            </button>
-            <button
-              className="secondary"
-              onClick={() => onNavigate("settings")}
-            >
-              Sauvegardes et confidentialité
-            </button>
-          </nav>
-        </>
+          )}
+          {options.economy && display.todayEconomy && panel === "overview" && (
+            <EconomyRadar editions={editions} compact />
+          )}
+        </section>
       )}
+      {options.kpis && (
+        <section>
+          <h2>Les quatre univers</h2>
+          <div className="unified-universes">
+            {[
+              ["journal360", "Journal 360°", "articles"],
+              ["ai-major", "IA majeure", "ai-major"],
+              ["sentinel", "SENTINEL", "sentinel"],
+              ["future", "Le Futur", "future"],
+            ].map(([id, label, to]) => (
+              <article className="unified-panel" key={id}>
+                <h3>{label}</h3>
+                <p>
+                  {items.filter((i) => i.article.sourceWatch === id).length}{" "}
+                  articles
+                  {id === "future"
+                    ? ` · ${futureCatalog.value?.length || 0} dossier(s) prospectif(s)`
+                    : ""}
+                </p>
+                <button
+                  className="secondary"
+                  onClick={() =>
+                    id === "future"
+                      ? go("timeline")
+                      : onNavigate(to as Destination)
+                  }
+                >
+                  Explorer {label}
+                </button>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+      <div className="unified-controls">
+        <button className="text-button" onClick={() => onNavigate("library")}>
+          Bibliothèque et anciennes éditions
+        </button>
+        <button className="text-button" onClick={() => onNavigate("future")}>
+          Atlas Le Futur
+        </button>
+      </div>
     </div>
   );
 }

@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "string",
+      "const": "journal360.quickbriefs"
+    },
+    "schemaVersion": {
+      "type": "number",
+      "const": 1
+    },
+    "editionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "pattern": "^[\\w.:-]+$"
+    },
+    "editionDate": {
+      "type": "string"
+    },
+    "editionSlot": {
+      "type": "string",
+      "enum": [
+        "08:00",
+        "10:00",
+        "12:00",
+        "14:00",
+        "16:00",
+        "18:00",
+        "20:00",
+        "22:00"
+      ]
+    },
+    "items": {
+      "maxItems": 500,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "eventId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^[\\w.:-]+$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "theme": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "publishedAt": {
+            "type": "string"
+          },
+          "eventDate": {
+            "type": "string"
+          },
+          "source": {
+            "type": "object",
+            "properties": {
+              "publisher": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300
+              },
+              "url": {
+                "type": "string",
+                "maxLength": 2048
+              }
+            },
+            "required": [
+              "publisher",
+              "url"
+            ],
+            "additionalProperties": false
+          },
+          "evidenceStatus": {
+            "type": "string",
+            "enum": [
+              "presse-sourcée",
+              "source-primaire",
+              "annoncé",
+              "déduit",
+              "contesté",
+              "non-testé"
+            ]
+          },
+          "googleQuery": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "relatedArticleEventId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "^[\\w.:-]+$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "corrections": {
+            "maxItems": 30,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                },
+                "reason": {
+                  "type": "string",
+                  "minLength": 10,
+                  "maxLength": 2000
+                },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "publisher": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 300
+                    },
+                    "url": {
+                      "type": "string",
+                      "maxLength": 2048
+                    }
+                  },
+                  "required": [
+                    "publisher",
+                    "url"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "at",
+                "reason",
+                "source"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "eventId",
+          "title",
+          "theme",
+          "publishedAt",
+          "eventDate",
+          "source",
+          "evidenceStatus",
+          "googleQuery",
+          "relatedArticleEventId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "notice": {
+      "type": "string",
+      "maxLength": 4000
+    }
+  },
+  "required": [
+    "format",
+    "schemaVersion",
+    "editionId",
+    "editionDate",
+    "editionSlot",
+    "items",
+    "notice"
+  ],
+  "additionalProperties": false,
+  "$id": "urn:journal360:quickbriefs:1",
+  "$comment": "Structural schema only. extractQuickBriefs also enforces 512 KiB budget, unique inert block, V7 identity/date/slot, uniqueness, referenced promotions and future dates. Source verification is producer-declared."
+}

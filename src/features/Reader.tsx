@@ -22,6 +22,7 @@ import { blobOf, dateLabel, now } from "../data/model";
 import { db } from "../data/db";
 import { isolatedHTML } from "./import";
 import { needsOriginalInteractions } from "./originalReading";
+import { OriginalActions } from "./readerActions";
 import { useDialogFocus } from "./dialogFocus";
 import { download } from "./backup";
 import { GoogleAiSession } from "./googleAiSession";
@@ -71,6 +72,9 @@ export function Reader({
   run: (action: () => Promise<unknown>, success?: string) => void;
 }) {
   const secureByDefault = !!edition.unified;
+  // Editions are immutable by original hash. Reading states/notes refresh the
+  // repository but must not reload the publisher’s current page.
+  const [originalEdition] = useState(edition);
   const surfaceRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const swipe = useRef<{
@@ -90,6 +94,7 @@ export function Reader({
     secureByDefault ? "safe" : "interactive",
   );
   const [confirm, setConfirm] = useState(false);
+  const [originalActionOpen, setOriginalActionOpen] = useState(false);
   const [font, setFont] = useState(18);
   const [note, setNote] = useState("");
   const [kind, setKind] = useState<"note" | "decision">("note");
@@ -105,8 +110,16 @@ export function Reader({
   // montage peut rester blanc dans Chrome, surtout lors du changement de sandbox.
   const srcDoc = useMemo(
     () =>
-      bytes ? isolatedHTML(bytes, mode === "interactive", initialArticle) : "",
-    [bytes, mode, initialArticle],
+      bytes
+        ? isolatedHTML(
+            bytes,
+            mode === "interactive",
+            initialArticle,
+            originalEdition,
+            frameRevision,
+          )
+        : "",
+    [bytes, mode, initialArticle, originalEdition, frameRevision],
   );
   const originalNeedsScripts = useMemo(
     () => !!bytes && needsOriginalInteractions(bytes, edition.unified),
@@ -506,13 +519,31 @@ export function Reader({
       <div
         ref={surfaceRef}
         className={`reading-surface${expanded ? " reading-surface-expanded" : ""}`}
-        role={expanded && !confirm && !googleAiRequest ? "dialog" : undefined}
-        aria-modal={expanded && !confirm && !googleAiRequest ? true : undefined}
+        role={
+          expanded && !confirm && !googleAiRequest && !originalActionOpen
+            ? "dialog"
+            : undefined
+        }
+        aria-modal={
+          expanded && !confirm && !googleAiRequest && !originalActionOpen
+            ? true
+            : undefined
+        }
         aria-label={
           expanded ? `Lecture pleine page de ${edition.title}` : undefined
         }
       >
-        <div className="reading-surface-header" inert={!!googleAiRequest}>
+        <OriginalActions
+          edition={originalEdition}
+          frame={iframeRef}
+          mode={mode}
+          revision={frameRevision}
+          onActiveChange={setOriginalActionOpen}
+        />
+        <div
+          className="reading-surface-header"
+          inert={!!googleAiRequest || originalActionOpen}
+        >
           {expanded && (
             <button
               className="icon-button reader-back"

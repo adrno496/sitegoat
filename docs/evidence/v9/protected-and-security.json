@@ -1,0 +1,70 @@
+{
+  "protectedFiles": [
+    {
+      "path": "src/data/unified.ts",
+      "unchanged": true
+    },
+    {
+      "path": "src/data/day.ts",
+      "unchanged": true
+    },
+    {
+      "path": "src/data/snapshot.ts",
+      "unchanged": true
+    },
+    {
+      "path": "src/data/db.ts",
+      "unchanged": true
+    },
+    {
+      "path": "src/features/cloud.ts",
+      "unchanged": true
+    },
+    {
+      "path": "src/features/sync.ts",
+      "unchanged": true
+    },
+    {
+      "path": "src/sw.ts",
+      "unchanged": true
+    },
+    {
+      "path": "vercel.json",
+      "unchanged": true
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "unchanged": true
+    },
+    {
+      "path": "src/features/googleAi.ts",
+      "unchanged": true
+    },
+    {
+      "path": "src/features/googleAiSession.ts",
+      "unchanged": true
+    },
+    {
+      "path": "src/features/future/schema.ts",
+      "unchanged": true
+    },
+    {
+      "path": "src/features/future/db.ts",
+      "unchanged": true
+    },
+    {
+      "path": "src/features/future/backup.ts",
+      "unchanged": true
+    },
+    {
+      "path": "docs/JOURNAL360_UNIFIED_V7.schema.json",
+      "unchanged": true
+    }
+  ],
+  "clientAndBundleSecretMarkerScan": {
+    "files": 116,
+    "findings": [],
+    "scope": "Known secret markers only, src and dist; no environment file read."
+  },
+  "privateEditionMarkersInBuild": false
+}

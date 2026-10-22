@@ -1,3 +1,4 @@
+import { navigate } from "../helpers/navigation";
 import { test, expect, type Page } from "@playwright/test";
 import { dailyFile } from "../helpers/daily";
 async function upload(page: Page, hour: string) {
@@ -58,13 +59,7 @@ test("nouveautés en carte et dans les options, HTML épuré, repère conservé 
     "3 nouveautés · 0 mise à jour",
   );
   await page.reload();
-  const surface = (await page.locator(".mobile-nav").isVisible())
-    ? ".mobile-nav"
-    : ".sidebar";
-  await page
-    .locator(surface)
-    .getByRole("button", { name: "Bibliothèque", exact: true })
-    .click();
+  await navigate(page, "Bibliothèque");
   await open(page, "21");
   await expect(page.locator(".reading-context")).toBeHidden();
   await page
@@ -184,7 +179,7 @@ test.describe("Cloud simulé sans interception par le service worker", () => {
       : ".sidebar";
     await page
       .locator(surface)
-      .getByRole("button", { name: "Réglages", exact: true })
+      .getByRole("button", { name: "Paramètres", exact: true })
       .click();
     const automatic = page.getByLabel(
       "Synchroniser automatiquement cet appareil",

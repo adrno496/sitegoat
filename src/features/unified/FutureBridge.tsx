@@ -1,3 +1,4 @@
+import { PublicGoogleLink } from "../PublicGoogleLink";
 import { summaryPreview } from "../eventPresentation";
 import { useInterface } from "../interfacePreferences";
 import { useState } from "react";
@@ -119,6 +120,12 @@ export function FutureBridge({
               {i.synthetic ? "· SYNTHÉTIQUE" : ""}
             </span>
             <h3>{i.title}</h3>
+            <PublicGoogleLink
+              question={
+                i.origin.unified?.items.find((a) => a.eventId === i.eventId)
+                  ?.publicResearchQuestion
+              }
+            />
             <p>{summaryPreview(i.description)}</p>
             <p className="small-note">
               Original : {i.origin.editionSlot} · révision{" "}

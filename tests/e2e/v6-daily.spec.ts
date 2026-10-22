@@ -1,18 +1,8 @@
+import { navigate } from "../helpers/navigation";
 import { test, expect, type Page } from "@playwright/test";
 import { dailyFile } from "../helpers/daily";
 async function nav(page: Page, label = "Bibliothèque") {
-  const back = page.getByRole("button", {
-    name: "Retour à la bibliothèque",
-    exact: true,
-  });
-  if (await back.isVisible()) await back.click();
-  const surface = (await page.locator(".mobile-nav").isVisible())
-    ? ".mobile-nav"
-    : ".sidebar";
-  await page
-    .locator(surface)
-    .getByRole("button", { name: label, exact: true })
-    .click();
+  return navigate(page, label);
 }
 async function importFiles(
   page: Page,
@@ -89,7 +79,7 @@ test("un HTML par jour : quatre imports successifs remplacent la carte, JS/offli
       `Journal synthétique 2026-10-15 ${hour}h`,
     );
   }
-  await nav(page, "Aujourd’hui");
+  await nav(page, "Accueil");
   await page.getByRole("button", { name: "Reprendre", exact: true }).click();
   await expect(
     page.frameLocator(".edition-frame").locator("#release"),

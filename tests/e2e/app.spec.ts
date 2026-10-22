@@ -1,19 +1,9 @@
+import { navigate as nav } from "../helpers/navigation";
 import { readerControl, readerTools } from "../helpers/reader";
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { readFileSync } from "node:fs";
 const fixture = (name: string) => `tests/fixtures/${name}`;
-async function nav(page: Page, label: string) {
-  const reduce = page.getByRole("button", {
-    name: "Réduire la lecture",
-    exact: true,
-  });
-  if (await reduce.isVisible()) await reduce.click();
-  await page
-    .locator(".sidebar")
-    .getByRole("button", { name: label, exact: true })
-    .click();
-}
 async function importFile(page: Page, name = "generic.html") {
   await page
     .getByLabel("Fichiers HTML à importer")
@@ -437,6 +427,7 @@ test("lecture pleine page : tout le viewport, interactions conservées et retour
     await page.locator("html").getAttribute("data-empty-reader-frame"),
   ).toBeNull();
   await page.reload();
+  await nav(page, "Bibliothèque");
   await page
     .getByRole("button", {
       name: "Lire Observer. Comprendre. Agir.",
@@ -485,6 +476,7 @@ test("mode interactif automatique, choix sécurisé conservé après rechargemen
   await readerControl(page, "Désactiver JS");
   await expect(page.locator("iframe")).toHaveAttribute("sandbox", "");
   await page.reload();
+  await nav(page, "Bibliothèque");
   await page
     .getByRole("button", {
       name: "Lire Observer. Comprendre. Agir.",

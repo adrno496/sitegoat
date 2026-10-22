@@ -1,0 +1,43 @@
+{
+  "baseline": {
+    "unitPassed": 310,
+    "performancePassed": 4,
+    "e2ePassed": 244,
+    "e2eSkipped": 1
+  },
+  "release": {
+    "applicationVersion": "2.1.0",
+    "unitPassed": 320,
+    "performancePassed": 4,
+    "fullE2E": {
+      "startTime": "2026-10-22T15:36:47.498Z",
+      "duration": 817192.284,
+      "expected": 256,
+      "skipped": 1,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "reinforcedV9E2E": {
+      "startTime": "2026-10-22T15:52:28.888Z",
+      "duration": 32470.222999999998,
+      "expected": 12,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    }
+  },
+  "input": {
+    "filename": "JOURNAL_360_V9_2026-10-22_EDITION_16H_AUTONOME.html",
+    "sha256": "857eb0dda47f6988c5ca304e1d92e2076e9fa013e0d7f86dcb535b3cde0f33e1",
+    "bytes": 153806,
+    "articles": 18,
+    "economicSnapshots": 10,
+    "futureInsights": 9,
+    "prompts": 4,
+    "quickBriefs": 19,
+    "factsReverifiedOnline": false
+  },
+  "realV8_2026_10_22_14h": "NOT AVAILABLE / NOT TESTED",
+  "producer": "SPECIFIED, NOT IMPLEMENTED",
+  "deploymentProof": "/Users/dreano/Downloads/sitegoat-v9-rollback-20261022/evidence/production.json"
+}

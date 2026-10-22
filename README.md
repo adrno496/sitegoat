@@ -4,6 +4,14 @@ Une bibliothèque personnelle de journaux HTML, en français, installable comme 
 
 Version publiée : [sitegoat.vercel.app](https://sitegoat.vercel.app). [Rapport de tests](TEST_REPORT.md).
 
+## Sitegoat V9 — application 2.1.0
+
+Navigation principale : Accueil, Aujourd’hui, Articles, Paramètres. Le tableau de bord présente les faits importés, les changements et signaux documentés, des points économiques comparables ou un état d’historique insuffisant. Aujourd’hui privilégie les résumés par article ; les diagnostics et originaux par créneau se trouvent dans les paramètres avancés. Le menu Autres espaces conserve les destinations historiques.
+
+Le compagnon inerte `quickBriefsData` v1 du Journal V9 est validé et conservé séparément du V7 strict, indexé sans dépendre des imports intermédiaires et récupérable depuis les originaux/sauvegardes anciens. Le lecteur garde l’original, son interface et l’isolation opaque ; les liens publics et téléchargements Markdown natifs passent par une action parent explicite. Le producteur externe et son registre ne sont pas présents dans ce dépôt.
+
+[Guide V9](GUIDE_UTILISATEUR_V9.md) · [Audit initial](AUDIT_SITEGOAT_AVANT.md) · [Plan](PLAN_V9.md) · [Contrat producteur](SPEC_PRODUCTEUR_J360_V9.md) · [Tests réels](RAPPORT_TESTS_V9.md) · [Fichiers modifiés](FICHIERS_MODIFIES_V9.md) · [Risques et rollback](RISQUES_ET_ROLLBACK_V9.md).
+
 ## V8 — snapshot autonome
 
 Un seul HTML tardif suffit pour les articles, données économiques, jalons et prompts réellement contenus. Les quatre diagnostics séparent intégrité, autonomie, couverture et historique reçu. Les versions intermédiaires sont facultatives ; aucune couverture factuelle totale n’est certifiée sans preuve indépendante. [Guide V8 et rollback](docs/JOURNAL360_V8_IMPORT_GUIDE.md) · [Plan et critères](docs/JOURNAL360_V8_PLAN.md). La publication V8 sur `main` a été autorisée séparément après validation locale ; les limites et résultats restent détaillés dans le [rapport V8](docs/JOURNAL360_V8_REPORT.md).
@@ -36,7 +44,7 @@ Ouvrir `http://127.0.0.1:4173`. `npm run dev` sert l’interface ; il ne lance p
 
 ## Utilisation
 
-Les onglets **IA majeur** et **Sentinel** accueillent vos HTML dans deux espaces dédiés. Depuis l’un de ces onglets, l’import sélectionne cet espace par défaut ; le champ **Ranger ce HTML dans** permet aussi de choisir la destination depuis un import général. Chaque dossier reste indépendant, même daté du même jour. Un doublon ne remplace qu’une copie du même espace. Recherche, lecture HTML, archives, corbeille et restauration sont disponibles dans chaque onglet ; le classement est conservé dans les sauvegardes ZIP et la synchronisation. Sur téléphone, les neuf destinations sont visibles sur deux lignes.
+Les onglets **IA majeur** et **Sentinel** accueillent vos HTML dans deux espaces dédiés. Depuis l’un de ces onglets, l’import sélectionne cet espace par défaut ; le champ **Ranger ce HTML dans** permet aussi de choisir la destination depuis un import général. Chaque dossier reste indépendant, même daté du même jour. Un doublon ne remplace qu’une copie du même espace. Recherche, lecture HTML, archives, corbeille et restauration sont disponibles dans chaque onglet ; le classement est conservé dans les sauvegardes ZIP et la synchronisation. Depuis V9, ces destinations restent accessibles sur téléphone via Autres espaces ; les quatre entrées principales gardent la priorité.
 
 Dans **Sentinel**, **Voir les prompts VS Code** inspecte les anciens HTML sans les exécuter. Chaque prompt distinct propose Voir, Copier, Sélectionner et **Télécharger le prompt VS Code (.md)**. Les éditions V7 exposent directement leurs prompts validés, également dans Articles et Mes prompts .md. Aucun bouton de téléchargement n’est créé quand le document ne contient pas de prompt. Le texte UTF-8 est conservé intégralement, hors ligne et sans envoi externe.
 

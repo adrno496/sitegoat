@@ -9,7 +9,7 @@ export const essential = {
   advanced: false,
   technical: false,
   help: false,
-  secondaryNav: true,
+  secondaryNav: false,
 };
 export type InterfaceOptions = typeof essential;
 export type InterfacePreferences = {

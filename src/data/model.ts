@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { unifiedSchema } from "./unified";
+import { quickBriefsSchema } from "./quickBriefsSchema";
 import {
   calendarSchema,
   dayKeySchema,
@@ -54,6 +55,7 @@ export const editionSchema = z.object({
   scheduleId: z.enum(["legacy-3", "paris-v7-8"]).optional(),
   editionSlot: slotSchema.optional(),
   unified: unifiedSchema.optional(),
+  quickBriefs: quickBriefsSchema.optional(),
   slotsIncluded: z.array(slotSchema).max(8).optional(),
   declaredCumulativeStatus: cumulativeSchema.optional(),
   cumulativeStatus: cumulativeSchema.optional(),

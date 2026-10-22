@@ -1,3 +1,4 @@
+import { PublicGoogleLink } from "../PublicGoogleLink";
 import { useInterface } from "../interfacePreferences";
 import { useState } from "react";
 import type { Edition } from "../../data/model";
@@ -108,6 +109,9 @@ export function EconomyRadar({
                               : economicLabels[e.status]}
                           </p>
                           <h4>{e.indicator}</h4>
+                          <PublicGoogleLink
+                            question={`site:${new URL(e.sourceRecords[0].url).hostname} ${e.provider} ${e.seriesCode}`}
+                          />
                           <p className="economic-value">
                             {new Intl.NumberFormat("fr-FR", {
                               maximumFractionDigits: 4,

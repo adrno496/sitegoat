@@ -1,3 +1,6 @@
+import { diagnostics } from "../helpers/navigation";
+import { openReadingTools } from "../helpers/navigation";
+import { navigate as nav } from "../helpers/navigation";
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { readFile } from "node:fs/promises";
@@ -5,14 +8,6 @@ const exampleRoot = "public/examples/unified/";
 const slots = ["0800", "1000", "1200", "1400", "1600", "1800", "2000", "2200"];
 const filename = (slot: string) =>
   `JOURNAL360_2026-10-19_EDITION_${slot.slice(0, 2)}H00.html`;
-async function nav(page: Page, label: string) {
-  await page
-    .locator(
-      (await page.locator(".sidebar").isVisible()) ? ".sidebar" : ".mobile-nav",
-    )
-    .getByRole("button", { name: label, exact: true })
-    .click();
-}
 async function importSlots(page: Page, values = slots) {
   await page
     .getByLabel("Fichiers HTML à importer")
@@ -66,12 +61,15 @@ test("V7 : huit imports désordonnés, un cumul, huit originaux, prompts multipl
   await nav(page, "Aujourd’hui");
   const w = workspace(page);
   await expect(w).toContainText("SYNTHÉTIQUE");
-  await expect(w.locator(".unified-slots button")).toHaveCount(8);
-  await expect(w.locator(".unified-slots button:enabled")).toHaveCount(8);
+  const diag = await diagnostics(page);
+  await expect(diag.locator(".unified-slots button")).toHaveCount(8);
+  await expect(diag.locator(".unified-slots button:enabled")).toHaveCount(8);
+  await nav(page, "Aujourd’hui");
   for (const zone of ["France", "Europe / zone euro", "États-Unis", "Chine"])
     await expect(
       w.getByRole("heading", { name: zone, exact: true }),
     ).toBeVisible();
+  await openReadingTools(page);
   await w.getByRole("button", { name: "Mes prompts .md", exact: true }).click();
   await w.locator(".unified-result").first().click();
   await expect(w.locator(".prompt-card")).toHaveCount(2);
@@ -95,6 +93,7 @@ test("V7 : huit imports désordonnés, un cumul, huit originaux, prompts multipl
     );
   }
   await context.setOffline(false);
+  await openReadingTools(page);
   await w
     .getByRole("button", { name: "Recherche globale", exact: true })
     .click();
@@ -184,9 +183,7 @@ test("V7 : mobile, clavier, thèmes, absence de données, sources, reduced motio
   await expect(
     w.getByRole("heading", { name: "Horizon 2030 SYNTHÉTIQUE", exact: true }),
   ).toBeVisible();
-  await w
-    .getByRole("button", { name: "Aujourd’hui en bref", exact: true })
-    .click();
+  await w.getByRole("button", { name: "À la une", exact: true }).click();
   for (const theme of ["light", "dark"]) {
     if (theme === "dark")
       await page
@@ -320,6 +317,9 @@ test("V7 : adaptateur Future explicite, JSON validé puis import indépendant sa
   await page.getByRole("button", { name: /Importer \d+ fichier/ }).click();
   await expect(page.locator(".future-title")).toHaveText(original.title);
   await nav(page, "Réglages");
+  await page
+    .getByText("Profils et options historiques", { exact: true })
+    .click();
   await page
     .getByLabel("Profil d’interface", { exact: true })
     .selectOption("complete");

@@ -15,6 +15,7 @@ import {
   type Note,
 } from "../data/model";
 import { LocalRepository } from "../data/db";
+import { extractQuickBriefs } from "../data/quickBriefs";
 const manifestSchema = z.object({
   format: z.literal("journal360"),
   formatVersion: z.union([z.literal(1), z.literal(2), z.literal(3)]),
@@ -130,6 +131,21 @@ export async function inspectBackup(bytes: Uint8Array): Promise<BackupData> {
     const original = await f.async("uint8array");
     if (original.length !== e.size || (await hash(original)) !== e.sha256)
       throw new Error("Checksum invalide : aucune donnée restaurée.");
+    // Rebuild from the checked original, including archives made by clients
+    // predating V9. Never trust a companion substituted in the manifest.
+    const companion = extractQuickBriefs(
+      new DOMParser().parseFromString(
+        new TextDecoder().decode(original),
+        "text/html",
+      ),
+      e.unified,
+    );
+    if (
+      e.quickBriefs &&
+      canonicalJSON(e.quickBriefs) !== canonicalJSON(companion)
+    )
+      throw new Error("Compagnon brèves différent de l’original.");
+    e.quickBriefs = companion;
     originals.push({ id: e.id, bytes: original });
   }
   const ids = new Set(manifest.editions.map((e) => e.id));

@@ -1,3 +1,6 @@
+import { diagnostics } from "../helpers/navigation";
+import { openReadingTools } from "../helpers/navigation";
+import { navigate as nav } from "../helpers/navigation";
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { readFile } from "node:fs/promises";
@@ -5,14 +8,6 @@ import { auditBytes, auditPayload, auditLoadPayload } from "../helpers/audit";
 import { summaryPreview } from "../../src/features/eventPresentation";
 import type { UnifiedEdition } from "../../src/data/unified";
 const w = (page: Page) => page.locator(".unified-workspace");
-async function nav(page: Page, name: string) {
-  await page
-    .locator(
-      (await page.locator(".sidebar").isVisible()) ? ".sidebar" : ".mobile-nav",
-    )
-    .getByRole("button", { name, exact: true })
-    .click();
-}
 async function add(page: Page, hour: "08" | "10") {
   await page.getByLabel("Fichiers HTML à importer").setInputFiles({
     name: `audit-${hour}.html`,
@@ -62,13 +57,19 @@ test("Audit P0/P1 : 10 h seul offline, huit cartes, résumés, fiches intégrale
   const p = payload("10"),
     root = w(page);
   await expect(root.locator(".event-card")).toHaveCount(8);
-  await expect(root.locator(".unified-lead h2")).toContainText("10:00");
-  await expect(root.locator(".unified-slots button").first()).toBeDisabled();
+  await expect(root.locator(".unified-masthead h1")).toHaveText("Aujourd’hui");
+  await expect(
+    (await diagnostics(page)).locator(".unified-slots button").first(),
+  ).toBeDisabled();
+  await nav(page, "Aujourd’hui");
+  await root.getByText("Affiner et trier", { exact: true }).click();
+  if (await root.getByLabel("Première apparition", { exact: true }).isHidden())
+    await root.getByText("Affiner et trier", { exact: true }).click();
   await root
     .getByLabel("Première apparition", { exact: true })
     .selectOption("08:00");
   await expect(root.locator(".event-card")).toHaveCount(4);
-  await expect(root.locator(".unified-lead h2")).toContainText("10:00");
+  await expect(root.locator(".unified-masthead h1")).toHaveText("Aujourd’hui");
   await root
     .getByLabel("Première apparition", { exact: true })
     .selectOption("");
@@ -83,21 +84,17 @@ test("Audit P0/P1 : 10 h seul offline, huit cartes, résumés, fiches intégrale
       card.getByRole("button", { name: i.title, exact: true }),
     ).toHaveAttribute("aria-expanded", "true");
     await expect(card.locator(".event-summary")).toHaveText(i.summary);
-    await card
-      .getByRole("button", { name: "Lire l’article complet", exact: true })
-      .click();
-    const full = card.getByRole("region", {
-      name: `Article complet : ${i.title}`,
-      exact: true,
-    });
-    await expect(full).toBeVisible();
-    await expect(full).toContainText(i.plain);
-    await expect(full).toContainText(i.detail);
     await card.getByRole("button", { name: "Réduire", exact: true }).click();
     await expect(card.locator(".event-preview")).toBeVisible();
     await expect(
       card.getByRole("button", { name: i.title, exact: true }),
     ).toBeFocused();
+    await card
+      .getByRole("button", { name: "Lire l’article complet", exact: true })
+      .click();
+    await expect(page.locator(".article-body")).toContainText(i.plain);
+    await expect(page.locator(".article-body")).toContainText(i.detail);
+    await nav(page, "Aujourd’hui");
   }
   await root.getByRole("button", { name: "Économie", exact: true }).click();
   await expect(root.locator(".economic-reading")).toHaveCount(4);
@@ -105,6 +102,7 @@ test("Audit P0/P1 : 10 h seul offline, huit cartes, résumés, fiches intégrale
     .getByRole("button", { name: "Chronologie IA", exact: true })
     .click();
   await expect(root.locator(".unified-insights>article")).toHaveCount(6);
+  await openReadingTools(page);
   await root
     .getByRole("button", { name: "Mes prompts .md", exact: true })
     .click();
@@ -125,9 +123,7 @@ test("Audit P0/P1 : 10 h seul offline, huit cartes, résumés, fiches intégrale
       .click();
     expect(await readFile((await (await d).path())!, "utf8")).toBe(pm.content);
   }
-  await root
-    .getByRole("button", { name: "Aujourd’hui en bref", exact: true })
-    .click();
+  await root.getByRole("button", { name: "À la une", exact: true }).click();
   await page.screenshot({
     path: info.outputPath("audit-today.png"),
     fullPage: true,
@@ -142,31 +138,30 @@ test("Audit P0 : créneaux exacts, retour même filtre/position, historique navi
   await add(page, "10");
   await nav(page, "Aujourd’hui");
   const root = w(page);
-  await expect(root.locator(".unified-lead h2")).toContainText("10:00");
+  await expect(root.locator(".unified-masthead h1")).toHaveText("Aujourd’hui");
+  if (await root.getByLabel("Première apparition", { exact: true }).isHidden())
+    await root.getByText("Affiner et trier", { exact: true }).click();
   await root
     .getByLabel("Première apparition", { exact: true })
     .selectOption("08:00");
   await expect(root.locator(".event-card")).toHaveCount(4);
-  await root.locator(".unified-slots button").first().scrollIntoViewIfNeeded();
+  const diag = await diagnostics(page);
+  await diag.locator(".unified-slots button").first().scrollIntoViewIfNeeded();
   const before = await page.evaluate(() => scrollY);
-  await root.getByRole("button", { name: /^08:00 · Disponible/ }).click();
+  await diag.getByRole("button", { name: /^08:00 · Disponible/ }).click();
   await expect(page.locator(".reader h1")).toHaveText(payload("08").title);
   await page
-    .getByRole("button", { name: "Retour à Aujourd’hui", exact: true })
+    .getByRole("button", { name: "Retour à Paramètres", exact: true })
     .click();
-  await expect(root).toBeVisible();
-  await expect(
-    root.getByLabel("Première apparition", { exact: true }),
-  ).toHaveValue("08:00");
+  await expect(diag).toBeVisible();
   await expect
     .poll(() => page.evaluate(() => scrollY))
     .toBeGreaterThanOrEqual(before - 5);
-  await root.getByRole("button", { name: /^10:00 · Disponible/ }).click();
+  await diag.getByRole("button", { name: /^10:00 · Disponible/ }).click();
   await expect(page.locator(".reader h1")).toHaveText(payload("10").title);
   await page.goBack();
-  await expect(root).toBeVisible();
   await page.reload();
-  await expect(w(page).locator(".unified-lead h2")).toContainText("10:00");
+  await expect(await diagnostics(page)).toContainText("10:00");
   await nav(page, "Articles");
   await expect(page.locator(".articles-total")).toContainText("8 articles");
   await nav(page, "Bibliothèque");
@@ -183,6 +178,9 @@ test("Audit P1/P2 : profils réversibles, offline, sept largeurs, clavier, contr
   await page.goto("/");
   await add(page, "10");
   await nav(page, "Réglages");
+  await page
+    .getByText("Profils et options historiques", { exact: true })
+    .click();
   const settings = page.locator(".interface-settings");
   await expect(
     settings.getByLabel("Profil d’interface", { exact: true }),
@@ -195,6 +193,9 @@ test("Audit P1/P2 : profils réversibles, offline, sept largeurs, clavier, contr
     w(page).getByRole("heading", { name: "Les quatre univers", exact: true }),
   ).toBeVisible();
   await nav(page, "Réglages");
+  await page
+    .getByText("Profils et options historiques", { exact: true })
+    .click();
   await settings
     .getByLabel("Aperçu du radar économique", { exact: true })
     .uncheck();
@@ -208,6 +209,9 @@ test("Audit P1/P2 : profils réversibles, offline, sept largeurs, clavier, contr
   await context.setOffline(true);
   await page.reload();
   await nav(page, "Réglages");
+  await page
+    .getByText("Profils et options historiques", { exact: true })
+    .click();
   await expect(
     settings.getByLabel("Aperçu du radar économique", { exact: true }),
   ).not.toBeChecked();
@@ -229,6 +233,9 @@ test("Audit P1/P2 : profils réversibles, offline, sept largeurs, clavier, contr
     page.getByRole("heading", { name: "Sentinel", exact: true }),
   ).toBeVisible();
   await nav(page, "Réglages");
+  await page
+    .getByText("Profils et options historiques", { exact: true })
+    .click();
   await settings
     .getByRole("button", {
       name: "Restaurer l’interface par défaut",
@@ -322,7 +329,7 @@ test("Audit P2 : import, rendu paginé et recherche de 500 puis 2000 articles sy
     await expect(w(page).locator(".event-card")).toHaveCount(30);
     await expect(
       w(page).getByRole("button", {
-        name: new RegExp("Afficher plus d’événements"),
+        name: new RegExp("Afficher plus d’articles"),
       }),
     ).toBeVisible();
     const rendered = Date.now();

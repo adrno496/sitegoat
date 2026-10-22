@@ -52,6 +52,7 @@ export function economicRows(editions: Edition[]) {
         data.definition,
         data.unit,
         data.period,
+        data.frequency,
       ]);
       const old = rows.get(key);
       if (!old || publicationTime(data) > publicationTime(old.data))

@@ -1,15 +1,10 @@
+import { diagnostics } from "../helpers/navigation";
+import { openReadingTools } from "../helpers/navigation";
+import { navigate as nav } from "../helpers/navigation";
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { readFile } from "node:fs/promises";
 const root = "tests/fixtures/v8/";
-async function nav(page: Page, name: string) {
-  await page
-    .locator(
-      (await page.locator(".sidebar").isVisible()) ? ".sidebar" : ".mobile-nav",
-    )
-    .getByRole("button", { name, exact: true })
-    .click();
-}
 async function add(page: Page, hour: string) {
   await page
     .getByLabel("Fichiers HTML à importer")
@@ -45,27 +40,29 @@ test("T01/T04/T09/T15 : SEUL fichier 22 h dans une base vide, huit événements 
     ).toBeVisible();
   await nav(page, "Aujourd’hui");
   const w = workspace(page);
-  await expect(w.locator("[data-autonomy]")).toHaveAttribute(
+  const diag = await diagnostics(page);
+  await expect(diag.locator("[data-autonomy]")).toHaveAttribute(
     "data-autonomy",
     "AUTONOMOUS",
   );
-  await expect(w.locator("[data-coverage]")).toHaveAttribute(
+  await expect(diag.locator("[data-coverage]")).toHaveAttribute(
     "data-coverage",
     "UNKNOWN",
   );
-  await expect(w.locator("[data-history]")).toHaveAttribute(
+  await expect(diag.locator("[data-history]")).toHaveAttribute(
     "data-history",
     "SINGLE_SNAPSHOT",
   );
-  await expect(w).toContainText("1 fichier(s) distinct(s) importé(s)");
-  await expect(w).toContainText(
+  await expect(diag).toContainText("1 fichier(s) distinct(s) importé(s)");
+  await expect(diag).toContainText(
     "Comparaison avec une édition antérieure : NON DISPONIBLE",
   );
-  await expect(w).not.toContainText("Créneaux manquants");
-  await expect(w.locator(".unified-slots button:enabled")).toHaveCount(1);
-  await expect(w.locator(".unified-slots button").first()).toContainText(
-    "Non importé (facultatif)",
+  await expect(diag).not.toContainText("Créneaux manquants");
+  await expect(diag.locator(".unified-slots button:enabled")).toHaveCount(1);
+  await expect(diag.locator(".unified-slots button").first()).toContainText(
+    "Édition originale non importée",
   );
+  await nav(page, "Aujourd’hui");
   for (const zone of ["France", "Europe / zone euro", "États-Unis", "Chine"])
     await expect(
       w.getByRole("heading", { name: zone, exact: true }),
@@ -79,6 +76,7 @@ test("T01/T04/T09/T15 : SEUL fichier 22 h dans une base vide, huit événements 
   await expect(w.getByLabel("Contenu intégral du dossier")).toContainText(
     "journal360.future",
   );
+  await openReadingTools(page);
   await w
     .getByRole("button", { name: "Recherche globale", exact: true })
     .click();
@@ -95,6 +93,7 @@ test("T01/T04/T09/T15 : SEUL fichier 22 h dans une base vide, huit événements 
   await context.setOffline(true);
   await page.reload();
   await expect(page.getByText("Hors ligne", { exact: true })).toBeVisible();
+  await openReadingTools(page);
   await w.getByRole("button", { name: "Mes prompts .md", exact: true }).click();
   await w.locator(".unified-result").first().click();
   await expect(w.locator(".prompt-card")).toHaveCount(2);
@@ -130,10 +129,9 @@ test("T02/T03 : un seul 12 h ou 18 h, puis arrivée désordonnée sans rétrogra
   await expect(page.locator(".articles-total")).toContainText("3 articles");
   await add(page, "18");
   await nav(page, "Aujourd’hui");
-  await expect(workspace(page).locator("[data-autonomy]")).toHaveAttribute(
-    "data-autonomy",
-    "AUTONOMOUS",
-  );
+  await expect(
+    (await diagnostics(page)).locator("[data-autonomy]"),
+  ).toHaveAttribute("data-autonomy", "AUTONOMOUS");
   await nav(page, "Articles");
   await expect(page.locator(".articles-total")).toContainText("6 articles");
   await add(page, "22");
@@ -159,10 +157,12 @@ test("T16 : snapshot autonome clavier, axe, sept largeurs, zoom CSS 200 %, thèm
   await add(page, "22");
   await nav(page, "Aujourd’hui");
   const w = workspace(page);
-  await expect(w.locator(".snapshot-status .small-note").first()).toHaveCSS(
+  const diag = await diagnostics(page);
+  await expect(diag.locator(".snapshot-status .small-note").first()).toHaveCSS(
     "font-size",
     "14px",
   );
+  await nav(page, "Aujourd’hui");
   for (const width of [320, 360, 390, 430, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 1000 });
     expect(
@@ -229,12 +229,15 @@ test("T05/T06/T07 : omissions réelles avec provenance et conflit de révision v
   await importPayload(p);
   await nav(page, "Aujourd’hui");
   const w = workspace(page);
-  await expect(w.locator("[data-autonomy]")).toHaveAttribute(
+  const diag = await diagnostics(page);
+  await expect(diag.locator("[data-autonomy]")).toHaveAttribute(
     "data-autonomy",
     "INCOMPLETE",
   );
-  await expect(w).toContainText("Contenu du snapshot incomplet");
-  await expect(w).toContainText("event-v8-C");
+  await expect(diag).toContainText("Contenu du snapshot incomplet");
+  await expect(diag).toContainText("event-v8-C");
+  await nav(page, "Aujourd’hui");
+  await openReadingTools(page);
   await w.getByRole("button", { name: "Mes prompts .md", exact: true }).click();
   await w.locator(".unified-result").first().click();
   await expect(w.locator(".prompt-card")).toHaveCount(2);
@@ -243,6 +246,7 @@ test("T05/T06/T07 : omissions réelles avec provenance et conflit de révision v
   await expect(w).toContainText("Original : 12:00");
   await w.getByRole("button", { name: "Économie", exact: true }).click();
   await expect(w.locator(".economic-reading")).toHaveCount(4);
+  await openReadingTools(page);
   await w
     .getByRole("button", { name: "Recherche globale", exact: true })
     .click();
@@ -252,7 +256,9 @@ test("T05/T06/T07 : omissions réelles avec provenance et conflit de révision v
   p.items[0].detail = "Branche concurrente à contrôler";
   await importPayload(p);
   await nav(page, "Aujourd’hui");
-  await expect(w).toContainText("contenus concurrents");
+  await expect(await diagnostics(page)).toContainText("contenus concurrents");
+  await nav(page, "Aujourd’hui");
+  await openReadingTools(page);
   await w
     .getByRole("button", { name: "Recherche globale", exact: true })
     .click();

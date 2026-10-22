@@ -1,3 +1,5 @@
+import { useDisplay } from "./v9/preferences";
+import { PublicGoogleLink } from "./PublicGoogleLink";
 import { useId, useLayoutEffect, useRef, useState } from "react";
 import type { Edition } from "../data/model";
 import type { UnifiedEdition } from "../data/unified";
@@ -13,14 +15,17 @@ export function EventCard({
   item: i,
   edition,
   onOriginal,
+  onRead,
   className = "unified-panel",
 }: {
   item: Item;
   edition: Edition;
   onOriginal: () => void;
+  onRead?: () => void;
   className?: string;
 }) {
-  const [expanded, setExpanded] = useState(false),
+  const { display } = useDisplay();
+  const [expanded, setExpanded] = useState(display.detail),
     [full, setFull] = useState(false),
     [question, setQuestion] = useState(false);
   const {
@@ -62,6 +67,32 @@ export function EventCard({
           {edition.editionSlot} Europe/Paris
           {i.corrections.length > 0 && " · Corrigé"}
         </p>
+        <p className="event-proof">
+          Preuve :{" "}
+          {i.evidenceStatus === "sourced"
+            ? "Sourcé (déclaré)"
+            : i.evidenceStatus === "hypothesis"
+              ? "Hypothèse"
+              : "Non vérifié"}{" "}
+          · Publication : {i.publishedAt.slice(0, 10)}
+        </p>
+        {i.sourceRecords[0] && (
+          <p className="small-note event-source">
+            Source :{" "}
+            {validateSourceUrl(i.sourceRecords[0].url) ? (
+              <a
+                href={i.sourceRecords[0].url}
+                target="_blank"
+                rel="noopener noreferrer"
+                referrerPolicy="no-referrer"
+              >
+                {i.sourceRecords[0].publisher || i.sourceRecords[0].label}
+              </a>
+            ) : (
+              i.sourceRecords[0].publisher
+            )}
+          </p>
+        )}
         <Heading>
           <button
             ref={title}
@@ -89,6 +120,14 @@ export function EventCard({
             </button>
           </>
         )}
+        <div className="event-public-actions">
+          <PublicGoogleLink question={i.publicResearchQuestion} />
+          {!expanded && onRead && (
+            <button className="text-button" onClick={onRead}>
+              Lire l’article complet
+            </button>
+          )}
+        </div>
         <div id={id} hidden={!expanded}>
           <p className="event-summary">{i.summary || "Résumé non fourni."}</p>
           <dl>
@@ -109,7 +148,7 @@ export function EventCard({
             className="primary"
             aria-expanded={full}
             aria-controls={`${id}-full`}
-            onClick={() => setFull(!full)}
+            onClick={() => (onRead ? onRead() : setFull(!full))}
           >
             {full ? "Retour au résumé" : "Lire l’article complet"}
           </button>
@@ -180,7 +219,9 @@ export function EventCard({
               </>
             )}
           </section>
-          <details open={options.advanced || undefined}>
+          <details
+            open={options.advanced || display.secondaryActions || undefined}
+          >
             <summary>Plus</summary>
             <button className="text-button" onClick={onOriginal}>
               Ouvrir le HTML d’origine

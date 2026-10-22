@@ -1,0 +1,27 @@
+[WebServer] (node:65314) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:65315) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 12 tests using 1 worker
+
+(node:65322) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/v9-workspace.spec.ts:51:1 › V9 : Aujourd’hui épuré, Accueil, articles internes, 19 titres réels ou fixture, Google public et préférences (3.5s)
+  ✓   2 [chromium] › tests/e2e/v9-workspace.spec.ts:160:1 › V9 : HTML original offline, filtres, accordéons, Google et source contrôlés, Markdown exact, isolation (3.2s)
+  ✓   3 [chromium] › tests/e2e/v9-workspace.spec.ts:324:1 › V9 : panne du stockage des préférences, réglages conservés pour la session (451ms)
+  ✓   4 [chromium] › tests/e2e/v9-workspace.spec.ts:349:1 › V9 : filtres Articles combinables, calendrier de faits et pagination de 60 brèves synthétiques (885ms)
+(node:65451) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   5 [webkit] › tests/e2e/v9-workspace.spec.ts:51:1 › V9 : Aujourd’hui épuré, Accueil, articles internes, 19 titres réels ou fixture, Google public et préférences (4.9s)
+  ✓   6 [webkit] › tests/e2e/v9-workspace.spec.ts:160:1 › V9 : HTML original offline, filtres, accordéons, Google et source contrôlés, Markdown exact, isolation (3.9s)
+  ✓   7 [webkit] › tests/e2e/v9-workspace.spec.ts:324:1 › V9 : panne du stockage des préférences, réglages conservés pour la session (710ms)
+  ✓   8 [webkit] › tests/e2e/v9-workspace.spec.ts:349:1 › V9 : filtres Articles combinables, calendrier de faits et pagination de 60 brèves synthétiques (1.3s)
+(node:65532) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 [chromium-mobile] › tests/e2e/v9-workspace.spec.ts:51:1 › V9 : Aujourd’hui épuré, Accueil, articles internes, 19 titres réels ou fixture, Google public et préférences (6.0s)
+  ✓  10 [chromium-mobile] › tests/e2e/v9-workspace.spec.ts:160:1 › V9 : HTML original offline, filtres, accordéons, Google et source contrôlés, Markdown exact, isolation (3.1s)
+  ✓  11 [chromium-mobile] › tests/e2e/v9-workspace.spec.ts:324:1 › V9 : panne du stockage des préférences, réglages conservés pour la session (468ms)
+  ✓  12 [chromium-mobile] › tests/e2e/v9-workspace.spec.ts:349:1 › V9 : filtres Articles combinables, calendrier de faits et pagination de 60 brèves synthétiques (949ms)
+
+  12 passed (32.5s)

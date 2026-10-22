@@ -1,3 +1,4 @@
+import { navigate } from "../helpers/navigation";
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -7,13 +8,7 @@ const example = JSON.parse(
   readFileSync(folder + "EXEMPLE_FUTUR_IA_v1.json", "utf8"),
 );
 async function nav(page: Page, label = "Le Futur") {
-  const surface = (await page.locator(".sidebar").isVisible())
-    ? ".sidebar"
-    : ".mobile-nav";
-  await page
-    .locator(surface)
-    .getByRole("button", { name: label, exact: true })
-    .click();
+  return navigate(page, label);
 }
 async function upload(page: Page, payload: unknown = example) {
   await page.getByLabel("Fichiers HTML à importer").setInputFiles({

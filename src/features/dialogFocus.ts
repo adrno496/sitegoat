@@ -1,11 +1,17 @@
-import { useEffect, useRef } from "react";
-export function useDialogFocus(active: boolean, onEscape: () => void) {
+import { useEffect, useRef, type RefObject } from "react";
+export function useDialogFocus(
+  active: boolean,
+  onEscape: () => void,
+  dialogRef?: RefObject<HTMLElement | null>,
+) {
   const callback = useRef(onEscape);
   callback.current = onEscape;
   useEffect(() => {
     if (!active) return;
     const before = document.activeElement as HTMLElement | null;
-    const dialog = document.querySelector<HTMLElement>('[role="dialog"]');
+    const dialog =
+      dialogRef?.current ||
+      document.querySelector<HTMLElement>('[role="dialog"]');
     if (!dialog) return;
     const selector =
       "button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), a[href]";
@@ -36,5 +42,5 @@ export function useDialogFocus(active: boolean, onEscape: () => void) {
       document.removeEventListener("keydown", key);
       before?.focus();
     };
-  }, [active]);
+  }, [active, dialogRef]);
 }

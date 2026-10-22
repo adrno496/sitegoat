@@ -1,3 +1,5 @@
+import { diagnostics, navigate as nav } from "../helpers/navigation";
+import { openReadingTools } from "../helpers/navigation";
 import { test, expect, type Page } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 import { dynamicFixture, readingHours } from "../helpers/dynamic-unified";
@@ -159,11 +161,14 @@ test("16 h : PARTIAL ne signifie pas contradiction ni article manquant ; prompts
   const w = page.locator(".unified-workspace");
   await expect(w.locator(".event-list .event-card")).toHaveCount(16);
   await expect(w).not.toContainText("partielle ou contradictoire");
-  await expect(w).toContainText("12:00 / 14:00");
-  await expect(w.locator("[data-autonomy]")).toHaveAttribute(
+  const diag = await diagnostics(page);
+  await expect(diag).toContainText("12:00 / 14:00");
+  await expect(diag.locator("[data-autonomy]")).toHaveAttribute(
     "data-autonomy",
     "AUTONOMOUS",
   );
+  await nav(page, "Aujourd’hui");
+  await openReadingTools(page);
   await w.getByRole("button", { name: "Mes prompts .md", exact: true }).click();
   await w.locator(".unified-result").first().click();
   for (const [n, pm] of p.promptAssets.entries()) {

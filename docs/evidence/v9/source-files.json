@@ -1,0 +1,234 @@
+[
+  {
+    "path": "AUDIT_SITEGOAT_AVANT.md",
+    "sha256": "55cef7777e69a194739a806a20a72c12ab80e9bca788bafd7c532f45ceed289b"
+  },
+  {
+    "path": "GUIDE_UTILISATEUR_V9.md",
+    "sha256": "cdd3cd17a7f804a8ad05ee5675e7f6e7b9bb8f9e97d1261a6e0c87ab8a1a3621"
+  },
+  {
+    "path": "PLAN_V9.md",
+    "sha256": "78618d917199049f1175319545ababc97c4bda5e83061883ef356cee284364be"
+  },
+  {
+    "path": "PROMPT_MAITRE_VSCODE_SITEGOAT_V9_JOURNAL360_V9.md",
+    "sha256": "e375bd11b9004ee8047cfed3cddbb257d1a0f1791ebdfb4e5f1d883c2ca56476"
+  },
+  {
+    "path": "RAPPORT_TESTS_V9.md",
+    "sha256": "8829331104da9011c772fcf6a3ff3c4f857ad0ae0453937ce37c39fd00678dad"
+  },
+  {
+    "path": "README.md",
+    "sha256": "97b73da9f2a1955397aa188ea915e147ecd00e5ac3439341e794561b3a8d4982"
+  },
+  {
+    "path": "RISQUES_ET_ROLLBACK_V9.md",
+    "sha256": "e2c7b4dc6cb5b024dbb5d085bd380ee09df9bbe0aa975c0b256f6a0ee36b12aa"
+  },
+  {
+    "path": "SPEC_PRODUCTEUR_J360_V9.md",
+    "sha256": "0afe660af9cf790115fcca81ab052ebd8244b513a84c581595b7fecf13ed31ce"
+  },
+  {
+    "path": "docs/JOURNAL360_QUICKBRIEFS_V1.schema.json",
+    "sha256": "c1283957d2ce08709fab92f8319f9e8d08fe958b8ea6edd39816ec1f3b25a933"
+  },
+  {
+    "path": "package-lock.json",
+    "sha256": "b447c1ed6e9936309a3b580c44ba20eb72dcb5c5f2ac83410ce7ed932a7a4bef"
+  },
+  {
+    "path": "package.json",
+    "sha256": "f7acf5f89ade9d67ea725d11d59c47b5c5ae22b464973a96dd6e88d9f38fe044"
+  },
+  {
+    "path": "playwright.config.ts",
+    "sha256": "99af4bab121815813c40155b6251e4434f09b6b2ed2d8d2ee913090217355164"
+  },
+  {
+    "path": "scripts/capture-v9-local.mjs",
+    "sha256": "f45d5e4cefe737f31e05f8b66e59362a95c38d0912675aa79e03bad07c24a90f"
+  },
+  {
+    "path": "scripts/export-quickbriefs-schema.mjs",
+    "sha256": "031b9899471bd1cfc846c1c791dd2100715e8a6d7e4eb62f11db37b44bfd77bd"
+  },
+  {
+    "path": "scripts/smoke-v9-production.mjs",
+    "sha256": "24bfe5bc06de875f4a89d74076b6ebaf367b83ea49eaefc997540609936d8ebb"
+  },
+  {
+    "path": "src/App.tsx",
+    "sha256": "fe4d1582a1ca79420a780a4e310350858667bebe8d0f9178220af22c752fcc74"
+  },
+  {
+    "path": "src/config.ts",
+    "sha256": "86bbad22e946e684644de8b30d1b5b91bb8e6354edfd1803a8f45b72a5569969"
+  },
+  {
+    "path": "src/data/model.ts",
+    "sha256": "f528ae42a62b63037a4d6edfa555a841152972b5e6aa467e1072d3ee50250798"
+  },
+  {
+    "path": "src/data/quickBriefs.ts",
+    "sha256": "46c609b40fc2bb7c5e89a63283e095f4b4e91149b1a28007c1a6ea9af9566d9a"
+  },
+  {
+    "path": "src/data/quickBriefsSchema.ts",
+    "sha256": "7e5856c999edaab28c4bc2de90180a9a41b3afa1d9e8f24669be0eb2df4d8bf7"
+  },
+  {
+    "path": "src/features/ArticlesView.tsx",
+    "sha256": "edd2fa9dc6b4f135ac6813a52da36930d7ee2dc88b6a9a81e900519fb30f87e5"
+  },
+  {
+    "path": "src/features/EventCard.tsx",
+    "sha256": "39f6955506643239dc0616b235f1745f89c65e33bc10fe4bd6442274448eecb5"
+  },
+  {
+    "path": "src/features/ImportDiagnostics.tsx",
+    "sha256": "79fa3999d7b8d80f0aaab37ef0cc716737b61b69dc64add7b6e60cd7bd9d251b"
+  },
+  {
+    "path": "src/features/PublicGoogleLink.tsx",
+    "sha256": "cfbfc03d27565b00a7c46c2bf7b8fb0fa55d5861b1b5e5b3f575cad0db54a5c1"
+  },
+  {
+    "path": "src/features/Reader.tsx",
+    "sha256": "f26999378831d904cdbb5e96a10ad702ffe4e00b27d31c3edf05c21c24595947"
+  },
+  {
+    "path": "src/features/backup.ts",
+    "sha256": "a2682db412c72ae71ff5d9942b4d9c1c5bdf9f9ae294c2e76d690704d083be51"
+  },
+  {
+    "path": "src/features/dialogFocus.ts",
+    "sha256": "2bf66ad2df60b8b20129c21815dbf7cfdf35c6df8845d50f4ce6e56768441ca7"
+  },
+  {
+    "path": "src/features/hydrateQuickBriefs.ts",
+    "sha256": "e9d66a45c925cd448486563e971a5be5b84cda7cefdca3f0cefde4133b8bcfcc"
+  },
+  {
+    "path": "src/features/import.ts",
+    "sha256": "d06250c7f93034163ed40c5f1474a782fee5824f42da4e8a8687244ca501e1c2"
+  },
+  {
+    "path": "src/features/interfacePreferences.tsx",
+    "sha256": "df2cca5f08e4982d76927a4698fe54ab317a3ab30c544fa325f834d78f3a8b73"
+  },
+  {
+    "path": "src/features/readerActions.tsx",
+    "sha256": "e9805319e3d6bf7d02703ff1b12fa350071d6e12d6caa610d0694add0cd9888c"
+  },
+  {
+    "path": "src/features/unified/EconomyRadar.tsx",
+    "sha256": "5cfb7740dcc7fc91f25d569713e07be22c184e6aa5bd1dd8d00ba306dc212385"
+  },
+  {
+    "path": "src/features/unified/FutureBridge.tsx",
+    "sha256": "a2951ccc16e8c4912c133d8c4e2019ba8434aac01d511b4556b3839b6b9ca783"
+  },
+  {
+    "path": "src/features/unified/UnifiedSearch.tsx",
+    "sha256": "f7e7202b9440447b9cb35adfe2120bb988360731a63287a7657d9b5630e5793e"
+  },
+  {
+    "path": "src/features/unified/UnifiedWorkspace.tsx",
+    "sha256": "63c45767b95af033af9abfc0f1d42d99bb3d1ed59986b638335bacfe60b186c0"
+  },
+  {
+    "path": "src/features/unified/selectors.ts",
+    "sha256": "4bb507b4b4a9eedbfc444978530e3702e5bdd4d8fe7ed50c88ac70b3dfcf6cc8"
+  },
+  {
+    "path": "src/features/v9/Dashboard.tsx",
+    "sha256": "6acfc6b249b93afdfb4d0b3844bf908cd6dafb0d44d196fa561f9422655169c7"
+  },
+  {
+    "path": "src/features/v9/QuickNews.tsx",
+    "sha256": "1ee4959c9561ee4ed1bf07adbcab99957f3676b37d231f0427cb81828359dbc9"
+  },
+  {
+    "path": "src/features/v9/economicHistory.ts",
+    "sha256": "052cffa55c2b993e834198ebc7cc9c7f3eb978db12f8cab6f8845e7ff0d2807e"
+  },
+  {
+    "path": "src/features/v9/preferences.tsx",
+    "sha256": "dd187cc08bd7b8bd7029e4dd78cf6905ee6459be67663169d35d99589c4d34d3"
+  },
+  {
+    "path": "src/styles.css",
+    "sha256": "5062d381c9d8cece811d1458b9834f63ccf00643b7e9e116c23af55ff363f7d9"
+  },
+  {
+    "path": "tests/e2e/app.spec.ts",
+    "sha256": "366553814e3a7866a60cafda7f562e83ff0275c17778f1534f6993d3779ce50b"
+  },
+  {
+    "path": "tests/e2e/v6-collections.spec.ts",
+    "sha256": "d98f47248641e087f651fc38889411e3e9a0d062a8c5e642370b552e5d44c05e"
+  },
+  {
+    "path": "tests/e2e/v6-daily.spec.ts",
+    "sha256": "4041ece0ab5132c9241f8bdc71048b967da4fcdaeffcb74912ad65de6c0d9064"
+  },
+  {
+    "path": "tests/e2e/v6-future-atlas.spec.ts",
+    "sha256": "6da7a4cee70088221f7f349c57e5869fd4e5748403711545decf39ac9a5e60aa"
+  },
+  {
+    "path": "tests/e2e/v6-future.spec.ts",
+    "sha256": "6edbdbd9d0abe16578ad4d431c48884642b839b7515d64bd0bfc343aa35a2586"
+  },
+  {
+    "path": "tests/e2e/v6-google-navigation.spec.ts",
+    "sha256": "00b1fe12641731adff6ad78223a654ab51c872e0e39e4b2637281eee11a4b0ab"
+  },
+  {
+    "path": "tests/e2e/v6-improvements.spec.ts",
+    "sha256": "ebcc0f62b7c1b42421280f86626a499022be06acd14e2ae66728c3c4f8c2bbd9"
+  },
+  {
+    "path": "tests/e2e/v6.spec.ts",
+    "sha256": "549d4b7c8c41b142c60521b513722d74d32f5098e5070581cd3bc89664652877"
+  },
+  {
+    "path": "tests/e2e/v7-unified.spec.ts",
+    "sha256": "ea6276d624991af505b9d161c257afa8cc9b7ea5821a410fd718581ff191d500"
+  },
+  {
+    "path": "tests/e2e/v8-audit.spec.ts",
+    "sha256": "bbb53a3725829a2c77d5bd0a4c11bdb0ddab379bdd3c9597510bcee9603051d4"
+  },
+  {
+    "path": "tests/e2e/v8-reading.spec.ts",
+    "sha256": "f9ef76e9b94609861720e724cde4176b9b988d356f39be00ecc11525e45e6d67"
+  },
+  {
+    "path": "tests/e2e/v8-snapshot.spec.ts",
+    "sha256": "77344a5906f74798360fa8bd5e2436c0422fe32aea7f26012ca566223bcc17e9"
+  },
+  {
+    "path": "tests/e2e/v9-workspace.spec.ts",
+    "sha256": "c07bfe9bf9331f72df16bedc0a97fa1009704400f36045d2c9031035c8d93b4b"
+  },
+  {
+    "path": "tests/helpers/navigation.ts",
+    "sha256": "ec4279c870d58b7c50750f66c7be7b8e1dcc061626a89edf889e1dcb1bdfe5bb"
+  },
+  {
+    "path": "tests/helpers/v9.ts",
+    "sha256": "8835cd78a1b0c6915753d0f3dfbbcdad676c2e039edc012661f87240726fe403"
+  },
+  {
+    "path": "tests/v9-contract.unit.test.ts",
+    "sha256": "298f8f1a4d32963c7b47c285adf392b31ab96e7ffde537569df0a86281a222fc"
+  },
+  {
+    "path": "tests/v9-history.unit.test.ts",
+    "sha256": "0251e55e6d3d6280b8bf11749ff4f956225b40e6c03478ed858c1571ce8b8cff"
+  }
+]

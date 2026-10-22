@@ -1,0 +1,30 @@
+[WebServer] (node:54081) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:54100) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 19 tests using 1 worker
+
+(node:54115) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/v7-unified.spec.ts:29:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (3.6s)
+  ✓   2 [chromium] › tests/e2e/v7-unified.spec.ts:155:1 › V7 : mobile, clavier, thèmes, absence de données, sources, reduced motion et radar comparable (5.1s)
+  ✓   3 [chromium] › tests/e2e/v7-unified.spec.ts:228:1 › V7 : HTML hostile lu sans scripts, question publique conservée, prompt privé non transmis (910ms)
+  ✓   4 [chromium] › tests/e2e/v7-unified.spec.ts:293:1 › V7 : adaptateur Future explicite, JSON validé puis import indépendant sans écriture croisée (2.7s)
+  ✓   5 [chromium] › tests/e2e/v7-unified.spec.ts:347:1 › V7 : MIME incohérent refusé sans écriture puis import HTML valide conservé (7.5s)
+  ✓   6 [chromium] › tests/e2e/v7-unified.spec.ts:375:1 › V7 : chargement différé de l’accueil sans déplacer un bouton pendant le clic (768ms)
+  ✓   7 [chromium] › tests/e2e/v8-audit.spec.ts:48:1 › Audit P0/P1 : 10 h seul offline, huit cartes, résumés, fiches intégrales et trois Markdown exacts (3.4s)
+  ✓   8 [chromium] › tests/e2e/v8-audit.spec.ts:129:1 › Audit P0 : créneaux exacts, retour même filtre/position, historique navigateur et rechargement (2.0s)
+  ✓   9 [chromium] › tests/e2e/v8-audit.spec.ts:170:1 › Audit P1/P2 : profils réversibles, offline, sept largeurs, clavier, contraste et mouvement réduit (3.4s)
+  ✓  10 [chromium] › tests/e2e/v8-audit.spec.ts:283:1 › Audit P2 : import, rendu paginé et recherche de 500 puis 2000 articles synthétiques (5.3s)
+  ✓  11 [chromium] › tests/e2e/v8-audit.spec.ts:366:1 › Audit P2 : texte hostile échappé et URL invalide rejetée sans perte (812ms)
+  ✓  12 [chromium] › tests/e2e/v8-snapshot.spec.ts:26:1 › T01/T04/T09/T15 : SEUL fichier 22 h dans une base vide, huit événements et toutes les annexes offline (2.2s)
+  ✓  13 [chromium] › tests/e2e/v8-snapshot.spec.ts:123:1 › T02/T03 : un seul 12 h ou 18 h, puis arrivée désordonnée sans rétrogradation (1.6s)
+  ✓  14 [chromium] › tests/e2e/v8-snapshot.spec.ts:152:1 › T16 : snapshot autonome clavier, axe, sept largeurs, zoom CSS 200 %, thèmes et mouvement réduit (2.2s)
+  ✓  15 [chromium] › tests/e2e/v8-snapshot.spec.ts:199:1 › T05/T06/T07 : omissions réelles avec provenance et conflit de révision visibles (8.3s)
+  ✓  16 [chromium] › tests/e2e/v9-workspace.spec.ts:50:1 › V9 : Aujourd’hui épuré, Accueil, articles internes, 19 titres réels ou fixture, Google public et préférences (3.1s)
+  ✓  17 [chromium] › tests/e2e/v9-workspace.spec.ts:159:1 › V9 : HTML original offline, filtres, accordéons, Google et source contrôlés, Markdown exact, isolation (2.8s)
+  ✓  18 [chromium] › tests/e2e/v9-workspace.spec.ts:294:1 › V9 : panne du stockage des préférences, réglages conservés pour la session (423ms)
+  ✓  19 [chromium] › tests/e2e/v9-workspace.spec.ts:319:1 › V9 : filtres Articles combinables, calendrier de faits et pagination de 60 brèves synthétiques (991ms)
+
+  19 passed (59.9s)

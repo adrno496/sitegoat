@@ -1,0 +1,50 @@
+
+> journal360-mobile@2.1.0 build
+> tsc -b && vite build
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 1788 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/manifest.webmanifest                          0.64 kB
+dist/index.html                                    0.79 kB │ gzip:   0.46 kB
+dist/assets/UnifiedWorkspace-BgcEMrrM.css          5.85 kB │ gzip:   1.64 kB
+dist/assets/FutureView-xMWxTbag.css               14.01 kB │ gzip:   3.28 kB
+dist/assets/index-DgBpk3Vf.css                    46.84 kB │ gzip:  10.08 kB
+dist/assets/hooks-aTBLk8ch.js                      0.29 kB │ gzip:   0.22 kB
+dist/assets/ImportDialog-DBRi3JA6.js               5.61 kB │ gzip:   2.33 kB
+dist/assets/workbox-window.prod.es5-Bd17z0YL.js    5.65 kB │ gzip:   2.20 kB
+dist/assets/db-DJBmmQGf.js                         7.17 kB │ gzip:   2.84 kB
+dist/assets/UnifiedWorkspace-CWd8fmf8.js          28.60 kB │ gzip:   8.40 kB
+dist/assets/FutureView-AIOQFWEK.js                49.94 kB │ gzip:  14.75 kB
+dist/assets/import-DRfdAeht.js                   227.92 kB │ gzip:  70.98 kB
+dist/assets/index-0deEjD2G.js                    722.61 kB │ gzip: 211.68 kB
+
+✓ built in 350ms
+
+PWA v1.3.0
+Building src/sw.ts service worker ("es" format)...
+vite v8.3.4 building client environment for production...
+
+ WARN  inlineDynamicImports option is deprecated, please use codeSplitting: false instead.
+
+[plugin builtin:vite-reporter]
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+transforming...
+✓ 62 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/sw.mjs  114.24 kB │ gzip: 37.45 kB
+
+✓ built in 43ms
+
+PWA v1.3.0
+mode      injectManifest
+format:   es
+precache  40 entries (1459.27 KiB)
+files generated
+  dist/sw.js

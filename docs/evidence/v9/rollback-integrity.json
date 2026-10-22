@@ -1,0 +1,8 @@
+{
+  "archiveSha256": "422c582cd0003c570103db893cf3539542152bedcfa7dc5d05567ea1d937db67",
+  "trackedFilesCompared": 765,
+  "excludedEnvironmentTemplates": [
+    ".env.example"
+  ],
+  "mismatches": []
+}
