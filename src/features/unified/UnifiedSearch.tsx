@@ -9,10 +9,15 @@ import {
 import { futureDb } from "../future/db";
 import { economicRows, unifiedVersions } from "./selectors";
 import { PromptAccess } from "./PromptAccess";
+import { createPromptArchive } from "./promptArchive";
+import { download } from "../backup";
 export function PromptLibrary({ editions }: { editions: Edition[] }) {
   const [query, setQuery] = useState(""),
     [selected, setSelected] = useState(""),
-    [documentLimit, setDocumentLimit] = useState(100);
+    [documentLimit, setDocumentLimit] = useState(100),
+    [exporting, setExporting] = useState(false),
+    [exportNotice, setExportNotice] = useState(""),
+    [exportError, setExportError] = useState("");
   const candidates = [
     ...unifiedVersions(editions),
     ...editions.filter((e) => !e.unified),
@@ -36,6 +41,26 @@ export function PromptLibrary({ editions }: { editions: Edition[] }) {
         ).includes(needle),
       );
   const edition = candidates.find((e) => e.id === selected);
+  async function exportAll() {
+    setExporting(true);
+    setExportNotice("");
+    setExportError("");
+    try {
+      const { blob, count } = await createPromptArchive(candidates);
+      download(blob, "mes-prompts.zip");
+      setExportNotice(
+        `Téléchargement de ${count} prompt(s) dans mes-prompts.zip lancé.`,
+      );
+    } catch (error) {
+      setExportError(
+        error instanceof Error
+          ? error.message
+          : "Téléchargement du ZIP impossible.",
+      );
+    } finally {
+      setExporting(false);
+    }
+  }
   return (
     <section>
       <h2>Mes prompts .md</h2>
@@ -44,6 +69,21 @@ export function PromptLibrary({ editions }: { editions: Edition[] }) {
         transmis à Google. Les anciennes cartes Sentinel peuvent être inspectées
         sans réimport.
       </p>
+      <button
+        className="secondary"
+        disabled={exporting || candidates.length === 0}
+        onClick={() => void exportAll()}
+      >
+        {exporting
+          ? "Préparation du ZIP…"
+          : "Télécharger tous les prompts (.zip)"}
+      </button>
+      <p className="small-note">
+        Tous les documents, même avec un filtre actif, regroupés par édition
+        dans un seul ZIP.
+      </p>
+      {exportNotice && <p role="status">{exportNotice}</p>}
+      {exportError && <p role="alert">{exportError}</p>}
       <label>
         Rechercher un prompt
         <input

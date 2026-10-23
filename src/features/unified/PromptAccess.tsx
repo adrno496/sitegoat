@@ -6,7 +6,8 @@ import { db } from "../../data/db";
 import { download } from "../backup";
 import {
   extractVscodePrompts,
-  vscodePromptFilename,
+  promptDownloadFilename,
+  safePromptFilename,
   type VscodePrompt,
 } from "../vscodePrompt";
 export function PromptAccess({
@@ -61,32 +62,17 @@ export function PromptAccess({
         <PromptCard
           key={p.id}
           prompt={p}
-          filename={
-            edition.unified
-              ? p.filename
-              : loaded?.length === 1
-                ? vscodePromptFilename(edition.filename)
-                : vscodePromptFilename(edition.filename).replace(
-                    ".md",
-                    `_${i + 1}.md`,
-                  )
-          }
+          filename={promptDownloadFilename(
+            edition.filename,
+            p,
+            i,
+            loaded?.length || 0,
+            !!edition.unified,
+          )}
         />
       ))}
     </div>
   );
-}
-function safeFilename(value: string) {
-  return value
-    .split(/[\\/]/)
-    .pop()!
-    .replace(/[<>:"|?*]/g, "_")
-    .replace(/\p{Cf}/gu, "_")
-    .split("")
-    .map((c) => (c.charCodeAt(0) < 32 ? "_" : c))
-    .join("")
-    .slice(0, 220)
-    .replace(/(?:\.md)?$/i, ".md");
 }
 export function PromptCard({
   prompt: p,
@@ -122,7 +108,7 @@ export function PromptCard({
       setDigest(checksum);
       download(
         new Blob([p.content], { type: "text/markdown;charset=utf-8" }),
-        safeFilename(filename),
+        safePromptFilename(filename),
       );
       setNotice(
         "Téléchargement du prompt lancé. Vérifiez le fichier dans votre navigateur.",

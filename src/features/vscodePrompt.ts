@@ -93,3 +93,35 @@ export function vscodePromptFilename(filename: string): string {
     .slice(0, 180);
   return `${stem || "sentinel"}_PROMPT_VSCODE.md`;
 }
+
+export function safePromptFilename(value: string) {
+  return value
+    .split(/[\\/]/)
+    .pop()!
+    .replace(/[<>:"|?*]/g, "_")
+    .replace(/\p{Cf}/gu, "_")
+    .split("")
+    .map((c) => (c.charCodeAt(0) < 32 ? "_" : c))
+    .join("")
+    .slice(0, 220)
+    .replace(/(?:\.md)?$/i, ".md");
+}
+
+export function promptDownloadFilename(
+  editionFilename: string,
+  prompt: VscodePrompt,
+  index: number,
+  count: number,
+  unified: boolean,
+) {
+  return safePromptFilename(
+    unified
+      ? prompt.filename
+      : count === 1
+        ? vscodePromptFilename(editionFilename)
+        : vscodePromptFilename(editionFilename).replace(
+            ".md",
+            `_${index + 1}.md`,
+          ),
+  );
+}
