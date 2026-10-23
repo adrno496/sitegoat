@@ -69,7 +69,7 @@ test("tous les prompts sont téléchargés en un ZIP, même avec un filtre actif
   ).toContainText("5 prompt(s)");
 });
 
-test("un article ouvert depuis la recherche globale permet de rechercher son titre exact sur Google", async ({
+test("la recherche globale permet de rechercher le titre exact sur Google sans ouvrir le HTML", async ({
   page,
   context,
 }) => {
@@ -81,14 +81,15 @@ test("un article ouvert depuis la recherche globale permet de rechercher son tit
     .click();
   const title = payloads[1].items[0].title;
   await w.getByLabel("Rechercher partout").fill(title);
-  await w
-    .locator(".unified-result")
-    .filter({ has: page.getByText(title, { exact: true }) })
-    .click();
-  const link = page
-    .locator(".reading-surface-header")
-    .getByRole("link", { name: "Recherche Google", exact: true });
+  const result = w.locator(".unified-search-result").filter({
+    has: page.getByText(title, { exact: true }),
+  });
+  const link = result.getByRole("link", {
+    name: "Recherche Google",
+    exact: true,
+  });
   await expect(link).toBeVisible();
+  await expect(page.locator(".edition-frame")).toHaveCount(0);
   const href = (await link.getAttribute("href"))!;
   const url = new URL(href);
   expect(url.origin + url.pathname).toBe("https://www.google.com/search");
@@ -102,8 +103,9 @@ test("un article ouvert depuis la recherche globale permet de rechercher son tit
   const google = await opened;
   await expect(google).toHaveURL(href);
   await google.close();
-  await page
-    .getByRole("button", { name: "Réduire la lecture", exact: true })
-    .click();
+  await expect(w).toBeVisible();
+  await expect(page.locator(".edition-frame")).toHaveCount(0);
   await expect(link).toBeVisible();
+  await result.locator(".unified-result").click();
+  await expect(page.locator(".edition-frame")).toBeVisible();
 });

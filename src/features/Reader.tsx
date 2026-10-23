@@ -548,18 +548,6 @@ export function Reader({
               <ArrowLeft size={18} />
             </button>
           )}
-          {initialArticle && (
-            <a
-              className="secondary reader-google-search"
-              href={`https://www.google.com/search?${new URLSearchParams({ hl: "fr", q: initialArticle.title })}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              referrerPolicy="no-referrer"
-              title={`Rechercher sur Google : ${initialArticle.title}`}
-            >
-              Recherche Google
-            </a>
-          )}
           <div className="reading-options" hidden={expanded}>
             {mode === "interactive" && (
               <button

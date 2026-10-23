@@ -412,12 +412,26 @@ export function UnifiedSearch({
       {error && <p role="alert">{error}</p>}
       <p role="status">{matching.length} résultat(s) · aucun envoi externe</p>
       {matching.slice(0, limit).map((r) => (
-        <button className="unified-result" key={r.key} onClick={r.open}>
-          <b>{r.title}</b>
-          <span>
-            {r.kind} · {r.date || "date inconnue"} · {r.source} · {r.status}
-          </span>
-        </button>
+        <div className="unified-search-result" key={r.key}>
+          <button className="unified-result" onClick={r.open}>
+            <b>{r.title}</b>
+            <span>
+              {r.kind} · {r.date || "date inconnue"} · {r.source} · {r.status}
+            </span>
+          </button>
+          {r.kind === "Article" && (
+            <a
+              className="secondary"
+              href={`https://www.google.com/search?${new URLSearchParams({ hl: "fr", q: r.title })}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              referrerPolicy="no-referrer"
+              title={`Rechercher sur Google : ${r.title}`}
+            >
+              Recherche Google
+            </a>
+          )}
+        </div>
       ))}
       {matching.length > limit && (
         <button className="secondary" onClick={() => setLimit((n) => n + 30)}>

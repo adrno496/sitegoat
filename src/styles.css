@@ -2921,7 +2921,7 @@ textarea {
     max-width: 100%;
   }
 }
-/* Floating reading controls over the imported document. */
+/* Two floating controls; the imported document uses the whole viewport. */
 .reading-surface-expanded .reading-surface-header {
   position: absolute;
   top: max(8px, env(safe-area-inset-top));
@@ -2935,8 +2935,7 @@ textarea {
   border: 0;
   pointer-events: none;
 }
-.reading-surface-expanded .reading-surface-header button,
-.reading-surface-expanded .reader-google-search {
+.reading-surface-expanded .reading-surface-header button {
   pointer-events: auto;
   background: var(--surface);
   border: 1px solid var(--line);
@@ -2951,12 +2950,6 @@ textarea {
   font-size: 11px;
   min-height: 44px;
   padding: 8px 10px;
-}
-.reader-google-search {
-  min-height: 44px;
-  font-size: 12px;
-  padding: 8px 10px;
-  text-align: center;
 }
 .reader-back-gesture {
   position: absolute;

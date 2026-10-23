@@ -214,6 +214,22 @@
   outline: 2px solid var(--ink);
   outline-offset: 2px;
 }
+.unified-search-result {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+}
+.unified-search-result .unified-result {
+  margin: 0;
+}
+.unified-search-result > a {
+  min-height: 44px;
+  font-size: 14px;
+  white-space: normal;
+  text-align: center;
+}
 .unified-prompt-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
@@ -270,6 +286,12 @@
   }
 }
 @media (max-width: 700px) {
+  .unified-search-result {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .unified-search-result > a {
+    justify-self: start;
+  }
   .unified-masthead,
   .unified-lead {
     flex-direction: column;
