@@ -35,9 +35,15 @@ export function Dashboard({
     (p?.items || []).map((i) => new Date(i.publishedAt).toISOString()),
   );
   const highlights = [...(p?.items || [])]
-    .filter((i) => i.importance !== "context")
+    .filter(
+      (i) =>
+        i.importance !== "context" ||
+        new Date(i.publishedAt).toISOString() === latestPublishedAt,
+    )
     .sort(
       (a, b) =>
+        Number(new Date(b.publishedAt).toISOString() === latestPublishedAt) -
+          Number(new Date(a.publishedAt).toISOString() === latestPublishedAt) ||
         Number(d.favorites.includes(b.category)) -
           Number(d.favorites.includes(a.category)) ||
         Number(b.importance === "major") - Number(a.importance === "major"),

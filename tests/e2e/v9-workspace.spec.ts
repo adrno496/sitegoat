@@ -52,6 +52,10 @@ test("V9 : Aujourd’hui épuré, Accueil, articles internes, 19 titres réels o
   page,
 }, info) => {
   const { p, q } = await add(page);
+  const latestTime = Math.max(...p.items.map((i) => Date.parse(i.publishedAt)));
+  const latestCount = p.items.filter(
+    (i) => Date.parse(i.publishedAt) === latestTime,
+  ).length;
   await nav(page, "Aujourd’hui");
   const w = page.locator(".unified-workspace");
   await expect(w.locator(".event-list .event-card")).toHaveCount(
@@ -66,7 +70,14 @@ test("V9 : Aujourd’hui épuré, Accueil, articles internes, 19 titres réels o
   await expect(
     w.getByRole("button", { name: "Lire la dernière édition", exact: true }),
   ).toHaveCount(1);
+  await expect(w.locator('.event-card[data-latest="true"]')).toHaveCount(
+    latestCount,
+  );
   const first = w.locator(".event-card").first();
+  await expect(first).toHaveAttribute("data-latest", "true");
+  await expect(first.locator(".latest-publication-badge")).toHaveText(
+    "Dernière publication",
+  );
   const eventId = await first.getAttribute("data-event-id");
   const expectedItem = p.items.find((i) => i.eventId === eventId)!;
   await first.getByRole("button", { name: "Développer", exact: true }).click();
@@ -95,6 +106,22 @@ test("V9 : Aujourd’hui épuré, Accueil, articles internes, 19 titres réels o
         .getAttribute("href")) || "",
     ).searchParams.get("q"),
   ).toBe(q.items[0].googleQuery);
+  await nav(page, "Accueil");
+  const home = page.locator(".dashboard .event-list");
+  await expect(home.locator('.event-card[data-latest="true"]')).toHaveCount(
+    Math.min(6, latestCount),
+  );
+  await expect(home.locator(".event-card").first()).toHaveAttribute(
+    "data-latest",
+    "true",
+  );
+  await nav(page, "Articles");
+  await page
+    .getByRole("button", { name: "Retour aux articles", exact: true })
+    .click();
+  await expect(
+    page.locator(".articles-grid .article-card").first(),
+  ).toHaveAttribute("data-latest", "true");
   await nav(page, "Accueil");
   await expect(
     page.getByRole("heading", {
@@ -597,14 +624,12 @@ test("V9 : onglet Actualité rapide, titres des articles automatiques, dates sim
   await nav(page, "Actualité rapide");
   await expect(page.locator('.brief-card[data-latest="true"]')).toHaveCount(3);
   await expect(
-    page
-      .locator('.brief-card[data-latest="true"]')
-      .filter({
-        has: page.getByRole("heading", {
-          name: "Une bibliothèque qui vous appartient",
-          exact: true,
-        }),
+    page.locator('.brief-card[data-latest="true"]').filter({
+      has: page.getByRole("heading", {
+        name: "Une bibliothèque qui vous appartient",
+        exact: true,
       }),
+    }),
   ).toHaveCount(1);
   await nav(page, "Articles");
   await expect(

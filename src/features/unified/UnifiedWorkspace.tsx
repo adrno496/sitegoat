@@ -103,12 +103,15 @@ export default function UnifiedWorkspace({
         (panel !== "ai" || i.sourceWatch === "ai-major") &&
         (panel !== "sentinel" || i.sourceWatch === "sentinel"),
     )
-    .sort((a, b) =>
-      eventSort === "newest"
-        ? b.lastChangedAt.localeCompare(a.lastChangedAt)
-        : Number(display.favorites.includes(b.category)) -
-            Number(display.favorites.includes(a.category)) ||
-          importance[a.importance] - importance[b.importance],
+    .sort(
+      (a, b) =>
+        Number(new Date(b.publishedAt).toISOString() === latestPublishedAt) -
+          Number(new Date(a.publishedAt).toISOString() === latestPublishedAt) ||
+        (eventSort === "newest"
+          ? b.lastChangedAt.localeCompare(a.lastChangedAt)
+          : Number(display.favorites.includes(b.category)) -
+              Number(display.favorites.includes(a.category)) ||
+            importance[a.importance] - importance[b.importance]),
     );
   return (
     <div

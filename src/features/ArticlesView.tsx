@@ -257,6 +257,7 @@ export function ArticlesView({
   if (layout === "themes" && sort === "date")
     filtered.sort(
       (a, b) =>
+        Number(latestArticles.has(b.key)) - Number(latestArticles.has(a.key)) ||
         a.article.category.localeCompare(b.article.category, "fr") ||
         (b.edition.date || "").localeCompare(a.edition.date || ""),
     );
