@@ -1,3 +1,4 @@
+import { latestPublicationDate } from "../../data/quickNews";
 import type { Edition } from "../../data/model";
 import { dateLabel } from "../../data/model";
 import { indexArticles } from "../../data/articles";
@@ -30,6 +31,9 @@ export function Dashboard({
   const { display: d } = useDisplay();
   const latest = latestCurrent(editions),
     p = latest?.unified;
+  const latestPublishedAt = latestPublicationDate(
+    (p?.items || []).map((i) => new Date(i.publishedAt).toISOString()),
+  );
   const highlights = [...(p?.items || [])]
     .filter((i) => i.importance !== "context")
     .sort(
@@ -108,6 +112,9 @@ export function Dashboard({
               <EventCard
                 key={i.eventId}
                 item={i}
+                latest={
+                  new Date(i.publishedAt).toISOString() === latestPublishedAt
+                }
                 edition={latest!}
                 onOriginal={() => onOpen(latest!.id, i.id)}
                 onRead={() => onArticle(i.eventId, latest!.id)}

@@ -456,7 +456,27 @@ test("V9 : filtres Articles combinables, calendrier de faits et affichage intég
 test("V9 : onglet Actualité rapide, titres des articles automatiques, dates simples et HTML directement interactif", async ({
   page,
 }) => {
-  const { p } = await add(page);
+  const { p, q } = await add(page);
+  const latestArticleTime = Math.max(
+    ...p.items.map((i) => Date.parse(i.publishedAt)),
+  );
+  const latestArticleCount = p.items.filter(
+    (i) => Date.parse(i.publishedAt) === latestArticleTime,
+  ).length;
+  const latestTitleTime = Math.max(
+    latestArticleTime,
+    ...q.items.map((i) =>
+      Date.parse(`${i.publishedAt}T${q.editionSlot}:00+02:00`),
+    ),
+  );
+  const latestTitleCount =
+    p.items.filter((i) => Date.parse(i.publishedAt) === latestTitleTime)
+      .length +
+    q.items.filter(
+      (i) =>
+        Date.parse(`${i.publishedAt}T${q.editionSlot}:00+02:00`) ===
+        latestTitleTime,
+    ).length;
   const root = page.locator(
     (await page.locator(".sidebar").isVisible()) ? ".sidebar" : ".mobile-nav",
   );
@@ -466,6 +486,9 @@ test("V9 : onglet Actualité rapide, titres des articles automatiques, dates sim
   expect(names[today + 2].trim()).toMatch(/^Articles(?:\d+)?$/);
   await nav(page, "Actualité rapide");
   await expect(page.locator(".brief-card")).toHaveCount(p.items.length + 1);
+  await expect(page.locator('.brief-card[data-latest="true"]')).toHaveCount(
+    latestTitleCount,
+  );
   await page.getByLabel("Rechercher un titre").fill(p.items[0].title);
   await expect(page.locator(".brief-card")).toHaveCount(1);
   await page
@@ -474,6 +497,29 @@ test("V9 : onglet Actualité rapide, titres des articles automatiques, dates sim
   await expect(page.locator(".article-detail h2")).toHaveText(p.items[0].title);
   await expect(page.locator(".article-detail")).not.toContainText("Preuve :");
   await nav(page, "Articles");
+  await page
+    .getByRole("button", { name: "Retour aux articles", exact: true })
+    .click();
+  await expect(
+    page.locator('.articles-grid .event-card[data-latest="true"]'),
+  ).toHaveCount(latestArticleCount);
+  const newest = page
+    .locator('.articles-grid .event-card[data-latest="true"]')
+    .first();
+  await newest
+    .getByRole("button", { name: "Lire l’article complet", exact: true })
+    .click();
+  await expect(page.locator(".article-detail")).toHaveAttribute(
+    "data-latest",
+    "true",
+  );
+  await page
+    .getByRole("button", { name: "Marquer comme lu", exact: true })
+    .click();
+  await expect(page.locator(".article-detail")).toHaveAttribute(
+    "data-latest",
+    "true",
+  );
   await page
     .getByRole("button", { name: "Retour aux articles", exact: true })
     .click();
@@ -518,6 +564,9 @@ test("V9 : onglet Actualité rapide, titres des articles automatiques, dates sim
   await page.reload();
   await nav(page, "Actualité rapide");
   await expect(page.locator(".brief-card")).toHaveCount(p.items.length + 4);
+  await expect(page.locator('.brief-card[data-latest="true"]')).toHaveCount(
+    latestTitleCount,
+  );
   for (const width of [360, 768, 1440]) {
     await page.setViewportSize({ width, height: 1000 });
     expect(
@@ -526,4 +575,42 @@ test("V9 : onglet Actualité rapide, titres des articles automatiques, dates sim
       ),
     ).toBe(true);
   }
+  const nextDate = new Date(Date.parse(p.editionDate + "T12:00:00Z") + 86400000)
+    .toISOString()
+    .slice(0, 10);
+  const newer = readFileSync(
+    "tests/fixtures/edition-13.html",
+    "utf8",
+  ).replaceAll("2026-10-13", nextDate);
+  await page.getByLabel("Fichiers HTML à importer").setInputFiles({
+    name: "edition-plus-recente.html",
+    mimeType: "text/html",
+    buffer: Buffer.from(newer),
+  });
+  await page
+    .getByRole("button", {
+      name: "Enregistrer dans ma bibliothèque",
+      exact: true,
+    })
+    .click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await nav(page, "Actualité rapide");
+  await expect(page.locator('.brief-card[data-latest="true"]')).toHaveCount(3);
+  await expect(
+    page
+      .locator('.brief-card[data-latest="true"]')
+      .filter({
+        has: page.getByRole("heading", {
+          name: "Une bibliothèque qui vous appartient",
+          exact: true,
+        }),
+      }),
+  ).toHaveCount(1);
+  await nav(page, "Articles");
+  await expect(
+    page.locator('.articles-grid .article-card[data-latest="true"]'),
+  ).toHaveCount(3);
+  await expect(
+    page.locator('.articles-grid .event-card[data-latest="true"]'),
+  ).toHaveCount(0);
 });

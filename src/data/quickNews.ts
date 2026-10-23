@@ -30,6 +30,23 @@ function publicationOrder(date: string, edition: Edition, slot?: string) {
   return new Date(`${local}${offset.replace("GMT", "") || "Z"}`).toISOString();
 }
 
+export function articlePublicationOrder({
+  article,
+  edition,
+}: IndexedArticle): string {
+  const item = edition.unified?.items.find(
+    (i) => i.eventId === article.eventId,
+  );
+  const date = item?.publishedAt || edition.date || article.date;
+  return date ? publicationOrder(date, edition, article.firstSeenSlot) : "";
+}
+
+export function latestPublicationDate(dates: Iterable<string>): string {
+  let latest = "";
+  for (const date of dates) if (date > latest) latest = date;
+  return latest;
+}
+
 // A read-only projection of the same complete article index as Articles. No
 // backfill or mutation of imported files is required, including for old HTMLs.
 export function indexQuickNews(editions: Edition[]): QuickNewsTitle[] {
@@ -38,12 +55,11 @@ export function indexQuickNews(editions: Edition[]): QuickNewsTitle[] {
     const { edition, article: a } = article;
     const item = edition.unified?.items.find((i) => i.eventId === a.eventId);
     const source = item?.sourceRecords[0];
-    const date = item?.publishedAt || edition.date || a.date;
     return {
       key: `article:${article.key}`,
       title: a.title,
       theme: a.category,
-      publishedAt: date ? publicationOrder(date, edition, a.firstSeenSlot) : "",
+      publishedAt: articlePublicationOrder(article),
       edition,
       article,
       source: source

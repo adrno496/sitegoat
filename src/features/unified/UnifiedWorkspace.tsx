@@ -1,3 +1,4 @@
+import { latestPublicationDate } from "../../data/quickNews";
 import { DisplayFilters, useDisplay } from "../v9/preferences";
 import {
   useCallback,
@@ -72,6 +73,9 @@ export default function UnifiedWorkspace({
   const { display } = useDisplay();
   const current = latestCurrent(editions),
     p = current?.unified;
+  const latestPublishedAt = latestPublicationDate(
+    (p?.items || []).map((i) => new Date(i.publishedAt).toISOString()),
+  );
   const items = useMemo(
     () => indexArticles(editions.filter((e) => !e.deleted && !e.archived)),
     [editions],
@@ -277,6 +281,9 @@ export default function UnifiedWorkspace({
               <EventCard
                 key={current!.id + i.eventId}
                 item={i}
+                latest={
+                  new Date(i.publishedAt).toISOString() === latestPublishedAt
+                }
                 edition={current!}
                 onOriginal={() => onOpen(current!.id, i.id)}
                 onRead={

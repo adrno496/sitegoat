@@ -17,12 +17,14 @@ export function EventCard({
   onOriginal,
   onRead,
   className = "unified-panel",
+  latest = false,
 }: {
   item: Item;
   edition: Edition;
   onOriginal: () => void;
   onRead?: () => void;
   className?: string;
+  latest?: boolean;
 }) {
   const { display } = useDisplay();
   const [expanded, setExpanded] = useState(display.detail),
@@ -48,11 +50,15 @@ export function EventCard({
   }
   return (
     <article
-      className={`${className} event-card`}
+      className={`${className} event-card${latest ? " latest-publication" : ""}`}
+      data-latest={latest || undefined}
       data-event-id={i.eventId}
       data-expanded={expanded}
     >
       <div inert={question}>
+        {latest && (
+          <span className="latest-publication-badge">Dernière publication</span>
+        )}
         <p className="eyebrow">
           {i.category} ·{" "}
           {i.importance === "major"

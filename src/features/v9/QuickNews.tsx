@@ -2,7 +2,7 @@ import { RecurringSearches } from "./RecurringSearches";
 import { DisplayFilters } from "./preferences";
 import { useId, useMemo, useState } from "react";
 import type { Edition } from "../../data/model";
-import { indexQuickNews } from "../../data/quickNews";
+import { indexQuickNews, latestPublicationDate } from "../../data/quickNews";
 import { normalizeArticleSearch } from "../../data/articles";
 import { PublicGoogleLink } from "../PublicGoogleLink";
 import { editionDateTime } from "../eventPresentation";
@@ -18,6 +18,7 @@ export function QuickNews({
   const [panel, setPanel] = useState<"headlines" | "recurring">("headlines");
   const tabsId = useId();
   const rows = useMemo(() => indexQuickNews(editions), [editions]);
+  const latest = latestPublicationDate(rows.map((r) => r.publishedAt));
   const [query, setQuery] = useState(""),
     [theme, setTheme] = useState(""),
     [sort, setSort] = useState("recent"),
@@ -143,10 +144,12 @@ export function QuickNews({
         <div className="brief-list">
           {filtered.slice(0, limit).map((r) => {
             const { article, brief, edition } = r;
+            const isLatest = !!latest && r.publishedAt === latest;
             const source = r.source && validateSourceUrl(r.source.url);
             return (
               <article
-                className="brief-card"
+                className={`brief-card${isLatest ? " latest-publication" : ""}`}
+                data-latest={isLatest || undefined}
                 key={r.key}
                 data-event-id={
                   article?.article.eventId ||
@@ -154,6 +157,11 @@ export function QuickNews({
                   article?.article.id
                 }
               >
+                {isLatest && (
+                  <span className="latest-publication-badge">
+                    Dernière publication
+                  </span>
+                )}
                 <p className="eyebrow">{r.theme}</p>
                 <h2>{r.title}</h2>
                 <p className="small-note">{editionDateTime(edition)}</p>

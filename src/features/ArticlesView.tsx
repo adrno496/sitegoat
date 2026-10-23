@@ -1,3 +1,7 @@
+import {
+  articlePublicationOrder,
+  latestPublicationDate,
+} from "../data/quickNews";
 import { DisplayFilters } from "./v9/preferences";
 import { PublicGoogleLink } from "./PublicGoogleLink";
 import { EventCard } from "./EventCard";
@@ -49,6 +53,17 @@ export function ArticlesView({
   ) => void;
 }) {
   const items = useMemo(() => indexArticles(editions), [editions]);
+  const latestArticles = useMemo(() => {
+    const dates = new Map(
+      items.map((item) => [item.key, articlePublicationOrder(item)]),
+    );
+    const latest = latestPublicationDate(dates.values());
+    return new Set(
+      items
+        .filter((item) => latest && dates.get(item.key) === latest)
+        .map((item) => item.key),
+    );
+  }, [items]);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
   const [group, setGroup] = useState("");
@@ -611,7 +626,15 @@ export function ArticlesView({
               </nav>
               <div className="articles-content">
                 {current ? (
-                  <article className="article-detail">
+                  <article
+                    className={`article-detail${latestArticles.has(current.key) ? " latest-publication" : ""}`}
+                    data-latest={latestArticles.has(current.key) || undefined}
+                  >
+                    {latestArticles.has(current.key) && (
+                      <span className="latest-publication-badge">
+                        Dernière publication
+                      </span>
+                    )}
                     <button className="text-button" onClick={back}>
                       <ArrowLeft size={17} />
                       Retour aux articles
@@ -813,6 +836,7 @@ export function ArticlesView({
                             <div key={item.key}>
                               <EventCard
                                 className="article-card"
+                                latest={latestArticles.has(item.key)}
                                 item={item.edition.unified.items.find(
                                   (i) => i.eventId === item.article.eventId,
                                 )!}
@@ -843,7 +867,18 @@ export function ArticlesView({
                               </details>
                             </div>
                           ) : (
-                            <article key={item.key} className="article-card">
+                            <article
+                              key={item.key}
+                              className={`article-card${latestArticles.has(item.key) ? " latest-publication" : ""}`}
+                              data-latest={
+                                latestArticles.has(item.key) || undefined
+                              }
+                            >
+                              {latestArticles.has(item.key) && (
+                                <span className="latest-publication-badge">
+                                  Dernière publication
+                                </span>
+                              )}
                               <p className="eyebrow">{item.article.category}</p>
                               <h2>
                                 <button
