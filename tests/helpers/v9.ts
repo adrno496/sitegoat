@@ -34,7 +34,7 @@ export function v9Fixture(
   );
   return { p, q, bytes };
 }
-export function interactiveV9Fixture() {
+export function interactiveV9Fixture(detached = false) {
   const { p, q } = v9Fixture();
   const json = (v: unknown) => JSON.stringify(v).replaceAll("<", "\\u003c");
   const bytes =
@@ -49,7 +49,7 @@ export function interactiveV9Fixture() {
   document.querySelectorAll('[data-panel]').forEach(b=>b.onclick=()=>document.querySelectorAll('.panel').forEach(s=>s.classList.toggle('active',s.id===b.dataset.panel)));
   for(const c of new Set(p.items.map(i=>i.category))){const o=el('option',c);o.value=c;$('categoryFilter').append(o)}
   function render(){ $('articlesList').replaceChildren();for(const i of p.items.filter(i=>(!$('categoryFilter').value||i.category===$('categoryFilter').value)&&i.title.includes($('searchInput').value))){const a=el('article');a.append(el('h3',i.title));const d=el('details');d.append(el('summary','Développer le résumé'),el('p',i.summary));const r=el('button','Lire le dossier complet');r.onclick=()=>{$('dialogTitle').textContent=i.title;$('dialogBody').textContent=i.detail;$('dialogSources').replaceChildren();for(const s of i.sourceRecords){const x=el('a',s.publisher);x.href=s.url;$('dialogSources').append(x)}$('articleDialog').showModal()};const g=el('button','Google');g.onclick=()=>window.open('https://www.google.com/search?q='+encodeURIComponent(i.publicResearchQuestion),'_blank');a.append(d,r,g);$('articlesList').append(a)}}render();$('searchInput').oninput=render;$('categoryFilter').onchange=render;$('closeDialog').onclick=()=>$('articleDialog').close();
-  for(const x of p.promptAssets){const a=el('article');const b=el('button','Télécharger .md');b.onclick=()=>{const u=URL.createObjectURL(new Blob([x.content],{type:'text/markdown'})),a=el('a');a.href=u;a.download=x.filename;document.body.append(a);a.click();a.remove()};a.append(b);$('promptsList').append(a)}
+  for(const x of p.promptAssets){const a=el('article');const b=el('button','Télécharger .md');b.onclick=()=>{const u=URL.createObjectURL(new Blob([x.content],{type:'text/markdown'})),a=el('a');a.href=u;a.download=x.filename;${detached ? '' : 'document.body.append(a);'}a.click();a.remove()};a.append(b);$('promptsList').append(a)}
   for(const x of q.items)$('briefList').append(el('article',x.title));})();</script></body></html>`);
   return { p, q, bytes };
 }
