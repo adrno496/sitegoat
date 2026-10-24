@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import handler from "../api/backup.mjs";
 import accessHandler from "../api/access.mjs";
+import sourcesHandler from "../api/sources.mjs";
 const cloudEnabled = process.env.JOURNAL360_ALLOW_CLOUD_LOCAL === "1";
 if (cloudEnabled && fs.existsSync(".env.local"))
   process.loadEnvFile(".env.local");
@@ -32,6 +33,8 @@ http
     if (req.url?.split("?")[0] === "/api/backup") return handler(req, res);
     if (req.url?.split("?")[0] === "/api/access")
       return accessHandler(req, res);
+    if (req.url?.split("?")[0] === "/api/sources")
+      return sourcesHandler(req, res);
     for (const header of headers) res.setHeader(header.key, header.value);
     let p;
     try {
