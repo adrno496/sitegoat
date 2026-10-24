@@ -254,12 +254,7 @@ export function DayView({
                   {issue}
                 </p>
               ))}
-            <p className="small-note">
-              Import {verifiedLabel(edition.importedAt)}
-              {edition.sourceVerifiedAt
-                ? ` · Vérification déclarée ${verifiedLabel(edition.sourceVerifiedAt)}`
-                : ""}
-            </p>
+            <p className="small-note">{verifiedLabel(edition.importedAt)}</p>
             <details>
               <summary>Empreinte de l’original</summary>
               <code className="hash-text">{edition.sha256}</code>

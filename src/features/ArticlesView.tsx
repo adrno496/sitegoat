@@ -424,7 +424,7 @@ export function ArticlesView({
                         }
                       >
                         <option value="">Tous les statuts</option>
-                        <option value="sourced">Sourcé (déclaré)</option>
+                        <option value="sourced">Sourcé</option>
                         <option value="unverified">Non vérifié</option>
                         <option value="hypothesis">Hypothèse</option>
                       </select>

@@ -68,7 +68,9 @@ export function EventCard({
               ? "Important"
               : "Contexte"}{" "}
         </p>
-        <div className="event-meta"><EditorialMetadata edition={edition} item={i} /></div>
+        <div className="event-meta">
+          <EditorialMetadata edition={edition} item={i} />
+        </div>
         {i.sourceRecords[0] && (
           <p className="small-note event-source">
             Source :{" "}
@@ -158,13 +160,7 @@ export function EventCard({
                 <p>{i.plain || "Non fourni"}</p>
                 <h5>En détail</h5>
                 <p>{i.detail || "Non fourni"}</p>
-                <p>
-                  Événement : {i.eventDate} · Publication : {i.publishedAt} ·
-                  Vérification : {i.verifiedAt || "Non renseignée"}
-                </p>
-                <p>
-                  État de preuve : {i.evidenceStatus}. {i.unknowns}
-                </p>
+                {i.unknowns && <p>{i.unknowns}</p>}
                 <details open={options.sources || undefined}>
                   <summary>Sources et provenance</summary>
                   {i.sourceRecords.map((s) => (

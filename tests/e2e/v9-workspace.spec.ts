@@ -556,14 +556,15 @@ test("V9 : onglet Actualité rapide, titres des articles automatiques, dates sim
     .getByRole("button", { name: "Retour aux articles", exact: true })
     .click();
   const card = page.locator(".articles-grid .event-card").first();
-  await expect(card.locator(".event-meta")).toContainText("Publié le");
-  await expect(card.locator(".editorial-metadata")).toContainText(
-    "Statut déclaré par le producteur",
+  const cardEventId = await card.getAttribute("data-event-id");
+  await expect(card.locator(".editorial-metadata time")).toHaveAttribute(
+    "datetime",
+    p.items.find((i) => i.eventId === cardEventId)!.publishedAt,
   );
-  await card.getByText("Édition et import", { exact: true }).click();
-  await expect(card.locator(".event-meta")).toContainText(
-    `Édition du ${new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeZone: "Europe/Paris" }).format(new Date(p.editionDate + "T12:00Z"))}`,
+  await expect(card.locator(".editorial-metadata")).not.toContainText(
+    "Publié le",
   );
+  await expect(card).not.toContainText("Statut déclaré par le producteur");
   await expect(card).not.toContainText("Première apparition :");
   await expect(card.locator(".event-proof")).toHaveCount(0);
   await nav(page, "Aujourd’hui");

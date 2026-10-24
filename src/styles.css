@@ -70,7 +70,7 @@ p {
 h1,
 h2,
 h3 {
-  font-weight: 400;
+  font-weight: 700;
 }
 h1,
 h2 {
@@ -3258,3 +3258,21 @@ a.secondary, a.primary { text-decoration: none; display: inline-flex; align-item
   font-weight: 700;
   line-height: 1.5;
 }
+
+/* Keep the existing reading layout; titles stand out without extra metadata. */
+.event-card h2, .event-card h3,
+.event-card .title-button,
+.article-detail h2, .article-toc button, .article-index-link,
+.brief-card h2, .collection-card .title-button,
+.edition-card h2, .edition-card h3 {
+  font-weight: 700;
+}
+.editorial-metadata { margin-bottom: .65rem; }
+
+.source-explorer form { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin-block: 20px; }
+.source-explorer form label { flex: 1 1 240px; min-width: 0; }
+.source-explorer form p { flex-basis: 100%; margin-bottom: 0; }
+.source-explorer select, .source-explorer input { width: 100%; min-width: 0; }
+.source-results { margin-top: 24px; }
+.source-results > article { margin-block: 14px; overflow-wrap: anywhere; }
+.source-results h3 { font-weight: 700; }

@@ -274,7 +274,7 @@ test("SG-08 : deux vrais onglets, ajouts simultanés et conflit sur le même ID"
   await other.close();
 });
 
-test("SG-01/09/10/14 : filtres accessibles, ordre réel des publications et preuve en lecture", async ({
+test("SG-01/09/14 : filtres accessibles, instants réels et date compacte en lecture", async ({
   page,
 }) => {
   const { auditPayload, auditHTML } = await import("../helpers/audit");
@@ -324,9 +324,17 @@ test("SG-01/09/10/14 : filtres accessibles, ordre réel des publications et preu
     .getByRole("button", { name: "Lire l’article complet", exact: true })
     .click();
   await expect(
-    page.locator(".article-detail .editorial-metadata"),
-  ).toContainText("Hypothèse");
+    page.locator(".article-detail .editorial-metadata time"),
+  ).toHaveAttribute("datetime", p.items[1].publishedAt);
   await expect(
     page.locator(".article-detail .editorial-metadata"),
-  ).toContainText("Publié le");
+  ).not.toContainText("Publié le");
+  await expect(page.locator(".article-detail")).not.toContainText(
+    "Statut déclaré par le producteur",
+  );
+  expect(
+    await page
+      .locator(".article-detail h2")
+      .evaluate((el) => Number(getComputedStyle(el).fontWeight)),
+  ).toBeGreaterThanOrEqual(700);
 });

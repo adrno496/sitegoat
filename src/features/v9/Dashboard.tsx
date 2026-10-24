@@ -84,11 +84,6 @@ export function Dashboard({
             ? `Édition du ${dateLabel(latest.date)}${latest.editionSlot ? " · " + latest.editionSlot : ""}`
             : "Votre veille commence avec une édition."}
         </p>
-        <p className="small-note">
-          {latest
-            ? `Dernière actualisation locale : ${new Intl.DateTimeFormat("fr-FR", { dateStyle: "short", timeStyle: "short", timeZone: "Europe/Paris" }).format(new Date(latest.importedAt))} (import, Europe/Paris). Les dates des faits figurent sur les cartes.`
-            : "Importez une seule édition cumulative pour retrouver les contenus qu’elle embarque."}
-        </p>
         <button
           className="primary"
           onClick={() => (latest ? onOpen(latest.id) : onImport())}
@@ -111,7 +106,11 @@ export function Dashboard({
       {d.homeHighlights && (
         <section>
           <div className="section-title">
-            <h2>{latest?.date === today ? "Les points essentiels aujourd’hui" : "Les points essentiels de la dernière édition"}</h2>
+            <h2>
+              {latest?.date === today
+                ? "Les points essentiels aujourd’hui"
+                : "Les points essentiels de la dernière édition"}
+            </h2>
             <button className="text-button" onClick={() => onToday()}>
               Toute la journée →
             </button>

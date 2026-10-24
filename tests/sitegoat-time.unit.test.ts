@@ -28,7 +28,7 @@ it("SG-14 : instants UTC, offsets, DST, égalités stables et invalides", () => 
   );
 });
 it("SG-01/10 : pas d’heure inventée, deux vocabulaires, champs manquants", async () => {
-  expect(editorialDate("2026-10-24")).toContain("heure non fournie");
+  expect(editorialDate("2026-10-24")).toBe("24 octobre 2026");
   expect(editorialDate("2026-10-24")).not.toContain("10:00");
   expect(editorialDate("bad")).toBe("inconnue");
   expect(editorialDate("2026-02-30")).toBe("inconnue");
@@ -53,10 +53,18 @@ it("SG-01/10 : pas d’heure inventée, deux vocabulaires, champs manquants", as
       item: { publishedAt: "2026-10-01", evidenceStatus: "hypothesis" },
     }),
   );
-  expect(html).toContain("Hypothèse");
-  expect(html).toContain("Publié le");
-  expect(html).toContain("Import du");
-  expect(html).toContain("Édition du");
+  expect(html).toMatch(/datetime="2026-10-01"/i);
+  expect(html).toContain("1 octobre 2026");
+  for (const clutter of [
+    "Hypothèse",
+    "Publié le",
+    "Import du",
+    "Édition du",
+    "Vérification",
+    "Europe/Paris",
+    "heure non fournie",
+  ])
+    expect(html).not.toContain(clutter);
 });
 
 it("R-04 : enums refusés avec chemin exact et diagnostic français sans réparation", async () => {
