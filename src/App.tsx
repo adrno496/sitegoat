@@ -1,3 +1,4 @@
+import { ReaderDefaults } from "./features/ReaderDefaults";
 import { QuickNews } from "./features/v9/QuickNews";
 import { hydrateQuickBriefs } from "./features/hydrateQuickBriefs";
 import {
@@ -1823,9 +1824,11 @@ function JournalApp() {
                         <Download size={21} /> Sauvegarde indépendante
                       </h2>
                       <p>
-                        Archive ZIP : originaux, notes, favoris, lectures,
+                        Journaux uniquement : originaux, notes, favoris, lectures,
                         versions et empreintes SHA-256. Sans session ni clé.
                       </p>
+                      <p>Exclus de cette archive : Le Futur (sauvegarde séparée), réglages, recherches récurrentes et sessions.</p>
+                      <button className="text-button" onClick={() => navigate("future")}>Ouvrir la sauvegarde Le Futur</button>
                       <p className="muted">
                         {lastBackup
                           ? `Dernier export : ${new Date(lastBackup).toLocaleString("fr-FR", { timeZone: "Europe/Paris" })}`
@@ -1838,7 +1841,7 @@ function JournalApp() {
                             run(localBackup, "Archive ZIP téléchargée.")
                           }
                         >
-                          Exporter tout
+                          Sauvegarder les journaux
                           <Download size={17} />
                         </button>
                         <button
@@ -1855,6 +1858,7 @@ function JournalApp() {
                         textes sont conservés.
                       </p>
                     </section>
+                    <ReaderDefaults />
                     <Diagnostics
                       value={
                         data.preferences.find(
