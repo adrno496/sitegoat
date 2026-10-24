@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, useState, Children, isValidElement, cloneElement, type ReactElement, type ReactNode } from "react";
 import { z } from "zod";
 export const V9_DISPLAY_KEY = "journal360.display.v9";
 const schema = z
@@ -83,7 +83,9 @@ export function DisplayProvider({ children }: { children: ReactNode }) {
 }
 export function DisplayFilters({ children }: { children: ReactNode }) {
   const { display } = useDisplay();
-  return display.filters ? <>{children}</> : null;
+  if (Children.count(children) === 1 && isValidElement(children) && children.type === "details")
+    return cloneElement(children as ReactElement<{ open?: boolean }>, display.filters ? { open: true } : {});
+  return <details open={display.filters || undefined}><summary>Filtres et tri</summary>{children}</details>;
 }
 export function DisplaySettings({ categories }: { categories: string[] }) {
   const { display: d, update, error } = useDisplay();
