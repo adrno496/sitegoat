@@ -64,9 +64,14 @@ for (const [name, type, width] of [
     const u = new URL(r.request().url());
     return u.origin === origin &&
       r.request().method() === "GET" &&
-      !u.pathname.startsWith("/api/")
+      (!u.pathname.startsWith("/api/") || u.pathname === "/api/sources")
       ? r.continue()
-      : r.abort();
+      : u.origin === origin &&
+          u.pathname === "/api/sources" &&
+          r.request().method() === "POST" &&
+          r.request().postData() === JSON.stringify({ provider: "ecb" })
+        ? r.continue()
+        : r.abort();
   });
   const nav = async (label) => {
     const reduce = page.getByRole("button", {
@@ -93,6 +98,13 @@ for (const [name, type, width] of [
         timeout: 30000,
       })
       .toBe(true);
+    phase = "public-api";
+    await nav("Actualité rapide");
+    await page.getByRole("tab", { name: "Sources", exact: true }).click();
+    await page.getByRole("button", { name: "Récupérer", exact: true }).click();
+    await expect(page.locator(".source-results article")).toHaveCount(6);
+    result.publicSourceRows = 6;
+    await nav("Accueil");
     phase = "import";
     await page.getByLabel("Fichiers HTML à importer").setInputFiles({
       name: "journal-v10.html",
@@ -283,6 +295,29 @@ for (const [name, type, width] of [
       Math.min(30, p.items.length),
     );
     result.offlineReload = true;
+    await nav("Actualité rapide");
+    await page.getByRole("tab", { name: "Sources", exact: true }).click();
+    await expect(page.locator(".source-results article")).toHaveCount(6);
+    result.publicSourceOfflineReload = true;
+    await nav("Aujourd’hui");
+    const metadata = page.locator(".event-card .editorial-metadata").first();
+    await expect(metadata.locator("time")).toHaveCount(1);
+    for (const clutter of [
+      "Publié le",
+      "Vérification déclarée",
+      "Fait du",
+      "Statut déclaré",
+      "Europe/Paris",
+      "heure non fournie",
+    ])
+      await expect(metadata).not.toContainText(clutter);
+    expect(
+      await page
+        .locator(".event-card .title-button")
+        .first()
+        .evaluate((el) => Number(getComputedStyle(el).fontWeight)),
+    ).toBeGreaterThanOrEqual(700);
+    result.compactDateAndBoldTitle = true;
     result.status = "PASS";
   } catch (e) {
     result.status = "FAIL";
@@ -294,7 +329,7 @@ for (const [name, type, width] of [
     await browser.close();
     results.push(result);
     await writeFile(
-      "audits/sitegoat/implementation-2026-10-24/preuves/production-v10.json",
+      "audits/sitegoat/implementation-2026-10-24/preuves/production-v10-followup.json",
       JSON.stringify(
         {
           origin,

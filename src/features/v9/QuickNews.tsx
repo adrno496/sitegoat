@@ -1,5 +1,6 @@
 import { editionDateTime } from "../eventPresentation";
 import { EditorialMetadata } from "../editorialPresentation";
+import { SourceExplorer } from "./SourceExplorer";
 import { RecurringSearches } from "./RecurringSearches";
 import { DisplayFilters } from "./preferences";
 import { useId, useMemo, useState } from "react";
@@ -12,11 +13,17 @@ import { validateSourceUrl } from "../sourceUrl";
 export function QuickNews({
   editions,
   onArticle,
+  accessToken,
+  onSettings,
 }: {
   editions: Edition[];
+  accessToken?: string;
+  onSettings?: () => void;
   onArticle?: (eventId: string, editionId: string) => void;
 }) {
-  const [panel, setPanel] = useState<"headlines" | "recurring">("headlines");
+  const [panel, setPanel] = useState<"headlines" | "recurring" | "sources">(
+    "headlines",
+  );
   const tabsId = useId();
   const rows = useMemo(() => indexQuickNews(editions), [editions]);
   const latest = latestPublicationDate(rows.map((r) => r.publishedAt));
@@ -50,6 +57,7 @@ export function QuickNews({
           [
             ["headlines", "Tous les titres"],
             ["recurring", "Récurrent"],
+            ["sources", "Sources"],
           ] as const
         ).map(([id, label], index) => (
           <button
@@ -67,14 +75,15 @@ export function QuickNews({
               )
                 return;
               event.preventDefault();
+              const ids = ["headlines", "recurring", "sources"] as const;
               const next =
-                event.key === "Home"
-                  ? "headlines"
-                  : event.key === "End"
-                    ? "recurring"
-                    : index === 0
-                      ? "recurring"
-                      : "headlines";
+                ids[
+                  event.key === "Home"
+                    ? 0
+                    : event.key === "End"
+                      ? 2
+                      : (index + (event.key === "ArrowRight" ? 1 : 2)) % 3
+                ];
               setPanel(next);
               document.getElementById(`${tabsId}-${next}-tab`)?.focus();
             }}
@@ -273,6 +282,17 @@ export function QuickNews({
         tabIndex={0}
       >
         <RecurringSearches themes={[...new Set(rows.map((r) => r.theme))]} />
+      </div>
+      <div
+        role="tabpanel"
+        id={`${tabsId}-sources`}
+        aria-labelledby={`${tabsId}-sources-tab`}
+        hidden={panel !== "sources"}
+        tabIndex={0}
+      >
+        {panel === "sources" && (
+          <SourceExplorer accessToken={accessToken} onSettings={onSettings} />
+        )}
       </div>
     </section>
   );

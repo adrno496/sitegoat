@@ -1187,7 +1187,12 @@ function JournalApp() {
           )}
           {data.ready && tab === "quick" && (
             <div hidden={!!current || !!selectedDay}>
-              <QuickNews editions={allEditions} onArticle={readArticle} />
+              <QuickNews
+                editions={allEditions}
+                onArticle={readArticle}
+                accessToken={session?.access_token}
+                onSettings={() => navigate("settings")}
+              />
             </div>
           )}
           {data.ready && tab === "future" && !current && !selectedDay && (
