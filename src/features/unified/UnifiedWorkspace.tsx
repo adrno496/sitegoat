@@ -1,3 +1,4 @@
+import { EditionFreshness, instantCompare } from "../editorialPresentation";
 import { latestPublicationDate } from "../../data/quickNews";
 import { DisplayFilters, useDisplay } from "../v9/preferences";
 import {
@@ -108,7 +109,7 @@ export default function UnifiedWorkspace({
         Number(new Date(b.publishedAt).toISOString() === latestPublishedAt) -
           Number(new Date(a.publishedAt).toISOString() === latestPublishedAt) ||
         (eventSort === "newest"
-          ? b.lastChangedAt.localeCompare(a.lastChangedAt)
+          ? instantCompare(b.lastChangedAt, a.lastChangedAt)
           : Number(display.favorites.includes(b.category)) -
               Number(display.favorites.includes(a.category)) ||
             importance[a.importance] - importance[b.importance]),
@@ -133,6 +134,7 @@ export default function UnifiedWorkspace({
           <span className="unified-badge">EXEMPLE SYNTHÉTIQUE</span>
         )}
       </header>
+      <EditionFreshness edition={current} />
       {!current && (
         <section className="empty-library">
           <h2>Votre première édition vous attend.</h2>

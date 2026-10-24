@@ -1,3 +1,4 @@
+import { EditionFreshness, useParisToday } from "../editorialPresentation";
 import { latestPublicationDate } from "../../data/quickNews";
 import type { Edition } from "../../data/model";
 import { dateLabel } from "../../data/model";
@@ -28,6 +29,7 @@ export function Dashboard({
   onToday: (panel?: string) => void;
   onImport: () => void;
 }) {
+  const today = useParisToday();
   const { display: d } = useDisplay();
   const latest = latestCurrent(editions),
     p = latest?.unified;
@@ -94,6 +96,7 @@ export function Dashboard({
           {latest ? "Lire la dernière édition" : "Importer une édition"}
         </button>
       </header>
+      <EditionFreshness edition={latest} />
       {resumeId && (
         <p>
           <button className="text-button" onClick={() => onOpen(resumeId)}>
@@ -108,7 +111,7 @@ export function Dashboard({
       {d.homeHighlights && (
         <section>
           <div className="section-title">
-            <h2>Les points essentiels aujourd’hui</h2>
+            <h2>{latest?.date === today ? "Les points essentiels aujourd’hui" : "Les points essentiels de la dernière édition"}</h2>
             <button className="text-button" onClick={() => onToday()}>
               Toute la journée →
             </button>

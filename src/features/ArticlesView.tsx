@@ -1,3 +1,4 @@
+import { EditorialMetadata, instantCompare } from "./editorialPresentation";
 import {
   articlePublicationOrder,
   latestPublicationDate,
@@ -244,15 +245,10 @@ export function ArticlesView({
       ];
     filtered.sort((a, b) => weight(a) - weight(b));
   } else if (sort === "published")
-    filtered.sort((a, b) =>
-      (
-        b.edition.unified?.items.find((i) => i.eventId === b.article.eventId)
-          ?.publishedAt || ""
-      ).localeCompare(
-        a.edition.unified?.items.find((i) => i.eventId === a.article.eventId)
-          ?.publishedAt || "",
-      ),
-    );
+    filtered.sort((a, b) => instantCompare(
+      b.edition.unified?.items.find(i => i.eventId === b.article.eventId)?.publishedAt,
+      a.edition.unified?.items.find(i => i.eventId === a.article.eventId)?.publishedAt,
+    ));
   else if (sort === "oldest") filtered.reverse();
   if (layout === "themes" && sort === "date")
     filtered.sort(
@@ -276,20 +272,11 @@ export function ArticlesView({
       ),
     );
   if (layout === "timeline")
-    filtered.sort((a, b) =>
-      (
-        b.edition.unified?.items.find((i) => i.eventId === b.article.eventId)
-          ?.publishedAt ||
-        b.edition.date ||
-        ""
-      ).localeCompare(
-        a.edition.unified?.items.find((i) => i.eventId === a.article.eventId)
-          ?.publishedAt ||
-          a.edition.date ||
-          a.edition.date ||
-          "",
-      ),
-    );
+    filtered.sort((a, b) => instantCompare(
+      b.edition.unified?.items.find(i => i.eventId === b.article.eventId)?.publishedAt || b.edition.date,
+      a.edition.unified?.items.find(i => i.eventId === a.article.eventId)?.publishedAt || a.edition.date,
+    ));
+
   const current = filtered.find((i) => i.key === selected);
   const currentItem = current?.edition.unified?.items.find(
     (i) => i.eventId === current.article.eventId,
@@ -651,6 +638,7 @@ export function ArticlesView({
                       Dans {current.edition.title}
                       {current.edition.archived ? " · Archive" : ""}
                     </p>
+                    <EditorialMetadata edition={current.edition} item={currentItem} />
                     <PublicGoogleLink
                       question={currentItem?.publicResearchQuestion}
                     />

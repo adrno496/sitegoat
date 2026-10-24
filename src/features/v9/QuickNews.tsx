@@ -1,3 +1,4 @@
+import { EditorialMetadata } from "../editorialPresentation";
 import { RecurringSearches } from "./RecurringSearches";
 import { DisplayFilters } from "./preferences";
 import { useId, useMemo, useState } from "react";
@@ -5,7 +6,6 @@ import type { Edition } from "../../data/model";
 import { indexQuickNews, latestPublicationDate } from "../../data/quickNews";
 import { normalizeArticleSearch } from "../../data/articles";
 import { PublicGoogleLink } from "../PublicGoogleLink";
-import { editionDateTime } from "../eventPresentation";
 import { validateSourceUrl } from "../sourceUrl";
 
 export function QuickNews({
@@ -164,7 +164,7 @@ export function QuickNews({
                 )}
                 <p className="eyebrow">{r.theme}</p>
                 <h2>{r.title}</h2>
-                <p className="small-note">{editionDateTime(edition)}</p>
+                <EditorialMetadata edition={edition} item={article ? edition.unified?.items.find(i => i.eventId === article.article.eventId) : brief?.item} brief={!article} />
                 <div className="settings-actions">
                   {article && onArticle && (
                     <button

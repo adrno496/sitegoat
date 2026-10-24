@@ -1,9 +1,10 @@
+import { EditorialMetadata } from "./editorialPresentation";
 import { useDisplay } from "./v9/preferences";
 import { PublicGoogleLink } from "./PublicGoogleLink";
 import { useId, useLayoutEffect, useRef, useState } from "react";
 import type { Edition } from "../data/model";
 import type { UnifiedEdition } from "../data/unified";
-import { editionDateTime, summaryPreview } from "./eventPresentation";
+import { summaryPreview } from "./eventPresentation";
 import { PromptAccess } from "./unified/PromptAccess";
 import { useInterface } from "./interfacePreferences";
 import { GoogleAiDialog } from "./GoogleAiDialog";
@@ -67,7 +68,7 @@ export function EventCard({
               ? "Important"
               : "Contexte"}{" "}
         </p>
-        <p className="event-meta">{editionDateTime(edition)}</p>
+        <div className="event-meta"><EditorialMetadata edition={edition} item={i} /></div>
         {i.sourceRecords[0] && (
           <p className="small-note event-source">
             Source :{" "}
