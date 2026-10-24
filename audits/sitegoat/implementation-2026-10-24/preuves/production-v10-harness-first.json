@@ -1,0 +1,66 @@
+{
+  "origin": "https://sitegoat.vercel.app",
+  "codeCommit": "1a06ce79942a374db56e392786780bbca56d00e9",
+  "results": [
+    {
+      "browser": "chromium",
+      "version": "156.0.8078.4",
+      "sourceBytes": 421938,
+      "sourceSha256": "c1135dddfab0cad94a93602296e6f9fd77327966792ece93e23b77ce6b906828",
+      "sourceArticles": 34,
+      "sourceBriefs": 54,
+      "sourcePrompts": 11,
+      "cloudTransfers": 0,
+      "stored": {
+        "editions": 1,
+        "articles": 34,
+        "briefs": 54,
+        "prompts": 11
+      },
+      "native": [],
+      "status": "FAIL",
+      "phase": "native-prompts",
+      "error": "TimeoutError: locator.click: Timeout 30000ms exceeded."
+    },
+    {
+      "browser": "webkit",
+      "version": "27.2",
+      "sourceBytes": 421938,
+      "sourceSha256": "c1135dddfab0cad94a93602296e6f9fd77327966792ece93e23b77ce6b906828",
+      "sourceArticles": 34,
+      "sourceBriefs": 54,
+      "sourcePrompts": 11,
+      "cloudTransfers": 0,
+      "stored": {
+        "editions": 1,
+        "articles": 34,
+        "briefs": 54,
+        "prompts": 11
+      },
+      "native": [],
+      "status": "FAIL",
+      "phase": "native-prompts",
+      "error": "TimeoutError: locator.click: Timeout 30000ms exceeded."
+    },
+    {
+      "browser": "chromium-mobile",
+      "version": "156.0.8078.4",
+      "sourceBytes": 421938,
+      "sourceSha256": "c1135dddfab0cad94a93602296e6f9fd77327966792ece93e23b77ce6b906828",
+      "sourceArticles": 34,
+      "sourceBriefs": 54,
+      "sourcePrompts": 11,
+      "cloudTransfers": 0,
+      "stored": {
+        "editions": 1,
+        "articles": 34,
+        "briefs": 54,
+        "prompts": 11
+      },
+      "native": [],
+      "status": "FAIL",
+      "phase": "native-prompts",
+      "error": "TimeoutError: locator.click: Timeout 30000ms exceeded."
+    }
+  ]
+}

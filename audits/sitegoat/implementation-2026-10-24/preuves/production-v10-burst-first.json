@@ -1,0 +1,237 @@
+{
+  "origin": "https://sitegoat.vercel.app",
+  "codeCommit": "1a06ce79942a374db56e392786780bbca56d00e9",
+  "results": [
+    {
+      "browser": "chromium",
+      "version": "156.0.8078.4",
+      "sourceBytes": 421938,
+      "sourceSha256": "c1135dddfab0cad94a93602296e6f9fd77327966792ece93e23b77ce6b906828",
+      "sourceArticles": 34,
+      "sourceBriefs": 54,
+      "sourcePrompts": 11,
+      "cloudTransfers": 0,
+      "stored": {
+        "editions": 1,
+        "articles": 34,
+        "briefs": 54,
+        "prompts": 11
+      },
+      "native": [
+        {
+          "promptId": "prompt.agent.boundaries",
+          "bytes": 2391,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.php.inventory",
+          "bytes": 1671,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.formal.scoping",
+          "bytes": 1538,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.dependencies.trust",
+          "bytes": 4724,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.web.evidence",
+          "bytes": 3242,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.sitegoat.contract.20261024",
+          "bytes": 3153,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.sentinel.passive.20261024",
+          "bytes": 2742,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.axdia.editorial.20261024",
+          "bytes": 2806,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.sitegoat.freshness.20261024",
+          "bytes": 3783,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.axdia.google.cards.20261024",
+          "bytes": 3218,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.robotics.embodied.review",
+          "bytes": 2887,
+          "shaValid": true
+        }
+      ],
+      "originalExact": true,
+      "status": "FAIL",
+      "phase": "fallback",
+      "error": "TimeoutError: page.waitForEvent: Timeout 30000ms exceeded while waiting for event \"download\""
+    },
+    {
+      "browser": "webkit",
+      "version": "27.2",
+      "sourceBytes": 421938,
+      "sourceSha256": "c1135dddfab0cad94a93602296e6f9fd77327966792ece93e23b77ce6b906828",
+      "sourceArticles": 34,
+      "sourceBriefs": 54,
+      "sourcePrompts": 11,
+      "cloudTransfers": 0,
+      "stored": {
+        "editions": 1,
+        "articles": 34,
+        "briefs": 54,
+        "prompts": 11
+      },
+      "native": [
+        {
+          "promptId": "prompt.agent.boundaries",
+          "bytes": 2391,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.php.inventory",
+          "bytes": 1671,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.formal.scoping",
+          "bytes": 1538,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.dependencies.trust",
+          "bytes": 4724,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.web.evidence",
+          "bytes": 3242,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.sitegoat.contract.20261024",
+          "bytes": 3153,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.sentinel.passive.20261024",
+          "bytes": 2742,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.axdia.editorial.20261024",
+          "bytes": 2806,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.sitegoat.freshness.20261024",
+          "bytes": 3783,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.axdia.google.cards.20261024",
+          "bytes": 3218,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.robotics.embodied.review",
+          "bytes": 2887,
+          "shaValid": true
+        }
+      ],
+      "originalExact": true,
+      "fallbackExact": 11,
+      "offlineReload": true,
+      "status": "PASS"
+    },
+    {
+      "browser": "chromium-mobile",
+      "version": "156.0.8078.4",
+      "sourceBytes": 421938,
+      "sourceSha256": "c1135dddfab0cad94a93602296e6f9fd77327966792ece93e23b77ce6b906828",
+      "sourceArticles": 34,
+      "sourceBriefs": 54,
+      "sourcePrompts": 11,
+      "cloudTransfers": 0,
+      "stored": {
+        "editions": 1,
+        "articles": 34,
+        "briefs": 54,
+        "prompts": 11
+      },
+      "native": [
+        {
+          "promptId": "prompt.agent.boundaries",
+          "bytes": 2391,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.php.inventory",
+          "bytes": 1671,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.formal.scoping",
+          "bytes": 1538,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.dependencies.trust",
+          "bytes": 4724,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.web.evidence",
+          "bytes": 3242,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.sitegoat.contract.20261024",
+          "bytes": 3153,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.sentinel.passive.20261024",
+          "bytes": 2742,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.axdia.editorial.20261024",
+          "bytes": 2806,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.sitegoat.freshness.20261024",
+          "bytes": 3783,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.axdia.google.cards.20261024",
+          "bytes": 3218,
+          "shaValid": true
+        },
+        {
+          "promptId": "prompt.robotics.embodied.review",
+          "bytes": 2887,
+          "shaValid": true
+        }
+      ],
+      "originalExact": true,
+      "fallbackExact": 11,
+      "offlineReload": true,
+      "status": "PASS"
+    }
+  ]
+}

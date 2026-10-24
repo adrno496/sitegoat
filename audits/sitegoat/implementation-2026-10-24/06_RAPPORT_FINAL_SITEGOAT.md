@@ -1,4 +1,4 @@
-# SITEGOAT — BILAN LOCAL
+# SITEGOAT — BILAN DES CORRECTIFS ET DE LA PUBLICATION
 
 HEAD initial : `987b5637707ef0af05bb1900fa8e187a96848246`. Branche isolée : `codex/sitegoat-audit-v4-local`. Worktree : `/Users/dreano/Downloads/veille/sitegoat-implementation`. Le dépôt d’origine et ses audits sont conservés. HEAD de publication / résultat production : suivis dans le rapport 08 et les preuves de publication.
 
@@ -97,8 +97,8 @@ tests/sitegoat-time.unit.test.ts
 tests/support/block-network.mjs
 ```
 
-Rollback non destructif : conserver les trois sauvegardes et tous les segments hors navigateur. Revenir au commit initial dans un **autre** worktree sur un profil de test, sans reset/clean ni suppression de base. Pour retirer le candidat sur main, préparer des reverts en ordre inverse sur branche dédiée, traiter les helpers partagés comme un ensemble, rejouer check et tests de restauration avant une publication séparée. Les commits intermédiaires ne sont pas tous des releases autonomes ; le rollback vérifié ici concerne le candidat complet et les formats, pas chaque commit isolé. Aucun effacement de notes, journaux ou préférences n’est une étape de rollback. Voir 02 pour les limites des clients anciens.
+Rollback non destructif : conserver les trois sauvegardes et tous les segments hors navigateur. Revenir au commit initial dans un **autre** worktree sur un profil de test, sans reset/clean ni suppression de base. Pour retirer le candidat sur main, préparer des reverts en ordre inverse sur branche dédiée, traiter les helpers partagés comme un ensemble, rejouer check et tests de restauration avant une publication séparée. Les commits intermédiaires ne sont pas tous des releases autonomes ; la compatibilité des formats est couverte par les tests, mais la séquence Git de reverts n’a pas été exécutée. Un retour au code initial réintroduirait les défauts initiaux et les échecs E2E de baseline. Aucun effacement de notes, journaux ou préférences n’est une étape de rollback. Voir 02 pour les limites des clients anciens.
 
-Mandat de publication : initialement interdit, puis **explicitement autorisé par l’utilisateur** en cours de mission pour main et le test V10 après production. Aucun force-push ou migration réelle autorisé. À ce stade des preuves locales : push/production encore en attente, merge NON. Le rapport 08 sera complété après ces actions.
+Mandat de publication : initialement interdit, puis **explicitement autorisé par l’utilisateur** en cours de mission pour main et le test V10 après production. Aucun force-push ou migration réelle autorisé. Push non forcé main réussi au commit `1a06ce7`, déploiement Vercel vérifié par SHA du bundle. Le V10 est testé ensuite en production : 3 PASS, 34 articles/54 brèves/11 prompts, 11 natifs et 11 replis exacts par configuration, original intact et hors ligne. Aucun merge supplémentaire, force-push ni migration de données réelles. Voir 08 et ses reçus pour les essais intermédiaires et limites de cadence Chromium.
 
 État local : **PASS SUR PÉRIMÈTRE TESTÉ**, avec **PARTIAL pour les très gros volumes/mémoire mobile**. Le rapport ne revendique ni complétude universelle ni sécurité totale.

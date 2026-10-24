@@ -23,7 +23,11 @@ for (const [name, type, width] of [
   ["chromium", chromium, 1440],
   ["webkit", webkit, 390],
   ["chromium-mobile", chromium, 360],
-]) {
+].filter(
+  ([name]) =>
+    !process.env.SITEGOAT_TEST_BROWSERS ||
+    process.env.SITEGOAT_TEST_BROWSERS.split(",").includes(name),
+)) {
   const browser = await type.launch({ headless: true }),
     context = await browser.newContext({
       viewport: { width, height: 900 },
@@ -41,6 +45,20 @@ for (const [name, type, width] of [
     sourceBriefs: q?.items?.length || 0,
     sourcePrompts: p?.promptAssets?.length || 0,
     cloudTransfers: 0,
+    downloadIntervalMs: Number(
+      process.env.SITEGOAT_DOWNLOAD_INTERVAL_MS ?? 1100,
+    ),
+  };
+  result.downloadThrottleWarnings = 0;
+  page.on("console", (message) => {
+    if (/throttl.*download|download.*throttl/i.test(message.text()))
+      result.downloadThrottleWarnings++;
+  });
+  const pace = async () => {
+    if (result.downloadIntervalMs)
+      await new Promise((resolve) =>
+        setTimeout(resolve, result.downloadIntervalMs),
+      );
   };
   await context.route("**/*", (r) => {
     const u = new URL(r.request().url());
@@ -76,13 +94,11 @@ for (const [name, type, width] of [
       })
       .toBe(true);
     phase = "import";
-    await page
-      .getByLabel("Fichiers HTML à importer")
-      .setInputFiles({
-        name: "journal-v10.html",
-        mimeType: "text/html",
-        buffer: raw,
-      });
+    await page.getByLabel("Fichiers HTML à importer").setInputFiles({
+      name: "journal-v10.html",
+      mimeType: "text/html",
+      buffer: raw,
+    });
     await expect(
       page.getByRole("dialog", { name: "Vérifier l’import", exact: true }),
     ).toBeVisible();
@@ -158,12 +174,31 @@ for (const [name, type, width] of [
       "allow-scripts",
     );
     const f = page.frameLocator(".edition-frame");
+    phase = "native-navigation";
+    result.navigationAnchors = 0;
+    for (const link of document.querySelectorAll('nav a[href^="#"]')) {
+      const href = link.getAttribute("href");
+      await f.locator(`nav a[href="${href}"]`).click();
+      await expect
+        .poll(() => f.locator("body").evaluate(() => location.hash))
+        .toBe(href);
+      result.navigationAnchors++;
+    }
+    const sourceArticles = document.querySelectorAll("details.article").length;
+    if (sourceArticles) {
+      await expect(f.locator("details.article")).toHaveCount(sourceArticles);
+      const article = f.locator("details.article").first();
+      if ((await article.getAttribute("open")) === null)
+        await article.locator(":scope > summary").click();
+      await expect(article).toHaveAttribute("open", "");
+      result.nativeAccordion = true;
+    }
     result.native = [];
     phase = "native-prompts";
     for (const prompt of p?.promptAssets || []) {
       let button = f
         .locator(
-          `button[data-prompt="${prompt.promptId}"],button[data-prompt-id="${prompt.promptId}"]`,
+          `button[data-prompt="${prompt.promptId}"],button[data-prompt-id="${prompt.promptId}"],button[data-filename="${prompt.filename}"]`,
         )
         .first();
       if (!(await button.isVisible())) {
@@ -172,6 +207,13 @@ for (const [name, type, width] of [
           .first();
         if (await menu.isVisible()) await menu.click();
       }
+      const details = button.locator("xpath=ancestor::details[1]");
+      if (
+        (await details.count()) &&
+        (await details.getAttribute("open")) === null
+      )
+        await details.locator(":scope > summary").click();
+      await pace();
       await button.click();
       const confirm = page.getByRole("dialog", {
         name: "Action du document original",
@@ -215,7 +257,10 @@ for (const [name, type, width] of [
       .click();
     await w.locator(".unified-result").first().click();
     await expect(w.locator(".prompt-card")).toHaveCount(p.promptAssets.length);
+    result.fallback = [];
     for (const [n, prompt] of p.promptAssets.entries()) {
+      phase = `fallback-${n + 1}`;
+      await pace();
       const event = page.waitForEvent("download");
       await w
         .locator(".prompt-card")
@@ -228,6 +273,7 @@ for (const [name, type, width] of [
       expect(
         (await readFile(await (await event).path())).toString("utf8"),
       ).toBe(prompt.content);
+      result.fallback.push({ promptId: prompt.promptId, exact: true });
     }
     result.fallbackExact = p.promptAssets.length;
     phase = "offline-reload";

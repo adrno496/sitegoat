@@ -53,7 +53,7 @@ Depuis 2.0.3, l’affichage courant est calculé par date éditoriale pour tous 
 
 ## Cartographie du candidat local — audit du 24 octobre 2026
 
-Racine de travail : `/Users/dreano/Downloads/veille/sitegoat-implementation` ; dépôt d’origine conservé dans `/Users/dreano/Downloads/veille/veille`. Branche dédiée `codex/sitegoat-audit-v4-local`. Aucune publication.
+Racine de travail : `/Users/dreano/Downloads/veille/sitegoat-implementation` ; dépôt d’origine conservé dans `/Users/dreano/Downloads/veille/veille`. Branche dédiée `codex/sitegoat-audit-v4-local`. Publication main/Vercel et preuves V10 : voir le [rapport 08](audits/sitegoat/implementation-2026-10-24/08_PUBLICATION_ET_TEST_V10.md).
 
 - Import UTF-8 inerte → schémas V7 et brèves V9 distincts → transaction `journal360-private` v4. Originaux jamais modifiés.
 - Reader → copie d’affichage opaque → pont v2 lié à WindowProxy, hash d’édition, révision, session et requestId. La confirmation du parent décide du téléchargement ; les permissions restent `allow-scripts` uniquement après choix explicite.

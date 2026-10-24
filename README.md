@@ -1,6 +1,6 @@
 # Journal 360 Mobile
 
-Candidat local issu de l’audit du 24 octobre 2026. Branche `codex/sitegoat-audit-v4-local`, worktree `/Users/dreano/Downloads/veille/sitegoat-implementation`, référence initiale `987b563`. Le mandat complémentaire autorise le push non forcé sur main puis le test V10 en production après validation locale ; consulter les preuves de publication avant d’assimiler le site public à ce candidat. [Bilan local](audits/sitegoat/implementation-2026-10-24/06_RAPPORT_FINAL_SITEGOAT.md).
+Correctifs issus de l’audit du 24 octobre 2026. Branche `codex/sitegoat-audit-v4-local`, worktree `/Users/dreano/Downloads/veille/sitegoat-implementation`, référence initiale `987b563`. Le mandat complémentaire de push main a été exécuté : code `1a06ce7` publié sur Vercel et V10 validé ensuite dans trois profils vierges, hors ligne. [Preuves de production et limites](audits/sitegoat/implementation-2026-10-24/08_PUBLICATION_ET_TEST_V10.md). [Bilan local](audits/sitegoat/implementation-2026-10-24/06_RAPPORT_FINAL_SITEGOAT.md).
 
 Une bibliothèque personnelle de journaux HTML, en français, installable comme PWA. Les éditions sont importées manuellement ; aucun contenu privé n’est livré dans le site. Les deux éditions proposées pour découvrir l’application sont **entièrement fictives**.
 

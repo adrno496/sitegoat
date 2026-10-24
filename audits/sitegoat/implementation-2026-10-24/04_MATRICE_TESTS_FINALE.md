@@ -7,7 +7,7 @@ Environnement : macOS arm64 / Apple M4, Node 24.21.0, npm 11.19.0, Playwright 1.
 | Baseline lint / build / unitaires | PASS ; 333 PASS, 0 FAIL, 1 skip | baseline-lint/build/unit.log | Dépendances initiales partagées en lecture seule |
 | Baseline E2E 272 cas | 243 PASS, 28 FAIL, 1 skip, 0 flaky | baseline-e2e-summary.json | 27 historiques + une collision de traces du premier harness ; replay isolé : 3 PASS |
 | `npm run check` final | Lint, build, 345 unitaires PASS, 0 FAIL, 1 skip ; E2E 289 PASS, 0 FAIL, 1 skip, 0 flaky | check-final.log ; final-e2e-summary.json | 3 projets : Chromium/WebKit/Chromium mobile émulé ; retries 0 ; pas de certification de flakiness générale |
-| `npm run typecheck` et lint après ajout des outils manuels | PASS, aucun diagnostic | typecheck-final.log ; lint-final.log | Les scripts de test V10 n’ont été vérifiés syntaxiquement qu’avant publication |
+| `npm run typecheck` et lint après ajout des outils manuels | PASS, aucun diagnostic | typecheck-final.log ; lint-final.log | Contrôle syntaxique prépublication ; exécution V10 après publication dans 08 |
 | HTML réel de référence, parser + roundtrip | 2 PASS, 0 FAIL, 0 skip | real-and-performance-final.log ; real-local.json | UTF-8 282997 octets, SHA exact, 19 articles/35 brèves/5 prompts/35 titres ; 3 réimports, un original |
 | Boutons du vrai HTML V9, offline | 3 PASS ; chaque configuration vérifie 5 natifs +5 replis exacts, original intact et reload19 | real-browser-final.log ; real-browser-*.json | Ces preuves concernent le V9 exact, pas un fichier V10 supposé équivalent |
 | Assistant personnel, véritables profils vierges | 3 PASS, 0 FAIL, 0 skip | personal-browser-complete.log | Journaux/notes/états, Futur, recherches, affichage/interface/thème ; actions séparées, pas d’atomicité interbases |
@@ -16,7 +16,7 @@ Environnement : macOS arm64 / Apple M4, Node 24.21.0, npm 11.19.0, Playwright 1.
 | `npm run test:performance` | 4 PASS, 0 FAIL, 0 skip | performance-suite.log ; performance-v6/future.json | Node/jsdom/fake-indexeddb ; mesures RSS aux checkpoints, pas pic mémoire mobile |
 | Corruption à longueur constante ; projection ; concurrence ; atomicité ; parent ; sandbox | 6 mutants détectés, chacun exit1 attendu | final-security-mutants.json ; mutant-*.log | Copies jetables distinctes, produit jamais neutralisé |
 | Audit dépendances final | 0 avis applicables remontés | dependencies-final.json ; npm-ci.log | Uniquement les deux transitives dev corrigées ; aucune garantie de vulnérabilités inconnues |
-| Nouvel HTML V10 en production | À exécuter après push autorisé | 08_PUBLICATION_ET_TEST_V10.md | Aucune validation applicative V10 pré-publication revendiquée |
+| Nouvel HTML V10, après push et production vérifiée | 3 PASS ; 34 articles /54 brèves /11 prompts ; 11 natifs +11 replis exacts chacun ; original identique, offline reload | production-v10.json ; rapport 08 | Cadence 1100 ms ; rafale Chromium peut être bloquée ; aucun appareil physique |
 | Cloud distant / téléphones physiques / lecteur d’écran / zoom natif 200% | NON TESTÉ | Checklist 07 | Tests mocks, émulation et zoom CSS ne les remplacent pas |
 
 Le skip unitaire historique est `tests/v9-contract.unit.test.ts` : fichier réel du 22 et empreinte conditionnels, non fourni au chemin attendu. Les tests locaux dédiés du V9 du 24 ne réutilisent pas ce skip. Le skip E2E est : [{"title": "tactile Chromium réel : le défilement du HTML reste libre et le glissement au bord revient", "file": "v6-clean-reader.spec.ts", "project": "webkit"}]. Aucun nouveau skip et aucun test supprimé.
