@@ -26,3 +26,8 @@ Tests officiels ajoutés : 12 cas unitaires et 6 scénarios E2E ×3 projets. Les
 Évolutions d’assertions : navigation mobile 11→12 avec présence d’Actualité rapide ; date brute d’édition remplacée par publication/preuve/édition contextualisées ; mode sûr choisi explicitement et testé séparément sur profil neuf ; volets ouverts par l’interface ; recherche modifiée attendue avant reload ; quota = brouillon conservé sans faux succès. Les comparaisons de restauration se font par identité et octets, pas par ordre de tableau ou prototype de realm.
 
 La première passe globale intermédiaire interrompue a révélé des régressions réelles et des préconditions obsolètes ; elle reste dans check-first-full.log et n’est pas revendiquée verte. Seule la passe figée ci-dessus constitue la conclusion globale.
+
+
+## Complément utilisateur 09
+
+Affichage compact et API : `check-followup-final.log` = lint/build, 360 unitaires PASS/1 skip, 292 E2E PASS/1 skip. Puis restriction serveur au compte propriétaire : `followup-lint-latest.log`, `followup-typecheck-latest.log` PASS et `followup-unit-latest.log` **361 PASS/1 skip**, aucun FAIL. Bundle navigateur identique, aucun E2E supprimé. `followup-e2e-summary.json` : zéro unexpected/flaky, retries0. Tests Sources de mocks isolés du service worker ; vrai offline reload API+V10 vérifié séparément en production dans 09. Ne pas compter le rouge volontaire `source-owner-red.log` parmi les échecs finaux. Les captures `ui-compact-390/1440.png` sont synthétiques, sans journal utilisateur.

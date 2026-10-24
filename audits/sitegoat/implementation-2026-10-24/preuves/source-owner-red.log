@@ -1,0 +1,33 @@
+
+ RUN  v5.0.4 /Users/dreano/Downloads/veille/sitegoat-implementation
+
+ ❯ tests/sitegoat-sources.unit.test.ts (16 tests | 1 failed | 15 skipped) 29ms
+   × Sources : une session valide d’un autre compte ne donne jamais accès aux clés 28ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/sitegoat-sources.unit.test.ts > Sources : une session valide d’un autre compte ne donne jamais accès aux clés
+AssertionError: expected 200 to be 401 // Object.is equality
+
+- Expected
++ Received
+
+- 401
++ 200
+
+ ❯ tests/sitegoat-sources.unit.test.ts:289:112
+    287|   const handler = createSourcesHandler({env: {...env, SUPABASE_URL: "h…
+    288|   getUser.mockResolvedValue({data: {user: {id: "other", email: "other@…
+    289|   expect((await call(handler, {provider: "brave", query: "robotique"},…
+       |                                                                                                                ^
+    290|   expect(request).not.toHaveBeenCalled();
+    291|   getUser.mockResolvedValue({data: {user: {id: "owner", email: "owner@…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 15 skipped (16)
+   Start at  21:07:34
+   Duration  241ms (transform 35%, setup 26%, tests 24%, import 12%, worker 3%)
+

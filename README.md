@@ -170,3 +170,12 @@ Les exports d’articles **Markdown** et **lecture HTML assainie** sont des copi
 - HTML réel facultatif local : définir `SITEGOAT_AUDIT_HTML` et `SITEGOAT_EXAMPLE_DIR`, puis `npx vitest run --config vitest.sitegoat-local.config.ts` et `npx playwright test --config playwright.sitegoat-real.config.ts`. Aucun original n’est incorporé au dépôt.
 
 Le retour au code précédent se fait dans un autre worktree au commit initial, sans suppression de profil ni de données. Conserver les exports et tous les segments ; restaurer/tester d’abord sur profil vierge. [Compatibilité et rollback](audits/sitegoat/implementation-2026-10-24/02_PLAN_MIGRATIONS_SAUVEGARDES_ROLLBACK.md). Les anciennes copies `journal360-pwa`, `journal360-reader-release`, `journal360-v6-worktree` restent des références historiques ; elles n’ont pas été modifiées.
+
+
+## Récupération facultative de sources
+
+Dans **Actualité rapide → Sources**, choisir une source puis **Récupérer**. La liste de vos titres reste la vue par défaut. BCE, CISA et les versions publiques VS Code/Node/React/Ollama fonctionnent sans clé. Brave, Tavily et Exa utilisent des clés **côté serveur**, la connexion habituelle de votre bibliothèque et uniquement la recherche publique que vous saisissez. Aucune lecture de journal ne déclenche une recherche distante.
+
+Les dix récupérations les plus récentes restent lisibles hors ligne ; ce cache public est distinct des sauvegardes personnelles et n’en modifie aucun original. Les réponses ne deviennent pas automatiquement des articles de votre bibliothèque. Les requêtes sont manuelles, bornées et peuvent consommer le quota du moteur choisi. Aucune clé `VITE_` ; les variables serveur figurent vides dans `.env.example`. [Décisions, tests, limites et rollback du complément](audits/sitegoat/implementation-2026-10-24/09_AFFICHAGE_COMPACT_ET_SOURCES_API.md).
+
+L’affichage courant garde une date/heure compacte et des titres gras. Les détails de vérification restent dans les données et exports, conformément à la demande d’alléger les cartes.

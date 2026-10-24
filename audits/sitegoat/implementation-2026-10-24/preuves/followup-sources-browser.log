@@ -1,0 +1,18 @@
+[WebServer] (node:36178) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:36179) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:36183) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/v9-sources.spec.ts:6:1 › Sources : récupération explicite, aucun journal envoyé, cache hors ligne et réponse inerte (839ms)
+(node:36192) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [webkit] › tests/e2e/v9-sources.spec.ts:6:1 › Sources : récupération explicite, aucun journal envoyé, cache hors ligne et réponse inerte (1.6s)
+(node:36211) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [chromium-mobile] › tests/e2e/v9-sources.spec.ts:6:1 › Sources : récupération explicite, aucun journal envoyé, cache hors ligne et réponse inerte (843ms)
+
+  3 passed (5.5s)

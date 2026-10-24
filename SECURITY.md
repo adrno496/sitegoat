@@ -63,3 +63,10 @@ Le pont de téléchargement v2 ne modifie que le srcdoc. Il prend aussi en charg
 La restauration contrôle les projections V7 depuis l’original vérifié, séparément du titre personnel et des notes. Pour les HTML historiques sans contrat unifié reconnu, les anciennes projections ne sont pas certifiées par reconstruction ; SHA et contrats historiques restent appliqués. Les inventaires de segments sont des contrôles d’intégrité, pas une signature d’auteur.
 
 L’assistant personnel ne promet pas une transaction entre IndexedDB et localStorage. Chaque espace et chaque type de réglage demandent une action distincte ; les conflits de recherches sont conservés. Les anciens clients sans verrou ne doivent pas écrire simultanément avec ce candidat. Aucun test cloud réel ni profil personnel n’a été exécuté.
+
+
+## Sources en ligne facultatives
+
+Les clés Brave/Tavily/Exa autorisées par le propriétaire sont des variables serveur sensibles ; aucune clé dans le bundle, le cache navigateur ou les exports. Les sources privées exigent un Bearer Supabase du compte privé configuré vérifié, un Origin correspondant et une recherche publique bornée. Pas d’accès par cookie ni de formulaire tiers ; aucune requête calculée à partir d’un journal ou d’une note. Les endpoints sont fixés, les redirects refusés et les liens des réponses ne sont pas suivis par le serveur. Le HTML des réponses n’est jamais interprété dans l’interface.
+
+Les cadences et caches sont bornés **par processus**, sans garantie de plafond de dépenses distribué. Les erreurs fournisseur sont ramenées à des codes sans corps brut. Le contrôle contre les clés connues et motifs de données privées n’est pas un classificateur universel de confidentialité. Les trois fournisseurs ont répondu séparément en test réel ; l’authentification privée en production n’a pas été exercée avec la session personnelle. Les tests de restauration/RLS cloud de la mission initiale restent hors périmètre. La CSP client n’est pas élargie pour les fournisseurs.

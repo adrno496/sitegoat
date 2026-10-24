@@ -1,10 +1,10 @@
 # Registre exhaustif des 22 IDs
 
-Résultats locaux consolidés dans 04 et 06 ; publication et V10 suivis séparément dans 08. Aucun ID omis.
+Résultats initiaux consolidés dans 04 et 06 ; publication et V10 dans 08. Le complément utilisateur 09 fait autorité pour l’affichage compact et les nouvelles API. Aucun ID omis.
 
 | ID | Lot / priorité | Statut | Réalisation / limite | Modules | Preuve | Commit de départ |
 |---|---|---|---|---|---|---|
-| SG-01 | C / P1 | CORRIGÉ sur périmètre testé | Dates publication/fait/vérification déclarée séparées de l’édition/import, heure absente signalée. | editorialPresentation, EventCard, ArticlesView, QuickNews | tests/sitegoat-time.unit.test.ts ; tests/local/sitegoat-real.test.ts | 5897543 |
+| SG-01 | C / P1 | CORRIGÉ sur périmètre testé | Dates sources séparées dans les données ; une seule date de publication affichée selon le complément 09, sans heure inventée. | editorialPresentation, EventCard, ArticlesView, QuickNews | tests/sitegoat-time.unit.test.ts ; tests/local/sitegoat-real.test.ts | 5897543 |
 | SG-02 | C / P1 | CORRIGÉ sur périmètre testé | Journée sans édition explicite ; minuit et retour au premier plan sans rechargement. | Dashboard, UnifiedWorkspace, useParisToday | v9-sitegoat.spec.ts : minuit Paris ; daily unitaires DST | 5897543 |
 | SG-03 | E / P1 | PARTIAL — correction locale validée, limite mémoire | ZIP segmentés historiques avec inventaire SHA et fusion atomique ; 4001 petits originaux restaurés ; mémoire du snapshot non bornée globalement. | segmentedBackup, SegmentedBackupTools, ImportDialog | sitegoat-backup.unit.test.ts ; mutants atomicité | 29a9e0c |
 | SG-04 | B / P2 | CORRIGÉ sur périmètre testé | Profil neuf sûr avant décision ; choix par édition conservé ; réglage global réversible. | Reader, ReaderDefaults | v9-sitegoat.spec.ts : profil neuf ; hostile et Google existants | 624e731 |
@@ -13,7 +13,7 @@ Résultats locaux consolidés dans 04 et 06 ; publication et V10 suivis séparé
 | SG-07 | F / P2 | CORRIGÉ pour V7 reconnu ; historique borné | Projections unifié/articles confrontées à l’original SHA ; titre personnel et notes préservés. HTML sans schéma : ancien contrat conservé, projection non certifiée. | backup.ts | sitegoat-projection.unit.test.ts ; mutant projection | 5edaf80 |
 | SG-08 | F / P2 | CORRIGÉ entre nouveaux clients | Web Locks exclusif, comparaison par ID, conflit visible, brouillon conservé. Sans verrou : refus explicite. Ancien client sans verrou hors garantie. | recurringSearchStorage, RecurringSearches | sitegoat-personal.unit.test.ts ; deux vrais onglets dans v9-sitegoat | 5edaf80 |
 | SG-09 | D / P2 | CORRIGÉ sur périmètre testé | Filtres conservés en DOM et accessibles au clavier ; préférence gère ouverture. | v9/preferences.tsx | v9-sitegoat.spec.ts ; suites Articles/Atlas | ab9a90f |
-| SG-10 | C / P2 | CORRIGÉ sur périmètre testé | Deux vocabulaires distincts, statuts déclarés près des titres et dans lecture. | editorialPresentation, ArticlesView, EventCard, QuickNews | sitegoat-time.unit.test.ts ; v9-sitegoat : Hypothèse | 5897543 |
+| SG-10 | C / P2 | CORRIGÉ sur périmètre testé | Deux vocabulaires distincts conservés et testés ; statuts retirés des cartes/lecture à la demande explicite de l’utilisateur (09), présents dans les exports et filtres. | editorialPresentation, ArticlesView, EventCard, QuickNews | sitegoat-time.unit.test.ts ; v9-sitegoat : Hypothèse | 5897543 |
 | SG-11 | A / P2 | DÉJÀ CORRECT EN PRODUIT ; couverture corrigée | Un octet modifié à taille constante rejeté avant écriture ; mutant SHA rouge. | sitegoat-integrity.unit.test.ts | lot-a-sha.log ; mutant-sha.log | a8f0508 |
 | SG-12 | G / P2 | CORRIGÉ — check final vert | Uniquement fast-uri 3.1.8→3.1.9 et serialize-javascript 7.1.2→7.1.4 ; installation propre, audit après à zéro avis applicables. | package-lock.json | dependencies-before/after.json ; npm-ci.log | cc488d6 / b26198a |
 | SG-13 | B / P1 | CORRIGÉ sur périmètre testé | Liens attachés/détachés ; cadre/hash/révision/session/requestId + nom/contenu exacts ; confirmation parent ; double clic unique. | readerActions, Reader, isolatedHTML | liens attachés et détachés ×3, ciblés verts ; real-browser : 3 moteurs/configs × 5 natifs + 5 replis exacts ; mutants parent/sandbox | 2d9aa03 / 624e731 |

@@ -1,5 +1,7 @@
 # SITEGOAT — BILAN DES CORRECTIFS ET DE LA PUBLICATION
 
+**Complément utilisateur :** le rapport 09 complète ce bilan avec les dates compactes, titres gras et sources API. La consigne utilisateur remplace l’affichage systématique des statuts SG-10. Le code des sources et les champs éditoriaux restent conservés ; les dernières preuves sont distinguées de la première publication ci-dessous. Dernier état local : **361 unitaires et 292 E2E réussis, deux skips historiques, aucun échec**.
+
 HEAD initial : `987b5637707ef0af05bb1900fa8e187a96848246`. Branche isolée : `codex/sitegoat-audit-v4-local`. Worktree : `/Users/dreano/Downloads/veille/sitegoat-implementation`. Le dépôt d’origine et ses audits sont conservés. HEAD de publication / résultat production : suivis dans le rapport 08 et les preuves de publication.
 
 Les 14 constats sont traités dans le registre 01 ; aucun ID omis. Les dates et statuts sont contextualisés, la journée absente explicite, les filtres accessibles, les boutons Markdown attachés/détachés fonctionnels après confirmation parent. Les projections de sauvegarde sont vérifiées ; les recherches sont sérialisées sous Web Locks avec conflit visible et brouillon préservé. Les deux alertes dev ont une correction ciblée. Aucun original, état ou note personnel n’a été migré ou supprimé.

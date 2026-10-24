@@ -1,0 +1,22 @@
+{
+  "source": "Sentinel central vault; values never displayed or written to this repository",
+  "keys": [
+    {
+      "name": "BRAVE_API_KEY",
+      "status": "ADDED_SENSITIVE_PRODUCTION",
+      "exitCode": 0
+    },
+    {
+      "name": "TAVILY_API_KEY",
+      "status": "ADDED_SENSITIVE_PRODUCTION",
+      "exitCode": 0
+    },
+    {
+      "name": "EXA_API_KEY",
+      "status": "ADDED_SENSITIVE_PRODUCTION",
+      "exitCode": 0
+    }
+  ],
+  "sentinelModified": false,
+  "clientKeys": false
+}

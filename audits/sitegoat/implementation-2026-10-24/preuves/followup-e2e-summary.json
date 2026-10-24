@@ -1,0 +1,13 @@
+{
+  "stats": {
+    "startTime": "2026-10-24T18:58:56.222Z",
+    "duration": 947395.0040000001,
+    "expected": 292,
+    "skipped": 1,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "retries": 0,
+  "clientBundleChangedByLateOwnerCheck": false,
+  "unitLatest": "361 passed, 1 historical skipped; full npm test after owner restriction"
+}

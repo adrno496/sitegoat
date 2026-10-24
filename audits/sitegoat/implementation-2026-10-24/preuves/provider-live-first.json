@@ -1,0 +1,70 @@
+{
+  "checkedAt": "2026-10-24T18:48:31.151Z",
+  "query": "Public technology news; no journal or personal data",
+  "keysDisplayed": false,
+  "results": [
+    {
+      "provider": "brave",
+      "status": "PASS",
+      "entries": 5,
+      "durationMs": 874,
+      "requests": 1
+    },
+    {
+      "provider": "tavily",
+      "status": "PASS",
+      "entries": 5,
+      "durationMs": 1767,
+      "requests": 1
+    },
+    {
+      "provider": "exa",
+      "status": "PASS",
+      "entries": 5,
+      "durationMs": 877,
+      "requests": 1
+    },
+    {
+      "provider": "ecb",
+      "status": "PASS",
+      "entries": 6,
+      "durationMs": 77,
+      "requests": 1
+    },
+    {
+      "provider": "cisa",
+      "status": "PASS",
+      "entries": 12,
+      "durationMs": 199,
+      "requests": 1
+    },
+    {
+      "provider": "vscode",
+      "status": "PASS",
+      "entries": 5,
+      "durationMs": 356,
+      "requests": 1
+    },
+    {
+      "provider": "node",
+      "status": "PASS",
+      "entries": 5,
+      "durationMs": 416,
+      "requests": 1
+    },
+    {
+      "provider": "react",
+      "status": "FAIL",
+      "code": "NETWORK_ERROR",
+      "durationMs": 199,
+      "requests": 1
+    },
+    {
+      "provider": "ollama",
+      "status": "PASS",
+      "entries": 5,
+      "durationMs": 384,
+      "requests": 1
+    }
+  ]
+}

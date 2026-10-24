@@ -64,3 +64,6 @@ Racine de travail : `/Users/dreano/Downloads/veille/sitegoat-implementation` ; d
 - CacheStorage : shell et exemples publics précachés. Les données privées restent dans IndexedDB. Cloud optionnel et ses règles distantes non vérifiés par cette mission.
 
 Les exports de lecture et modèles de notes sont des actions locales explicites ; aucun moteur IA, téléchargement de modèle, télémétrie ou fetch éditorial ajouté. Les mesures et limites sont dans le rapport d’implémentation.
+
+
+Complément Sources : `QuickNews → SourceExplorer → /api/sources → server/source-providers.mjs`. Les pages normales n’appellent pas de fournisseur. Le catalogue est lu uniquement à l’ouverture de Sources ; la récupération est explicite. Neuf sources fixes, trois clés serveur distinctes de Supabase ; seules les trois recherches privées demandent un JWT vérifié. Cache public local `journal360.online-sources.v1`, dix récupérations au plus, sans migration de base et exclu des sauvegardes personnelles. Le serveur local sait router cette API uniquement lorsque le mode connecté explicite est activé ; le mode de test conserve ses appels réseau bloqués.

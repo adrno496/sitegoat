@@ -1,0 +1,230 @@
+{
+  "providers_considered": [
+    {
+      "provider": "tavily",
+      "status": "USED",
+      "reason": "Recherche publique explicite, cinq résultats, réponse réelle vérifiée"
+    },
+    {
+      "provider": "brave",
+      "status": "USED",
+      "reason": "Recherche publique explicite, cinq résultats, réponse réelle vérifiée"
+    },
+    {
+      "provider": "exa",
+      "status": "USED",
+      "reason": "Recherche publique explicite, cinq résultats, réponse réelle vérifiée"
+    },
+    {
+      "provider": "serpapi",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "serper",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "valueserp",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "firecrawl",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "jina",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "apify",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "google_places",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "pappers",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "insee",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "apollo",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "hunter",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "fullenrich",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "bouncer",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "dropcontact",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "builtwith",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "wappalyzer",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "pagespeed",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "crux",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "semrush",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "ahrefs",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "openai",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "anthropic",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "gemini",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "mistral",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "perplexity",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "cohere",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "google_web_risk",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "google_safe_browsing",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "shodan",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "securitytrails",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "urlscan",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "censys",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "github",
+      "status": "USED",
+      "reason": "Versions publiques consultées sans reprendre le token Sentinel",
+      "authentication": "PUBLIC_WITHOUT_KEY"
+    },
+    {
+      "provider": "hubspot",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "pipedrive",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "vercel_bypass",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "zap",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    },
+    {
+      "provider": "francetravail",
+      "status": "NOT_RELEVANT",
+      "reason": "Pas de besoin démontré pour lire une veille : pas de contacts, CRM, scan, crawl, génération IA ou prospection ajouté"
+    }
+  ],
+  "keys_reused": [
+    "BRAVE_API_KEY",
+    "TAVILY_API_KEY",
+    "EXA_API_KEY"
+  ],
+  "additional_public_sources": [
+    "ECB",
+    "CISA"
+  ],
+  "search_smoke_requests": 3,
+  "provider_fetch_smoke_calls": 10,
+  "additional_github_diagnostics": 2,
+  "cost_eur": "UNKNOWN; existing provider quota, no purchase or subscription",
+  "quota_remaining": "NOT_MEASURED",
+  "limitations": [
+    "A configured vault entry is not operational proof; selected providers actually replied.",
+    "Private production login flow uses existing Supabase session; no real personal session tested.",
+    "Limits/cache are per process, not a distributed spending ceiling.",
+    "28/41 configured from metadata; other keys neither copied nor tested."
+  ]
+}
