@@ -5,6 +5,8 @@ export default tseslint.config(
   {
     ignores: [
       "dist/**",
+      ".sitegoat-dist/**",
+      "test-results-sitegoat/**",
       "node_modules/**",
       "test-results/**",
       "playwright-report/**",

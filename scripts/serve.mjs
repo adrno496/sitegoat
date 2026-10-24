@@ -9,7 +9,7 @@ if (cloudEnabled && fs.existsSync(".env.local"))
 const port = Number(process.env.JOURNAL360_TEST_PORT || 4173);
 const headers = JSON.parse(fs.readFileSync("vercel.json", "utf8")).headers[0]
   .headers;
-const root = path.resolve("dist");
+const root = path.resolve(process.env.JOURNAL360_DIST_DIR || "dist");
 const types = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript",
