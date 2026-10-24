@@ -91,9 +91,7 @@ export function Reader({
     useState<GoogleAiRequest | null>(null);
   const [expanded, setExpanded] = useState(true);
   const [bytes, setBytes] = useState<Uint8Array>();
-  const [mode, setMode] = useState<"safe" | "interactive" | "text">(
-    "safe",
-  );
+  const [mode, setMode] = useState<"safe" | "interactive" | "text">("safe");
   const [confirm, setConfirm] = useState(false);
   const [originalActionOpen, setOriginalActionOpen] = useState(false);
   const [font, setFont] = useState(18);
@@ -107,8 +105,10 @@ export function Reader({
   );
   const [htmlZoom, setHtmlZoom] = useState(70);
   const [frameRevision, setFrameRevision] = useState(0);
-  const loadedActionFrame = useRef<Window | null>(null);
-  const actionSession = useMemo(() => `${edition.id}:${mode}:${frameRevision}:${crypto.randomUUID()}`, [edition.id, mode, frameRevision]);
+  const actionSession = useMemo(
+    () => `${edition.id}:${mode}:${frameRevision}:${crypto.randomUUID()}`,
+    [edition.id, mode, frameRevision],
+  );
   // Monter le cadre avec son document final. Un srcdoc vide puis modifié après
   // montage peut rester blanc dans Chrome, surtout lors du changement de sandbox.
   const srcDoc = useMemo(
@@ -123,7 +123,14 @@ export function Reader({
             actionSession,
           )
         : "",
-    [bytes, mode, initialArticle, originalEdition, frameRevision, actionSession],
+    [
+      bytes,
+      mode,
+      initialArticle,
+      originalEdition,
+      frameRevision,
+      actionSession,
+    ],
   );
   const originalNeedsScripts = useMemo(
     () => !!bytes && needsOriginalInteractions(bytes, edition.unified),
@@ -289,8 +296,17 @@ export function Reader({
             setBytes(o.bytes);
             const saved = trust?.value;
             const preference = readReaderDefault();
-            setMode(saved === "interactive" || (saved !== "safe" && preference === "interactive") ? "interactive" : "safe");
-            setConfirm(saved !== "safe" && saved !== "interactive" && preference === "ask");
+            setMode(
+              saved === "interactive" ||
+                (saved !== "safe" && preference === "interactive")
+                ? "interactive"
+                : "safe",
+            );
+            setConfirm(
+              saved !== "safe" &&
+                saved !== "interactive" &&
+                preference === "ask",
+            );
           } else
             setLoadError(
               "Original manquant. La lecture textuelle reste disponible.",
@@ -787,15 +803,6 @@ export function Reader({
               title={`Lecture de ${edition.title}`}
               sandbox={mode === "interactive" ? "allow-scripts" : ""}
               referrerPolicy="no-referrer"
-              onLoad={(event) => {
-                const frame = event.currentTarget;
-                if (frame !== iframeRef.current) return;
-                if (loadedActionFrame.current === frame.contentWindow) {
-                  // A subsequent navigation invalidates any pending capability.
-                  loadedActionFrame.current = null;
-                  setFrameRevision(r => r + 1);
-                } else loadedActionFrame.current = frame.contentWindow;
-              }}
               srcDoc={srcDoc}
               style={{
                 pointerEvents: backGestureActive ? "none" : undefined,
@@ -911,10 +918,19 @@ export function Reader({
                 peuvent échouer.
               </p>
               <div className="modal-actions">
-                <button className="secondary" onClick={() => run(async () => {
-                  await db.preferences.put({ key: `reader-trust-${edition.id}`, value: "safe" });
-                  setMode("safe"); setConfirm(false);
-                })}>
+                <button
+                  className="secondary"
+                  onClick={() =>
+                    run(async () => {
+                      await db.preferences.put({
+                        key: `reader-trust-${edition.id}`,
+                        value: "safe",
+                      });
+                      setMode("safe");
+                      setConfirm(false);
+                    })
+                  }
+                >
                   Rester en mode sécurisé
                 </button>
                 <button
@@ -984,10 +1000,37 @@ export function Reader({
               </select>
             </label>
           </div>
-          <details><summary>Préparer une note personnelle</summary>
-            <button type="button" className="secondary" onClick={() => setNote(n => (n ? n + "\n\n" : "") + personalReviewTemplate("counterproof"))}>Ajouter une fiche de contre-preuve</button>
-            <button type="button" className="secondary" onClick={() => setNote(n => (n ? n + "\n\n" : "") + personalReviewTemplate("review"))}>Ajouter une revue de source</button>
-            <p>Modèle ajouté au brouillon ; vérifiez et enregistrez volontairement. Aucun lien ouvert ni contrôle factuel automatique.</p>
+          <details>
+            <summary>Préparer une note personnelle</summary>
+            <button
+              type="button"
+              className="secondary"
+              onClick={() =>
+                setNote(
+                  (n) =>
+                    (n ? n + "\n\n" : "") +
+                    personalReviewTemplate("counterproof"),
+                )
+              }
+            >
+              Ajouter une fiche de contre-preuve
+            </button>
+            <button
+              type="button"
+              className="secondary"
+              onClick={() =>
+                setNote(
+                  (n) =>
+                    (n ? n + "\n\n" : "") + personalReviewTemplate("review"),
+                )
+              }
+            >
+              Ajouter une revue de source
+            </button>
+            <p>
+              Modèle ajouté au brouillon ; vérifiez et enregistrez
+              volontairement. Aucun lien ouvert ni contrôle factuel automatique.
+            </p>
           </details>
           <label htmlFor="note-body">
             Votre note

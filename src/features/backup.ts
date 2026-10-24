@@ -32,6 +32,7 @@ export interface BackupData {
   originals: Original[];
   states: ReadingState[];
   notes: Note[];
+  validationMessages?: string[];
 }
 export async function exportBackup(
   repository: LocalRepository,
@@ -125,6 +126,7 @@ export async function inspectBackup(bytes: Uint8Array): Promise<BackupData> {
   )
     throw new Error("Comptage ou identifiants incohérents.");
   const originals: Original[] = [];
+  const validationMessages: string[] = [];
   for (const e of manifest.editions) {
     const f = zip.file(`files/${e.id}.html`);
     if (!f) throw new Error("Un original est manquant.");
@@ -136,9 +138,38 @@ export async function inspectBackup(bytes: Uint8Array): Promise<BackupData> {
     const { inspectHTML } = await import("./import");
     const parsed = await inspectHTML("backup.html", original, e.demo);
     if (parsed.unified || e.unified) {
-      if ((e.unified && canonicalJSON(e.unified) !== canonicalJSON(parsed.unified)) ||
-          canonicalJSON(e.articles) !== canonicalJSON(parsed.articles))
-        throw new Error("Projection différente de l’original : aucune donnée restaurée.");
+      if (e.unified) {
+        const fields = [
+          "sourceVerifiedAt",
+          "externalEditionId",
+          "externalRevision",
+          "scheduleId",
+          "editionSlot",
+          "slotsIncluded",
+          "missingSlots",
+          "declaredCumulativeStatus",
+          "categories",
+          "excerpt",
+          "text",
+        ] as const;
+        if (
+          canonicalJSON(e.unified) !== canonicalJSON(parsed.unified) ||
+          canonicalJSON(e.articles) !== canonicalJSON(parsed.articles) ||
+          fields.some(
+            (key) =>
+              e[key] !== undefined &&
+              canonicalJSON(e[key]) !== canonicalJSON(parsed[key]),
+          )
+        )
+          throw new Error(
+            "Projection différente de l’original : aucune donnée restaurée.",
+          );
+      } else {
+        e.articles = parsed.articles;
+        validationMessages.push(
+          "Ancien index V7 reconstruit depuis l’original vérifié ; titre personnel et annotations conservés.",
+        );
+      }
       e.unified = parsed.unified;
     }
     // Rebuild from the checked original, including archives made by clients
@@ -171,6 +202,7 @@ export async function inspectBackup(bytes: Uint8Array): Promise<BackupData> {
     originals,
     states: manifest.states,
     notes: manifest.notes,
+    ...(validationMessages.length ? { validationMessages } : {}),
   };
 }
 export async function restoreBackup(

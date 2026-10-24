@@ -171,6 +171,7 @@ test("V7 : mobile, clavier, thèmes, absence de données, sources, reduced motio
   }
   await w.getByRole("button", { name: "Économie", exact: true }).focus();
   await page.keyboard.press("Enter");
+  await w.getByText("Filtres et tri", { exact: true }).click();
   await expect(w.getByLabel("Zone économique")).toBeVisible();
   await w.getByLabel("Zone économique").selectOption("FR");
   await expect(w.locator(".unified-zones>article")).toHaveCount(1);
@@ -256,6 +257,7 @@ test("V7 : HTML hostile lu sans scripts, question publique conservée, prompt pr
   await page
     .getByRole("button", { name: "Réduire la lecture", exact: true })
     .click();
+  await page.getByRole("button", { name: "Sécurisé", exact: true }).click();
   await expect(page.locator(".edition-frame")).toHaveAttribute("sandbox", "");
   expect(
     await page

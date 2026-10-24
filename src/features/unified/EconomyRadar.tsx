@@ -1,4 +1,4 @@
-import { useDisplay } from "../v9/preferences";
+import { DisplayFilters } from "../v9/preferences";
 import { PublicGoogleLink } from "../PublicGoogleLink";
 import { useInterface } from "../interfacePreferences";
 import { useState } from "react";
@@ -20,7 +20,6 @@ export function EconomyRadar({
   const {
     preferences: { options },
   } = useInterface();
-  const { display } = useDisplay();
   const [zone, setZone] = useState(""),
     [period, setPeriod] = useState(""),
     [indicator, setIndicator] = useState("");
@@ -44,41 +43,46 @@ export function EconomyRadar({
         sources importées ; aucune certification ni recommandation financière
         personnelle.
       </p>
-      {!compact && display.filters && (
-        <div className="unified-filters">
-          <label>
-            Zone économique
-            <select value={zone} onChange={(e) => setZone(e.target.value)}>
-              <option value="">Toutes les zones</option>
-              {Object.entries(zoneLabels).map(([k, v]) => (
-                <option value={k} key={k}>
-                  {v}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Période statistique
-            <select value={period} onChange={(e) => setPeriod(e.target.value)}>
-              <option value="">Toutes les périodes</option>
-              {[...new Set(rows.map((r) => r.data.period))].map((v) => (
-                <option key={v}>{v}</option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Indicateur économique
-            <select
-              value={indicator}
-              onChange={(e) => setIndicator(e.target.value)}
-            >
-              <option value="">Tous les indicateurs</option>
-              {[...new Set(rows.map((r) => r.data.indicator))].map((v) => (
-                <option key={v}>{v}</option>
-              ))}
-            </select>
-          </label>
-        </div>
+      {!compact && (
+        <DisplayFilters>
+          <div className="unified-filters">
+            <label>
+              Zone économique
+              <select value={zone} onChange={(e) => setZone(e.target.value)}>
+                <option value="">Toutes les zones</option>
+                {Object.entries(zoneLabels).map(([k, v]) => (
+                  <option value={k} key={k}>
+                    {v}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Période statistique
+              <select
+                value={period}
+                onChange={(e) => setPeriod(e.target.value)}
+              >
+                <option value="">Toutes les périodes</option>
+                {[...new Set(rows.map((r) => r.data.period))].map((v) => (
+                  <option key={v}>{v}</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Indicateur économique
+              <select
+                value={indicator}
+                onChange={(e) => setIndicator(e.target.value)}
+              >
+                <option value="">Tous les indicateurs</option>
+                {[...new Set(rows.map((r) => r.data.indicator))].map((v) => (
+                  <option key={v}>{v}</option>
+                ))}
+              </select>
+            </label>
+          </div>
+        </DisplayFilters>
       )}
       <div className="unified-zones">
         {Object.entries(zoneLabels)

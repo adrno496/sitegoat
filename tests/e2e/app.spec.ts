@@ -99,7 +99,7 @@ test("parcours complet : import, lecture, notes, favori, recherche, offline, exp
   await context.setOffline(false);
   await nav(page, "Réglages");
   const exportEvent = page.waitForEvent("download");
-  await page.getByRole("button", { name: "Exporter tout" }).click();
+  await page.getByRole("button", { name: "Sauvegarder les journaux" }).click();
   const backupPath = (await exportEvent).path();
   const backup = readFileSync((await backupPath)!);
   const fresh = await context.browser()!.newContext();

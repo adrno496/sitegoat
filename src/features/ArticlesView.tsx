@@ -1,3 +1,5 @@
+import { readingExport } from "./readingExports";
+import { download } from "./backup";
 import { EditorialMetadata, instantCompare } from "./editorialPresentation";
 import {
   articlePublicationOrder,
@@ -245,10 +247,14 @@ export function ArticlesView({
       ];
     filtered.sort((a, b) => weight(a) - weight(b));
   } else if (sort === "published")
-    filtered.sort((a, b) => instantCompare(
-      b.edition.unified?.items.find(i => i.eventId === b.article.eventId)?.publishedAt,
-      a.edition.unified?.items.find(i => i.eventId === a.article.eventId)?.publishedAt,
-    ));
+    filtered.sort((a, b) =>
+      instantCompare(
+        b.edition.unified?.items.find((i) => i.eventId === b.article.eventId)
+          ?.publishedAt,
+        a.edition.unified?.items.find((i) => i.eventId === a.article.eventId)
+          ?.publishedAt,
+      ),
+    );
   else if (sort === "oldest") filtered.reverse();
   if (layout === "themes" && sort === "date")
     filtered.sort(
@@ -272,10 +278,14 @@ export function ArticlesView({
       ),
     );
   if (layout === "timeline")
-    filtered.sort((a, b) => instantCompare(
-      b.edition.unified?.items.find(i => i.eventId === b.article.eventId)?.publishedAt || b.edition.date,
-      a.edition.unified?.items.find(i => i.eventId === a.article.eventId)?.publishedAt || a.edition.date,
-    ));
+    filtered.sort((a, b) =>
+      instantCompare(
+        b.edition.unified?.items.find((i) => i.eventId === b.article.eventId)
+          ?.publishedAt || b.edition.date,
+        a.edition.unified?.items.find((i) => i.eventId === a.article.eventId)
+          ?.publishedAt || a.edition.date,
+      ),
+    );
 
   const current = filtered.find((i) => i.key === selected);
   const currentItem = current?.edition.unified?.items.find(
@@ -605,7 +615,7 @@ export function ArticlesView({
                           {item.article.title}
                         </button>
                         <small>
-                          {editionDateTime(item.edition)} ·{" "}
+                          Édition du {editionDateTime(item.edition)} ·{" "}
                           {item.article.category}
                         </small>
                       </li>
@@ -628,7 +638,7 @@ export function ArticlesView({
                       Retour aux articles
                     </button>
                     <p className="eyebrow">
-                      {current.article.category} ·{" "}
+                      {current.article.category} · Édition du{" "}
                       {editionDateTime(current.edition)}
                     </p>
                     <h2 ref={heading} tabIndex={-1}>
@@ -638,10 +648,42 @@ export function ArticlesView({
                       Dans {current.edition.title}
                       {current.edition.archived ? " · Archive" : ""}
                     </p>
-                    <EditorialMetadata edition={current.edition} item={currentItem} />
+                    <EditorialMetadata
+                      edition={current.edition}
+                      item={currentItem}
+                    />
                     <PublicGoogleLink
                       question={currentItem?.publicResearchQuestion}
                     />
+                    <details>
+                      <summary>Exporter cette lecture</summary>
+                      <button
+                        className="secondary"
+                        onClick={() =>
+                          download(
+                            new Blob([readingExport(current, "md")], {
+                              type: "text/markdown;charset=utf-8",
+                            }),
+                            `article-${current.article.id.replace(/[^a-zA-Z0-9_-]/g, "_")}.md`,
+                          )
+                        }
+                      >
+                        Exporter l’article en Markdown
+                      </button>
+                      <button
+                        className="secondary"
+                        onClick={() =>
+                          download(
+                            new Blob([readingExport(current, "html")], {
+                              type: "text/html;charset=utf-8",
+                            }),
+                            `article-${current.article.id.replace(/[^a-zA-Z0-9_-]/g, "_")}-lecture.html`,
+                          )
+                        }
+                      >
+                        Exporter la lecture HTML assainie
+                      </button>
+                    </details>
                     <div className="article-actions">
                       <button
                         className="secondary"
@@ -884,7 +926,7 @@ export function ArticlesView({
                               </p>
                               <div className="article-card-origin">
                                 <span>
-                                  {editionDateTime(item.edition)}
+                                  Édition du {editionDateTime(item.edition)}
                                   {item.edition.archived ? " · Archive" : ""}
                                 </span>
                                 <span>{item.edition.title}</span>

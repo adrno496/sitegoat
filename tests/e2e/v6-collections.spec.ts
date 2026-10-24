@@ -147,8 +147,14 @@ test("navigation mobile visible et accessibilité des deux nouveaux espaces", as
         () => document.documentElement.scrollWidth <= innerWidth,
       ),
     ).toBe(true);
-    if (width < 700)
-      await expect(page.locator(".mobile-nav button:visible")).toHaveCount(11);
+    if (width < 700) {
+      await expect(page.locator(".mobile-nav button:visible")).toHaveCount(12);
+      await expect(
+        page
+          .locator(".mobile-nav")
+          .getByRole("button", { name: "Actualité rapide", exact: true }),
+      ).toBeVisible();
+    }
   }
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   await page.screenshot({

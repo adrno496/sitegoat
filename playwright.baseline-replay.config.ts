@@ -1,0 +1,2 @@
+import {defineConfig} from '@playwright/test';import config from './playwright.sitegoat.config';
+export default defineConfig({...config,testMatch:/v6-daily.spec.ts/,projects:config.projects!.map(p=>({...p,testMatch:/v6-daily.spec.ts/})),outputDir:'test-results-baseline-replay',webServer:[{command:'npm run preview',url:'http://127.0.0.1:4183',env:{JOURNAL360_TEST_PORT:'4183',JOURNAL360_ALLOW_CLOUD_LOCAL:'0',JOURNAL360_DIST_DIR:'dist'}},config.webServer![1]]});

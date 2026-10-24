@@ -165,7 +165,17 @@ export function QuickNews({
                 )}
                 <p className="eyebrow">{r.theme}</p>
                 <h2>{r.title}</h2>
-                <EditorialMetadata edition={edition} item={article ? edition.unified?.items.find(i => i.eventId === article.article.eventId) : brief?.item} brief={!article} />
+                <EditorialMetadata
+                  edition={edition}
+                  item={
+                    article
+                      ? edition.unified?.items.find(
+                          (i) => i.eventId === article.article.eventId,
+                        )
+                      : brief?.item
+                  }
+                  brief={!article}
+                />
                 <div className="settings-actions">
                   {article && onArticle && (
                     <button
@@ -212,7 +222,8 @@ export function QuickNews({
                       ))}
                       {brief.history.map((h, n) => (
                         <p key={n}>
-                          Édition du {editionDateTime(h.edition)} · {h.item.title} ·{" "}
+                          Édition du {editionDateTime(h.edition)} ·{" "}
+                          {h.item.title} ·{" "}
                           <a
                             href={h.item.source.url}
                             target="_blank"

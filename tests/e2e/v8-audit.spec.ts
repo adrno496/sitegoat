@@ -62,9 +62,16 @@ test("Audit P0/P1 : 10 h seul offline, huit cartes, résumés, fiches intégrale
     (await diagnostics(page)).locator(".unified-slots button").first(),
   ).toBeDisabled();
   await nav(page, "Aujourd’hui");
+  if (await root.getByText("Affiner et trier", { exact: true }).isHidden())
+    await root.getByText("Filtres et tri", { exact: true }).click();
   await root.getByText("Affiner et trier", { exact: true }).click();
-  if (await root.getByLabel("Première apparition", { exact: true }).isHidden())
+  if (
+    await root.getByLabel("Première apparition", { exact: true }).isHidden()
+  ) {
+    if (await root.getByText("Affiner et trier", { exact: true }).isHidden())
+      await root.getByText("Filtres et tri", { exact: true }).click();
     await root.getByText("Affiner et trier", { exact: true }).click();
+  }
   await root
     .getByLabel("Première apparition", { exact: true })
     .selectOption("08:00");
@@ -139,8 +146,13 @@ test("Audit P0 : créneaux exacts, retour même filtre/position, historique navi
   await nav(page, "Aujourd’hui");
   const root = w(page);
   await expect(root.locator(".unified-masthead h1")).toHaveText("Aujourd’hui");
-  if (await root.getByLabel("Première apparition", { exact: true }).isHidden())
+  if (
+    await root.getByLabel("Première apparition", { exact: true }).isHidden()
+  ) {
+    if (await root.getByText("Affiner et trier", { exact: true }).isHidden())
+      await root.getByText("Filtres et tri", { exact: true }).click();
     await root.getByText("Affiner et trier", { exact: true }).click();
+  }
   await root
     .getByLabel("Première apparition", { exact: true })
     .selectOption("08:00");

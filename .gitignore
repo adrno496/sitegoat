@@ -22,3 +22,5 @@ playwright-report/
 
 .sitegoat-dist/
 test-results-sitegoat/
+test-results-sitegoat-real/
+test-results-*/

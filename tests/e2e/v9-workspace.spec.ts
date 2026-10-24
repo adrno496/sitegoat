@@ -125,7 +125,7 @@ test("V9 : Aujourd’hui épuré, Accueil, articles internes, 19 titres réels o
   await nav(page, "Accueil");
   await expect(
     page.getByRole("heading", {
-      name: "Les points essentiels aujourd’hui",
+      name: "Les points essentiels de la dernière édition",
       exact: true,
     }),
   ).toBeVisible();
@@ -167,7 +167,7 @@ test("V9 : Aujourd’hui épuré, Accueil, articles internes, 19 titres réels o
   await nav(page, "Accueil");
   await expect(
     page.getByRole("heading", {
-      name: "Les points essentiels aujourd’hui",
+      name: "Les points essentiels de la dernière édition",
       exact: true,
     }),
   ).toHaveCount(0);
@@ -442,7 +442,12 @@ test("V9 : filtres Articles combinables, calendrier de faits et affichage intég
     50 + f.p.items.filter((i) => i.category === "Sciences").length,
   );
   await nav(page, "Articles");
-  await page.locator(".articles-filter-options summary").click();
+  if (
+    !(await page
+      .locator(".articles-filter-options")
+      .evaluate((el) => (el as HTMLDetailsElement).open))
+  )
+    await page.locator(".articles-filter-options summary").click();
   const sample = f.p.items[0];
   await page
     .getByLabel("Univers", { exact: true })
@@ -551,8 +556,13 @@ test("V9 : onglet Actualité rapide, titres des articles automatiques, dates sim
     .getByRole("button", { name: "Retour aux articles", exact: true })
     .click();
   const card = page.locator(".articles-grid .event-card").first();
-  await expect(card.locator(".event-meta")).toHaveText(
-    `${new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeZone: "Europe/Paris" }).format(new Date(p.editionDate + "T12:00:00Z"))} ${p.editionSlot.replace(":", "H")}`,
+  await expect(card.locator(".event-meta")).toContainText("Publié le");
+  await expect(card.locator(".editorial-metadata")).toContainText(
+    "Statut déclaré par le producteur",
+  );
+  await card.getByText("Édition et import", { exact: true }).click();
+  await expect(card.locator(".event-meta")).toContainText(
+    `Édition du ${new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeZone: "Europe/Paris" }).format(new Date(p.editionDate + "T12:00Z"))}`,
   );
   await expect(card).not.toContainText("Première apparition :");
   await expect(card.locator(".event-proof")).toHaveCount(0);

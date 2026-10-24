@@ -29,6 +29,13 @@ export function ImportDialog({
   onClose: () => void;
   onDone: (message: string, destination: ImportDestination) => void;
 }) {
+  const archiveWarning =
+    editions.length + candidates.length > 3000 ||
+    [...editions, ...candidates.map((c) => c.edition)].reduce(
+      (n, e) => n + e.size,
+      0,
+    ) >
+      100 * 1024 * 1024;
   const [destinations, setDestinations] = useState<
     Record<string, ImportDestination>
   >({});
@@ -135,6 +142,12 @@ export function ImportDialog({
           pas exécutés à l’import.
         </p>
         <div className="import-list">
+          {archiveWarning && (
+            <p className="warning">
+              Bibliothèque volumineuse : sauvegarde segmentée recommandée dans
+              Paramètres. Aucun original ne sera supprimé.
+            </p>
+          )}
           {candidates.map((c, index) => {
             const edited = metadata[c.edition.id] || {
               title: c.edition.title,

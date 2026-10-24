@@ -312,7 +312,10 @@ export function validateUnified(value: unknown, at = new Date()) {
     throw new Error(
       result.error.issues
         .slice(0, 4)
-        .map((i) => `${i.path.join(".") || "édition"} : ${i.message}`)
+        .map(
+          (i) =>
+            `${i.path.join(".") || "édition"} : ${i.code === "invalid_value" ? "Valeur non admise. Valeurs attendues : " + i.values.map((v) => JSON.stringify(v)).join(" | ") : i.message}`,
+        )
         .join(" · "),
     );
   const p = result.data,

@@ -78,6 +78,7 @@ test("Récurrent : thèmes, édition, recherche Google récente, persistance et 
   await panel
     .getByRole("button", { name: "Enregistrer les modifications", exact: true })
     .click();
+  await expect(panel.getByRole("status")).toContainText("Recherche modifiée.");
   await page.reload();
   await navigate(page, "Actualité rapide");
   await page.getByRole("tab", { name: "Récurrent", exact: true }).click();
@@ -127,7 +128,7 @@ test("Récurrent : thèmes, édition, recherche Google récente, persistance et 
   ).toBeVisible();
 });
 
-test("Récurrent : stockage indisponible, recherches utilisables pendant la session", async ({
+test("Récurrent : stockage indisponible, brouillon conservé sans faux enregistrement", async ({
   page,
 }) => {
   await page.addInitScript((storageKey) => {
@@ -149,14 +150,18 @@ test("Récurrent : stockage indisponible, recherches utilisables pendant la sess
   await panel
     .getByRole("button", { name: "Ajouter la recherche", exact: true })
     .click();
-  await expect(panel.getByRole("alert")).toContainText(
-    "conservées pour cette session",
+  await expect(panel.getByRole("alert")).toContainText("brouillon conservé");
+  await expect(panel.locator(".recurring-search-card")).toHaveCount(10);
+  await expect(panel.getByLabel("Thème", { exact: true })).toHaveValue(
+    "Énergie",
   );
-  await expect(panel.locator(".recurring-search-card")).toHaveCount(11);
+  await expect(
+    panel.getByRole("button", { name: "Ajouter la recherche", exact: true }),
+  ).toBeVisible();
   await expect(
     panel
       .locator(".recurring-search-card")
-      .last()
+      .first()
       .getByRole("link", { name: "Rechercher sur Google", exact: true }),
-  ).toHaveAttribute("href", /q=%C3%89nergie/);
+  ).toHaveAttribute("href", /www.google.com/);
 });

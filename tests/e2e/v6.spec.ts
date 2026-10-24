@@ -118,7 +118,7 @@ test("V6 : 08→16→21, une carte journée, historique, recherche, original, no
   await nav(page, "Réglages");
   const zipEvent = page.waitForEvent("download");
   await page
-    .getByRole("button", { name: "Exporter tout", exact: true })
+    .getByRole("button", { name: "Sauvegarder les journaux", exact: true })
     .click();
   const zip = readFileSync((await (await zipEvent).path())!);
   const fresh = await context.browser()!.newContext();

@@ -33,7 +33,11 @@ export function readerAllowedLinks(e: Edition) {
   ];
 }
 
-export function readerActionBridge(e: Edition, revision: number, session = "test-session") {
+export function readerActionBridge(
+  e: Edition,
+  revision: number,
+  session = "test-session",
+) {
   const data = JSON.stringify({
     links: readerAllowedLinks(e),
     prompts: e.unified?.promptAssets || [],
@@ -43,6 +47,7 @@ export function readerActionBridge(e: Edition, revision: number, session = "test
   }).replaceAll("<", "\\u003c");
   return `(()=>{'use strict';const config=${data};
 const send=(kind,value)=>parent.postMessage({type:'journal360:reader-action:v2',hash:config.hash,revision:config.revision,session:config.session,requestId:crypto.randomUUID(),kind,value},'*');
+window.addEventListener('pagehide',()=>parent.postMessage({type:'journal360:reader-leaving:v2',hash:config.hash,revision:config.revision,session:config.session},'*'),true);
 const checked=value=>{try{const u=new URL(value);if(u.origin==='https://www.google.com'&&u.pathname==='/search'){const q=u.searchParams.get('q');const match=config.links.find(v=>{const x=new URL(v);return x.origin===u.origin&&x.pathname===u.pathname&&x.searchParams.get('q')===q});return match||null}return config.links.includes(u.href)?u.href:null}catch{return null}};
 window.open=value=>{const url=checked(value);if(url)send('link',url);return null};
 const blobs=new Map(),create=URL.createObjectURL.bind(URL),revoke=URL.revokeObjectURL.bind(URL);
@@ -82,6 +87,7 @@ export function OriginalActions({
   const [error, setError] = useState("");
   const dialog = useRef<HTMLElement>(null);
   const busy = useRef(false);
+  const invalidated = useRef(false);
   const current = useRef({ edition, revision, session, mode });
   current.current = { edition, revision, session, mode };
   useDialogFocus(!!action, () => setAction(null), dialog);
@@ -91,36 +97,67 @@ export function OriginalActions({
   useEffect(() => {
     setAction(null);
     busy.current = false;
+    invalidated.current = false;
     const seen = new Set<string>();
     const links = readerAllowedLinks(edition);
     const receive = (event: MessageEvent) => {
       const a = event.data;
       if (
+        event.source === frame.current?.contentWindow &&
+        event.origin === "null" &&
+        a?.type === "journal360:reader-leaving:v2" &&
+        a.hash === edition.sha256 &&
+        a.revision === revision &&
+        a.session === session &&
+        Object.keys(a).sort().join() === "hash,revision,session,type"
+      ) {
+        invalidated.current = true;
+        setAction(null);
+        return;
+      }
+      if (
         mode !== "interactive" ||
+        invalidated.current ||
         event.source !== frame.current?.contentWindow ||
         event.origin !== "null" ||
         !a ||
         typeof a !== "object" ||
         Array.isArray(a) ||
-        Object.keys(a).sort().join() !== "hash,kind,requestId,revision,session,type,value" ||
+        Object.keys(a).sort().join() !==
+          "hash,kind,requestId,revision,session,type,value" ||
         a.type !== "journal360:reader-action:v2" ||
         a.hash !== edition.sha256 ||
         a.revision !== revision ||
         a.session !== session ||
-        typeof a.requestId !== "string" || a.requestId.length > 64 ||
-        seen.has(a.requestId) || seen.size >= 256
+        typeof a.requestId !== "string" ||
+        a.requestId.length > 64 ||
+        seen.has(a.requestId) ||
+        seen.size >= 256
       )
         return;
       seen.add(a.requestId);
-      const p = a.kind === "prompt" && a.value && typeof a.value === "object"
-        ? edition.unified?.promptAssets.find(p => p.promptId === a.value.id && p.filename === a.value.filename && p.content === a.value.content && (p.sha256 || null) === a.value.sha256 && Object.keys(a.value).sort().join() === "content,filename,id,sha256") : undefined;
+      const p =
+        a.kind === "prompt" && a.value && typeof a.value === "object"
+          ? edition.unified?.promptAssets.find(
+              (p) =>
+                p.promptId === a.value.id &&
+                p.filename === a.value.filename &&
+                p.content === a.value.content &&
+                (p.sha256 || null) === a.value.sha256 &&
+                Object.keys(a.value).sort().join() ===
+                  "content,filename,id,sha256",
+            )
+          : undefined;
       if (
         (a.kind === "link" && links.includes(a.value)) ||
-        (a.kind === "prompt" &&
-          !!p)
+        (a.kind === "prompt" && !!p)
       ) {
         setError("");
-        setAction((previous) => { if (previous) return previous; busy.current = false; return { kind: a.kind, value: p ? p.promptId : a.value }; });
+        setAction((previous) => {
+          if (previous) return previous;
+          busy.current = false;
+          return { kind: a.kind, value: p ? p.promptId : a.value };
+        });
       }
     };
     window.addEventListener("message", receive);
@@ -164,7 +201,17 @@ export function OriginalActions({
                       prompt.sha256
                   )
                     throw Error("Checksum Markdown invalide.");
-                  if (current.current.session !== context.session || current.current.revision !== context.revision || current.current.edition.id !== context.edition.id || current.current.mode !== context.mode || !source || source !== frame.current?.contentWindow || context.mode !== "interactive") throw Error("Cadre périmé : action annulée.");
+                  if (
+                    invalidated.current ||
+                    current.current.session !== context.session ||
+                    current.current.revision !== context.revision ||
+                    current.current.edition.id !== context.edition.id ||
+                    current.current.mode !== context.mode ||
+                    !source ||
+                    source !== frame.current?.contentWindow ||
+                    context.mode !== "interactive"
+                  )
+                    throw Error("Cadre périmé : action annulée.");
                   const name = prompt.filename
                     .split(/[\\/]/)
                     .pop()!

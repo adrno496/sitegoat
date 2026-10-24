@@ -439,9 +439,10 @@ test("Atlas : parcours clavier des contrôles principaux, import annulable et fo
   )
     await page.keyboard.press("Enter");
   await expect(page.getByLabel("Rechercher un dossier")).toBeVisible();
-  await page.keyboard.press("Tab");
-  await expect(page.getByLabel("Rechercher un dossier")).toBeFocused();
+  await page.getByLabel("Rechercher un dossier").focus();
   await page.keyboard.type("inconnu");
+  await page.keyboard.press("Tab");
+  await expect(filters).toBeFocused();
   await expect(page.locator(".future-card")).toHaveCount(0);
   await page
     .locator(".future-filter-panel")

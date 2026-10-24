@@ -1826,11 +1826,20 @@ function JournalApp() {
                         <Download size={21} /> Sauvegarde indépendante
                       </h2>
                       <p>
-                        Journaux uniquement : originaux, notes, favoris, lectures,
-                        versions et empreintes SHA-256. Sans session ni clé.
+                        Journaux uniquement : originaux, notes, favoris,
+                        lectures, versions et empreintes SHA-256. Sans session
+                        ni clé.
                       </p>
-                      <p>Exclus de cette archive : Le Futur (sauvegarde séparée), réglages, recherches récurrentes et sessions.</p>
-                      <button className="text-button" onClick={() => navigate("future")}>Ouvrir la sauvegarde Le Futur</button>
+                      <p>
+                        Exclus de cette archive : Le Futur (sauvegarde séparée),
+                        réglages, recherches récurrentes et sessions.
+                      </p>
+                      <button
+                        className="text-button"
+                        onClick={() => navigate("future")}
+                      >
+                        Ouvrir la sauvegarde Le Futur
+                      </button>
                       <p className="muted">
                         {lastBackup
                           ? `Dernier export : ${new Date(lastBackup).toLocaleString("fr-FR", { timeZone: "Europe/Paris" })}`
@@ -1862,7 +1871,7 @@ function JournalApp() {
                     </section>
                     <ReaderDefaults />
                     <PersonalBackupTools />
-                    <SegmentedBackupTools />
+                    <SegmentedBackupTools data={data} />
                     <Diagnostics
                       value={
                         data.preferences.find(
@@ -2323,6 +2332,11 @@ function JournalApp() {
               sont reconnus par leur empreinte ; les notes en conflit restent
               séparées. Aucun fichier local ne sera effacé.
             </p>
+            {restoration.validationMessages?.map((message, index) => (
+              <p className="warning" key={index}>
+                {message}
+              </p>
+            ))}
             <div className="modal-actions">
               <button
                 className="secondary"

@@ -52,13 +52,38 @@ export function RecurringSearches({ themes }: { themes: string[] }) {
   const formId = useId();
 
   useEffect(() => {
-    const reload = () => { try { setItems(parseRecurringSearches(localStorage.getItem(RECURRING_SEARCHES_KEY))); } catch { setError("Impossible de relire les recherches : stockage indisponible."); } };
-    window.addEventListener("storage", reload); window.addEventListener("journal360:recurring-change", reload); window.addEventListener("focus", reload);
-    return () => { window.removeEventListener("storage", reload); window.removeEventListener("journal360:recurring-change", reload); window.removeEventListener("focus", reload); };
+    const reload = () => {
+      try {
+        setItems(
+          parseRecurringSearches(localStorage.getItem(RECURRING_SEARCHES_KEY)),
+        );
+      } catch {
+        setError(
+          "Impossible de relire les recherches : stockage indisponible.",
+        );
+      }
+    };
+    window.addEventListener("storage", reload);
+    window.addEventListener("journal360:recurring-change", reload);
+    window.addEventListener("focus", reload);
+    return () => {
+      window.removeEventListener("storage", reload);
+      window.removeEventListener("journal360:recurring-change", reload);
+      window.removeEventListener("focus", reload);
+    };
   }, []);
-  async function save(expected: RecurringSearch | null, next: RecurringSearch | null) {
-    try { setItems(await mutateRecurringSearch(expected, next)); setError(""); return true; }
-    catch (e) { setError(String(e)); return false; }
+  async function save(
+    expected: RecurringSearch | null,
+    next: RecurringSearch | null,
+  ) {
+    try {
+      setItems(await mutateRecurringSearch(expected, next));
+      setError("");
+      return true;
+    } catch (e) {
+      setError("Enregistrement refusé ; brouillon conservé. " + String(e));
+      return false;
+    }
   }
   function reset() {
     setFormOpen(false);
@@ -93,7 +118,7 @@ export function RecurringSearches({ themes }: { themes: string[] }) {
       cadence,
       lastOpenedAt: previous?.query === text ? previous.lastOpenedAt : null,
     };
-    if (!await save(previous || null, item)) return;
+    if (!(await save(previous || null, item))) return;
     setMessage(editing ? "Recherche modifiée." : "Recherche ajoutée.");
     reset();
   }
@@ -216,8 +241,13 @@ export function RecurringSearches({ themes }: { themes: string[] }) {
                   rel="noopener noreferrer"
                   referrerPolicy="no-referrer"
                   onClick={() => {
-                    void save(search, { ...search, lastOpenedAt: new Date().toISOString() });
-                    setMessage(`Recherche « ${search.theme} » ouverte sur Google.`);
+                    void save(search, {
+                      ...search,
+                      lastOpenedAt: new Date().toISOString(),
+                    });
+                    setMessage(
+                      `Recherche « ${search.theme} » ouverte sur Google.`,
+                    );
                   }}
                 >
                   Rechercher sur Google
@@ -241,7 +271,7 @@ export function RecurringSearches({ themes }: { themes: string[] }) {
                 <button
                   className="text-button"
                   onClick={async () => {
-                    if (!await save(search, null)) return;
+                    if (!(await save(search, null))) return;
                     if (editing === search.id) reset();
                     setMessage("Recherche supprimée.");
                   }}
