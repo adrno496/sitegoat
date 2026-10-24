@@ -1,11 +1,11 @@
-import { useId, useState, type FormEvent } from "react";
+import { mutateRecurringSearch } from "./recurringSearchStorage";
+import { useId, useState, useEffect, type FormEvent } from "react";
 import {
   RECURRING_SEARCHES_KEY,
   cadences,
   nextSearchAt,
   parseRecurringSearches,
   recurringGoogleUrl,
-  serializeRecurringSearches,
   type RecurringSearch,
   type SearchCadence,
 } from "./recurringSearchModel";
@@ -48,21 +48,17 @@ export function RecurringSearches({ themes }: { themes: string[] }) {
   const [cadence, setCadence] = useState<SearchCadence>("daily");
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<string | null>(null);
+  const [editBase, setEditBase] = useState<RecurringSearch | null>(null);
   const formId = useId();
 
-  function save(next: RecurringSearch[]) {
-    setItems(next);
-    try {
-      localStorage.setItem(
-        RECURRING_SEARCHES_KEY,
-        serializeRecurringSearches(next),
-      );
-      setError("");
-    } catch {
-      setError(
-        "Recherches conservées pour cette session. Leur enregistrement sur l’appareil a échoué.",
-      );
-    }
+  useEffect(() => {
+    const reload = () => { try { setItems(parseRecurringSearches(localStorage.getItem(RECURRING_SEARCHES_KEY))); } catch { setError("Impossible de relire les recherches : stockage indisponible."); } };
+    window.addEventListener("storage", reload); window.addEventListener("journal360:recurring-change", reload); window.addEventListener("focus", reload);
+    return () => { window.removeEventListener("storage", reload); window.removeEventListener("journal360:recurring-change", reload); window.removeEventListener("focus", reload); };
+  }, []);
+  async function save(expected: RecurringSearch | null, next: RecurringSearch | null) {
+    try { setItems(await mutateRecurringSearch(expected, next)); setError(""); return true; }
+    catch (e) { setError(String(e)); return false; }
   }
   function reset() {
     setFormOpen(false);
@@ -72,7 +68,7 @@ export function RecurringSearches({ themes }: { themes: string[] }) {
     setQuery("");
     setCadence("daily");
   }
-  function submit(event: FormEvent) {
+  async function submit(event: FormEvent) {
     event.preventDefault();
     const name = theme.trim();
     if (!name) return;
@@ -89,7 +85,7 @@ export function RecurringSearches({ themes }: { themes: string[] }) {
       setMessage("Cette recherche est déjà enregistrée.");
       return;
     }
-    const previous = items.find((s) => s.id === editing);
+    const previous = editing ? editBase : null;
     const item: RecurringSearch = {
       id: editing || crypto.randomUUID(),
       theme: name,
@@ -97,11 +93,7 @@ export function RecurringSearches({ themes }: { themes: string[] }) {
       cadence,
       lastOpenedAt: previous?.query === text ? previous.lastOpenedAt : null,
     };
-    save(
-      editing
-        ? items.map((s) => (s.id === editing ? item : s))
-        : [...items, item],
-    );
+    if (!await save(previous || null, item)) return;
     setMessage(editing ? "Recherche modifiée." : "Recherche ajoutée.");
     reset();
   }
@@ -224,16 +216,8 @@ export function RecurringSearches({ themes }: { themes: string[] }) {
                   rel="noopener noreferrer"
                   referrerPolicy="no-referrer"
                   onClick={() => {
-                    save(
-                      items.map((s) =>
-                        s.id === search.id
-                          ? { ...s, lastOpenedAt: new Date().toISOString() }
-                          : s,
-                      ),
-                    );
-                    setMessage(
-                      `Recherche « ${search.theme} » ouverte sur Google.`,
-                    );
+                    void save(search, { ...search, lastOpenedAt: new Date().toISOString() });
+                    setMessage(`Recherche « ${search.theme} » ouverte sur Google.`);
                   }}
                 >
                   Rechercher sur Google
@@ -243,6 +227,7 @@ export function RecurringSearches({ themes }: { themes: string[] }) {
                   onClick={() => {
                     setFormOpen(true);
                     setEditing(search.id);
+                    setEditBase(search);
                     setTheme(search.theme);
                     setQuery(search.query);
                     setCadence(search.cadence);
@@ -255,8 +240,8 @@ export function RecurringSearches({ themes }: { themes: string[] }) {
                 </button>
                 <button
                   className="text-button"
-                  onClick={() => {
-                    save(items.filter((s) => s.id !== search.id));
+                  onClick={async () => {
+                    if (!await save(search, null)) return;
                     if (editing === search.id) reset();
                     setMessage("Recherche supprimée.");
                   }}

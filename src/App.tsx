@@ -1,4 +1,5 @@
 import { ReaderDefaults } from "./features/ReaderDefaults";
+import { PersonalBackupTools } from "./features/PersonalBackupTools";
 import { SegmentedBackupTools } from "./features/SegmentedBackupTools";
 import { QuickNews } from "./features/v9/QuickNews";
 import { hydrateQuickBriefs } from "./features/hydrateQuickBriefs";
@@ -1860,6 +1861,7 @@ function JournalApp() {
                       </p>
                     </section>
                     <ReaderDefaults />
+                    <PersonalBackupTools />
                     <SegmentedBackupTools />
                     <Diagnostics
                       value={

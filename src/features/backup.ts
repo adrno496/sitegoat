@@ -131,6 +131,16 @@ export async function inspectBackup(bytes: Uint8Array): Promise<BackupData> {
     const original = await f.async("uint8array");
     if (original.length !== e.size || (await hash(original)) !== e.sha256)
       throw new Error("Checksum invalide : aucune donnée restaurée.");
+    // Recognized projections are derived only from the checksum-verified HTML.
+    // Library title, flags, annotations and timestamps remain user-owned.
+    const { inspectHTML } = await import("./import");
+    const parsed = await inspectHTML("backup.html", original, e.demo);
+    if (parsed.unified || e.unified) {
+      if ((e.unified && canonicalJSON(e.unified) !== canonicalJSON(parsed.unified)) ||
+          canonicalJSON(e.articles) !== canonicalJSON(parsed.articles))
+        throw new Error("Projection différente de l’original : aucune donnée restaurée.");
+      e.unified = parsed.unified;
+    }
     // Rebuild from the checked original, including archives made by clients
     // predating V9. Never trust a companion substituted in the manifest.
     const companion = extractQuickBriefs(
