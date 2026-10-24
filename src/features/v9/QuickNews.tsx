@@ -1,3 +1,4 @@
+import { editionDateTime } from "../eventPresentation";
 import { EditorialMetadata } from "../editorialPresentation";
 import { RecurringSearches } from "./RecurringSearches";
 import { DisplayFilters } from "./preferences";
@@ -211,7 +212,7 @@ export function QuickNews({
                       ))}
                       {brief.history.map((h, n) => (
                         <p key={n}>
-                          {editionDateTime(h.edition)} · {h.item.title} ·{" "}
+                          Édition du {editionDateTime(h.edition)} · {h.item.title} ·{" "}
                           <a
                             href={h.item.source.url}
                             target="_blank"
