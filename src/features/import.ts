@@ -421,6 +421,7 @@ export function isolatedHTML(
   targetArticle?: Article,
   edition?: Edition,
   frameRevision = 0,
+  actionSession = "test-session",
 ) {
   const doc = new DOMParser().parseFromString(
     new TextDecoder().decode(bytes),
@@ -497,7 +498,7 @@ export function isolatedHTML(
   if (interactive) {
     if (edition?.unified) {
       const actions = doc.createElement("script");
-      actions.textContent = readerActionBridge(edition, frameRevision);
+      actions.textContent = readerActionBridge(edition, frameRevision, actionSession);
       csp.after(actions);
     }
     const googleAi = doc.createElement("script");

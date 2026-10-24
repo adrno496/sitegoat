@@ -105,6 +105,7 @@ export function Reader({
   );
   const [htmlZoom, setHtmlZoom] = useState(70);
   const [frameRevision, setFrameRevision] = useState(0);
+  const actionSession = useMemo(() => `${edition.id}:${mode}:${frameRevision}:${crypto.randomUUID()}`, [edition.id, mode, frameRevision]);
   // Monter le cadre avec son document final. Un srcdoc vide puis modifié après
   // montage peut rester blanc dans Chrome, surtout lors du changement de sandbox.
   const srcDoc = useMemo(
@@ -116,9 +117,10 @@ export function Reader({
             initialArticle,
             originalEdition,
             frameRevision,
+            actionSession,
           )
         : "",
-    [bytes, mode, initialArticle, originalEdition, frameRevision],
+    [bytes, mode, initialArticle, originalEdition, frameRevision, actionSession],
   );
   const originalNeedsScripts = useMemo(
     () => !!bytes && needsOriginalInteractions(bytes, edition.unified),
@@ -492,7 +494,7 @@ export function Reader({
         {mode === "safe"
           ? "Scripts et ressources externes bloqués. Les liens restent disponibles dans le sommaire textuel."
           : mode === "interactive"
-            ? "Scripts inline activés. Origine isolée, stockage intégré indisponible. Réservé aux fichiers de confiance."
+            ? "Scripts du document exécutés dans un cadre isolé selon votre mode interactif. Un script peut tenter de naviguer ce cadre et provoquer une requête réseau. Utilisez Sécurisé pour un fichier d’origine inconnue. Aucun accès au stockage parent dans les cas testés."
             : "Texte extrait localement, sans exécution du journal."}{" "}
         La progression est marquée manuellement.
       </p>
@@ -529,6 +531,7 @@ export function Reader({
         }
       >
         <OriginalActions
+          session={actionSession}
           edition={originalEdition}
           frame={iframeRef}
           mode={mode}

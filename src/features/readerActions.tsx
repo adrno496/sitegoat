@@ -33,26 +33,30 @@ export function readerAllowedLinks(e: Edition) {
   ];
 }
 
-export function readerActionBridge(e: Edition, revision: number) {
+export function readerActionBridge(e: Edition, revision: number, session = "test-session") {
   const data = JSON.stringify({
     links: readerAllowedLinks(e),
     prompts: e.unified?.promptAssets || [],
     hash: e.sha256,
     revision,
+    session,
   }).replaceAll("<", "\\u003c");
   return `(()=>{'use strict';const config=${data};
-const send=(kind,value)=>parent.postMessage({type:'journal360:reader-action:v1',hash:config.hash,revision:config.revision,kind,value},'*');
+const send=(kind,value)=>parent.postMessage({type:'journal360:reader-action:v2',hash:config.hash,revision:config.revision,session:config.session,requestId:crypto.randomUUID(),kind,value},'*');
 const checked=value=>{try{const u=new URL(value);if(u.origin==='https://www.google.com'&&u.pathname==='/search'){const q=u.searchParams.get('q');const match=config.links.find(v=>{const x=new URL(v);return x.origin===u.origin&&x.pathname===u.pathname&&x.searchParams.get('q')===q});return match||null}return config.links.includes(u.href)?u.href:null}catch{return null}};
 window.open=value=>{const url=checked(value);if(url)send('link',url);return null};
 const blobs=new Map(),create=URL.createObjectURL.bind(URL),revoke=URL.revokeObjectURL.bind(URL);
 URL.createObjectURL=blob=>{const url=create(blob);blobs.set(url,blob);return url};URL.revokeObjectURL=url=>{blobs.delete(url);revoke(url)};
-window.addEventListener('click',event=>{const a=event.target instanceof Element?event.target.closest('a'):null;if(!a||a.matches('[data-ai-link="google-ai-mode"]'))return;
+const handle=a=>{if(!a||a.matches('[data-ai-link="google-ai-mode"]'))return false;
 const href=a.getAttribute('data-j360-source')||a.getAttribute('href')||'';
-if(href.startsWith('#')||href.startsWith('about:srcdoc#'))return;
-event.preventDefault();event.stopImmediatePropagation();
-if(href.startsWith('blob:')){const blob=blobs.get(href);if(blob&&blob.size<=200000)blob.text().then(text=>{const p=config.prompts.find(p=>p.content===text);if(p)send('prompt',p.promptId)});return}
-const url=checked(href);if(url)send('link',url);
-},true);
+if(href.startsWith('#')||href.startsWith('about:srcdoc#'))return false;
+if(href.startsWith('blob:')){const blob=blobs.get(href),filename=a.getAttribute('download');if(blob&&blob.size<=200000)blob.text().then(text=>{const p=config.prompts.find(p=>p.content===text&&p.filename===filename);if(p)send('prompt',{id:p.promptId,filename:p.filename,content:text,sha256:p.sha256||null})});return true}
+const url=checked(href);if(url)send('link',url);return true};
+// Detached a.click() does not bubble to window. Intercept it without allowing
+// a native download. Attached anchors still pass through the capture listener.
+const nativeClick=HTMLAnchorElement.prototype.click;
+HTMLAnchorElement.prototype.click=function(){if(!this.isConnected&&handle(this))return;return nativeClick.call(this)};
+window.addEventListener('click',event=>{const a=event.target instanceof Element?event.target.closest('a'):null;if(handle(a)){event.preventDefault();event.stopImmediatePropagation()}},true);
 })();`;
 }
 
@@ -62,11 +66,13 @@ export function OriginalActions({
   mode,
   revision,
   onActiveChange,
+  session,
 }: {
   edition: Edition;
   frame: RefObject<HTMLIFrameElement | null>;
   mode: string;
   revision: number;
+  session: string;
   onActiveChange: (open: boolean) => void;
 }) {
   const [action, setAction] = useState<{
@@ -75,12 +81,17 @@ export function OriginalActions({
   } | null>(null);
   const [error, setError] = useState("");
   const dialog = useRef<HTMLElement>(null);
+  const busy = useRef(false);
+  const current = useRef({ edition, revision, session, mode });
+  current.current = { edition, revision, session, mode };
   useDialogFocus(!!action, () => setAction(null), dialog);
   useEffect(() => {
     onActiveChange(!!action);
   }, [action, onActiveChange]);
   useEffect(() => {
     setAction(null);
+    busy.current = false;
+    const seen = new Set<string>();
     const links = readerAllowedLinks(edition);
     const receive = (event: MessageEvent) => {
       const a = event.data;
@@ -91,25 +102,30 @@ export function OriginalActions({
         !a ||
         typeof a !== "object" ||
         Array.isArray(a) ||
-        Object.keys(a).sort().join() !== "hash,kind,revision,type,value" ||
-        a.type !== "journal360:reader-action:v1" ||
+        Object.keys(a).sort().join() !== "hash,kind,requestId,revision,session,type,value" ||
+        a.type !== "journal360:reader-action:v2" ||
         a.hash !== edition.sha256 ||
         a.revision !== revision ||
-        typeof a.value !== "string"
+        a.session !== session ||
+        typeof a.requestId !== "string" || a.requestId.length > 64 ||
+        seen.has(a.requestId) || seen.size >= 256
       )
         return;
+      seen.add(a.requestId);
+      const p = a.kind === "prompt" && a.value && typeof a.value === "object"
+        ? edition.unified?.promptAssets.find(p => p.promptId === a.value.id && p.filename === a.value.filename && p.content === a.value.content && (p.sha256 || null) === a.value.sha256 && Object.keys(a.value).sort().join() === "content,filename,id,sha256") : undefined;
       if (
         (a.kind === "link" && links.includes(a.value)) ||
         (a.kind === "prompt" &&
-          edition.unified?.promptAssets.some((p) => p.promptId === a.value))
+          !!p)
       ) {
         setError("");
-        setAction((previous) => previous || { kind: a.kind, value: a.value });
+        setAction((previous) => previous || { kind: a.kind, value: p ? p.promptId : a.value });
       }
     };
     window.addEventListener("message", receive);
     return () => window.removeEventListener("message", receive);
-  }, [edition, frame, mode, revision]);
+  }, [edition, frame, mode, revision, session]);
   if (!action) return null;
   const prompt =
     action.kind === "prompt"
@@ -137,6 +153,10 @@ export function OriginalActions({
             className="primary"
             onClick={() =>
               void (async () => {
+                if (busy.current) return;
+                busy.current = true;
+                const context = current.current;
+                const source = frame.current?.contentWindow;
                 try {
                   if (
                     prompt.sha256 &&
@@ -144,6 +164,7 @@ export function OriginalActions({
                       prompt.sha256
                   )
                     throw Error("Checksum Markdown invalide.");
+                  if (current.current.session !== context.session || current.current.revision !== context.revision || current.current.edition.id !== context.edition.id || current.current.mode !== context.mode || !source || source !== frame.current?.contentWindow || context.mode !== "interactive") throw Error("Cadre périmé : action annulée.");
                   const name = prompt.filename
                     .split(/[\\/]/)
                     .pop()!
@@ -158,7 +179,7 @@ export function OriginalActions({
                   setAction(null);
                 } catch (e) {
                   setError(String(e));
-                }
+                } finally { busy.current = false; }
               })()
             }
           >
