@@ -120,7 +120,7 @@ export function OriginalActions({
           !!p)
       ) {
         setError("");
-        setAction((previous) => previous || { kind: a.kind, value: p ? p.promptId : a.value });
+        setAction((previous) => { if (previous) return previous; busy.current = false; return { kind: a.kind, value: p ? p.promptId : a.value }; });
       }
     };
     window.addEventListener("message", receive);
@@ -178,8 +178,9 @@ export function OriginalActions({
                   );
                   setAction(null);
                 } catch (e) {
+                  busy.current = false;
                   setError(String(e));
-                } finally { busy.current = false; }
+                }
               })()
             }
           >

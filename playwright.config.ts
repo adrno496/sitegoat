@@ -11,6 +11,9 @@ export default defineConfig({
   ],
   use: {
     baseURL: "http://127.0.0.1:4181",
+    // Historical interaction scenarios retain their explicit interactive profile.
+    // SG-04 separately tests a genuinely fresh profile without this preference.
+    storageState: { cookies: [], origins: [{ origin: "http://127.0.0.1:4181", localStorage: [{name: "journal360.reader-default.v1", value: "interactive"}] }] },
     launchOptions: {
       proxy: { server: "http://127.0.0.1:4199", bypass: "127.0.0.1,localhost" },
     },
