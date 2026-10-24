@@ -79,14 +79,23 @@ export function createSourcesHandler({
         const verify =
           verifySession ||
           (async (t) => {
-            if (!env.SUPABASE_URL || !env.SUPABASE_SECRET_KEY) return null;
+            if (
+              !env.SUPABASE_URL ||
+              !env.SUPABASE_SECRET_KEY ||
+              !env.JOURNAL360_ACCOUNT_EMAIL
+            )
+              return null;
             const client = createClient(
               env.SUPABASE_URL,
               env.SUPABASE_SECRET_KEY,
               { auth: { persistSession: false, autoRefreshToken: false } },
             );
             const { data, error } = await client.auth.getUser(t);
-            return error ? null : data.user?.id;
+            return error ||
+              data.user?.email?.toLowerCase() !==
+                env.JOURNAL360_ACCOUNT_EMAIL.trim().toLowerCase()
+              ? null
+              : data.user.id;
           });
         const uid = await verify(token.slice(7));
         if (!uid) return reply(401, { code: "LOGIN_REQUIRED" });

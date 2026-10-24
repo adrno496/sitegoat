@@ -1,6 +1,10 @@
 // @vitest-environment node
 import { expect, it, vi } from "vitest";
 import { Readable } from "node:stream";
+const getUser = vi.hoisted(() => vi.fn());
+vi.mock("@supabase/supabase-js", () => ({
+  createClient: () => ({ auth: { getUser } }),
+}));
 // @ts-expect-error Server entry is JavaScript, independently checked by Node.
 import { createSourcesHandler } from "../api/sources.mjs";
 // @ts-expect-error Shared server parser is JavaScript.
@@ -278,4 +282,62 @@ it("Sources : limite de réponse, quota et clé absente restent des échecs expl
   await expect(
     fetchSource("ecb", "", {}, async () => new Response("invalid XML")),
   ).rejects.toMatchObject({ code: "INVALID_RESPONSE" });
+});
+
+it("Sources : une session valide d’un autre compte ne donne jamais accès aux clés", async () => {
+  const request = vi
+    .fn()
+    .mockImplementation(() =>
+      Promise.resolve(new Response(JSON.stringify({ results: [result] }))),
+    );
+  const handler = createSourcesHandler({
+    env: {
+      ...env,
+      SUPABASE_URL: "https://example.supabase.co",
+      SUPABASE_SECRET_KEY: "fixture-server",
+      JOURNAL360_ACCOUNT_EMAIL: "OWNER@example.org",
+    },
+    request,
+  });
+  getUser.mockResolvedValue({
+    data: { user: { id: "other", email: "other@example.org" } },
+    error: null,
+  });
+  expect(
+    (
+      await call(
+        handler,
+        { provider: "brave", query: "robotique" },
+        { token: "Bearer valid-other" },
+      )
+    ).status,
+  ).toBe(401);
+  expect(request).not.toHaveBeenCalled();
+  getUser.mockResolvedValue({
+    data: { user: { id: "owner", email: "owner@example.org" } },
+    error: null,
+  });
+  expect(
+    (
+      await call(
+        handler,
+        { provider: "brave", query: "robotique" },
+        { token: "Bearer valid-owner" },
+      )
+    ).status,
+  ).toBe(200);
+  getUser.mockResolvedValue({
+    data: { user: { id: "other", email: "other@example.org" } },
+    error: null,
+  });
+  expect(
+    (
+      await call(
+        handler,
+        { provider: "brave", query: "robotique" },
+        { token: "Bearer valid-other" },
+      )
+    ).status,
+  ).toBe(401);
+  expect(request).toHaveBeenCalledTimes(1);
 });
