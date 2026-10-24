@@ -1,0 +1,19 @@
+{
+  "environment": "Node / jsdom / fake-indexeddb, not a physical phone",
+  "documents": 1000,
+  "rawBytes": 6283780,
+  "backupBytes": 2215068,
+  "importMs": 5277.833875,
+  "listMetadataMs": 8.729874999999993,
+  "filterMs": 3.145499999999629,
+  "exportMs": 770.2143749999996,
+  "inspectMs": 922.9869580000004,
+  "restoreMs": 1639.8493340000005,
+  "rssBytes": [
+    140247040,
+    625491968,
+    691470336,
+    763789312
+  ],
+  "peakCheckpointRssBytes": 763789312
+}

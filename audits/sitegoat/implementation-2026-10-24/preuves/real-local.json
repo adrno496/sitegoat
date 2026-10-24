@@ -1,0 +1,16 @@
+{
+  "bytes": 282997,
+  "sha256": "8ae5eb2bea9dde338b09ba73d3b0082d278fb0ebf9d1472a9db479e6e111e45c",
+  "articles": 19,
+  "briefs": 35,
+  "prompts": 5,
+  "titles": 35,
+  "publicationsBeforeEdition": 19,
+  "briefsOn24": 1,
+  "reimports": 3,
+  "editions": 1,
+  "originals": 1,
+  "zipBytes": 123362,
+  "exportMs": 46.88304100000005,
+  "restored": true
+}

@@ -1,0 +1,33 @@
+{
+  "browser": "webkit",
+  "offline": true,
+  "native": [
+    {
+      "promptId": "prompt.agent.boundaries",
+      "bytes": 2391,
+      "shaValid": true
+    },
+    {
+      "promptId": "prompt.php.inventory",
+      "bytes": 1671,
+      "shaValid": true
+    },
+    {
+      "promptId": "prompt.formal.scoping",
+      "bytes": 1538,
+      "shaValid": true
+    },
+    {
+      "promptId": "prompt.dependencies.trust",
+      "bytes": 4724,
+      "shaValid": true
+    },
+    {
+      "promptId": "prompt.web.evidence",
+      "bytes": 3242,
+      "shaValid": true
+    }
+  ],
+  "fallbackExact": 5,
+  "reloadArticles": 19
+}

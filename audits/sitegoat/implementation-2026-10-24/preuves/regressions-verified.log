@@ -1,0 +1,30 @@
+[WebServer] (node:98534) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:98540) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 15 tests using 1 worker
+
+(node:98543) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/v6-future-atlas.spec.ts:412:1 › Atlas : parcours clavier des contrôles principaux, import annulable et focus rendu (2.1s)
+  ✓   2 [chromium] › tests/e2e/v7-unified.spec.ts:155:1 › V7 : mobile, clavier, thèmes, absence de données, sources, reduced motion et radar comparable (5.3s)
+  ✓   3 [chromium] › tests/e2e/v8-audit.spec.ts:48:1 › Audit P0/P1 : 10 h seul offline, huit cartes, résumés, fiches intégrales et trois Markdown exacts (5.9s)
+  ✓   4 [chromium] › tests/e2e/v8-audit.spec.ts:139:1 › Audit P0 : créneaux exacts, retour même filtre/position, historique navigateur et rechargement (2.7s)
+  ✓   5 [chromium] › tests/e2e/v9-recurring-searches.spec.ts:7:1 › Récurrent : thèmes, édition, recherche Google récente, persistance et suppression (3.5s)
+(node:98743) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   6 [webkit] › tests/e2e/v6-future-atlas.spec.ts:412:1 › Atlas : parcours clavier des contrôles principaux, import annulable et focus rendu (5.2s)
+  ✓   7 [webkit] › tests/e2e/v7-unified.spec.ts:155:1 › V7 : mobile, clavier, thèmes, absence de données, sources, reduced motion et radar comparable (8.0s)
+  ✓   8 [webkit] › tests/e2e/v8-audit.spec.ts:48:1 › Audit P0/P1 : 10 h seul offline, huit cartes, résumés, fiches intégrales et trois Markdown exacts (8.9s)
+  ✓   9 [webkit] › tests/e2e/v8-audit.spec.ts:139:1 › Audit P0 : créneaux exacts, retour même filtre/position, historique navigateur et rechargement (4.0s)
+  ✓  10 [webkit] › tests/e2e/v9-recurring-searches.spec.ts:7:1 › Récurrent : thèmes, édition, recherche Google récente, persistance et suppression (4.4s)
+(node:98878) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  11 [chromium-mobile] › tests/e2e/v6-future-atlas.spec.ts:412:1 › Atlas : parcours clavier des contrôles principaux, import annulable et focus rendu (2.0s)
+  ✓  12 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:155:1 › V7 : mobile, clavier, thèmes, absence de données, sources, reduced motion et radar comparable (4.7s)
+  ✓  13 [chromium-mobile] › tests/e2e/v8-audit.spec.ts:48:1 › Audit P0/P1 : 10 h seul offline, huit cartes, résumés, fiches intégrales et trois Markdown exacts (7.6s)
+  ✓  14 [chromium-mobile] › tests/e2e/v8-audit.spec.ts:139:1 › Audit P0 : créneaux exacts, retour même filtre/position, historique navigateur et rechargement (4.2s)
+  ✓  15 [chromium-mobile] › tests/e2e/v9-recurring-searches.spec.ts:7:1 › Récurrent : thèmes, édition, recherche Google récente, persistance et suppression (6.2s)
+
+  15 passed (1.3m)

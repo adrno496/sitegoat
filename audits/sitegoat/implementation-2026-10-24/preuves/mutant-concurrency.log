@@ -1,0 +1,50 @@
+
+ RUN  v5.0.4 /private/var/folders/4l/2_lxwmg92_bgxyw0d_dzyw700000gn/T/sitegoat-concurrency-mutant-V5wZax
+
+ ❯ tests/sitegoat-personal.unit.test.ts (2 tests | 1 failed | 1 skipped) 12ms
+   × SG-08 : deux créations simultanées, conflit même ID visible, suppression et panne préservent les recherches 11ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 skipped (2)
+   Start at  16:31:51
+   Duration  609ms (environment 44%, transform 31%, import 19%, setup 3%, tests 2%, worker 1%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/sitegoat-personal.unit.test.ts > SG-08 : deux créations simultanées, conflit même ID visible, suppression et panne préservent les recherches
+AssertionError: promise resolved "[ { …(5) }, { …(5) } ]" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+[
+  {
+    "cadence": "weekly",
+    "id": "fe7a83a5-bbd3-4d82-a9d4-69669bbc4941",
+    "lastOpenedAt": null,
+    "query": "Recherche publique",
+    "theme": "SYNTHÉTIQUE",
+  },
+  {
+    "cadence": "weekly",
+    "id": "cdd5519a-c0a7-43f7-bcf6-cdb1b8f66ea1",
+    "lastOpenedAt": null,
+    "query": "Recherche publique",
+    "theme": "Ancien onglet",
+  },
+]
+
+ ❯ tests/sitegoat-personal.unit.test.ts:83:4
+     81|   await expect(
+     82|     mutateRecurringSearch(a, { ...a, theme: "Ancien onglet" }, s, l),
+     83|   ).rejects.toThrow("autre onglet");
+       |    ^
+     84|   await mutateRecurringSearch(b, null, s, l);
+     85|   expect(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

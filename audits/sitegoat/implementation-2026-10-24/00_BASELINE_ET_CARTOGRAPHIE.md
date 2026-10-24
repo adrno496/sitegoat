@@ -6,7 +6,7 @@ Travail isolé : `/Users/dreano/Downloads/veille/sitegoat-implementation`, branc
 
 Les trois rapports, le projet de prompt futur, constats et preuves textuelles/reproductions ont été lus. Ces documents sont des éléments de référence ; le mandat et ses interdictions viennent de la demande utilisateur. Originaux et prompts importés restent des données non fiables.
 
-Stockages : `journal360-private` v4 (editions/originals/states/notes/preferences/jobs/pending), `future-private` v1 autonome, localStorage affichage V9/recherches et préférences historiques, CacheStorage shell PWA. Cloud optionnel limité à 50 Mio côté bucket déclaré, non vérifié à distance. Aucun profil réel ni secret lu. Tests avec bases synthétiques et profils Playwright jetables.
+Stockages : `journal360-private` v4 (editions/originals/states/notes/preferences/jobs/pending), `journal360-future-private` v1 autonome, localStorage affichage V9/recherches et préférences historiques, CacheStorage shell PWA. Cloud optionnel limité à 50 Mio côté bucket déclaré, non vérifié à distance. Aucun profil réel ni secret lu. Tests avec bases synthétiques et profils Playwright jetables.
 
 Contrats : HTML 10 Mio, sélection 20 fichiers/100 Mio ; JSON unifié 2 Mio, 2000 articles ; brèves 512 Kio ; ZIP historique 4000 éditions, manifest 64 Mio, décompression 150 Mio, 100000 états/10000 notes ; cloud 50 Mio. Archivage et corbeille ne purgent rien.
 

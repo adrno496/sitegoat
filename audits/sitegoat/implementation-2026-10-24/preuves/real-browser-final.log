@@ -1,0 +1,18 @@
+[WebServer] (node:2865) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:2866) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:2867) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/local/sitegoat-real.spec.ts:4:1 › référence réelle : cinq boutons natifs et cinq replis UTF-8/SHA exacts, hors ligne (3.4s)
+(node:2885) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [webkit] › tests/local/sitegoat-real.spec.ts:4:1 › référence réelle : cinq boutons natifs et cinq replis UTF-8/SHA exacts, hors ligne (5.3s)
+(node:2913) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [chromium-mobile] › tests/local/sitegoat-real.spec.ts:4:1 › référence réelle : cinq boutons natifs et cinq replis UTF-8/SHA exacts, hors ligne (3.6s)
+
+  3 passed (14.6s)

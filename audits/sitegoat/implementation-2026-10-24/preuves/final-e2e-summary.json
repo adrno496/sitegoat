@@ -1,0 +1,18 @@
+{
+  "stats": {
+    "startTime": "2026-10-24T14:28:49.794Z",
+    "duration": 908780.51,
+    "expected": 289,
+    "skipped": 1,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "skipped": [
+    {
+      "title": "tactile Chromium r\u00e9el : le d\u00e9filement du HTML reste libre et le glissement au bord revient",
+      "file": "v6-clean-reader.spec.ts",
+      "project": "webkit"
+    }
+  ],
+  "retries": 0
+}

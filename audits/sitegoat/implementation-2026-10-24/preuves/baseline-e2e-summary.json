@@ -1,0 +1,310 @@
+{
+  "stats": {
+    "startTime": "2026-10-24T13:38:41.993Z",
+    "duration": 1676847.979,
+    "expected": 243,
+    "skipped": 1,
+    "unexpected": 28,
+    "flaky": 0
+  },
+  "failures": [
+    {
+      "title": "articles : import, filtres, lecture, sources, favoris, retour du journal et persistance",
+      "file": "v6-articles.spec.ts",
+      "line": 33,
+      "project": "chromium",
+      "status": "unexpected",
+      "errors": [
+        "\u001b[31mTest timeout of 45000ms exceeded.\u001b[39m",
+        "Error: locator.click: Test timeout of 45000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.articles-filter-options summary')\u001b[22m\n\n\n  58 |   await expect(page.locator(\".article-card\")).toHaveCount(1);\n  59 |   await page.getByRole(\"button\", { name: \"Effacer les filtres\" }).click();\n> 60 |   await page.locator(\".articles-filter-options summary\").click();\n     |                                                          ^\n  61 |   await page\n  62 |     .getByRole(\"combobox\", { name: \"Rubrique\", exact: true })\n  63 |     .selectOption(\"Science\");\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v6-articles.spec.ts:60:58"
+      ]
+    },
+    {
+      "title": "sommaire : ouvre l\u2019analyse compl\u00e8te dans le HTML dynamique et conserve les questions Google du journal",
+      "file": "v6-articles.spec.ts",
+      "line": 273,
+      "project": "chromium",
+      "status": "unexpected",
+      "errors": [
+        "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).not.\u001b[22mtoHaveAttribute\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.articles-filter-options')\nExpected: not \u001b[32m\"\"\u001b[39m\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"not toHaveAttribute\" locator('.articles-filter-options') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.articles-filter-options')\u001b[22m\n\n\n  292 |   if (await notification.isVisible()) await notification.click();\n  293 |   await nav(page);\n> 294 |   await expect(page.locator(\".articles-filter-options\")).not.toHaveAttribute(\n      |                                                              ^\n  295 |     \"open\",\n  296 |     \"\",\n  297 |   );\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v6-articles.spec.ts:294:62"
+      ]
+    },
+    {
+      "title": "articles : import, filtres, lecture, sources, favoris, retour du journal et persistance",
+      "file": "v6-articles.spec.ts",
+      "line": 33,
+      "project": "webkit",
+      "status": "unexpected",
+      "errors": [
+        "\u001b[31mTest timeout of 45000ms exceeded.\u001b[39m",
+        "Error: locator.click: Test timeout of 45000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.articles-filter-options summary')\u001b[22m\n\n\n  58 |   await expect(page.locator(\".article-card\")).toHaveCount(1);\n  59 |   await page.getByRole(\"button\", { name: \"Effacer les filtres\" }).click();\n> 60 |   await page.locator(\".articles-filter-options summary\").click();\n     |                                                          ^\n  61 |   await page\n  62 |     .getByRole(\"combobox\", { name: \"Rubrique\", exact: true })\n  63 |     .selectOption(\"Science\");\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v6-articles.spec.ts:60:58"
+      ]
+    },
+    {
+      "title": "sommaire : ouvre l\u2019analyse compl\u00e8te dans le HTML dynamique et conserve les questions Google du journal",
+      "file": "v6-articles.spec.ts",
+      "line": 273,
+      "project": "webkit",
+      "status": "unexpected",
+      "errors": [
+        "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).not.\u001b[22mtoHaveAttribute\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.articles-filter-options')\nExpected: not \u001b[32m\"\"\u001b[39m\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"not toHaveAttribute\" locator('.articles-filter-options') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.articles-filter-options')\u001b[22m\n\n\n  292 |   if (await notification.isVisible()) await notification.click();\n  293 |   await nav(page);\n> 294 |   await expect(page.locator(\".articles-filter-options\")).not.toHaveAttribute(\n      |                                                              ^\n  295 |     \"open\",\n  296 |     \"\",\n  297 |   );\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v6-articles.spec.ts:294:62"
+      ]
+    },
+    {
+      "title": "articles : import, filtres, lecture, sources, favoris, retour du journal et persistance",
+      "file": "v6-articles.spec.ts",
+      "line": 33,
+      "project": "chromium-mobile",
+      "status": "unexpected",
+      "errors": [
+        "\u001b[31mTest timeout of 45000ms exceeded.\u001b[39m",
+        "Error: locator.click: Test timeout of 45000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.articles-filter-options summary')\u001b[22m\n\n\n  58 |   await expect(page.locator(\".article-card\")).toHaveCount(1);\n  59 |   await page.getByRole(\"button\", { name: \"Effacer les filtres\" }).click();\n> 60 |   await page.locator(\".articles-filter-options summary\").click();\n     |                                                          ^\n  61 |   await page\n  62 |     .getByRole(\"combobox\", { name: \"Rubrique\", exact: true })\n  63 |     .selectOption(\"Science\");\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v6-articles.spec.ts:60:58"
+      ]
+    },
+    {
+      "title": "sommaire : ouvre l\u2019analyse compl\u00e8te dans le HTML dynamique et conserve les questions Google du journal",
+      "file": "v6-articles.spec.ts",
+      "line": 273,
+      "project": "chromium-mobile",
+      "status": "unexpected",
+      "errors": [
+        "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).not.\u001b[22mtoHaveAttribute\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.articles-filter-options')\nExpected: not \u001b[32m\"\"\u001b[39m\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"not toHaveAttribute\" locator('.articles-filter-options') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.articles-filter-options')\u001b[22m\n\n\n  292 |   if (await notification.isVisible()) await notification.click();\n  293 |   await nav(page);\n> 294 |   await expect(page.locator(\".articles-filter-options\")).not.toHaveAttribute(\n      |                                                              ^\n  295 |     \"open\",\n  296 |     \"\",\n  297 |   );\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v6-articles.spec.ts:294:62"
+      ]
+    },
+    {
+      "title": "navigation mobile visible et accessibilit\u00e9 des deux nouveaux espaces",
+      "file": "v6-collections.spec.ts",
+      "line": 128,
+      "project": "chromium",
+      "status": "unexpected",
+      "errors": [
+        "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('.mobile-nav button:visible')\nExpected: \u001b[32m11\u001b[39m\nReceived: \u001b[31m12\u001b[39m\nTimeout:  10000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" locator('.mobile-nav button:visible') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.mobile-nav button:visible')\u001b[22m\n\u001b[2m    24 \u00d7 locator resolved to 12 elements\u001b[22m\n\u001b[2m       - unexpected value \"12\"\u001b[22m\n\n\n  149 |     ).toBe(true);\n  150 |     if (width < 700)\n> 151 |       await expect(page.locator(\".mobile-nav button:visible\")).toHaveCount(11);\n      |                                                                ^\n  152 |   }\n  153 |   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);\n  154 |   await page.screenshot({\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v6-collections.spec.ts:151:64"
+      ]
+    },
+    {
+      "title": "navigation mobile visible et accessibilit\u00e9 des deux nouveaux espaces",
+      "file": "v6-collections.spec.ts",
+      "line": 128,
+      "project": "webkit",
+      "status": "unexpected",
+      "errors": [
+        "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('.mobile-nav button:visible')\nExpected: \u001b[32m11\u001b[39m\nReceived: \u001b[31m12\u001b[39m\nTimeout:  10000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" locator('.mobile-nav button:visible') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.mobile-nav button:visible')\u001b[22m\n\u001b[2m    24 \u00d7 locator resolved to 12 elements\u001b[22m\n\u001b[2m       - unexpected value \"12\"\u001b[22m\n\n\n  149 |     ).toBe(true);\n  150 |     if (width < 700)\n> 151 |       await expect(page.locator(\".mobile-nav button:visible\")).toHaveCount(11);\n      |                                                                ^\n  152 |   }\n  153 |   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);\n  154 |   await page.screenshot({\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v6-collections.spec.ts:151:64"
+      ]
+    },
+    {
+      "title": "navigation mobile visible et accessibilit\u00e9 des deux nouveaux espaces",
+      "file": "v6-collections.spec.ts",
+      "line": 128,
+      "project": "chromium-mobile",
+      "status": "unexpected",
+      "errors": [
+        "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('.mobile-nav button:visible')\nExpected: \u001b[32m11\u001b[39m\nReceived: \u001b[31m12\u001b[39m\nTimeout:  10000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" locator('.mobile-nav button:visible') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.mobile-nav button:visible')\u001b[22m\n\u001b[2m    24 \u00d7 locator resolved to 12 elements\u001b[22m\n\u001b[2m       - unexpected value \"12\"\u001b[22m\n\n\n  149 |     ).toBe(true);\n  150 |     if (width < 700)\n> 151 |       await expect(page.locator(\".mobile-nav button:visible\")).toHaveCount(11);\n      |                                                                ^\n  152 |   }\n  153 |   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);\n  154 |   await page.screenshot({\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v6-collections.spec.ts:151:64"
+      ]
+    },
+    {
+      "title": "lot d\u00e9sordonn\u00e9, doublon renomm\u00e9 et nouvelle journ\u00e9e : la derni\u00e8re \u00e9dition reste seule, recherche limit\u00e9e au HTML courant",
+      "file": "v6-daily.spec.ts",
+      "line": 117,
+      "project": "chromium",
+      "status": "unexpected",
+      "errors": [
+        "Error: browserContext.close: ENOENT: no such file or directory, open '/Users/dreano/Downloads/veille/sitegoat-implementation/test-results/.playwright-artifacts-3/traces/58db768bd87658bda425-c6b0eda026e60b658497-recording4.trace'"
+      ]
+    },
+    {
+      "title": "Atlas P0 : compteurs r\u00e9els, filtres, favoris, pagination et retour du focus",
+      "file": "v6-future-atlas.spec.ts",
+      "line": 54,
+      "project": "chromium",
+      "status": "unexpected",
+      "errors": [
+        "\u001b[31mTest timeout of 45000ms exceeded.\u001b[39m",
+        "Error: locator.evaluate: Test timeout of 45000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.future-filter-panel')\u001b[22m\n\n\n  75 |   );\n  76 |   const filter = page.locator(\".future-filter-panel\");\n> 77 |   if (!(await filter.evaluate((e) => (e as HTMLDetailsElement).open)))\n     |                      ^\n  78 |     await filter.locator(\"summary\").click();\n  79 |   await page.getByLabel(\"Rechercher un dossier\").fill(\"introuvable\");\n  80 |   await expect(page.locator(\".future-card\")).toHaveCount(0);\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v6-future-atlas.spec.ts:77:22"
+      ]
+    },
+    {
+      "title": "Atlas : parcours clavier des contr\u00f4les principaux, import annulable et focus rendu",
+      "file": "v6-future-atlas.spec.ts",
+      "line": 412,
+      "project": "chromium",
+      "status": "unexpected",
+      "errors": [
+        "\u001b[31mTest timeout of 45000ms exceeded.\u001b[39m",
+        "Error: locator.focus: Test timeout of 45000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.future-filter-panel summary')\u001b[22m\n\n\n  432 |   await expect(page.locator(\".future-title\").first()).toBeVisible();\n  433 |   const filters = page.locator(\".future-filter-panel summary\");\n> 434 |   await filters.focus();\n      |                 ^\n  435 |   if (\n  436 |     !(await page\n  437 |       .locator(\".future-filter-panel\")\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v6-future-atlas.spec.ts:434:17"
+      ]
+    },
+    {
+      "title": "Atlas P0 : compteurs r\u00e9els, filtres, favoris, pagination et retour du focus",
+      "file": "v6-future-atlas.spec.ts",
+      "line": 54,
+      "project": "webkit",
+      "status": "unexpected",
+      "errors": [
+        "\u001b[31mTest timeout of 45000ms exceeded.\u001b[39m",
+        "Error: locator.evaluate: Test timeout of 45000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.future-filter-panel')\u001b[22m\n\n\n  75 |   );\n  76 |   const filter = page.locator(\".future-filter-panel\");\n> 77 |   if (!(await filter.evaluate((e) => (e as HTMLDetailsElement).open)))\n     |                      ^\n  78 |     await filter.locator(\"summary\").click();\n  79 |   await page.getByLabel(\"Rechercher un dossier\").fill(\"introuvable\");\n  80 |   await expect(page.locator(\".future-card\")).toHaveCount(0);\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v6-future-atlas.spec.ts:77:22"
+      ]
+    },
+    {
+      "title": "Atlas : parcours clavier des contr\u00f4les principaux, import annulable et focus rendu",
+      "file": "v6-future-atlas.spec.ts",
+      "line": 412,
+      "project": "webkit",
+      "status": "unexpected",
+      "errors": [
+        "\u001b[31mTest timeout of 45000ms exceeded.\u001b[39m",
+        "Error: locator.focus: Test timeout of 45000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.future-filter-panel summary')\u001b[22m\n\n\n  432 |   await expect(page.locator(\".future-title\").first()).toBeVisible();\n  433 |   const filters = page.locator(\".future-filter-panel summary\");\n> 434 |   await filters.focus();\n      |                 ^\n  435 |   if (\n  436 |     !(await page\n  437 |       .locator(\".future-filter-panel\")\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v6-future-atlas.spec.ts:434:17"
+      ]
+    },
+    {
+      "title": "Atlas P0 : compteurs r\u00e9els, filtres, favoris, pagination et retour du focus",
+      "file": "v6-future-atlas.spec.ts",
+      "line": 54,
+      "project": "chromium-mobile",
+      "status": "unexpected",
+      "errors": [
+        "\u001b[31mTest timeout of 45000ms exceeded.\u001b[39m",
+        "Error: locator.evaluate: Test timeout of 45000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.future-filter-panel')\u001b[22m\n\n\n  75 |   );\n  76 |   const filter = page.locator(\".future-filter-panel\");\n> 77 |   if (!(await filter.evaluate((e) => (e as HTMLDetailsElement).open)))\n     |                      ^\n  78 |     await filter.locator(\"summary\").click();\n  79 |   await page.getByLabel(\"Rechercher un dossier\").fill(\"introuvable\");\n  80 |   await expect(page.locator(\".future-card\")).toHaveCount(0);\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v6-future-atlas.spec.ts:77:22"
+      ]
+    },
+    {
+      "title": "Atlas : parcours clavier des contr\u00f4les principaux, import annulable et focus rendu",
+      "file": "v6-future-atlas.spec.ts",
+      "line": 412,
+      "project": "chromium-mobile",
+      "status": "unexpected",
+      "errors": [
+        "\u001b[31mTest timeout of 45000ms exceeded.\u001b[39m",
+        "Error: locator.focus: Test timeout of 45000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.future-filter-panel summary')\u001b[22m\n\n\n  432 |   await expect(page.locator(\".future-title\").first()).toBeVisible();\n  433 |   const filters = page.locator(\".future-filter-panel summary\");\n> 434 |   await filters.focus();\n      |                 ^\n  435 |   if (\n  436 |     !(await page\n  437 |       .locator(\".future-filter-panel\")\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v6-future-atlas.spec.ts:434:17"
+      ]
+    },
+    {
+      "title": "V7 : mobile, clavier, th\u00e8mes, absence de donn\u00e9es, sources, reduced motion et radar comparable",
+      "file": "v7-unified.spec.ts",
+      "line": 155,
+      "project": "chromium",
+      "status": "unexpected",
+      "errors": [
+        "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.unified-workspace').getByLabel('Zone \u00e9conomique')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" locator('.unified-workspace').getByLabel('Zone \u00e9conomique') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.unified-workspace').getByLabel('Zone \u00e9conomique')\u001b[22m\n\n\n  172 |   await w.getByRole(\"button\", { name: \"\u00c9conomie\", exact: true }).focus();\n  173 |   await page.keyboard.press(\"Enter\");\n> 174 |   await expect(w.getByLabel(\"Zone \u00e9conomique\")).toBeVisible();\n      |                                                 ^\n  175 |   await w.getByLabel(\"Zone \u00e9conomique\").selectOption(\"FR\");\n  176 |   await expect(w.locator(\".unified-zones>article\")).toHaveCount(1);\n  177 |   await expect(w).toContainText(\"+1 points fictifs depuis 2026-08\");\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v7-unified.spec.ts:174:49"
+      ]
+    },
+    {
+      "title": "V7 : HTML hostile lu sans scripts, question publique conserv\u00e9e, prompt priv\u00e9 non transmis",
+      "file": "v7-unified.spec.ts",
+      "line": 228,
+      "project": "chromium",
+      "status": "unexpected",
+      "errors": [
+        "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveAttribute\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('.edition-frame')\nExpected: \u001b[32m\"\"\u001b[39m\nReceived: \u001b[31m\"allow-scripts\"\u001b[39m\nTimeout:  10000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveAttribute\" locator('.edition-frame') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.edition-frame')\u001b[22m\n\u001b[2m    24 \u00d7 locator resolved to <iframe class=\"edition-frame\" sandbox=\"allow-scripts\" referrerpolicy=\"no-referrer\" title=\"Lecture de Journal 360\u00b0 UNIFI\u00c9 \u2014 2026-10-19 \u2014 22:00 \u2014 SYNTH\u00c9TIQUE\" srcdoc=\"<!DOCTYPE html>\u21b5<html><head><meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; media-src data: blob:; connect-src 'none'; object-src 'none'; frame-src 'none'; form-action 'none'; base-uri 'none'\"><script>(()=>{\u21b5  for(const type \u2026></iframe>\u001b[22m\n\u001b[2m       - unexpected value \"allow-scripts\"\u001b[22m\n\n\n  257 |     .getByRole(\"button\", { name: \"R\u00e9duire la lecture\", exact: true })\n  258 |     .click();\n> 259 |   await expect(page.locator(\".edition-frame\")).toHaveAttribute(\"sandbox\", \"\");\n      |                                                ^\n  260 |   expect(\n  261 |     await page\n  262 |       .frameLocator(\".edition-frame\")\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v7-unified.spec"
+      ]
+    },
+    {
+      "title": "V7 : mobile, clavier, th\u00e8mes, absence de donn\u00e9es, sources, reduced motion et radar comparable",
+      "file": "v7-unified.spec.ts",
+      "line": 155,
+      "project": "webkit",
+      "status": "unexpected",
+      "errors": [
+        "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.unified-workspace').getByLabel('Zone \u00e9conomique')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" locator('.unified-workspace').getByLabel('Zone \u00e9conomique') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.unified-workspace').getByLabel('Zone \u00e9conomique')\u001b[22m\n\n\n  172 |   await w.getByRole(\"button\", { name: \"\u00c9conomie\", exact: true }).focus();\n  173 |   await page.keyboard.press(\"Enter\");\n> 174 |   await expect(w.getByLabel(\"Zone \u00e9conomique\")).toBeVisible();\n      |                                                 ^\n  175 |   await w.getByLabel(\"Zone \u00e9conomique\").selectOption(\"FR\");\n  176 |   await expect(w.locator(\".unified-zones>article\")).toHaveCount(1);\n  177 |   await expect(w).toContainText(\"+1 points fictifs depuis 2026-08\");\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v7-unified.spec.ts:174:49"
+      ]
+    },
+    {
+      "title": "V7 : HTML hostile lu sans scripts, question publique conserv\u00e9e, prompt priv\u00e9 non transmis",
+      "file": "v7-unified.spec.ts",
+      "line": 228,
+      "project": "webkit",
+      "status": "unexpected",
+      "errors": [
+        "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveAttribute\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('.edition-frame')\nExpected: \u001b[32m\"\"\u001b[39m\nReceived: \u001b[31m\"allow-scripts\"\u001b[39m\nTimeout:  10000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveAttribute\" locator('.edition-frame') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.edition-frame')\u001b[22m\n\u001b[2m    24 \u00d7 locator resolved to <iframe class=\"edition-frame\" sandbox=\"allow-scripts\" referrerpolicy=\"no-referrer\" title=\"Lecture de Journal 360\u00b0 UNIFI\u00c9 \u2014 2026-10-19 \u2014 22:00 \u2014 SYNTH\u00c9TIQUE\" srcdoc=\"<!DOCTYPE html>\u21b5<html><head><meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; media-src data: blob:; connect-src 'none'; object-src 'none'; frame-src 'none'; form-action 'none'; base-uri 'none'\"><script>(()=>{\u21b5  for(const type \u2026></iframe>\u001b[22m\n\u001b[2m       - unexpected value \"allow-scripts\"\u001b[22m\n\n\n  257 |     .getByRole(\"button\", { name: \"R\u00e9duire la lecture\", exact: true })\n  258 |     .click();\n> 259 |   await expect(page.locator(\".edition-frame\")).toHaveAttribute(\"sandbox\", \"\");\n      |                                                ^\n  260 |   expect(\n  261 |     await page\n  262 |       .frameLocator(\".edition-frame\")\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v7-unified.spec"
+      ]
+    },
+    {
+      "title": "V7 : mobile, clavier, th\u00e8mes, absence de donn\u00e9es, sources, reduced motion et radar comparable",
+      "file": "v7-unified.spec.ts",
+      "line": 155,
+      "project": "chromium-mobile",
+      "status": "unexpected",
+      "errors": [
+        "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.unified-workspace').getByLabel('Zone \u00e9conomique')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" locator('.unified-workspace').getByLabel('Zone \u00e9conomique') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.unified-workspace').getByLabel('Zone \u00e9conomique')\u001b[22m\n\n\n  172 |   await w.getByRole(\"button\", { name: \"\u00c9conomie\", exact: true }).focus();\n  173 |   await page.keyboard.press(\"Enter\");\n> 174 |   await expect(w.getByLabel(\"Zone \u00e9conomique\")).toBeVisible();\n      |                                                 ^\n  175 |   await w.getByLabel(\"Zone \u00e9conomique\").selectOption(\"FR\");\n  176 |   await expect(w.locator(\".unified-zones>article\")).toHaveCount(1);\n  177 |   await expect(w).toContainText(\"+1 points fictifs depuis 2026-08\");\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v7-unified.spec.ts:174:49"
+      ]
+    },
+    {
+      "title": "V7 : HTML hostile lu sans scripts, question publique conserv\u00e9e, prompt priv\u00e9 non transmis",
+      "file": "v7-unified.spec.ts",
+      "line": 228,
+      "project": "chromium-mobile",
+      "status": "unexpected",
+      "errors": [
+        "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveAttribute\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('.edition-frame')\nExpected: \u001b[32m\"\"\u001b[39m\nReceived: \u001b[31m\"allow-scripts\"\u001b[39m\nTimeout:  10000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveAttribute\" locator('.edition-frame') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.edition-frame')\u001b[22m\n\u001b[2m    24 \u00d7 locator resolved to <iframe class=\"edition-frame\" sandbox=\"allow-scripts\" referrerpolicy=\"no-referrer\" title=\"Lecture de Journal 360\u00b0 UNIFI\u00c9 \u2014 2026-10-19 \u2014 22:00 \u2014 SYNTH\u00c9TIQUE\" srcdoc=\"<!DOCTYPE html>\u21b5<html><head><meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; media-src data: blob:; connect-src 'none'; object-src 'none'; frame-src 'none'; form-action 'none'; base-uri 'none'\"><script>(()=>{\u21b5  for(const type \u2026></iframe>\u001b[22m\n\u001b[2m       - unexpected value \"allow-scripts\"\u001b[22m\n\n\n  257 |     .getByRole(\"button\", { name: \"R\u00e9duire la lecture\", exact: true })\n  258 |     .click();\n> 259 |   await expect(page.locator(\".edition-frame\")).toHaveAttribute(\"sandbox\", \"\");\n      |                                                ^\n  260 |   expect(\n  261 |     await page\n  262 |       .frameLocator(\".edition-frame\")\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v7-unified.spec"
+      ]
+    },
+    {
+      "title": "Audit P0/P1 : 10 h seul offline, huit cartes, r\u00e9sum\u00e9s, fiches int\u00e9grales et trois Markdown exacts",
+      "file": "v8-audit.spec.ts",
+      "line": 48,
+      "project": "chromium",
+      "status": "unexpected",
+      "errors": [
+        "\u001b[31mTest timeout of 45000ms exceeded.\u001b[39m",
+        "Error: locator.click: Test timeout of 45000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.unified-workspace').getByText('Affiner et trier', { exact: true })\u001b[22m\n\n\n  63 |   ).toBeDisabled();\n  64 |   await nav(page, \"Aujourd\u2019hui\");\n> 65 |   await root.getByText(\"Affiner et trier\", { exact: true }).click();\n     |                                                             ^\n  66 |   if (await root.getByLabel(\"Premi\u00e8re apparition\", { exact: true }).isHidden())\n  67 |     await root.getByText(\"Affiner et trier\", { exact: true }).click();\n  68 |   await root\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v8-audit.spec.ts:65:61"
+      ]
+    },
+    {
+      "title": "Audit P0 : cr\u00e9neaux exacts, retour m\u00eame filtre/position, historique navigateur et rechargement",
+      "file": "v8-audit.spec.ts",
+      "line": 132,
+      "project": "chromium",
+      "status": "unexpected",
+      "errors": [
+        "\u001b[31mTest timeout of 45000ms exceeded.\u001b[39m",
+        "Error: apiRequestContext._wrapApiCall: ENOENT: no such file or directory, copyfile '/Users/dreano/Downloads/veille/sitegoat-implementation/test-results/.playwright-artifacts-9/traces/a4bc7f76bb0409b150ac-4046dab59a18a08f04e8-recording1.network' -> '/Users/dreano/Downloads/veille/sitegoat-implementation/test-results/.playwright-artifacts-9/traces/a4bc7f76bb0409b150ac-4046dab59a18a08f04e8-recording1-pwnetcopy-1.network'",
+        "Error: browserContext._wrapApiCall: ENOENT: no such file or directory, open '/Users/dreano/Downloads/veille/sitegoat-implementation/test-results/.playwright-artifacts-9/traces/a4bc7f76bb0409b150ac-4046dab59a18a08f04e8.trace'",
+        "Error: locator.click: Test ended.\nCall log:\n\u001b[2m  - waiting for locator('.unified-workspace').getByText('Affiner et trier', { exact: true })\u001b[22m\n\n\n  141 |   await expect(root.locator(\".unified-masthead h1\")).toHaveText(\"Aujourd\u2019hui\");\n  142 |   if (await root.getByLabel(\"Premi\u00e8re apparition\", { exact: true }).isHidden())\n> 143 |     await root.getByText(\"Affiner et trier\", { exact: true }).click();\n      |                                                               ^\n  144 |   await root\n  145 |     .getByLabel(\"Premi\u00e8re apparition\", { exact: true })\n  146 |     .selectOption(\"08:00\");\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v8-audit.spec.ts:143:63",
+        "Error: ENOENT: no such file or directory, open '/Users/dreano/Downloads/veille/sitegoat-implementation/test-results/.playwright-artifacts-9/75d5817f5cb9ec687a5b848eaf9571d2.zip'"
+      ]
+    },
+    {
+      "title": "Audit P0/P1 : 10 h seul offline, huit cartes, r\u00e9sum\u00e9s, fiches int\u00e9grales et trois Markdown exacts",
+      "file": "v8-audit.spec.ts",
+      "line": 48,
+      "project": "webkit",
+      "status": "unexpected",
+      "errors": [
+        "\u001b[31mTest timeout of 45000ms exceeded.\u001b[39m",
+        "Error: locator.click: Test timeout of 45000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.unified-workspace').getByText('Affiner et trier', { exact: true })\u001b[22m\n\n\n  63 |   ).toBeDisabled();\n  64 |   await nav(page, \"Aujourd\u2019hui\");\n> 65 |   await root.getByText(\"Affiner et trier\", { exact: true }).click();\n     |                                                             ^\n  66 |   if (await root.getByLabel(\"Premi\u00e8re apparition\", { exact: true }).isHidden())\n  67 |     await root.getByText(\"Affiner et trier\", { exact: true }).click();\n  68 |   await root\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v8-audit.spec.ts:65:61"
+      ]
+    },
+    {
+      "title": "Audit P0 : cr\u00e9neaux exacts, retour m\u00eame filtre/position, historique navigateur et rechargement",
+      "file": "v8-audit.spec.ts",
+      "line": 132,
+      "project": "webkit",
+      "status": "unexpected",
+      "errors": [
+        "\u001b[31mTest timeout of 45000ms exceeded.\u001b[39m",
+        "Error: locator.click: Test timeout of 45000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.unified-workspace').getByText('Affiner et trier', { exact: true })\u001b[22m\n\n\n  141 |   await expect(root.locator(\".unified-masthead h1\")).toHaveText(\"Aujourd\u2019hui\");\n  142 |   if (await root.getByLabel(\"Premi\u00e8re apparition\", { exact: true }).isHidden())\n> 143 |     await root.getByText(\"Affiner et trier\", { exact: true }).click();\n      |                                                               ^\n  144 |   await root\n  145 |     .getByLabel(\"Premi\u00e8re apparition\", { exact: true })\n  146 |     .selectOption(\"08:00\");\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v8-audit.spec.ts:143:63"
+      ]
+    },
+    {
+      "title": "Audit P0/P1 : 10 h seul offline, huit cartes, r\u00e9sum\u00e9s, fiches int\u00e9grales et trois Markdown exacts",
+      "file": "v8-audit.spec.ts",
+      "line": 48,
+      "project": "chromium-mobile",
+      "status": "unexpected",
+      "errors": [
+        "\u001b[31mTest timeout of 45000ms exceeded.\u001b[39m",
+        "Error: locator.click: Test timeout of 45000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.unified-workspace').getByText('Affiner et trier', { exact: true })\u001b[22m\n\n\n  63 |   ).toBeDisabled();\n  64 |   await nav(page, \"Aujourd\u2019hui\");\n> 65 |   await root.getByText(\"Affiner et trier\", { exact: true }).click();\n     |                                                             ^\n  66 |   if (await root.getByLabel(\"Premi\u00e8re apparition\", { exact: true }).isHidden())\n  67 |     await root.getByText(\"Affiner et trier\", { exact: true }).click();\n  68 |   await root\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v8-audit.spec.ts:65:61"
+      ]
+    },
+    {
+      "title": "Audit P0 : cr\u00e9neaux exacts, retour m\u00eame filtre/position, historique navigateur et rechargement",
+      "file": "v8-audit.spec.ts",
+      "line": 132,
+      "project": "chromium-mobile",
+      "status": "unexpected",
+      "errors": [
+        "\u001b[31mTest timeout of 45000ms exceeded.\u001b[39m",
+        "Error: locator.click: Test timeout of 45000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.unified-workspace').getByText('Affiner et trier', { exact: true })\u001b[22m\n\n\n  141 |   await expect(root.locator(\".unified-masthead h1\")).toHaveText(\"Aujourd\u2019hui\");\n  142 |   if (await root.getByLabel(\"Premi\u00e8re apparition\", { exact: true }).isHidden())\n> 143 |     await root.getByText(\"Affiner et trier\", { exact: true }).click();\n      |                                                               ^\n  144 |   await root\n  145 |     .getByLabel(\"Premi\u00e8re apparition\", { exact: true })\n  146 |     .selectOption(\"08:00\");\n    at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v8-audit.spec.ts:143:63"
+      ]
+    }
+  ]
+}

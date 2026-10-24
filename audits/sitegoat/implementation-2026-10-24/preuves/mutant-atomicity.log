@@ -1,0 +1,33 @@
+
+ RUN  v5.0.4 /private/var/folders/4l/2_lxwmg92_bgxyw0d_dzyw700000gn/T/sitegoat-atomicity-mutant-21lVdK
+
+ ❯ tests/sitegoat-backup.unit.test.ts (3 tests | 1 failed | 2 skipped) 38ms
+   × SG-03 atomicité : erreur milieu restauration sans aucune édition partielle 38ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 skipped (3)
+   Start at  16:31:52
+   Duration  620ms (environment 45%, transform 27%, import 17%, tests 7%, setup 3%, worker 1%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/sitegoat-backup.unit.test.ts > SG-03 atomicité : erreur milieu restauration sans aucune édition partielle
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/sitegoat-backup.unit.test.ts:150:39
+    148|     vi.spyOn(db.notes, "add").mockRejectedValueOnce(Error("Quota synth…
+    149|     await expect(restoreBackup(db, data)).rejects.toThrow("Quota");
+    150|     expect(await db.editions.count()).toBe(0);
+       |                                       ^
+    151|     expect(await db.originals.count()).toBe(0);
+    152|   } finally {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

@@ -1,0 +1,18 @@
+[WebServer] (node:94895) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:94896) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:94898) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/v6-daily.spec.ts:117:1 › lot désordonné, doublon renommé et nouvelle journée : la dernière édition reste seule, recherche limitée au HTML courant (29.4s)
+(node:95059) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [webkit] › tests/e2e/v6-daily.spec.ts:117:1 › lot désordonné, doublon renommé et nouvelle journée : la dernière édition reste seule, recherche limitée au HTML courant (30.9s)
+(node:95175) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [chromium-mobile] › tests/e2e/v6-daily.spec.ts:117:1 › lot désordonné, doublon renommé et nouvelle journée : la dernière édition reste seule, recherche limitée au HTML courant (1.4s)
+
+  3 passed (1.1m)

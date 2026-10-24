@@ -1,0 +1,44 @@
+
+Running 1 test using 1 worker
+
+  ✘  1 [chromium] › tests/e2e/v9-sitegoat.spec.ts:7:3 › SG-13 : lien détaché, refus, confirmation, contenu exact et hors ligne (971ms)
+
+
+  1) [chromium] › tests/e2e/v9-sitegoat.spec.ts:7:3 › SG-13 : lien détaché, refus, confirmation, contenu exact et hors ligne 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+      56 |     await buttons.first().click();
+      57 |     await expect(dialog).toBeVisible();
+    > 58 |     expect(downloads).toBe(0);
+         |                       ^
+      59 |     await dialog.getByRole("button", { name: "Annuler", exact: true }).click();
+      60 |     expect(downloads).toBe(0);
+      61 |     for (const [n, prompt] of p.promptAssets.entries()) {
+        at /private/var/folders/4l/2_lxwmg92_bgxyw0d_dzyw700000gn/T/sitegoat-parent-confirm-mutant-iJK8wv/tests/e2e/v9-sitegoat.spec.ts:58:23
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results-sitegoat/v9-sitegoat-SG-13-lien-dét-b2d9c-contenu-exact-et-hors-ligne-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results-sitegoat/v9-sitegoat-SG-13-lien-dét-b2d9c-contenu-exact-et-hors-ligne-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results-sitegoat/v9-sitegoat-SG-13-lien-dét-b2d9c-contenu-exact-et-hors-ligne-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results-sitegoat/v9-sitegoat-SG-13-lien-dét-b2d9c-contenu-exact-et-hors-ligne-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/e2e/v9-sitegoat.spec.ts:7:3 › SG-13 : lien détaché, refus, confirmation, contenu exact et hors ligne 
+[WebServer] (node:1854) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:1855) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+(node:1856) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)

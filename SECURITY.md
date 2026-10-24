@@ -13,7 +13,7 @@
 | Notes concurrentes                     | Conserver les deux textes                                                                 | Fusion volontairement conservative : favoris/lecture peuvent être réactivés par un ancien snapshot     |
 | Changement de compte                   | Jobs indexés par propriétaire ; aucun job d’un autre UID exécuté                          | Bibliothèque locale conservée, appareil supposé personnel ; déconnexion ne la purge pas                |
 
-## Cloud réellement configuré
+## Déclaration historique du cloud — non réinspectée le 24 octobre 2026
 
 Bucket `journal360-backups` privé, limite 50 Mo. Règle RLS restrictive ALL pour anon/authenticated exécutée et vérifiée dans le dashboard, isolée au bucket. Le serveur utilise la clé secret pour signer les transferts après vérification Auth. Une URL signée donne un accès temporaire à son détenteur ; elle n’est jamais copiée dans une édition ou un export. Les tokens d’upload ne sont pas conservés dans IndexedDB. Aucune clé secrète dans VITE_*, Git, archives ni preuves de tests.
 
@@ -31,7 +31,7 @@ Le parent autorise les scripts de son origine et inline pour le lecteur interact
 
 Les tests ne prouvent pas la sécurité de tout JavaScript possible. Pas d’audit indépendant, de test physique téléphone, ni de garantie d’absence de faille inconnue. En cas de doute, utiliser le mode sécurisé ou le texte indexé.
 
-Les formulaires sont remplacés dans la copie de lecture par des conteneurs conservant les IDs et contrôles ; les actions de soumission sont retirées. Sandbox sans allow-forms et form-action none restent actifs. La navigation par fragments reste dans le cadre opaque, sans pont avec l’application. À la demande explicite de l’utilisateur, toute nouvelle édition s’ouvre automatiquement en mode interactif. Le choix Désactiver JS est mémorisé localement pour cet ID d’édition et conservé aux prochaines ouvertures. Réactiver manuellement le mode interactif après ce choix conserve la confirmation de confiance. Le sandbox reste limité à allow-scripts en interactif, sans autre permission.
+Les formulaires sont remplacés dans la copie de lecture par des conteneurs conservant les IDs et contrôles ; les actions de soumission sont retirées. Sandbox sans allow-forms et form-action none restent actifs. La navigation par fragments reste dans le cadre opaque, sans pont avec l’application. Dans le candidat local du 24 octobre, un fichier sans choix mémorisé commence en mode sûr et demande une décision. Un réglage explicite peut rétablir le mode interactif habituel ; les choix par édition restent prioritaires. Le choix Désactiver JS est mémorisé localement pour cet ID d’édition et conservé aux prochaines ouvertures. Réactiver manuellement le mode interactif après ce choix conserve la confirmation de confiance. Le sandbox reste limité à allow-scripts en interactif, sans autre permission.
 
 ## Pont Google — 2.0.6
 
@@ -54,3 +54,12 @@ Les originaux et `editionData` restent intacts. Sandbox et CSP ne changent pas. 
 Aucune permission nouvelle : sandbox `allow-scripts`, CSP du cadre et du parent, Permissions-Policy et absence d’attribut `allow` sont inchangés. Le presse-papiers n’est pas délégué au HTML importé ; la copie se fait dans la PWA après un clic sur **Copier la question**.
 
 Pour les producteurs reconnus `6.1` et `6.4` seulement, la PWA lit les questions explicites (`items[].aiQuestion`, `#public-sentinel`, `#public-axdia`) et les place sur les boutons « En savoir plus » à fenêtre producteur ou sur le lien `https://www.google.com/ai` voisin d’un bouton. Dans le cadre, l’adaptateur peut aussi relire le champ de question affiché (`textarea#question`, `#deepQuestion`) au moment du clic ; ce texte reste non fiable, il est revalidé, affiché et modifiable dans la PWA avant toute action. Une question vide ou invalide ouvre le dialogue sans texte. **Ouvrir Google Mode IA** n’envoie aucun texte et reste donc disponible quand la question est vide ; il reste bloqué par les marqueurs sensibles connus, comme la recherche classique. [Diagnostic et tests 2.0.7](docs/JOURNAL360_GOOGLE_BUTTONS_V64.md).
+
+
+## Correctifs locaux de l’audit du 24 octobre
+
+Le pont de téléchargement v2 ne modifie que le srcdoc. Il prend aussi en charge `a.click()` détaché, sans `allow-downloads` ni `allow-same-origin`. Un prompt doit correspondre au nom et au texte validés ; la confirmation parent contrôle le SHA et le cadre courant. Les messages inconnus/périmés sont refusés ; un double clic parent ne crée qu’un téléchargement. Les mutations du contrôle parent et des permissions doivent faire échouer les tests négatifs.
+
+La restauration contrôle les projections V7 depuis l’original vérifié, séparément du titre personnel et des notes. Pour les HTML historiques sans contrat unifié reconnu, les anciennes projections ne sont pas certifiées par reconstruction ; SHA et contrats historiques restent appliqués. Les inventaires de segments sont des contrôles d’intégrité, pas une signature d’auteur.
+
+L’assistant personnel ne promet pas une transaction entre IndexedDB et localStorage. Chaque espace et chaque type de réglage demandent une action distincte ; les conflits de recherches sont conservés. Les anciens clients sans verrou ne doivent pas écrire simultanément avec ce candidat. Aucun test cloud réel ni profil personnel n’a été exécuté.

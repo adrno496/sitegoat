@@ -1,0 +1,53 @@
+
+Running 1 test using 1 worker
+
+  ✘  1 [chromium] › tests/e2e/v9-sitegoat.spec.ts:7:3 › SG-13 : lien détaché, refus, confirmation, contenu exact et hors ligne (10.8s)
+
+
+  1) [chromium] › tests/e2e/v9-sitegoat.spec.ts:7:3 › SG-13 : lien détaché, refus, confirmation, contenu exact et hors ligne 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('.edition-frame')
+    Expected: "allow-scripts"
+    Received: "allow-scripts allow-downloads"
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('.edition-frame') with timeout 10000ms
+      - waiting for locator('.edition-frame')
+        24 × locator resolved to <iframe class="edition-frame" referrerpolicy="no-referrer" sandbox="allow-scripts allow-downloads" title="Lecture de Audit ciblé 10:00 SYNTHÉTIQUE" srcdoc="<!DOCTYPE html>↵<html lang="fr"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; media-src data: blob:; connect-src 'none'; object-src 'none'; frame-src 'none'; form-action 'none'; base-uri 'none'"><script>(()=>{↵  for(const type…></iframe>
+           - unexpected value "allow-scripts allow-downloads"
+
+
+      36 |       .getByRole("button", { name: "Lire la dernière édition", exact: true })
+      37 |       .click();
+    > 38 |     await expect(page.locator(".edition-frame")).toHaveAttribute(
+         |                                                  ^
+      39 |       "sandbox",
+      40 |       "allow-scripts",
+      41 |     );
+        at /private/var/folders/4l/2_lxwmg92_bgxyw0d_dzyw700000gn/T/sitegoat-sandbox-mutant-o7eBbf/tests/e2e/v9-sitegoat.spec.ts:38:50
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results-sitegoat/v9-sitegoat-SG-13-lien-dét-b2d9c-contenu-exact-et-hors-ligne-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results-sitegoat/v9-sitegoat-SG-13-lien-dét-b2d9c-contenu-exact-et-hors-ligne-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results-sitegoat/v9-sitegoat-SG-13-lien-dét-b2d9c-contenu-exact-et-hors-ligne-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results-sitegoat/v9-sitegoat-SG-13-lien-dét-b2d9c-contenu-exact-et-hors-ligne-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/e2e/v9-sitegoat.spec.ts:7:3 › SG-13 : lien détaché, refus, confirmation, contenu exact et hors ligne 
+[WebServer] (node:1921) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:1922) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+(node:1923) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)

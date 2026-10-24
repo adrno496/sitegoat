@@ -1,0 +1,51 @@
+[WebServer] (node:87723) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:87741) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:87742) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › tests/e2e/v9-sitegoat.spec.ts:6:39 › SG-13 : lien détaché, refus, confirmation, contenu exact et hors ligne (10.8s)
+
+
+  1) [chromium] › tests/e2e/v9-sitegoat.spec.ts:6:39 › SG-13 : lien détaché, refus, confirmation, contenu exact et hors ligne 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('dialog', { name: 'Action du document original', exact: true })
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('dialog', { name: 'Action du document original', exact: true }) with timeout 10000ms
+      - waiting for getByRole('dialog', { name: 'Action du document original', exact: true })
+
+
+      24 |   const dialog = page.getByRole("dialog", { name: "Action du document original", exact: true });
+      25 |   await buttons.first().click();
+    > 26 |   await expect(dialog).toBeVisible();
+         |                        ^
+      27 |   expect(downloads).toBe(0);
+      28 |   await dialog.getByRole("button", { name: "Annuler", exact: true }).click();
+      29 |   expect(downloads).toBe(0);
+        at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v9-sitegoat.spec.ts:26:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v9-sitegoat-SG-13-lien-dét-b2d9c-contenu-exact-et-hors-ligne-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v9-sitegoat-SG-13-lien-dét-b2d9c-contenu-exact-et-hors-ligne-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v9-sitegoat-SG-13-lien-dét-b2d9c-contenu-exact-et-hors-ligne-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v9-sitegoat-SG-13-lien-dét-b2d9c-contenu-exact-et-hors-ligne-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/e2e/v9-sitegoat.spec.ts:6:39 › SG-13 : lien détaché, refus, confirmation, contenu exact et hors ligne 

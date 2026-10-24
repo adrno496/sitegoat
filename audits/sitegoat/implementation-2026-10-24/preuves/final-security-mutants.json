@@ -1,0 +1,32 @@
+[
+  {
+    "name": "sha",
+    "exitCode": 1,
+    "detected": true
+  },
+  {
+    "name": "projection",
+    "exitCode": 1,
+    "detected": true
+  },
+  {
+    "name": "concurrency",
+    "exitCode": 1,
+    "detected": true
+  },
+  {
+    "name": "atomicity",
+    "exitCode": 1,
+    "detected": true
+  },
+  {
+    "name": "parent-confirm",
+    "exitCode": 1,
+    "detected": true
+  },
+  {
+    "name": "sandbox",
+    "exitCode": 1,
+    "detected": true
+  }
+]

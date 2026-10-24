@@ -49,3 +49,18 @@ La lecture occupe le viewport dès l’ouverture ; agrandir/réduire conserve la
 Le srcdoc est calculé avec useMemo avant le montage : aucune iframe ne démarre avec un document vide ni un contenu du mode précédent. Le cadre est recréé lors du changement de mode. Le zoom HTML redimensionne son viewport interne et applique une transformation CSS de 70 % par défaut ; changer le zoom ou agrandir/réduire conserve le même cadre et son état. Recharger le HTML recrée uniquement le cadre, sans toucher aux octets ni annotations.
 
 Depuis 2.0.3, l’affichage courant est calculé par date éditoriale pour tous les imports datés, y compris les anciens records indépendants ou sans contrat V6. Il ne présente que la dernière édition de chaque journée ; les autres records restent conservés pour leurs originaux et annotations. La même sélection déterministe s’applique après une fusion de snapshots, sans réécriture massive ni suppression distante. Voir [règles et validation](docs/JOURNAL360_ONE_HTML_PER_DAY.md).
+
+
+## Cartographie du candidat local — audit du 24 octobre 2026
+
+Racine de travail : `/Users/dreano/Downloads/veille/sitegoat-implementation` ; dépôt d’origine conservé dans `/Users/dreano/Downloads/veille/veille`. Branche dédiée `codex/sitegoat-audit-v4-local`. Aucune publication.
+
+- Import UTF-8 inerte → schémas V7 et brèves V9 distincts → transaction `journal360-private` v4. Originaux jamais modifiés.
+- Reader → copie d’affichage opaque → pont v2 lié à WindowProxy, hash d’édition, révision, session et requestId. La confirmation du parent décide du téléchargement ; les permissions restent `allow-scripts` uniquement après choix explicite.
+- `editorialPresentation` sépare dates et statuts déclarés ; horloge Paris recalculée au premier plan et chaque seconde, sans réécrire les dates sources.
+- Sauvegarde journaux ZIP historique → vérification SHA et projections V7 depuis l’original → transaction de fusion. `segmentedBackup` ajoute un inventaire inerte commun et des ZIP historiques ; restauration uniquement après validation de tous les segments.
+- Base `journal360-future-private` v1 indépendante ; sauvegarde ZIP Le Futur dédiée. Pas de fusion physique des bases ni d’atomicité interbases revendiquée.
+- localStorage : `journal360.display.v9`, `journal360.interface.v1`, `journal360.recurring-searches.v1`, `journal360.reader-default.v1`. Recherches protégées par Web Locks et comparaison d’ID ; ancienne clé conservée. L’export personnel ne contient que les trois premières clés et le thème IndexedDB. Permissions de confiance exclues.
+- CacheStorage : shell et exemples publics précachés. Les données privées restent dans IndexedDB. Cloud optionnel et ses règles distantes non vérifiés par cette mission.
+
+Les exports de lecture et modèles de notes sont des actions locales explicites ; aucun moteur IA, téléchargement de modèle, télémétrie ou fetch éditorial ajouté. Les mesures et limites sont dans le rapport d’implémentation.

@@ -1,0 +1,47 @@
+{
+  "protocol": "3 fresh contexts per build, warm reload after SW control, desktop without corpus, concurrent test load; no causal speedup claim",
+  "rows": [
+    {
+      "label": "baseline",
+      "repeat": 1,
+      "coldMs": 225.32854099999997,
+      "warmMs": 101.34570900000006,
+      "heap": 15200000
+    },
+    {
+      "label": "baseline",
+      "repeat": 2,
+      "coldMs": 260.1129169999999,
+      "warmMs": 118.72741599999995,
+      "heap": 15200000
+    },
+    {
+      "label": "baseline",
+      "repeat": 3,
+      "coldMs": 174.81379100000004,
+      "warmMs": 102.07749999999987,
+      "heap": 15200000
+    },
+    {
+      "label": "candidate",
+      "repeat": 1,
+      "coldMs": 214.02041700000018,
+      "warmMs": 100.79608300000018,
+      "heap": 14300000
+    },
+    {
+      "label": "candidate",
+      "repeat": 2,
+      "coldMs": 201.99241600000005,
+      "warmMs": 98.74262499999986,
+      "heap": 15200000
+    },
+    {
+      "label": "candidate",
+      "repeat": 3,
+      "coldMs": 202.69566600000007,
+      "warmMs": 99.155667,
+      "heap": 15200000
+    }
+  ]
+}

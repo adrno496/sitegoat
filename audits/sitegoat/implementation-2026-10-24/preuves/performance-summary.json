@@ -1,0 +1,44 @@
+{
+  "loads": [
+    {
+      "items": 100,
+      "bytes": 104609,
+      "times": [
+        {
+          "inspectAndIndexMs": 82.74316700000008,
+          "searchMs": 0.5695420000001832
+        },
+        {
+          "inspectAndIndexMs": 90.61074999999983,
+          "searchMs": 0.7387080000003152
+        },
+        {
+          "inspectAndIndexMs": 105.14512500000001,
+          "searchMs": 0.5441249999998945
+        }
+      ]
+    },
+    {
+      "items": 1000,
+      "bytes": 1002357,
+      "times": [
+        {
+          "inspectAndIndexMs": 960.0700830000001,
+          "searchMs": 4.477125000000342
+        },
+        {
+          "inspectAndIndexMs": 846.4382080000005,
+          "searchMs": 3.747124999999869
+        },
+        {
+          "inspectAndIndexMs": 776.0929580000002,
+          "searchMs": 6.003125000000182
+        }
+      ]
+    }
+  ],
+  "examplesInspected": 13,
+  "accepted": 7,
+  "refused": 6,
+  "source": "local inert parsing; no HTML copied"
+}

@@ -1,0 +1,3 @@
+# Raw intermediate test outputs remain local. Selected final receipts are explicitly tracked.
+*.log
+*.json

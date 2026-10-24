@@ -1,0 +1,13 @@
+
+> journal360-mobile@2.1.1 test:performance
+> vitest run --config vitest.performance.config.ts
+
+
+ RUN  v5.0.4 /Users/dreano/Downloads/veille/sitegoat-implementation
+
+
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+   Start at  15:57:51
+   Duration  85.43s (tests 98%, environment 1%, import 1%)
+
