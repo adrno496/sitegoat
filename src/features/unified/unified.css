@@ -64,6 +64,23 @@
   gap: 10px;
   margin: 20px 0;
 }
+.journal-day-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 12px;
+  margin-top: 16px;
+}
+.journal-day-navigation label {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  max-width: 100%;
+}
+.journal-day-navigation select {
+  min-height: 44px;
+  max-width: 100%;
+}
 .unified-workspace button {
   min-height: 44px;
   font-size: 14px;

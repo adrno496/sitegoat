@@ -1,5 +1,7 @@
 # SITEGOAT — BILAN DES CORRECTIFS ET DE LA PUBLICATION
 
+**Navigation entre jours :** le complément [12_NAVIGATION_JOURS_PRECEDENTS.md](12_NAVIGATION_JOURS_PRECEDENTS.md) décrit les commandes de date dans Aujourd’hui, la portée des contenus, les vérifications hors ligne et le rollback.
+
 **Complément orange du 25 octobre :** voir [11_REPERES_ORANGE_DERNIERE_EDITION.md](11_REPERES_ORANGE_DERNIERE_EDITION.md) pour le repérage des nouveautés et modifications de la dernière édition, les 370 tests unitaires et les 18 tests navigateur ciblés réellement exécutés. Les résultats des publications antérieures ci-dessous restent historiques.
 
 **Compléments utilisateur :** le rapport 09 décrit les dates compactes, titres gras et sources API, publiés au commit `051fae5` (CI verte). Le rapport 10 suit la reprise du 25 octobre : nouvel onglet En direct, suivi API activable et radar Banque mondiale/BCE. Il contient les dernières preuves, le fichier V10 réellement disponible et le rollback de ce complément. La consigne utilisateur remplace l’affichage systématique des statuts SG-10 ; les champs éditoriaux demeurent conservés. Dernier état : **366 unitaires et 301 E2E PASS**, deux skips historiques, aucun échec final ; CI `39a1d09` verte, production et V10 édition20 V2 : trois profils PASS. Le bilan de la publication initiale ci-dessous reste historique ; les dernières limites et preuves sont dans 10.

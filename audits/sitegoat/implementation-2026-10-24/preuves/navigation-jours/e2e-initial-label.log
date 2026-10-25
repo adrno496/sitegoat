@@ -1,0 +1,185 @@
+[WebServer] (node:67735) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:67745) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 24 tests using 1 worker
+
+(node:67746) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   1 [chromium] › tests/e2e/v9-day-navigation.spec.ts:27:1 › jours : un choix par date, dernier créneau, filtres réinitialisés, radar et retour au dernier journal (11.2s)
+(node:67768) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   2 [chromium] › tests/e2e/v9-day-navigation.spec.ts:138:1 › jours : bibliothèque vide et une seule journée, sans navigation impossible (726ms)
+  ✓   3 [chromium] › tests/e2e/v9-orange-edition.spec.ts:6:1 › orange : tout le dernier créneau, anciens neutres, détail, filtres, reload et thème sombre (3.2s)
+  ✓   4 [chromium] › tests/e2e/v9-workspace.spec.ts:51:1 › V9 : Aujourd’hui épuré, Accueil, articles internes, 19 titres réels ou fixture, Google public et préférences (4.7s)
+  ✓   5 [chromium] › tests/e2e/v9-workspace.spec.ts:189:1 › V9 : HTML original offline, filtres, accordéons, Google et source contrôlés, Markdown exact, isolation (3.0s)
+  ✓   6 [chromium] › tests/e2e/v9-workspace.spec.ts:344:1 › V9 : panne du stockage des préférences, réglages conservés pour la session (636ms)
+  ✓   7 [chromium] › tests/e2e/v9-workspace.spec.ts:369:1 › V9 : filtres Articles combinables, calendrier de faits et affichage intégral de 100 brèves synthétiques (1.3s)
+  ✓   8 [chromium] › tests/e2e/v9-workspace.spec.ts:488:1 › V9 : onglet Actualité rapide, titres des articles automatiques, dates simples et HTML directement interactif (2.1s)
+(node:67860) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   9 [webkit] › tests/e2e/v9-day-navigation.spec.ts:27:1 › jours : un choix par date, dernier créneau, filtres réinitialisés, radar et retour au dernier journal (11.8s)
+(node:67914) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  10 [webkit] › tests/e2e/v9-day-navigation.spec.ts:138:1 › jours : bibliothèque vide et une seule journée, sans navigation impossible (1.4s)
+  ✓  11 [webkit] › tests/e2e/v9-orange-edition.spec.ts:6:1 › orange : tout le dernier créneau, anciens neutres, détail, filtres, reload et thème sombre (3.3s)
+  ✓  12 [webkit] › tests/e2e/v9-workspace.spec.ts:51:1 › V9 : Aujourd’hui épuré, Accueil, articles internes, 19 titres réels ou fixture, Google public et préférences (4.7s)
+  ✓  13 [webkit] › tests/e2e/v9-workspace.spec.ts:189:1 › V9 : HTML original offline, filtres, accordéons, Google et source contrôlés, Markdown exact, isolation (3.0s)
+  ✓  14 [webkit] › tests/e2e/v9-workspace.spec.ts:344:1 › V9 : panne du stockage des préférences, réglages conservés pour la session (897ms)
+  ✓  15 [webkit] › tests/e2e/v9-workspace.spec.ts:369:1 › V9 : filtres Articles combinables, calendrier de faits et affichage intégral de 100 brèves synthétiques (2.0s)
+  ✓  16 [webkit] › tests/e2e/v9-workspace.spec.ts:488:1 › V9 : onglet Actualité rapide, titres des articles automatiques, dates simples et HTML directement interactif (3.4s)
+(node:68010) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  17 [chromium-mobile] › tests/e2e/v9-day-navigation.spec.ts:27:1 › jours : un choix par date, dernier créneau, filtres réinitialisés, radar et retour au dernier journal (11.0s)
+(node:68044) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  18 [chromium-mobile] › tests/e2e/v9-day-navigation.spec.ts:138:1 › jours : bibliothèque vide et une seule journée, sans navigation impossible (760ms)
+  ✓  19 [chromium-mobile] › tests/e2e/v9-orange-edition.spec.ts:6:1 › orange : tout le dernier créneau, anciens neutres, détail, filtres, reload et thème sombre (3.2s)
+  ✓  20 [chromium-mobile] › tests/e2e/v9-workspace.spec.ts:51:1 › V9 : Aujourd’hui épuré, Accueil, articles internes, 19 titres réels ou fixture, Google public et préférences (5.4s)
+  ✓  21 [chromium-mobile] › tests/e2e/v9-workspace.spec.ts:189:1 › V9 : HTML original offline, filtres, accordéons, Google et source contrôlés, Markdown exact, isolation (2.1s)
+  ✓  22 [chromium-mobile] › tests/e2e/v9-workspace.spec.ts:344:1 › V9 : panne du stockage des préférences, réglages conservés pour la session (501ms)
+  ✓  23 [chromium-mobile] › tests/e2e/v9-workspace.spec.ts:369:1 › V9 : filtres Articles combinables, calendrier de faits et affichage intégral de 100 brèves synthétiques (1.3s)
+  ✓  24 [chromium-mobile] › tests/e2e/v9-workspace.spec.ts:488:1 › V9 : onglet Actualité rapide, titres des articles automatiques, dates simples et HTML directement interactif (2.8s)
+
+
+  1) [chromium] › tests/e2e/v9-day-navigation.spec.ts:27:1 › jours : un choix par date, dernier créneau, filtres réinitialisés, radar et retour au dernier journal 
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator: locator('.unified-workspace').getByLabel('Jour consulté', { exact: true }).locator('option')
+    Timeout: 10000ms
+    - Expected  - 5
+    + Received  + 1
+
+    - Array [
+    -   "19 octobre 2026",
+    -   "17 octobre 2026",
+    -   "16 octobre 2026",
+    - ]
+    + Array []
+
+    Call log:
+      - Expect "toHaveText" locator('.unified-workspace').getByLabel('Jour consulté', { exact: true }).locator('option') with timeout 10000ms
+      - waiting for locator('.unified-workspace').getByLabel('Jour consulté', { exact: true }).locator('option')
+        24 × locator resolved to 0 elements
+
+
+      47 |   const prev = w.getByRole("button", { name: "← Jour précédent", exact: true });
+      48 |   const next = w.getByRole("button", { name: "Jour suivant →", exact: true });
+    > 49 |   await expect(date.locator("option")).toHaveText([
+         |                                        ^
+      50 |     "19 octobre 2026",
+      51 |     "17 octobre 2026",
+      52 |     "16 octobre 2026",
+        at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v9-day-navigation.spec.ts:49:40
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v9-day-navigation-jours-un-8a041-t-retour-au-dernier-journal-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v9-day-navigation-jours-un-8a041-t-retour-au-dernier-journal-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v9-day-navigation-jours-un-8a041-t-retour-au-dernier-journal-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v9-day-navigation-jours-un-8a041-t-retour-au-dernier-journal-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [webkit] › tests/e2e/v9-day-navigation.spec.ts:27:1 › jours : un choix par date, dernier créneau, filtres réinitialisés, radar et retour au dernier journal 
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator: locator('.unified-workspace').getByLabel('Jour consulté', { exact: true }).locator('option')
+    Timeout: 10000ms
+    - Expected  - 5
+    + Received  + 1
+
+    - Array [
+    -   "19 octobre 2026",
+    -   "17 octobre 2026",
+    -   "16 octobre 2026",
+    - ]
+    + Array []
+
+    Call log:
+      - Expect "toHaveText" locator('.unified-workspace').getByLabel('Jour consulté', { exact: true }).locator('option') with timeout 10000ms
+      - waiting for locator('.unified-workspace').getByLabel('Jour consulté', { exact: true }).locator('option')
+        24 × locator resolved to 0 elements
+
+
+      47 |   const prev = w.getByRole("button", { name: "← Jour précédent", exact: true });
+      48 |   const next = w.getByRole("button", { name: "Jour suivant →", exact: true });
+    > 49 |   await expect(date.locator("option")).toHaveText([
+         |                                        ^
+      50 |     "19 octobre 2026",
+      51 |     "17 octobre 2026",
+      52 |     "16 octobre 2026",
+        at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v9-day-navigation.spec.ts:49:40
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v9-day-navigation-jours-un-8a041-t-retour-au-dernier-journal-webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v9-day-navigation-jours-un-8a041-t-retour-au-dernier-journal-webkit/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v9-day-navigation-jours-un-8a041-t-retour-au-dernier-journal-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v9-day-navigation-jours-un-8a041-t-retour-au-dernier-journal-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium-mobile] › tests/e2e/v9-day-navigation.spec.ts:27:1 › jours : un choix par date, dernier créneau, filtres réinitialisés, radar et retour au dernier journal 
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator: locator('.unified-workspace').getByLabel('Jour consulté', { exact: true }).locator('option')
+    Timeout: 10000ms
+    - Expected  - 5
+    + Received  + 1
+
+    - Array [
+    -   "19 octobre 2026",
+    -   "17 octobre 2026",
+    -   "16 octobre 2026",
+    - ]
+    + Array []
+
+    Call log:
+      - Expect "toHaveText" locator('.unified-workspace').getByLabel('Jour consulté', { exact: true }).locator('option') with timeout 10000ms
+      - waiting for locator('.unified-workspace').getByLabel('Jour consulté', { exact: true }).locator('option')
+        24 × locator resolved to 0 elements
+
+
+      47 |   const prev = w.getByRole("button", { name: "← Jour précédent", exact: true });
+      48 |   const next = w.getByRole("button", { name: "Jour suivant →", exact: true });
+    > 49 |   await expect(date.locator("option")).toHaveText([
+         |                                        ^
+      50 |     "19 octobre 2026",
+      51 |     "17 octobre 2026",
+      52 |     "16 octobre 2026",
+        at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v9-day-navigation.spec.ts:49:40
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/v9-day-navigation-jours-un-8a041-t-retour-au-dernier-journal-chromium-mobile/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/v9-day-navigation-jours-un-8a041-t-retour-au-dernier-journal-chromium-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/v9-day-navigation-jours-un-8a041-t-retour-au-dernier-journal-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/v9-day-navigation-jours-un-8a041-t-retour-au-dernier-journal-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    [chromium] › tests/e2e/v9-day-navigation.spec.ts:27:1 › jours : un choix par date, dernier créneau, filtres réinitialisés, radar et retour au dernier journal 
+    [webkit] › tests/e2e/v9-day-navigation.spec.ts:27:1 › jours : un choix par date, dernier créneau, filtres réinitialisés, radar et retour au dernier journal 
+    [chromium-mobile] › tests/e2e/v9-day-navigation.spec.ts:27:1 › jours : un choix par date, dernier créneau, filtres réinitialisés, radar et retour au dernier journal 
+  21 passed (1.5m)

@@ -13,9 +13,10 @@ import { EventCard } from "../EventCard";
 import { useInterface } from "../interfacePreferences";
 import type { Edition } from "../../data/model";
 import { dateLabel } from "../../data/model";
+import { dayKeyOf } from "../../data/day";
 import { indexArticles, normalizeArticleSearch } from "../../data/articles";
 import { V7_SLOTS } from "../../data/editorial";
-import { latestCurrent } from "./selectors";
+import { journalDays, latestCurrent } from "./selectors";
 import { EconomyRadar } from "./EconomyRadar";
 import { FutureBridge, useFutureCatalog } from "./FutureBridge";
 import { PromptLibrary, UnifiedSearch } from "./UnifiedSearch";
@@ -53,6 +54,7 @@ export default function UnifiedWorkspace({
 }) {
   useEffect(() => onReady?.(), [onReady]);
   const [panel, setPanel] = useState(initialPanel),
+    [selectedDay, setSelectedDay] = useState(""),
     [firstSeen, setFirstSeen] = useState(""),
     [query, setQuery] = useState(""),
     [category, setCategory] = useState(""),
@@ -72,8 +74,28 @@ export default function UnifiedWorkspace({
     }
   }, [panel]);
   const { display } = useDisplay();
-  const current = latestCurrent(editions),
+  const days = useMemo(() => journalDays(editions), [editions]);
+  const latest = latestCurrent(editions),
+    current = days.find((e) => dayKeyOf(e) === selectedDay) || latest,
     p = current?.unified;
+  const dayIndex = days.findIndex((e) => e.id === current?.id);
+  const historical = !!current && current.id !== latest?.id;
+  const viewEditions = historical
+    ? editions.filter(
+        (e) =>
+          !e.deleted &&
+          !e.archived &&
+          !e.collection &&
+          dayKeyOf(e) === dayKeyOf(current),
+      )
+    : editions;
+  function selectDay(key: string) {
+    setSelectedDay(key);
+    setFirstSeen("");
+    setCategory("");
+    setQuery("");
+    setEventLimit(30);
+  }
 
   const items = useMemo(
     () => indexArticles(editions.filter((e) => !e.deleted && !e.archived)),
@@ -104,8 +126,8 @@ export default function UnifiedWorkspace({
     )
     .sort(
       (a, b) =>
-        Number(belongsToLatestEdition(current!, current, b)) -
-          Number(belongsToLatestEdition(current!, current, a)) ||
+        Number(belongsToLatestEdition(current!, latest, b)) -
+          Number(belongsToLatestEdition(current!, latest, a)) ||
         (eventSort === "newest"
           ? instantCompare(b.lastChangedAt, a.lastChangedAt)
           : Number(display.favorites.includes(b.category)) -
@@ -122,7 +144,7 @@ export default function UnifiedWorkspace({
           <h1 ref={heading} tabIndex={-1}>
             Aujourd’hui
           </h1>
-          <p>
+          <p role="status">
             {current
               ? dateLabel(current.date)
               : "Importez votre première édition"}
@@ -132,7 +154,48 @@ export default function UnifiedWorkspace({
           <span className="unified-badge">EXEMPLE SYNTHÉTIQUE</span>
         )}
       </header>
-      <EditionFreshness edition={current} />
+      {days.length > 0 && (
+        <nav
+          className="journal-day-navigation"
+          aria-label="Choisir le jour du journal"
+        >
+          <button
+            className="secondary"
+            disabled={dayIndex < 0 || dayIndex >= days.length - 1}
+            onClick={() => selectDay(dayKeyOf(days[dayIndex + 1])!)}
+          >
+            ← Jour précédent
+          </button>
+          <label>
+            Jour consulté
+            <select
+              aria-label="Jour consulté"
+              value={current ? dayKeyOf(current) || "" : ""}
+              onChange={(e) => selectDay(e.target.value)}
+            >
+              {dayIndex < 0 && <option value="">Date inconnue</option>}
+              {days.map((e) => (
+                <option key={dayKeyOf(e)} value={dayKeyOf(e)}>
+                  {dateLabel(e.date)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button
+            className="secondary"
+            disabled={dayIndex <= 0}
+            onClick={() => selectDay(dayKeyOf(days[dayIndex - 1])!)}
+          >
+            Jour suivant →
+          </button>
+          {historical && (
+            <button className="text-button" onClick={() => selectDay("")}>
+              Revenir à la dernière édition
+            </button>
+          )}
+        </nav>
+      )}
+      {!historical && <EditionFreshness edition={current} />}
       {!current && (
         <section className="empty-library">
           <h2>Votre première édition vous attend.</h2>
@@ -150,7 +213,11 @@ export default function UnifiedWorkspace({
           className="primary"
           onClick={() => (current ? onOpen(current.id) : onImport())}
         >
-          {current ? "Lire la dernière édition" : "Importer une édition"}
+          {current
+            ? historical
+              ? "Lire cette édition"
+              : "Lire la dernière édition"
+            : "Importer une édition"}
         </button>
       </div>
       <nav className="unified-controls" aria-label="Explorer le journal unifié">
@@ -185,16 +252,16 @@ export default function UnifiedWorkspace({
         </div>
       </details>
       {panel === "economy" ? (
-        <EconomyRadar editions={editions} />
+        <EconomyRadar key={current?.id} editions={viewEditions} />
       ) : panel === "timeline" || panel === "future" ? (
         <FutureBridge
-          editions={editions}
+          editions={viewEditions}
           onFuture={onFuture}
           catalog={futureCatalog}
           onOpen={onOpen}
         />
       ) : panel === "prompts" ? (
-        <PromptLibrary editions={editions} />
+        <PromptLibrary key={current?.id} editions={viewEditions} />
       ) : panel === "explore" ? (
         <UnifiedSearch
           editions={editions}
@@ -205,7 +272,7 @@ export default function UnifiedWorkspace({
       ) : (
         <section>
           <div className="section-title">
-            <h2>Aujourd’hui en bref</h2>
+            <h2>{historical ? "Le journal en bref" : "Aujourd’hui en bref"}</h2>
             <button
               className="text-button"
               onClick={() => onNavigate("articles")}
@@ -284,7 +351,7 @@ export default function UnifiedWorkspace({
               <EventCard
                 key={current!.id + i.eventId}
                 item={i}
-                latest={belongsToLatestEdition(current!, current, i)}
+                latest={belongsToLatestEdition(current!, latest, i)}
                 edition={current!}
                 onOriginal={() => onOpen(current!.id, i.id)}
                 onRead={
@@ -311,7 +378,7 @@ export default function UnifiedWorkspace({
             </button>
           )}
           {options.economy && display.todayEconomy && panel === "overview" && (
-            <EconomyRadar editions={editions} compact />
+            <EconomyRadar key={current?.id} editions={viewEditions} compact />
           )}
         </section>
       )}

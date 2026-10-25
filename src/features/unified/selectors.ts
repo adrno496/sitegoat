@@ -8,6 +8,13 @@ export function latestCurrent(editions: Edition[]) {
     ),
   )[0];
 }
+export function journalDays(editions: Edition[]) {
+  return sortEditions(
+    currentEditions(
+      editions.filter((e) => !e.deleted && !e.archived && !e.collection),
+    ),
+  ).filter((e) => dayKeyOf(e));
+}
 import type { EconomicSnapshot } from "../../data/unified";
 export const zoneLabels = {
   FR: "France",

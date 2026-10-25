@@ -1,0 +1,17 @@
+
+> journal360-mobile@2.1.1 test
+> vitest run
+
+
+ RUN  v5.0.4 /Users/dreano/Downloads/veille/sitegoat-implementation
+
+
+ Test Files  39 passed (39)
+      Tests  370 passed | 1 skipped (371)
+   Start at  09:51:01
+   Duration  39.95s (tests 63%, environment 25%, import 9%, setup 2%, transform 2%)
+
+Environment  jsdom was created 39 times · 40.83s total, 25% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+
