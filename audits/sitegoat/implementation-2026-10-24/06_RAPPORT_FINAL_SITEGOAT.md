@@ -1,5 +1,7 @@
 # SITEGOAT — BILAN DES CORRECTIFS ET DE LA PUBLICATION
 
+**Plafond des avertissements :** [13_AVERTISSEMENTS_SANS_PLAFOND_30.md](13_AVERTISSEMENTS_SANS_PLAFOND_30.md) suit la suppression du maximum de 30 sur les seuls champs warnings, ses tests d’import/sauvegarde et ses limites de compatibilité.
+
 **Navigation entre jours :** le complément [12_NAVIGATION_JOURS_PRECEDENTS.md](12_NAVIGATION_JOURS_PRECEDENTS.md) décrit les commandes de date dans Aujourd’hui, la portée des contenus, les vérifications hors ligne et le rollback.
 
 **Complément orange du 25 octobre :** voir [11_REPERES_ORANGE_DERNIERE_EDITION.md](11_REPERES_ORANGE_DERNIERE_EDITION.md) pour le repérage des nouveautés et modifications de la dernière édition, les 370 tests unitaires et les 18 tests navigateur ciblés réellement exécutés. Les résultats des publications antérieures ci-dessous restent historiques.

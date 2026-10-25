@@ -1,0 +1,36 @@
+
+> journal360-mobile@2.1.1 test
+> vitest run
+
+
+ RUN  v5.0.4 /Users/dreano/Downloads/veille/sitegoat-implementation
+
+ ❯ tests/warnings-count.unit.test.ts (4 tests | 1 failed) 1419ms
+   × sauvegarde et restaure plus de 30 avertissements éditoriaux et diagnostics sans perte 454ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/warnings-count.unit.test.ts > sauvegarde et restaure plus de 30 avertissements éditoriaux et diagnostics sans perte
+AssertionError: expected Uint8Array[ 60, 33, 100, 111, 99, …(33328) ] to deeply equal Uint8Array[ 60, 33, 100, 111, 99, …(33328) ]
+
+Compared values have no visual difference.
+
+ ❯ tests/warnings-count.unit.test.ts:53:57
+     51|     expect(restored?.warnings).toEqual(diagnostics);
+     52|     expect(restored?.unified?.warnings).toEqual(p.warnings);
+     53|     expect((await b.originals.get(imported.id))?.bytes).toEqual(
+       |                                                         ^
+     54|       new Uint8Array(raw),
+     55|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 39 passed (40)
+      Tests  1 failed | 373 passed | 1 skipped (375)
+   Start at  22:15:55
+   Duration  32.03s (tests 67%, environment 22%, import 8%, transform 2%, setup 2%)
+
+    Isolate  40 workers spawned · ~786ms startup each (spawn + environment, per file)
+             at least ~2.71s faster with isolate: false — reuses workers across files instead of one per file
+

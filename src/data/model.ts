@@ -43,7 +43,7 @@ export const editionSchema = z.object({
   excerpt: z.string().max(500),
   text: z.string().max(10_000_000),
   articles: z.array(articleSchema).max(2000),
-  warnings: z.array(z.string()).max(30),
+  warnings: z.array(z.string()),
   demo: z.boolean(),
   archived: z.boolean(),
   deleted: z.boolean(),

@@ -211,7 +211,7 @@ export const unifiedSchema = z
     futureDocuments: z.array(futureSchema).max(5),
     promptAssets: z.array(promptAssetSchema).max(50),
     provenance: text(4000),
-    warnings: z.array(text(1000)).max(30),
+    warnings: z.array(text(1000)),
     sourcesNotVerified: z.array(text(1000)).max(100),
     previousRevisionRef: id.nullable(),
   })
