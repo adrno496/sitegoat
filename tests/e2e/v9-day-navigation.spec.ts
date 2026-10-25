@@ -121,6 +121,14 @@ test("jours : un choix par date, dernier créneau, filtres réinitialisés, rada
       .frameLocator(".edition-frame")
       .getByRole("heading", { name: previous.p.title, exact: true }),
   ).toBeVisible();
+  const staySafe = page.getByRole("button", {
+    name: "Rester en mode sécurisé",
+    exact: true,
+  });
+  if (await staySafe.isVisible()) {
+    await staySafe.click();
+    await expect(page.locator(".edition-frame")).toHaveAttribute("sandbox", "");
+  }
   await page
     .getByRole("button", { name: "Retour à Aujourd’hui", exact: true })
     .click();

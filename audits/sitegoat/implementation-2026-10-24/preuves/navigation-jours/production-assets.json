@@ -1,0 +1,71 @@
+{
+  "commit": "ba245726edc96c936ceebaf2682d699acb0be852",
+  "checkedAt": "2026-10-25T08:55:23.131Z",
+  "shellStatus": 200,
+  "assets": [
+    {
+      "asset": "/assets/index-BwjPerVz.js",
+      "status": 200,
+      "linkedInShell": true,
+      "localSha256": "4964ff711a44b25cf79e319fc00451de741e0499a410c4ab7004c820bc91427c",
+      "productionSha256": "4964ff711a44b25cf79e319fc00451de741e0499a410c4ab7004c820bc91427c",
+      "sameSha": true
+    },
+    {
+      "asset": "/assets/model-M9ZgFnLF.js",
+      "status": 200,
+      "linkedInShell": true,
+      "localSha256": "9c8aec0b7866a52d7355c7a3bca2614811dbeb73754f40f5b189a5427df08446",
+      "productionSha256": "9c8aec0b7866a52d7355c7a3bca2614811dbeb73754f40f5b189a5427df08446",
+      "sameSha": true
+    },
+    {
+      "asset": "/assets/dialogFocus-7NvDHono.js",
+      "status": 200,
+      "linkedInShell": true,
+      "localSha256": "7bf6d79ffe2069a9b5ae3b0d68589c503ecf9e8ccc6b2cf9e2314a1b920fab38",
+      "productionSha256": "7bf6d79ffe2069a9b5ae3b0d68589c503ecf9e8ccc6b2cf9e2314a1b920fab38",
+      "sameSha": true
+    },
+    {
+      "asset": "/assets/day-gCbPfp1D.js",
+      "status": 200,
+      "linkedInShell": true,
+      "localSha256": "a6193f478d7939e5128b75c11afd834eac3c6d5de25fde08211b0c4ca73f7066",
+      "productionSha256": "a6193f478d7939e5128b75c11afd834eac3c6d5de25fde08211b0c4ca73f7066",
+      "sameSha": true
+    },
+    {
+      "asset": "/assets/index-DNjbJTz1.css",
+      "status": 200,
+      "linkedInShell": true,
+      "localSha256": "5289917f0267e6c12d61f964223793852dc1e2bda2d9df900ee7ba9181e4b1b6",
+      "productionSha256": "5289917f0267e6c12d61f964223793852dc1e2bda2d9df900ee7ba9181e4b1b6",
+      "sameSha": true
+    },
+    {
+      "asset": "/assets/UnifiedWorkspace-DMJZxdQo.js",
+      "lazy": true,
+      "status": 200,
+      "localSha256": "c4aa6387e5d4a9f02d957e24bac5065e203b459e824753e82b867ef8ef8c81b2",
+      "productionSha256": "c4aa6387e5d4a9f02d957e24bac5065e203b459e824753e82b867ef8ef8c81b2",
+      "sameSha": true
+    },
+    {
+      "asset": "/assets/unified-B3YdKUpp.js",
+      "lazy": true,
+      "status": 200,
+      "localSha256": "e82de34c93320b4008ccb09c74ae5b18b7e13cf426ae83a5241792ef37c7db8f",
+      "productionSha256": "e82de34c93320b4008ccb09c74ae5b18b7e13cf426ae83a5241792ef37c7db8f",
+      "sameSha": true
+    },
+    {
+      "asset": "/assets/unified-Bjv06_F_.css",
+      "lazy": true,
+      "status": 200,
+      "localSha256": "2b98b5c7a7655b7a67a0412e0cb3e68a9353c783af0075324a4f5fa81b850436",
+      "productionSha256": "2b98b5c7a7655b7a67a0412e0cb3e68a9353c783af0075324a4f5fa81b850436",
+      "sameSha": true
+    }
+  ]
+}

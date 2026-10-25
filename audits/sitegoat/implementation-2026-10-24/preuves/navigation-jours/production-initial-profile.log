@@ -1,0 +1,112 @@
+
+Running 6 tests using 1 worker
+
+(node:69126) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › tests/e2e/v9-day-navigation.spec.ts:27:1 › jours : un choix par date, dernier créneau, filtres réinitialisés, radar et retour au dernier journal (45.3s)
+(node:69211) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [chromium] › tests/e2e/v9-day-navigation.spec.ts:138:1 › jours : bibliothèque vide et une seule journée, sans navigation impossible (777ms)
+(node:69220) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [webkit] › tests/e2e/v9-day-navigation.spec.ts:27:1 › jours : un choix par date, dernier créneau, filtres réinitialisés, radar et retour au dernier journal (45.3s)
+(node:69323) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [webkit] › tests/e2e/v9-day-navigation.spec.ts:138:1 › jours : bibliothèque vide et une seule journée, sans navigation impossible (1.3s)
+(node:69335) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  5 [chromium-mobile] › tests/e2e/v9-day-navigation.spec.ts:27:1 › jours : un choix par date, dernier créneau, filtres réinitialisés, radar et retour au dernier journal (9.4s)
+
+
+  1) [chromium] › tests/e2e/v9-day-navigation.spec.ts:27:1 › jours : un choix par date, dernier créneau, filtres réinitialisés, radar et retour au dernier journal 
+
+    Test timeout of 45000ms exceeded.
+
+    Error: locator.click: Test timeout of 45000ms exceeded.
+    Browser logs:
+
+    <launching> /Users/dreano/Library/Caches/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-mac-arm64/chrome-headless-shell --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=/var/folders/4l/2_lxwmg92_bgxyw0d_dzyw700000gn/T/playwright_chromiumdev_profile-8L8NzB --remote-debugging-pipe --no-startup-window
+    <launched> pid=69140
+    [pid=69140][err] [1025/095522.355564:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=69140][err] [1025/095522.494285:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=69140][err] [1025/095524.626425:ERROR:ui/display/mac/cv_display_link_mac.mm:188] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+    [pid=69140][err] [1025/095528.143498:INFO:CONSOLE:0] "Blocked script execution in 'about:srcdoc' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.", source: about:srcdoc (0)
+    [pid=69140][err] [1025/095528.202561:INFO:CONSOLE:8150] "Blocked script execution in 'about:srcdoc' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.", source:  (8150)
+    [pid=69140][err] [1025/095528.202599:INFO:CONSOLE:8157] "Blocked script execution in 'about:srcdoc' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.", source:  (8157)
+    [pid=69140] <gracefully close start>
+    Call log:
+      - waiting for getByRole('button', { name: 'Retour à Aujourd’hui', exact: true })
+        - locator resolved to <button class="icon-button reader-back" aria-label="Retour à Aujourd’hui">…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <div class="modal-backdrop">…</div> intercepts pointer events
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <div class="modal-backdrop">…</div> intercepts pointer events
+        - retrying click action
+          - waiting 100ms
+        74 × waiting for element to be visible, enabled and stable
+           - element is visible, enabled and stable
+           - scrolling into view if needed
+           - done scrolling
+           - <div class="modal-backdrop">…</div> intercepts pointer events
+         - retrying click action
+           - waiting 500ms
+        - waiting for element to be visible, enabled and stable
+
+
+      124 |   await page
+      125 |     .getByRole("button", { name: "Retour à Aujourd’hui", exact: true })
+    > 126 |     .click();
+          |      ^
+      127 |   await expect(date).toHaveValue("journal360-day-2026-10-17");
+      128 |   await page.reload();
+      129 |   await navigate(page, "Aujourd’hui");
+        at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/v9-day-navigation.spec.ts:126:6
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../../tmp/sitegoat-days-production-results/v9-day-navigation-jours-un-8a041-t-retour-au-dernier-journal-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../../tmp/sitegoat-days-production-results/v9-day-navigation-jours-un-8a041-t-retour-au-dernier-journal-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../../tmp/sitegoat-days-production-results/v9-day-navigation-jours-un-8a041-t-retour-au-dernier-journal-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../../tmp/sitegoat-days-production-results/v9-day-navigation-jours-un-8a041-t-retour-au-dernier-journal-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [webkit] › tests/e2e/v9-day-navigation.spec.ts:27:1 › jours : un choix par date, dernier créneau, filtres réinitialisés, radar et retour au dernier journal 
+
+    Test timeout of 45000ms exceeded.
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../../tmp/sitegoat-days-production-results/v9-day-navigation-jours-un-8a041-t-retour-au-dernier-journal-webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../../tmp/sitegoat-days-production-results/v9-day-navigation-jours-un-8a041-t-retour-au-dernier-journal-webkit/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../../tmp/sitegoat-days-production-results/v9-day-navigation-jours-un-8a041-t-retour-au-dernier-journal-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../../tmp/sitegoat-days-production-results/v9-day-navigation-jours-un-8a041-t-retour-au-dernier-journal-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [chromium] › tests/e2e/v9-day-navigation.spec.ts:27:1 › jours : un choix par date, dernier créneau, filtres réinitialisés, radar et retour au dernier journal 
+    [webkit] › tests/e2e/v9-day-navigation.spec.ts:27:1 › jours : un choix par date, dernier créneau, filtres réinitialisés, radar et retour au dernier journal 
+  1 interrupted
+    [chromium-mobile] › tests/e2e/v9-day-navigation.spec.ts:27:1 › jours : un choix par date, dernier créneau, filtres réinitialisés, radar et retour au dernier journal 
+  1 did not run
+  2 passed (1.8m)

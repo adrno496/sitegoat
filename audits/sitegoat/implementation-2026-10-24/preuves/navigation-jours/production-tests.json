@@ -1,0 +1,37 @@
+{
+  "runtimeCommit": "ba245726edc96c936ceebaf2682d699acb0be852",
+  "url": "https://sitegoat.vercel.app",
+  "stats": {
+    "startTime": "2026-10-25T08:57:08.401Z",
+    "duration": 15191.457,
+    "expected": 6,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "projects": [
+    {
+      "name": "chromium",
+      "testMatch": [
+        "/v9-day-navigation\\.spec\\.ts$/"
+      ]
+    },
+    {
+      "name": "webkit",
+      "testMatch": [
+        "/v9-day-navigation\\.spec\\.ts$/"
+      ]
+    },
+    {
+      "name": "chromium-mobile",
+      "testMatch": [
+        "/v9-day-navigation\\.spec\\.ts$/"
+      ]
+    }
+  ],
+  "freshProfiles": true,
+  "fixture": "synthetic",
+  "offlineOriginalAndReload": true,
+  "realV10Retested": false,
+  "safePromptExplicitlyDeclined": true
+}

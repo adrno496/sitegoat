@@ -24,4 +24,22 @@ Le commit publié et la vérification de production sont consignés dans le reç
 
 ## Retour arrière
 
-Sur une branche isolée à jour, annuler le commit de code de ce complément par `git revert <commit-navigation-jours>`, examiner le diff, puis exécuter `npm run lint`, `npm run build`, `npm test` et `npx playwright test tests/e2e/v9-orange-edition.spec.ts tests/e2e/v9-workspace.spec.ts`. Le fichier de test de navigation est retiré par le revert ; vérifier manuellement que les commandes de date ont disparu et que la dernière édition s’ouvre toujours. Publier le commit d’annulation selon l’autorisation applicable. Aucune restauration de données n’est nécessaire. Ne pas appliquer directement les anciens patchs de rollback préparés pour d’autres commits. Aucun revert réel n’est exécuté pendant cette vérification.
+Le runtime de ce complément est `ba245726edc96c936ceebaf2682d699acb0be852` ; la référence précédente est `cd98589`. Un revert intégral peut nécessiter une résolution sur les preuves et le nouveau test, modifiés dans le reçu. Pour annuler uniquement cette fonctionnalité en conservant les rapports, sur une branche isolée :
+
+```sh
+git restore --source=cd98589 -- src/features/unified/UnifiedWorkspace.tsx src/features/unified/selectors.ts src/features/unified/unified.css
+git rm tests/e2e/v9-day-navigation.spec.ts
+npm run lint
+npm run build
+npm test
+npx playwright test tests/e2e/v9-orange-edition.spec.ts tests/e2e/v9-workspace.spec.ts
+```
+
+Examiner le diff et vérifier manuellement que les commandes de date ont disparu et que la dernière édition s’ouvre toujours, puis commiter et publier l’annulation selon l’autorisation applicable. Cette procédure est destinée à l’état de ce complément ; comparer d’abord les trois fichiers si des évolutions ultérieures les ont modifiés. L’applicabilité du diff inverse des trois fichiers runtime a été contrôlée par `git diff --binary HEAD cd98589 -- <les trois chemins ci-dessus> | git apply --check` : PASS. La restauration et la suppression du nouveau test n’ont pas été exécutées. Aucun journal ni donnée personnelle ne sont visés ; aucune restauration de données n’est nécessaire. Ne pas appliquer directement les anciens patchs de rollback préparés pour d’autres commits.
+
+## Reçu de publication
+
+- Commit de fonctionnalité **`ba245726edc96c936ceebaf2682d699acb0be852`**, poussé sans force ni merge sur `main`. Vercel **success** ; `https://sitegoat.vercel.app` répond 200. Les cinq ressources JS/CSS référencées dans le shell et les trois ressources différées `unified`/`UnifiedWorkspace` correspondent aux huit SHA-256 du build local.
+- `npx playwright test --config /tmp/sitegoat-days-production.config.ts` : **6 PASS, 0 FAIL, 0 retry**, Chromium/WebKit/Chromium mobile, profils neufs, fixtures synthétiques. Le fichier de configuration remplace `testMatch` dans chacun des projets, désactive serveurs/proxy locaux et utilise l’origine publique sans préférence interactive historique. Le test ouvre l’ancien original et recharge effectivement l’application avec le contexte hors ligne.
+- Première tentative en profil neuf : deux tests bloqués 45 secondes au retour du lecteur, deux cas simples PASS, un interrompu et un non exécuté (log conservé). Le bon original était affiché, mais la confirmation « Activer les interactions ? » interceptait le clic retour. Le test choisit désormais explicitement **Rester en mode sécurisé**, vérifie la sandbox vide, puis poursuit le retour. Aucun changement de runtime ni contournement de la confirmation. Cette adaptation du test passe également localement dans les trois configurations : **6 PASS** ; lint final PASS. Les 24 tests ciblés précédents restent la preuve des autres parcours.
+- [CI complète du commit de fonctionnalité](https://github.com/adrno496/sitegoat/actions/runs/40178456916) déclenchée automatiquement ; son état était encore **en cours** lors de la rédaction du reçu. Aucun résultat final de cette exécution n’est revendiqué ici.
