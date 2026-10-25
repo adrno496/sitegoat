@@ -1,0 +1,105 @@
+
+Running 97 tests using 1 worker
+
+(node:42608) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/v9-orange-edition.spec.ts:6:1 › orange : tout le dernier créneau, anciens neutres, détail, filtres, reload et thème sombre (3.6s)
+(node:42624) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   2 [webkit] › tests/e2e/v9-orange-edition.spec.ts:6:1 › orange : tout le dernier créneau, anciens neutres, détail, filtres, reload et thème sombre (4.1s)
+(node:42646) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   3 [chromium-mobile] › tests/e2e/google-ai.spec.ts:186:1 › Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation (11.1s)
+(node:42681) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   4 [chromium-mobile] › tests/e2e/google-ai.spec.ts:285:1 › Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles refusés (1.0s)
+
+
+  1) [chromium-mobile] › tests/e2e/google-ai.spec.ts:186:1 › Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('.edition-frame')
+    Expected: "allow-scripts"
+    Received: ""
+    Timeout:  10000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('.edition-frame') with timeout 10000ms
+      - waiting for locator('.edition-frame')
+        24 × locator resolved to <iframe sandbox="" class="edition-frame" referrerpolicy="no-referrer" title="Lecture de Journal Google IA" srcdoc="<!DOCTYPE html>↵<html lang="fr"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'none'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; media-src data: blob:; connect-src 'none'; object-src 'none'; frame-src 'none'; form-action 'none'; base-uri 'none'">↵    <meta charset="utf-8">↵    <title>Journal Google IA</title>↵    <meta name="…></iframe>
+           - unexpected value ""
+
+
+      77 |       .getByRole("heading", { name: "Journal Google IA" }),
+      78 |   ).toBeVisible();
+    > 79 |   await expect(page.locator(".edition-frame")).toHaveAttribute(
+         |                                                ^
+      80 |     "sandbox",
+      81 |     "allow-scripts",
+      82 |   );
+        at setup (/Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/google-ai.spec.ts:79:48)
+        at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/google-ai.spec.ts:195:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../../tmp/sitegoat-orange-production-results/google-ai-Google-IA-mode-s-caed1--annulation-sans-navigation-chromium-mobile/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../../tmp/sitegoat-orange-production-results/google-ai-Google-IA-mode-s-caed1--annulation-sans-navigation-chromium-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../../tmp/sitegoat-orange-production-results/google-ai-Google-IA-mode-s-caed1--annulation-sans-navigation-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../../tmp/sitegoat-orange-production-results/google-ai-Google-IA-mode-s-caed1--annulation-sans-navigation-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium-mobile] › tests/e2e/google-ai.spec.ts:285:1 › Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles refusés 
+
+    Test was interrupted.
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('.edition-frame')
+    Expected: "allow-scripts"
+    Received: ""
+
+    Call log:
+      - Expect "toHaveAttribute" locator('.edition-frame') with timeout 10000ms
+      - waiting for locator('.edition-frame')
+        4 × locator resolved to <iframe sandbox="" class="edition-frame" referrerpolicy="no-referrer" title="Lecture de Journal Google IA" srcdoc="<!DOCTYPE html>↵<html lang="fr"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'none'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; media-src data: blob:; connect-src 'none'; object-src 'none'; frame-src 'none'; form-action 'none'; base-uri 'none'">↵    <meta charset="utf-8">↵    <title>Journal Google IA</title>↵    <meta name="…></iframe>
+          - unexpected value ""
+      - Test ended.
+
+
+      77 |       .getByRole("heading", { name: "Journal Google IA" }),
+      78 |   ).toBeVisible();
+    > 79 |   await expect(page.locator(".edition-frame")).toHaveAttribute(
+         |                                                ^
+      80 |     "sandbox",
+      81 |     "allow-scripts",
+      82 |   );
+        at setup (/Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/google-ai.spec.ts:79:48)
+        at /Users/dreano/Downloads/veille/sitegoat-implementation/tests/e2e/google-ai.spec.ts:289:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../../tmp/sitegoat-orange-production-results/google-ai-Google-IA-fenêtr-860c1-pes-et-URL-hostiles-refusés-chromium-mobile/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../../tmp/sitegoat-orange-production-results/google-ai-Google-IA-fenêtr-860c1-pes-et-URL-hostiles-refusés-chromium-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../../tmp/sitegoat-orange-production-results/google-ai-Google-IA-fenêtr-860c1-pes-et-URL-hostiles-refusés-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../../tmp/sitegoat-orange-production-results/google-ai-Google-IA-fenêtr-860c1-pes-et-URL-hostiles-refusés-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium-mobile] › tests/e2e/google-ai.spec.ts:186:1 › Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation 
+  1 interrupted
+    [chromium-mobile] › tests/e2e/google-ai.spec.ts:285:1 › Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles refusés 
+  93 did not run
+  2 passed (23.2s)

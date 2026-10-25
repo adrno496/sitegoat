@@ -1,0 +1,47 @@
+{
+  "commit": "a84bc6af24501e7df67665687374857c6ddfcf1e",
+  "checkedAt": "2026-10-25T08:25:47.282Z",
+  "shellStatus": 200,
+  "assets": [
+    {
+      "asset": "/assets/index-jJowRVm-.js",
+      "status": 200,
+      "linked": true,
+      "localSha256": "6aa09f19fcef9c3fdb4935737a914295945f41609bda00cfad45f80c5f2691c2",
+      "productionSha256": "6aa09f19fcef9c3fdb4935737a914295945f41609bda00cfad45f80c5f2691c2",
+      "sameSha": true
+    },
+    {
+      "asset": "/assets/model-M9ZgFnLF.js",
+      "status": 200,
+      "linked": true,
+      "localSha256": "9c8aec0b7866a52d7355c7a3bca2614811dbeb73754f40f5b189a5427df08446",
+      "productionSha256": "9c8aec0b7866a52d7355c7a3bca2614811dbeb73754f40f5b189a5427df08446",
+      "sameSha": true
+    },
+    {
+      "asset": "/assets/dialogFocus-7NvDHono.js",
+      "status": 200,
+      "linked": true,
+      "localSha256": "7bf6d79ffe2069a9b5ae3b0d68589c503ecf9e8ccc6b2cf9e2314a1b920fab38",
+      "productionSha256": "7bf6d79ffe2069a9b5ae3b0d68589c503ecf9e8ccc6b2cf9e2314a1b920fab38",
+      "sameSha": true
+    },
+    {
+      "asset": "/assets/day-gCbPfp1D.js",
+      "status": 200,
+      "linked": true,
+      "localSha256": "a6193f478d7939e5128b75c11afd834eac3c6d5de25fde08211b0c4ca73f7066",
+      "productionSha256": "a6193f478d7939e5128b75c11afd834eac3c6d5de25fde08211b0c4ca73f7066",
+      "sameSha": true
+    },
+    {
+      "asset": "/assets/index-DNjbJTz1.css",
+      "status": 200,
+      "linked": true,
+      "localSha256": "5289917f0267e6c12d61f964223793852dc1e2bda2d9df900ee7ba9181e4b1b6",
+      "productionSha256": "5289917f0267e6c12d61f964223793852dc1e2bda2d9df900ee7ba9181e4b1b6",
+      "sameSha": true
+    }
+  ]
+}
