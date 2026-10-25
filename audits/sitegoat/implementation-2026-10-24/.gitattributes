@@ -1,0 +1,2 @@
+# Unified patches preserve whitespace-only context lines as data.
+rollback-en-direct.patch -whitespace

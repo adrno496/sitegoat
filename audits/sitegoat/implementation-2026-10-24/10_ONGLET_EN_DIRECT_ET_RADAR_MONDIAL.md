@@ -33,7 +33,7 @@ Le cache contient des informations publiques et les mots de recherche saisis : n
 
 ## Vérifications
 
-Point de contrôle avant publication : **366 unitaires PASS / 1 skip**. Le premier `npm run check` complet termine avec lint/build/unitaires verts, **300 E2E PASS / 1 échec de protocole de test WebKit / 1 skip historique** (16,4 min). Après correction de l’observateur d’annulation, les neuf scénarios En direct sont verts, dont ce cas WebKit. Les 301 cas E2E distincts ont donc un passage réussi, mais ce n’est pas revendiqué comme une passe globale unique verte. Un second `npm run check` complet est lancé sur le test corrigé ; résultat final et publication à compléter après leur fin. Aucun nouveau skip, retries 0.
+Point de contrôle avant publication : **366 unitaires PASS / 1 skip**. Le premier `npm run check` complet termine avec lint/build/unitaires verts, **300 E2E PASS / 1 échec de protocole de test WebKit / 1 skip historique** (16,4 min). Après correction de l’observateur d’annulation, les neuf scénarios En direct sont verts, dont ce cas WebKit. Les 301 cas E2E distincts ont donc un passage réussi, mais ce n’est pas revendiqué comme une passe globale unique verte. Le second **`npm run check` complet est PASS** : lint, build, **366 unitaires PASS / 1 skip**, **301 E2E PASS / 1 skip**, aucun échec/flaky et retries 0 (17,8 min pour les E2E). `live-check-final.log`, `live-e2e-final-summary.json` et `live-validation-final.json` constituent ce bilan final, distinct du premier passage rouge. Aucun nouveau skip, retries 0.
 
 Reçus : `live-full-first-summary.json`, `live-recheck-summary.json`, logs intermédiaires locaux, puis `live-check-final.log` pour le rejeu global. Le dernier changement de source concerne les liens Banque mondiale, couvert par les 366 unitaires complets rejoués et les 21 contrôles Sources ; aucun bundle navigateur modifié après ce point.
 
@@ -43,6 +43,16 @@ Reçus : `live-full-first-summary.json`, `live-recheck-summary.json`, logs inter
 - Les mocks API bloquent volontairement le service worker ; leur rechargement est fait en ligne avant passage hors ligne. Le test de production séparé doit valider le vrai rechargement hors ligne, le service worker et les données publiques réelles, sans mock.
 
 Incidents conservés : première sélection `status` ambiguë entre état global/toast/onglet, corrigée en ciblant l’onglet ; module lazy indisponible après mise hors ligne trop précoce dans le scénario sans service worker, précondition corrigée sans neutraliser le contrôle de production ; vrai appel en double à la reconnexion, corrigé en séparant le catalogue de l’horloge du cycle. Les logs intermédiaires rouges restent locaux. Le premier contrôle d’annulation attendait `requestfailed` de Playwright, événement non exposé par WebKit pour cette interception ; déplacer la libération de la route n’a pas résolu l’attente. Le test observe désormais le vrai signal abort et le vrai rejet Fetch `AbortError`, puis libère la réponse tardive et vérifie que le cache est resté intact. Les trois navigateurs passent ce contrôle. Aucune assertion de quota, d’intégrité ou de sécurité supprimée et aucun nouveau skip.
+
+## Publication et contrôle réel
+
+Push non forcé main **`39a1d0904d71b2fd77c78449b7d99d05d669fa6f`** réussi, après `4b9bd7e` (fonctionnalité) et le correctif du protocole d’annulation. Le déploiement automatique Vercel est vérifié par empreinte SHA-256 de trois fichiers : JavaScript principal, module En direct et sa feuille CSS ; tous identiques au build local. Le serveur expose dix sources, Banque mondiale renvoie dix cartes, les trois moteurs privés refusent l’anonyme (401), l’origine tierce est refusée (403) et un champ HTML synthétique supplémentaire est rejeté (400). Reçu `production-deployment-live.json`.
+
+**V10 édition 20 V2 après publication : 3 PASS**, Chromium 156 / WebKit 27.2 à 390 px / Chromium à 360 px, chacun dans un profil vierge sans connexion personnelle : 37 articles, 60 brèves, 13 prompts natifs exacts, 13 replis exacts, original SHA identique, onze ancres et accordéons natifs, date compacte/titre gras, rechargement vraiment hors ligne du journal et des sources réelles BCE/Banque mondiale. Seize cartes de radar sont encore visibles après reload hors ligne. Espacement des téléchargements 1100 ms, aucun avertissement de throttling. Reçu `production-v10-followup.json`, captures `production-live-*` avant tout import, inspectées sur bureau et mobile.
+
+La mesure par routage Playwright ne voit pas tous les fetches du service worker WebKit : son compteur d’appels publics routés est vide malgré les réponses réelles affichées. Le reçu nomme donc ce compteur **routedPublicApiCalls**, avec sa limite d’observation. Une ancienne constante « cloudTransfers: 0 » non instrumentée a été retirée du reçu et du harness ; aucun volume réseau global nul n’est revendiqué. Le reçu brut et le log d’exécution restent locaux ; seul l’intitulé des mesures est clarifié après exécution, sans changer de résultat ou d’assertion. Le contrôle de confidentialité repose sur le profil vierge sans login, les corps API bornés/provider-query et le passage physique hors ligne immédiatement après import, avant l’activation du HTML scripté.
+
+**CI du code publié PASS** : [run 40147136993](https://github.com/adrno496/sitegoat/actions/runs/40147136993), terminé le 25 octobre à 00:52:36 UTC, 366 unitaires et 301 E2E PASS. `live-ci.json` et `live-ci-summary.log` en conservent le reçu ; le log complet reste local. Le second check local complet est lui aussi vert. Le dernier commit de preuves ne change pas `src`, `api`, `server`, les tests ni les dépendances : seulement les rapports, captures, patch de rollback et intitulés de mesures du harness de production. Le code fonctionnel déployé/testé reste celui de `39a1d09`. Aucune session ou synchronisation personnelle réelle testée.
 
 ## Journal V10 et conservation
 
@@ -54,19 +64,22 @@ Le contrôle actuel retrouve les trois éditions 20 intactes. Les treize noms V9
 
 ## Rollback
 
-Pour retirer uniquement ce complément, créer une branche de rollback à partir de main et préparer un `git revert` du commit `4b9bd7e` de fonctionnalité En direct, puis rejouer les contrôles d’interface, sources, restauration et hors ligne sur profil vierge avant une éventuelle publication. Ne pas reset/clean le dépôt et ne pas effacer IndexedDB ou localStorage. Le client du complément 09 peut encore lire les résultats publics mémorisés, y compris Banque mondiale ; sa liste de récupération retrouve ses neuf sources. La version antérieure aux API ignore ce cache. Les formats des journaux, notes et sauvegardes restent inchangés. Le retour arrière retire la source Banque mondiale et le suivi, sans révoquer les clés Sentinel ni modifier les variables Supabase.
+Le patch préparé [`rollback-en-direct.patch`](rollback-en-direct.patch) ramène les dix fichiers de fonctionnalité/API/tests/harness au code `051fae5`, en conservant les rapports et preuves. Il retire aussi le contrôle d’annulation ajouté ensuite au nouveau fichier de test : un simple revert isolé de `4b9bd7e` risquerait un conflit modification/suppression après `39a1d09`. Le contrôle **en lecture seule** `git apply --check` de ce patch passe sur le code publié (`live-rollback-check.json`), sans modifier les fichiers. Le rollback de production n’est pas exécuté.
 
-Exemple de préparation dans un nouvel emplacement, sans toucher au worktree personnel :
+Préparer le retour dans un nouveau worktree, puis vérifier avant tout commit ou publication :
 
 ```sh
 git fetch origin main
 git worktree add -b codex/sitegoat-retour-live /tmp/sitegoat-retour-live origin/main
 cd /tmp/sitegoat-retour-live
-git revert --no-edit 4b9bd7e
+git apply --check audits/sitegoat/implementation-2026-10-24/rollback-en-direct.patch
+git apply --index audits/sitegoat/implementation-2026-10-24/rollback-en-direct.patch
 npm ci
 npm run check
 ```
 
-Ces commandes sont une procédure à exécuter seulement si ce rollback est souhaité ; elles ne poussent rien sur main. L’emplacement et le nom de branche doivent être neufs. Après des changements futurs de main, vérifier à nouveau les conflits et la restauration avant toute publication.
+Ces commandes sont une procédure uniquement si ce rollback est souhaité ; elles ne poussent rien sur main. L’emplacement et le nom de branche doivent être neufs. Après des changements futurs de code, vérifier à nouveau l’application du patch, les conflits et la restauration avant toute publication. Actualiser ensuite le README et le rapport pour signaler le retrait, puis créer le commit de rollback et le faire relire. Ne pas reset/clean le dépôt et ne pas effacer IndexedDB ou localStorage.
 
-Pour suspendre seulement les appels : **Mettre en pause**, quitter En direct ou fermer la page ; les derniers résultats restent lisibles. Pour désactiver les moteurs payants côté serveur, retirer uniquement leurs trois copies Production Vercel puis redéployer comme décrit dans 09. Le contrôle en lecture seule `git show --format= --binary 4b9bd7e | git apply --reverse --check` est passé sans conflit au point de contrôle (`live-rollback-check.json`) ; il ne modifie aucun fichier et ne valide pas une publication de rollback. Le revert Git et le rollback de production n’ont pas été exécutés. SG-03 reste PARTIAL pour la mémoire des très gros corpus ; téléphones physiques, quotas disque réels et synchronisation distante personnelle restent non certifiés.
+Le client du complément 09 peut encore lire les résultats publics mémorisés, y compris Banque mondiale ; sa liste de récupération retrouve ses neuf sources. La version antérieure aux API ignore ce cache. Les formats des journaux, notes et sauvegardes restent inchangés. Ni les clés Sentinel ni les variables Supabase ne sont une étape de ce rollback.
+
+Pour suspendre seulement les appels : **Mettre en pause**, quitter En direct ou fermer la page ; les derniers résultats restent lisibles. Pour désactiver les moteurs payants côté serveur, retirer uniquement leurs trois copies Production Vercel puis redéployer comme décrit dans 09. Le patch de rollback est préparé et contrôlé à blanc ; ni son application effective ni sa publication n’ont été exécutées. SG-03 reste PARTIAL pour la mémoire des très gros corpus ; téléphones physiques, quotas disque réels et synchronisation distante personnelle restent non certifiés.

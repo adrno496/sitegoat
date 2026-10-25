@@ -1,0 +1,402 @@
+
+> journal360-mobile@2.1.1 check
+> npm run lint && npm run build && npm test && npm run test:e2e
+
+
+> journal360-mobile@2.1.1 lint
+> eslint .
+
+
+> journal360-mobile@2.1.1 build
+> tsc -b && vite build
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 1803 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/manifest.webmanifest                          0.64 kB
+dist/index.html                                    0.94 kB │ gzip:   0.50 kB
+dist/assets/LiveWatch-8F_ksg1Q.css                 1.01 kB │ gzip:   0.46 kB
+dist/assets/unified-DtX8xkY1.css                   6.21 kB │ gzip:   1.70 kB
+dist/assets/FutureView-xMWxTbag.css               14.01 kB │ gzip:   3.28 kB
+dist/assets/index-Cj8QwTqG.css                    48.51 kB │ gzip:  10.42 kB
+dist/assets/hooks-BiiLJAHm.js                      0.33 kB │ gzip:   0.24 kB
+dist/assets/unified-ChRHIPRd.js                    4.88 kB │ gzip:   1.83 kB
+dist/assets/ImportDialog-Ds3HbsUv.js               5.65 kB │ gzip:   2.35 kB
+dist/assets/workbox-window.prod.es5-Bd17z0YL.js    5.65 kB │ gzip:   2.20 kB
+dist/assets/LiveWatch-JV50VVoM.js                  7.06 kB │ gzip:   2.87 kB
+dist/assets/day-gCbPfp1D.js                        7.24 kB │ gzip:   2.94 kB
+dist/assets/UnifiedWorkspace-DunkkHDc.js          21.92 kB │ gzip:   7.26 kB
+dist/assets/FutureView-CeuBL4a8.js                42.89 kB │ gzip:  12.47 kB
+dist/assets/dialogFocus-7NvDHono.js              105.56 kB │ gzip:  35.10 kB
+dist/assets/model-M9ZgFnLF.js                    124.11 kB │ gzip:  36.73 kB
+dist/assets/index-CeHkVXJq.js                    774.30 kB │ gzip: 226.32 kB
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/features/import.ts is dynamically imported by src/features/backup.ts but also statically imported by src/App.tsx, src/features/ImportDialog.tsx, src/features/Reader.tsx, dynamic import will not move module into another chunk.
+
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 343ms
+
+PWA v1.3.0
+Building src/sw.ts service worker ("es" format)...
+vite v8.3.4 building client environment for production...
+
+ WARN  inlineDynamicImports option is deprecated, please use codeSplitting: false instead.
+
+transforming...
+✓ 62 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/sw.mjs  114.24 kB │ gzip: 37.45 kB
+
+✓ built in 49ms
+
+PWA v1.3.0
+mode      injectManifest
+format:   es
+precache  44 entries (1512.99 KiB)
+files generated
+  dist/sw.js
+
+> journal360-mobile@2.1.1 test
+> vitest run
+
+
+ RUN  v5.0.4 /Users/dreano/Downloads/veille/sitegoat-implementation
+
+
+ Test Files  38 passed (38)
+      Tests  366 passed | 1 skipped (367)
+   Start at  02:32:08
+   Duration  31.18s (tests 67%, environment 21%, import 8%, transform 2%, setup 2%)
+
+    Isolate  38 workers spawned · ~748ms startup each (spawn + environment, per file)
+             at least ~2.41s faster with isolate: false — reuses workers across files instead of one per file
+
+
+> journal360-mobile@2.1.1 test:e2e
+> playwright test
+
+[WebServer] (node:96727) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:96728) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 302 tests using 1 worker
+
+(node:96735) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓    1 [chromium] › tests/e2e/app.spec.ts:26:1 › parcours complet : import, lecture, notes, favori, recherche, offline, export et restauration (2.6s)
+  ✓    2 [chromium] › tests/e2e/app.spec.ts:124:1 › démonstrations, interaction explicite et mémoire basée sur event_id (1.4s)
+  ✓    3 [chromium] › tests/e2e/app.spec.ts:163:1 › renommage doublon, version, archive et corbeille récupérable (8.1s)
+  ✓    4 [chromium] › tests/e2e/app.spec.ts:200:1 › sécurité : parent, stockage, fetch, ressources, top et popups bloqués (956ms)
+  ✓    5 [chromium] › tests/e2e/app.spec.ts:237:1 › responsive, thèmes et accessibilité sur six largeurs (4.6s)
+  ✓    6 [chromium] › tests/e2e/app.spec.ts:273:1 › manifest et réception Web Share Target en service worker (658ms)
+  ✓    7 [chromium] › tests/e2e/app.spec.ts:310:1 › File Handling launchQueue traite un HTML via le même écran de vérification (705ms)
+  ✓    8 [chromium] › tests/e2e/app.spec.ts:350:1 › lecture pleine page : tout le viewport, interactions conservées et retour sur mobile (3.9s)
+  ✓    9 [chromium] › tests/e2e/app.spec.ts:455:1 › mode interactif automatique, choix sécurisé conservé après rechargement et nouvelle édition interactive (1.5s)
+  ✓   10 [chromium] › tests/e2e/google-ai.spec.ts:186:1 › Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation (2.0s)
+  ✓   11 [chromium] › tests/e2e/google-ai.spec.ts:285:1 › Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles refusés (910ms)
+  ✓   12 [chromium] › tests/e2e/google-ai.spec.ts:417:1 › Google IA : seule la confirmation ouvre la question affichée, sans opener, referrer ni notes PWA (965ms)
+  ✓   13 [chromium] › tests/e2e/google-ai.spec.ts:478:1 › Google IA : lecture et confirmation hors ligne, copie HTML originale intacte (982ms)
+  ✓   14 [chromium] › tests/e2e/update.spec.ts:5:1 › mise à jour réelle du service worker sans perte des originaux et favoris (935ms)
+  ✓   15 [chromium] › tests/e2e/v6-articles.spec.ts:33:1 › articles : import, filtres, lecture, sources, favoris, retour du journal et persistance (2.0s)
+  ✓   16 [chromium] › tests/e2e/v6-articles.spec.ts:133:1 › articles : pagination et recherche dans tout l’index (689ms)
+  ✓   17 [chromium] › tests/e2e/v6-articles.spec.ts:173:1 › questions Google depuis les articles : question exacte, édition, copie, ouverture volontaire et hors ligne (1.4s)
+  ✓   18 [chromium] › tests/e2e/v6-articles.spec.ts:273:1 › sommaire : ouvre l’analyse complète dans le HTML dynamique et conserve les questions Google du journal (1.2s)
+  ✓   19 [chromium] › tests/e2e/v6-articles.spec.ts:379:1 › sans question préparée : saisie manuelle, sans inventer depuis le titre ou les notes (715ms)
+  ✓   20 [chromium] › tests/e2e/v6-clean-reader.spec.ts:47:1 › HTML seul : deux petits contrôles, pleine hauteur, réduction et historique navigateur sans perte (1.1s)
+  ✓   21 [chromium] › tests/e2e/v6-clean-reader.spec.ts:113:1 › geste réservé au bord gauche : retour horizontal, mouvements verticaux et mauvais sens ignorés, même sans JS (1.1s)
+  ✓   22 [chromium] › tests/e2e/v6-clean-reader.spec.ts:177:1 › tactile Chromium réel : le défilement du HTML reste libre et le glissement au bord revient (1.1s)
+  ✓   23 [chromium] › tests/e2e/v6-clean-reader.spec.ts:221:1 › les contrôles flottants laissent libre l’en-tête du HTML sur smartphone (761ms)
+  ✓   24 [chromium] › tests/e2e/v6-collections.spec.ts:34:1 › IA majeur et Sentinel : imports dirigés, documents de même date, doublons séparés et retour du lecteur (1.5s)
+  ✓   25 [chromium] › tests/e2e/v6-collections.spec.ts:75:1 › destination modifiable à l’import, recherche, archives, corbeille et mode hors ligne (1.2s)
+  ✓   26 [chromium] › tests/e2e/v6-collections.spec.ts:128:1 › navigation mobile visible et accessibilité des deux nouveaux espaces (1.3s)
+  ✓   27 [chromium] › tests/e2e/v6-collections.spec.ts:171:1 › Sentinel : télécharge le prompt Markdown exact depuis une carte existante, même hors ligne (1.5s)
+  ✓   28 [chromium] › tests/e2e/v6-daily.spec.ts:54:1 › un HTML par jour : quatre imports successifs remplacent la carte, JS/offline et annotations restent disponibles (23.1s)
+  ✓   29 [chromium] › tests/e2e/v6-daily.spec.ts:117:1 › lot désordonné, doublon renommé et nouvelle journée : la dernière édition reste seule, recherche limitée au HTML courant (29.3s)
+  ✓   30 [chromium] › tests/e2e/v6-daily.spec.ts:195:1 › mise à jour des anciens imports indépendants : regroupement immédiat sans migration des UUID ni réimport (956ms)
+  ✓   31 [chromium] › tests/e2e/v6-daily.spec.ts:262:1 › archiver, corbeille et restaurer une journée ne font pas réapparaître une ancienne carte (1.2s)
+  ✓   32 [chromium] › tests/e2e/v6-future-atlas.spec.ts:54:1 › Atlas P0 : compteurs réels, filtres, favoris, pagination et retour du focus (2.3s)
+  ✓   33 [chromium] › tests/e2e/v6-future-atlas.spec.ts:129:1 › Atlas P1 : frise fidèle, clavier, liens déclarés et comparateur (1.4s)
+  ✓   34 [chromium] › tests/e2e/v6-future-atlas.spec.ts:178:1 › Atlas P1 : préparation enregistrée, erreur de quota et brouillon conservé (1.9s)
+  ✓   35 [chromium] › tests/e2e/v6-future-atlas.spec.ts:230:1 › Atlas : zéro, un, beaucoup de jalons, autres scénarios et absence de source (1.9s)
+  ✓   36 [chromium] › tests/e2e/v6-future-atlas.spec.ts:283:1 › Atlas : WCAG sur parcours, reflow, mouvement réduit et tests des tests (3.9s)
+  ✓   37 [chromium] › tests/e2e/v6-future-atlas.spec.ts:389:1 › Atlas : base Le Futur indisponible, erreur visible et autres onglets accessibles (607ms)
+  ✓   38 [chromium] › tests/e2e/v6-future-atlas.spec.ts:412:1 › Atlas : parcours clavier des contrôles principaux, import annulable et focus rendu (2.0s)
+  ✓   39 [chromium] › tests/e2e/v6-future-atlas.spec.ts:487:1 › Atlas : nouvelle révision annoncée avec accès direct aux différences (1.9s)
+  ✓   40 [chromium] › tests/e2e/v6-future.spec.ts:41:1 › Le Futur : HTML dédié, six modules, notes, révision confirmée, export, sauvegarde et offline (2.1s)
+  ✓   41 [chromium] › tests/e2e/v6-future.spec.ts:215:1 › Le Futur : conflits, hostile, doublons et transfert explicite des journaux (1.4s)
+  ✓   42 [chromium] › tests/e2e/v6-future.spec.ts:276:1 › Le Futur : clavier, axe, quatre largeurs, mouvement réduit et sombre (3.7s)
+  ✓   43 [chromium] › tests/e2e/v6-future.spec.ts:367:1 › Le Futur : migration AI-RADAR explicite et revue personnelle distincte de la source déclarée (992ms)
+  ✓   44 [chromium] › tests/e2e/v6-future.spec.ts:401:1 › Le Futur : capacité insuffisante et lot mixte avec un journal (1.0s)
+  ✓   45 [chromium] › tests/e2e/v6-future.spec.ts:459:1 › Le Futur : lot désordonné, doublon HTML/JSON et confirmations par révision (1.1s)
+  ✓   46 [chromium] › tests/e2e/v6-google-navigation.spec.ts:98:1 › lien Google classique dynamique : confirmation, question exacte, lien de repli et entrée IA sans question (1.2s)
+  ✓   47 [chromium] › tests/e2e/v6-google-navigation.spec.ts:185:1 › session : source exacte, origine opaque insuffisante, nonce, rejeu, expiration et renouvellement du cadre (907ms)
+  ✓   48 [chromium] › tests/e2e/v6-google-navigation.spec.ts:271:1 › question sensible refusée, offline, copie manuelle, ouverture silencieusement bloquée et exception (981ms)
+  ✓   49 [chromium] › tests/e2e/v6-google-navigation.spec.ts:375:1 › HTML autonome : lien classique en nouvel onglet et entrée IA sans préremplissage revendiqué (324ms)
+  ✓   50 [chromium] › tests/e2e/v6-improvements.spec.ts:38:1 › nouveautés en carte et dans les options, HTML épuré, repère conservé au rechargement et hors ligne (15.6s)
+  ✓   51 [chromium] › tests/e2e/v6-improvements.spec.ts:139:3 › Cloud simulé sans interception par le service worker › sync visible : en cours, échec, clic réessayer, succès daté, changements en attente et automatique désactivée (7.9s)
+  ✓   52 [chromium] › tests/e2e/v6.spec.ts:49:1 › V6 : 08→16→21, une carte journée, historique, recherche, original, notes et doublon (23.4s)
+  ✓   53 [chromium] › tests/e2e/v6.spec.ts:141:1 › V6 : dernière édition affichée malgré les avertissements, historique fiable et nouvelle journée conservés (29.0s)
+  ✓   54 [chromium] › tests/e2e/v6.spec.ts:161:1 › V6 : onglets, huit thèmes, image embarquée, zoom jusqu’à 200 %, offline et neuf largeurs (5.2s)
+  ✓   55 [chromium] › tests/e2e/v6.spec.ts:246:1 › V6 : tous les boutons de section, v2 question seule, copie corrigée et entrée Google sans données privées (1.8s)
+  ✓   56 [chromium] › tests/e2e/v6.spec.ts:365:1 › V6 : mode sécurisé, presse-papier refusé, popup bloquée et offline ont un repli manuel (1.0s)
+  ✓   57 [chromium] › tests/e2e/v61.spec.ts:37:1 › V6.1 : les treize ancres conservent le document, le JS, les thèmes et les filtres (1.7s)
+  ✓   58 [chromium] › tests/e2e/v61.spec.ts:82:1 › V6.1 : onze boutons sans ancien marquage demandent confirmation, copie et lancement des onze questions (3.8s)
+  ✓   59 [chromium] › tests/e2e/v61.spec.ts:200:1 › V6.1 : ancres sans JS, questions parent puis retour interactif et rechargement conservent le pont (1.6s)
+  ✓   60 [chromium] › tests/e2e/v61.spec.ts:251:1 › V6.1 : préremplissage borné, offline et lien de repli conservent la question confirmée (1.1s)
+  ✓   61 [chromium] › tests/e2e/v64-google-buttons.spec.ts:64:1 › 6.4.3 : le lien Mode IA d’un article ouvre la confirmation PWA avec sa question, puis Google Mode IA et la recherche Google (976ms)
+  ✓   62 [chromium] › tests/e2e/v64-google-buttons.spec.ts:100:1 › 6.4.3 : « En savoir plus » reste local et le lien de l’approfondissement reprend la question affichée (840ms)
+  ✓   63 [chromium] › tests/e2e/v64-google-buttons.spec.ts:119:1 › lien Mode IA sans question : la confirmation s’ouvre quand même et Google Mode IA reste disponible (832ms)
+  ✓   64 [chromium] › tests/e2e/v64-google-buttons.spec.ts:156:1 › 6.4 à fenêtre (6.4.1) : « En savoir plus » ouvre directement la confirmation PWA, la fenêtre du journal reste fermée (801ms)
+  ✓   65 [chromium] › tests/e2e/v64-google-buttons.spec.ts:176:1 › doublon exact réimporté : le dernier import remplace l’ancienne copie, une seule édition reste (7.7s)
+  ✓   66 [chromium] › tests/e2e/v7-unified.spec.ts:29:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (1.7s)
+  ✓   67 [chromium] › tests/e2e/v7-unified.spec.ts:155:1 › V7 : mobile, clavier, thèmes, absence de données, sources, reduced motion et radar comparable (3.2s)
+  ✓   68 [chromium] › tests/e2e/v7-unified.spec.ts:229:1 › V7 : HTML hostile lu sans scripts, question publique conservée, prompt privé non transmis (985ms)
+  ✓   69 [chromium] › tests/e2e/v7-unified.spec.ts:295:1 › V7 : adaptateur Future explicite, JSON validé puis import indépendant sans écriture croisée (2.8s)
+  ✓   70 [chromium] › tests/e2e/v7-unified.spec.ts:349:1 › V7 : MIME incohérent refusé sans écriture puis import HTML valide conservé (7.6s)
+  ✓   71 [chromium] › tests/e2e/v7-unified.spec.ts:377:1 › V7 : chargement différé de l’accueil sans déplacer un bouton pendant le clic (811ms)
+  ✓   72 [chromium] › tests/e2e/v8-audit.spec.ts:48:1 › Audit P0/P1 : 10 h seul offline, huit cartes, résumés, fiches intégrales et trois Markdown exacts (3.3s)
+  ✓   73 [chromium] › tests/e2e/v8-audit.spec.ts:139:1 › Audit P0 : créneaux exacts, retour même filtre/position, historique navigateur et rechargement (2.0s)
+  ✓   74 [chromium] › tests/e2e/v8-audit.spec.ts:185:1 › Audit P1/P2 : profils réversibles, offline, sept largeurs, clavier, contraste et mouvement réduit (3.1s)
+  ✓   75 [chromium] › tests/e2e/v8-audit.spec.ts:298:1 › Audit P2 : import, rendu paginé et recherche de 500 puis 2000 articles synthétiques (5.9s)
+  ✓   76 [chromium] › tests/e2e/v8-audit.spec.ts:381:1 › Audit P2 : texte hostile échappé et URL invalide rejetée sans perte (809ms)
+  ✓   77 [chromium] › tests/e2e/v8-reading.spec.ts:36:3 › Lecture réelle du cadre 08 h : HTML d’origine conservé, interactions directes, offline (1.5s)
+  ✓   78 [chromium] › tests/e2e/v8-reading.spec.ts:36:3 › Lecture réelle du cadre 10 h : HTML d’origine conservé, interactions directes, offline (2.0s)
+  ✓   79 [chromium] › tests/e2e/v8-reading.spec.ts:36:3 › Lecture réelle du cadre 16 h : HTML d’origine conservé, interactions directes, offline (3.4s)
+  ✓   80 [chromium] › tests/e2e/v8-reading.spec.ts:109:1 › Développer utilise toute la largeur de la page et Réduire rétablit la carte (859ms)
+  ✓   81 [chromium] › tests/e2e/v8-reading.spec.ts:130:1 › 16 h : PARTIAL ne signifie pas contradiction ni article manquant ; prompts parent exacts (1.6s)
+  ✓   82 [chromium] › tests/e2e/v8-snapshot.spec.ts:26:1 › T01/T04/T09/T15 : SEUL fichier 22 h dans une base vide, huit événements et toutes les annexes offline (2.3s)
+  ✓   83 [chromium] › tests/e2e/v8-snapshot.spec.ts:123:1 › T02/T03 : un seul 12 h ou 18 h, puis arrivée désordonnée sans rétrogradation (1.7s)
+  ✓   84 [chromium] › tests/e2e/v8-snapshot.spec.ts:152:1 › T16 : snapshot autonome clavier, axe, sept largeurs, zoom CSS 200 %, thèmes et mouvement réduit (2.2s)
+  ✓   85 [chromium] › tests/e2e/v8-snapshot.spec.ts:199:1 › T05/T06/T07 : omissions réelles avec provenance et conflit de révision visibles (8.3s)
+  ✓   86 [chromium] › tests/e2e/v9-live-watch.spec.ts:86:1 › En direct : départ explicite, radar accessible, quotas protégés et dernier résultat conservé après erreur (1.8s)
+  ✓   87 [chromium] › tests/e2e/v9-live-watch.spec.ts:170:1 › En direct : cadence, suspension hors ligne, arrêt et sortie sans appels en arrière-plan (1.5s)
+  ✓   88 [chromium] › tests/e2e/v9-live-watch.spec.ts:274:1 › En direct : un arrêt annule la récupération en cours sans écriture tardive (884ms)
+  ✓   89 [chromium] › tests/e2e/v9-prompt-tools.spec.ts:36:1 › tous les prompts sont téléchargés en un ZIP, même avec un filtre actif et hors ligne (823ms)
+  ✓   90 [chromium] › tests/e2e/v9-prompt-tools.spec.ts:72:1 › la recherche globale permet de rechercher le titre exact sur Google sans ouvrir le HTML (1.0s)
+  ✓   91 [chromium] › tests/e2e/v9-recurring-searches.spec.ts:7:1 › Récurrent : thèmes, édition, recherche Google récente, persistance et suppression (2.2s)
+  ✓   92 [chromium] › tests/e2e/v9-recurring-searches.spec.ts:131:1 › Récurrent : stockage indisponible, brouillon conservé sans faux enregistrement (602ms)
+  ✓   93 [chromium] › tests/e2e/v9-sitegoat.spec.ts:7:3 › SG-13 : lien attaché, refus, confirmation, contenu exact et hors ligne (1.3s)
+  ✓   94 [chromium] › tests/e2e/v9-sitegoat.spec.ts:7:3 › SG-13 : lien détaché, refus, confirmation, contenu exact et hors ligne (1.3s)
+  ✓   95 [chromium] › tests/e2e/v9-sitegoat.spec.ts:101:3 › SG-04 : profil neuf sans confiance mémorisée › choix avant exécution, refus mémorisé et révocable (984ms)
+  ✓   96 [chromium] › tests/e2e/v9-sitegoat.spec.ts:160:1 › SG-02 : minuit Paris et retour au premier plan sans rechargement (654ms)
+  ✓   97 [chromium] › tests/e2e/v9-sitegoat.spec.ts:196:1 › SG-08 : deux vrais onglets, ajouts simultanés et conflit sur le même ID (1.3s)
+  ✓   98 [chromium] › tests/e2e/v9-sitegoat.spec.ts:277:1 › SG-01/09/14 : filtres accessibles, instants réels et date compacte en lecture (632ms)
+  ✓   99 [chromium] › tests/e2e/v9-sources.spec.ts:6:1 › Sources : récupération explicite, aucun journal envoyé, cache hors ligne et réponse inerte (773ms)
+  ✓  100 [chromium] › tests/e2e/v9-workspace.spec.ts:51:1 › V9 : Aujourd’hui épuré, Accueil, articles internes, 19 titres réels ou fixture, Google public et préférences (3.1s)
+  ✓  101 [chromium] › tests/e2e/v9-workspace.spec.ts:189:1 › V9 : HTML original offline, filtres, accordéons, Google et source contrôlés, Markdown exact, isolation (2.1s)
+  ✓  102 [chromium] › tests/e2e/v9-workspace.spec.ts:344:1 › V9 : panne du stockage des préférences, réglages conservés pour la session (515ms)
+  ✓  103 [chromium] › tests/e2e/v9-workspace.spec.ts:369:1 › V9 : filtres Articles combinables, calendrier de faits et affichage intégral de 100 brèves synthétiques (1.3s)
+  ✓  104 [chromium] › tests/e2e/v9-workspace.spec.ts:488:1 › V9 : onglet Actualité rapide, titres des articles automatiques, dates simples et HTML directement interactif (2.6s)
+(node:98135) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  105 [webkit] › tests/e2e/app.spec.ts:26:1 › parcours complet : import, lecture, notes, favori, recherche, offline, export et restauration (5.2s)
+  ✓  106 [webkit] › tests/e2e/app.spec.ts:124:1 › démonstrations, interaction explicite et mémoire basée sur event_id (2.6s)
+  ✓  107 [webkit] › tests/e2e/app.spec.ts:163:1 › renommage doublon, version, archive et corbeille récupérable (8.8s)
+  ✓  108 [webkit] › tests/e2e/app.spec.ts:200:1 › sécurité : parent, stockage, fetch, ressources, top et popups bloqués (1.7s)
+  ✓  109 [webkit] › tests/e2e/app.spec.ts:237:1 › responsive, thèmes et accessibilité sur six largeurs (7.4s)
+  ✓  110 [webkit] › tests/e2e/app.spec.ts:273:1 › manifest et réception Web Share Target en service worker (920ms)
+  ✓  111 [webkit] › tests/e2e/app.spec.ts:310:1 › File Handling launchQueue traite un HTML via le même écran de vérification (1.1s)
+  ✓  112 [webkit] › tests/e2e/app.spec.ts:350:1 › lecture pleine page : tout le viewport, interactions conservées et retour sur mobile (6.6s)
+  ✓  113 [webkit] › tests/e2e/app.spec.ts:455:1 › mode interactif automatique, choix sécurisé conservé après rechargement et nouvelle édition interactive (2.5s)
+  ✓  114 [webkit] › tests/e2e/google-ai.spec.ts:186:1 › Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation (3.4s)
+  ✓  115 [webkit] › tests/e2e/google-ai.spec.ts:285:1 › Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles refusés (1.6s)
+  ✓  116 [webkit] › tests/e2e/google-ai.spec.ts:417:1 › Google IA : seule la confirmation ouvre la question affichée, sans opener, referrer ni notes PWA (1.8s)
+  ✓  117 [webkit] › tests/e2e/google-ai.spec.ts:478:1 › Google IA : lecture et confirmation hors ligne, copie HTML originale intacte (1.7s)
+  ✓  118 [webkit] › tests/e2e/update.spec.ts:5:1 › mise à jour réelle du service worker sans perte des originaux et favoris (1.3s)
+  ✓  119 [webkit] › tests/e2e/v6-articles.spec.ts:33:1 › articles : import, filtres, lecture, sources, favoris, retour du journal et persistance (3.3s)
+  ✓  120 [webkit] › tests/e2e/v6-articles.spec.ts:133:1 › articles : pagination et recherche dans tout l’index (1.3s)
+  ✓  121 [webkit] › tests/e2e/v6-articles.spec.ts:173:1 › questions Google depuis les articles : question exacte, édition, copie, ouverture volontaire et hors ligne (2.7s)
+  ✓  122 [webkit] › tests/e2e/v6-articles.spec.ts:273:1 › sommaire : ouvre l’analyse complète dans le HTML dynamique et conserve les questions Google du journal (2.2s)
+  ✓  123 [webkit] › tests/e2e/v6-articles.spec.ts:379:1 › sans question préparée : saisie manuelle, sans inventer depuis le titre ou les notes (1.2s)
+  ✓  124 [webkit] › tests/e2e/v6-clean-reader.spec.ts:47:1 › HTML seul : deux petits contrôles, pleine hauteur, réduction et historique navigateur sans perte (2.0s)
+  ✓  125 [webkit] › tests/e2e/v6-clean-reader.spec.ts:113:1 › geste réservé au bord gauche : retour horizontal, mouvements verticaux et mauvais sens ignorés, même sans JS (1.6s)
+  -  126 [webkit] › tests/e2e/v6-clean-reader.spec.ts:177:1 › tactile Chromium réel : le défilement du HTML reste libre et le glissement au bord revient
+  ✓  127 [webkit] › tests/e2e/v6-clean-reader.spec.ts:221:1 › les contrôles flottants laissent libre l’en-tête du HTML sur smartphone (1.3s)
+  ✓  128 [webkit] › tests/e2e/v6-collections.spec.ts:34:1 › IA majeur et Sentinel : imports dirigés, documents de même date, doublons séparés et retour du lecteur (2.4s)
+  ✓  129 [webkit] › tests/e2e/v6-collections.spec.ts:75:1 › destination modifiable à l’import, recherche, archives, corbeille et mode hors ligne (1.9s)
+  ✓  130 [webkit] › tests/e2e/v6-collections.spec.ts:128:1 › navigation mobile visible et accessibilité des deux nouveaux espaces (2.2s)
+  ✓  131 [webkit] › tests/e2e/v6-collections.spec.ts:171:1 › Sentinel : télécharge le prompt Markdown exact depuis une carte existante, même hors ligne (2.3s)
+  ✓  132 [webkit] › tests/e2e/v6-daily.spec.ts:54:1 › un HTML par jour : quatre imports successifs remplacent la carte, JS/offline et annotations restent disponibles (24.5s)
+  ✓  133 [webkit] › tests/e2e/v6-daily.spec.ts:117:1 › lot désordonné, doublon renommé et nouvelle journée : la dernière édition reste seule, recherche limitée au HTML courant (29.9s)
+  ✓  134 [webkit] › tests/e2e/v6-daily.spec.ts:195:1 › mise à jour des anciens imports indépendants : regroupement immédiat sans migration des UUID ni réimport (1.7s)
+  ✓  135 [webkit] › tests/e2e/v6-daily.spec.ts:262:1 › archiver, corbeille et restaurer une journée ne font pas réapparaître une ancienne carte (1.8s)
+  ✓  136 [webkit] › tests/e2e/v6-future-atlas.spec.ts:54:1 › Atlas P0 : compteurs réels, filtres, favoris, pagination et retour du focus (2.9s)
+  ✓  137 [webkit] › tests/e2e/v6-future-atlas.spec.ts:129:1 › Atlas P1 : frise fidèle, clavier, liens déclarés et comparateur (2.2s)
+  ✓  138 [webkit] › tests/e2e/v6-future-atlas.spec.ts:178:1 › Atlas P1 : préparation enregistrée, erreur de quota et brouillon conservé (2.1s)
+  ✓  139 [webkit] › tests/e2e/v6-future-atlas.spec.ts:230:1 › Atlas : zéro, un, beaucoup de jalons, autres scénarios et absence de source (2.2s)
+  ✓  140 [webkit] › tests/e2e/v6-future-atlas.spec.ts:283:1 › Atlas : WCAG sur parcours, reflow, mouvement réduit et tests des tests (5.0s)
+  ✓  141 [webkit] › tests/e2e/v6-future-atlas.spec.ts:389:1 › Atlas : base Le Futur indisponible, erreur visible et autres onglets accessibles (1.5s)
+  ✓  142 [webkit] › tests/e2e/v6-future-atlas.spec.ts:412:1 › Atlas : parcours clavier des contrôles principaux, import annulable et focus rendu (2.5s)
+  ✓  143 [webkit] › tests/e2e/v6-future-atlas.spec.ts:487:1 › Atlas : nouvelle révision annoncée avec accès direct aux différences (2.3s)
+  ✓  144 [webkit] › tests/e2e/v6-future.spec.ts:41:1 › Le Futur : HTML dédié, six modules, notes, révision confirmée, export, sauvegarde et offline (3.1s)
+  ✓  145 [webkit] › tests/e2e/v6-future.spec.ts:215:1 › Le Futur : conflits, hostile, doublons et transfert explicite des journaux (2.1s)
+  ✓  146 [webkit] › tests/e2e/v6-future.spec.ts:276:1 › Le Futur : clavier, axe, quatre largeurs, mouvement réduit et sombre (5.7s)
+  ✓  147 [webkit] › tests/e2e/v6-future.spec.ts:367:1 › Le Futur : migration AI-RADAR explicite et revue personnelle distincte de la source déclarée (1.7s)
+  ✓  148 [webkit] › tests/e2e/v6-future.spec.ts:401:1 › Le Futur : capacité insuffisante et lot mixte avec un journal (1.6s)
+  ✓  149 [webkit] › tests/e2e/v6-future.spec.ts:459:1 › Le Futur : lot désordonné, doublon HTML/JSON et confirmations par révision (1.8s)
+  ✓  150 [webkit] › tests/e2e/v6-google-navigation.spec.ts:98:1 › lien Google classique dynamique : confirmation, question exacte, lien de repli et entrée IA sans question (2.5s)
+  ✓  151 [webkit] › tests/e2e/v6-google-navigation.spec.ts:185:1 › session : source exacte, origine opaque insuffisante, nonce, rejeu, expiration et renouvellement du cadre (1.4s)
+  ✓  152 [webkit] › tests/e2e/v6-google-navigation.spec.ts:271:1 › question sensible refusée, offline, copie manuelle, ouverture silencieusement bloquée et exception (1.7s)
+  ✓  153 [webkit] › tests/e2e/v6-google-navigation.spec.ts:375:1 › HTML autonome : lien classique en nouvel onglet et entrée IA sans préremplissage revendiqué (1.1s)
+  ✓  154 [webkit] › tests/e2e/v6-improvements.spec.ts:38:1 › nouveautés en carte et dans les options, HTML épuré, repère conservé au rechargement et hors ligne (16.5s)
+  ✓  155 [webkit] › tests/e2e/v6-improvements.spec.ts:139:3 › Cloud simulé sans interception par le service worker › sync visible : en cours, échec, clic réessayer, succès daté, changements en attente et automatique désactivée (8.1s)
+  ✓  156 [webkit] › tests/e2e/v6.spec.ts:49:1 › V6 : 08→16→21, une carte journée, historique, recherche, original, notes et doublon (24.0s)
+  ✓  157 [webkit] › tests/e2e/v6.spec.ts:141:1 › V6 : dernière édition affichée malgré les avertissements, historique fiable et nouvelle journée conservés (29.9s)
+  ✓  158 [webkit] › tests/e2e/v6.spec.ts:161:1 › V6 : onglets, huit thèmes, image embarquée, zoom jusqu’à 200 %, offline et neuf largeurs (10.0s)
+  ✓  159 [webkit] › tests/e2e/v6.spec.ts:246:1 › V6 : tous les boutons de section, v2 question seule, copie corrigée et entrée Google sans données privées (3.3s)
+  ✓  160 [webkit] › tests/e2e/v6.spec.ts:365:1 › V6 : mode sécurisé, presse-papier refusé, popup bloquée et offline ont un repli manuel (1.8s)
+  ✓  161 [webkit] › tests/e2e/v61.spec.ts:37:1 › V6.1 : les treize ancres conservent le document, le JS, les thèmes et les filtres (3.0s)
+  ✓  162 [webkit] › tests/e2e/v61.spec.ts:82:1 › V6.1 : onze boutons sans ancien marquage demandent confirmation, copie et lancement des onze questions (8.3s)
+  ✓  163 [webkit] › tests/e2e/v61.spec.ts:200:1 › V6.1 : ancres sans JS, questions parent puis retour interactif et rechargement conservent le pont (3.1s)
+  ✓  164 [webkit] › tests/e2e/v61.spec.ts:251:1 › V6.1 : préremplissage borné, offline et lien de repli conservent la question confirmée (2.0s)
+  ✓  165 [webkit] › tests/e2e/v64-google-buttons.spec.ts:64:1 › 6.4.3 : le lien Mode IA d’un article ouvre la confirmation PWA avec sa question, puis Google Mode IA et la recherche Google (2.0s)
+  ✓  166 [webkit] › tests/e2e/v64-google-buttons.spec.ts:100:1 › 6.4.3 : « En savoir plus » reste local et le lien de l’approfondissement reprend la question affichée (1.4s)
+  ✓  167 [webkit] › tests/e2e/v64-google-buttons.spec.ts:119:1 › lien Mode IA sans question : la confirmation s’ouvre quand même et Google Mode IA reste disponible (1.7s)
+  ✓  168 [webkit] › tests/e2e/v64-google-buttons.spec.ts:156:1 › 6.4 à fenêtre (6.4.1) : « En savoir plus » ouvre directement la confirmation PWA, la fenêtre du journal reste fermée (1.2s)
+  ✓  169 [webkit] › tests/e2e/v64-google-buttons.spec.ts:176:1 › doublon exact réimporté : le dernier import remplace l’ancienne copie, une seule édition reste (8.4s)
+  ✓  170 [webkit] › tests/e2e/v7-unified.spec.ts:29:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (3.2s)
+  ✓  171 [webkit] › tests/e2e/v7-unified.spec.ts:155:1 › V7 : mobile, clavier, thèmes, absence de données, sources, reduced motion et radar comparable (4.4s)
+  ✓  172 [webkit] › tests/e2e/v7-unified.spec.ts:229:1 › V7 : HTML hostile lu sans scripts, question publique conservée, prompt privé non transmis (1.6s)
+  ✓  173 [webkit] › tests/e2e/v7-unified.spec.ts:295:1 › V7 : adaptateur Future explicite, JSON validé puis import indépendant sans écriture croisée (3.1s)
+  ✓  174 [webkit] › tests/e2e/v7-unified.spec.ts:349:1 › V7 : MIME incohérent refusé sans écriture puis import HTML valide conservé (8.2s)
+  ✓  175 [webkit] › tests/e2e/v7-unified.spec.ts:377:1 › V7 : chargement différé de l’accueil sans déplacer un bouton pendant le clic (1.0s)
+  ✓  176 [webkit] › tests/e2e/v8-audit.spec.ts:48:1 › Audit P0/P1 : 10 h seul offline, huit cartes, résumés, fiches intégrales et trois Markdown exacts (5.6s)
+  ✓  177 [webkit] › tests/e2e/v8-audit.spec.ts:139:1 › Audit P0 : créneaux exacts, retour même filtre/position, historique navigateur et rechargement (3.1s)
+  ✓  178 [webkit] › tests/e2e/v8-audit.spec.ts:185:1 › Audit P1/P2 : profils réversibles, offline, sept largeurs, clavier, contraste et mouvement réduit (4.6s)
+  ✓  179 [webkit] › tests/e2e/v8-audit.spec.ts:298:1 › Audit P2 : import, rendu paginé et recherche de 500 puis 2000 articles synthétiques (5.5s)
+  ✓  180 [webkit] › tests/e2e/v8-audit.spec.ts:381:1 › Audit P2 : texte hostile échappé et URL invalide rejetée sans perte (1.2s)
+  ✓  181 [webkit] › tests/e2e/v8-reading.spec.ts:36:3 › Lecture réelle du cadre 08 h : HTML d’origine conservé, interactions directes, offline (2.4s)
+  ✓  182 [webkit] › tests/e2e/v8-reading.spec.ts:36:3 › Lecture réelle du cadre 10 h : HTML d’origine conservé, interactions directes, offline (3.2s)
+  ✓  183 [webkit] › tests/e2e/v8-reading.spec.ts:36:3 › Lecture réelle du cadre 16 h : HTML d’origine conservé, interactions directes, offline (4.9s)
+  ✓  184 [webkit] › tests/e2e/v8-reading.spec.ts:109:1 › Développer utilise toute la largeur de la page et Réduire rétablit la carte (1.4s)
+  ✓  185 [webkit] › tests/e2e/v8-reading.spec.ts:130:1 › 16 h : PARTIAL ne signifie pas contradiction ni article manquant ; prompts parent exacts (2.4s)
+  ✓  186 [webkit] › tests/e2e/v8-snapshot.spec.ts:26:1 › T01/T04/T09/T15 : SEUL fichier 22 h dans une base vide, huit événements et toutes les annexes offline (4.2s)
+  ✓  187 [webkit] › tests/e2e/v8-snapshot.spec.ts:123:1 › T02/T03 : un seul 12 h ou 18 h, puis arrivée désordonnée sans rétrogradation (3.0s)
+  ✓  188 [webkit] › tests/e2e/v8-snapshot.spec.ts:152:1 › T16 : snapshot autonome clavier, axe, sept largeurs, zoom CSS 200 %, thèmes et mouvement réduit (3.2s)
+  ✓  189 [webkit] › tests/e2e/v8-snapshot.spec.ts:199:1 › T05/T06/T07 : omissions réelles avec provenance et conflit de révision visibles (9.6s)
+  ✓  190 [webkit] › tests/e2e/v9-live-watch.spec.ts:86:1 › En direct : départ explicite, radar accessible, quotas protégés et dernier résultat conservé après erreur (2.9s)
+  ✓  191 [webkit] › tests/e2e/v9-live-watch.spec.ts:170:1 › En direct : cadence, suspension hors ligne, arrêt et sortie sans appels en arrière-plan (1.8s)
+  ✓  192 [webkit] › tests/e2e/v9-live-watch.spec.ts:274:1 › En direct : un arrêt annule la récupération en cours sans écriture tardive (3.5s)
+  ✓  193 [webkit] › tests/e2e/v9-prompt-tools.spec.ts:36:1 › tous les prompts sont téléchargés en un ZIP, même avec un filtre actif et hors ligne (2.3s)
+  ✓  194 [webkit] › tests/e2e/v9-prompt-tools.spec.ts:72:1 › la recherche globale permet de rechercher le titre exact sur Google sans ouvrir le HTML (4.0s)
+  ✓  195 [webkit] › tests/e2e/v9-recurring-searches.spec.ts:7:1 › Récurrent : thèmes, édition, recherche Google récente, persistance et suppression (6.4s)
+  ✓  196 [webkit] › tests/e2e/v9-recurring-searches.spec.ts:131:1 › Récurrent : stockage indisponible, brouillon conservé sans faux enregistrement (1.9s)
+  ✓  197 [webkit] › tests/e2e/v9-sitegoat.spec.ts:7:3 › SG-13 : lien attaché, refus, confirmation, contenu exact et hors ligne (3.3s)
+  ✓  198 [webkit] › tests/e2e/v9-sitegoat.spec.ts:7:3 › SG-13 : lien détaché, refus, confirmation, contenu exact et hors ligne (3.3s)
+  ✓  199 [webkit] › tests/e2e/v9-sitegoat.spec.ts:101:3 › SG-04 : profil neuf sans confiance mémorisée › choix avant exécution, refus mémorisé et révocable (2.3s)
+  ✓  200 [webkit] › tests/e2e/v9-sitegoat.spec.ts:160:1 › SG-02 : minuit Paris et retour au premier plan sans rechargement (1.8s)
+  ✓  201 [webkit] › tests/e2e/v9-sitegoat.spec.ts:196:1 › SG-08 : deux vrais onglets, ajouts simultanés et conflit sur le même ID (4.9s)
+  ✓  202 [webkit] › tests/e2e/v9-sitegoat.spec.ts:277:1 › SG-01/09/14 : filtres accessibles, instants réels et date compacte en lecture (1.9s)
+  ✓  203 [webkit] › tests/e2e/v9-sources.spec.ts:6:1 › Sources : récupération explicite, aucun journal envoyé, cache hors ligne et réponse inerte (2.3s)
+  ✓  204 [webkit] › tests/e2e/v9-workspace.spec.ts:51:1 › V9 : Aujourd’hui épuré, Accueil, articles internes, 19 titres réels ou fixture, Google public et préférences (8.5s)
+  ✓  205 [webkit] › tests/e2e/v9-workspace.spec.ts:189:1 › V9 : HTML original offline, filtres, accordéons, Google et source contrôlés, Markdown exact, isolation (6.2s)
+  ✓  206 [webkit] › tests/e2e/v9-workspace.spec.ts:344:1 › V9 : panne du stockage des préférences, réglages conservés pour la session (1.7s)
+  ✓  207 [webkit] › tests/e2e/v9-workspace.spec.ts:369:1 › V9 : filtres Articles combinables, calendrier de faits et affichage intégral de 100 brèves synthétiques (3.5s)
+  ✓  208 [webkit] › tests/e2e/v9-workspace.spec.ts:488:1 › V9 : onglet Actualité rapide, titres des articles automatiques, dates simples et HTML directement interactif (7.8s)
+(node:11675) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  209 [chromium-mobile] › tests/e2e/google-ai.spec.ts:186:1 › Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation (10.9s)
+  ✓  210 [chromium-mobile] › tests/e2e/google-ai.spec.ts:285:1 › Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles refusés (1.7s)
+  ✓  211 [chromium-mobile] › tests/e2e/google-ai.spec.ts:417:1 › Google IA : seule la confirmation ouvre la question affichée, sans opener, referrer ni notes PWA (2.3s)
+  ✓  212 [chromium-mobile] › tests/e2e/google-ai.spec.ts:478:1 › Google IA : lecture et confirmation hors ligne, copie HTML originale intacte (1.7s)
+  ✓  213 [chromium-mobile] › tests/e2e/v6-articles.spec.ts:33:1 › articles : import, filtres, lecture, sources, favoris, retour du journal et persistance (3.6s)
+  ✓  214 [chromium-mobile] › tests/e2e/v6-articles.spec.ts:133:1 › articles : pagination et recherche dans tout l’index (1.5s)
+  ✓  215 [chromium-mobile] › tests/e2e/v6-articles.spec.ts:173:1 › questions Google depuis les articles : question exacte, édition, copie, ouverture volontaire et hors ligne (3.0s)
+  ✓  216 [chromium-mobile] › tests/e2e/v6-articles.spec.ts:273:1 › sommaire : ouvre l’analyse complète dans le HTML dynamique et conserve les questions Google du journal (2.3s)
+  ✓  217 [chromium-mobile] › tests/e2e/v6-articles.spec.ts:379:1 › sans question préparée : saisie manuelle, sans inventer depuis le titre ou les notes (1.5s)
+  ✓  218 [chromium-mobile] › tests/e2e/v6-clean-reader.spec.ts:47:1 › HTML seul : deux petits contrôles, pleine hauteur, réduction et historique navigateur sans perte (2.1s)
+  ✓  219 [chromium-mobile] › tests/e2e/v6-clean-reader.spec.ts:113:1 › geste réservé au bord gauche : retour horizontal, mouvements verticaux et mauvais sens ignorés, même sans JS (2.1s)
+  ✓  220 [chromium-mobile] › tests/e2e/v6-clean-reader.spec.ts:177:1 › tactile Chromium réel : le défilement du HTML reste libre et le glissement au bord revient (1.5s)
+  ✓  221 [chromium-mobile] › tests/e2e/v6-clean-reader.spec.ts:221:1 › les contrôles flottants laissent libre l’en-tête du HTML sur smartphone (1.6s)
+  ✓  222 [chromium-mobile] › tests/e2e/v6-collections.spec.ts:34:1 › IA majeur et Sentinel : imports dirigés, documents de même date, doublons séparés et retour du lecteur (2.8s)
+  ✓  223 [chromium-mobile] › tests/e2e/v6-collections.spec.ts:75:1 › destination modifiable à l’import, recherche, archives, corbeille et mode hors ligne (2.3s)
+  ✓  224 [chromium-mobile] › tests/e2e/v6-collections.spec.ts:128:1 › navigation mobile visible et accessibilité des deux nouveaux espaces (2.9s)
+  ✓  225 [chromium-mobile] › tests/e2e/v6-collections.spec.ts:171:1 › Sentinel : télécharge le prompt Markdown exact depuis une carte existante, même hors ligne (3.0s)
+  ✓  226 [chromium-mobile] › tests/e2e/v6-daily.spec.ts:54:1 › un HTML par jour : quatre imports successifs remplacent la carte, JS/offline et annotations restent disponibles (3.9s)
+  ✓  227 [chromium-mobile] › tests/e2e/v6-daily.spec.ts:117:1 › lot désordonné, doublon renommé et nouvelle journée : la dernière édition reste seule, recherche limitée au HTML courant (2.0s)
+  ✓  228 [chromium-mobile] › tests/e2e/v6-daily.spec.ts:195:1 › mise à jour des anciens imports indépendants : regroupement immédiat sans migration des UUID ni réimport (2.0s)
+  ✓  229 [chromium-mobile] › tests/e2e/v6-daily.spec.ts:262:1 › archiver, corbeille et restaurer une journée ne font pas réapparaître une ancienne carte (2.2s)
+  ✓  230 [chromium-mobile] › tests/e2e/v6-future-atlas.spec.ts:54:1 › Atlas P0 : compteurs réels, filtres, favoris, pagination et retour du focus (3.2s)
+  ✓  231 [chromium-mobile] › tests/e2e/v6-future-atlas.spec.ts:129:1 › Atlas P1 : frise fidèle, clavier, liens déclarés et comparateur (2.0s)
+  ✓  232 [chromium-mobile] › tests/e2e/v6-future-atlas.spec.ts:178:1 › Atlas P1 : préparation enregistrée, erreur de quota et brouillon conservé (2.0s)
+  ✓  233 [chromium-mobile] › tests/e2e/v6-future-atlas.spec.ts:230:1 › Atlas : zéro, un, beaucoup de jalons, autres scénarios et absence de source (1.9s)
+  ✓  234 [chromium-mobile] › tests/e2e/v6-future-atlas.spec.ts:283:1 › Atlas : WCAG sur parcours, reflow, mouvement réduit et tests des tests (6.2s)
+  ✓  235 [chromium-mobile] › tests/e2e/v6-future-atlas.spec.ts:389:1 › Atlas : base Le Futur indisponible, erreur visible et autres onglets accessibles (1.1s)
+  ✓  236 [chromium-mobile] › tests/e2e/v6-future-atlas.spec.ts:412:1 › Atlas : parcours clavier des contrôles principaux, import annulable et focus rendu (2.1s)
+  ✓  237 [chromium-mobile] › tests/e2e/v6-future-atlas.spec.ts:487:1 › Atlas : nouvelle révision annoncée avec accès direct aux différences (2.0s)
+  ✓  238 [chromium-mobile] › tests/e2e/v6-future.spec.ts:41:1 › Le Futur : HTML dédié, six modules, notes, révision confirmée, export, sauvegarde et offline (3.6s)
+  ✓  239 [chromium-mobile] › tests/e2e/v6-future.spec.ts:215:1 › Le Futur : conflits, hostile, doublons et transfert explicite des journaux (2.2s)
+  ✓  240 [chromium-mobile] › tests/e2e/v6-future.spec.ts:276:1 › Le Futur : clavier, axe, quatre largeurs, mouvement réduit et sombre (8.2s)
+  ✓  241 [chromium-mobile] › tests/e2e/v6-future.spec.ts:367:1 › Le Futur : migration AI-RADAR explicite et revue personnelle distincte de la source déclarée (1.8s)
+  ✓  242 [chromium-mobile] › tests/e2e/v6-future.spec.ts:401:1 › Le Futur : capacité insuffisante et lot mixte avec un journal (1.7s)
+  ✓  243 [chromium-mobile] › tests/e2e/v6-future.spec.ts:459:1 › Le Futur : lot désordonné, doublon HTML/JSON et confirmations par révision (1.9s)
+  ✓  244 [chromium-mobile] › tests/e2e/v6-google-navigation.spec.ts:98:1 › lien Google classique dynamique : confirmation, question exacte, lien de repli et entrée IA sans question (2.5s)
+  ✓  245 [chromium-mobile] › tests/e2e/v6-google-navigation.spec.ts:185:1 › session : source exacte, origine opaque insuffisante, nonce, rejeu, expiration et renouvellement du cadre (2.2s)
+  ✓  246 [chromium-mobile] › tests/e2e/v6-google-navigation.spec.ts:271:1 › question sensible refusée, offline, copie manuelle, ouverture silencieusement bloquée et exception (2.2s)
+  ✓  247 [chromium-mobile] › tests/e2e/v6-google-navigation.spec.ts:375:1 › HTML autonome : lien classique en nouvel onglet et entrée IA sans préremplissage revendiqué (591ms)
+  ✓  248 [chromium-mobile] › tests/e2e/v6-improvements.spec.ts:38:1 › nouveautés en carte et dans les options, HTML épuré, repère conservé au rechargement et hors ligne (2.9s)
+  ✓  249 [chromium-mobile] › tests/e2e/v6-improvements.spec.ts:139:3 › Cloud simulé sans interception par le service worker › sync visible : en cours, échec, clic réessayer, succès daté, changements en attente et automatique désactivée (1.6s)
+  ✓  250 [chromium-mobile] › tests/e2e/v6.spec.ts:49:1 › V6 : 08→16→21, une carte journée, historique, recherche, original, notes et doublon (4.5s)
+  ✓  251 [chromium-mobile] › tests/e2e/v6.spec.ts:141:1 › V6 : dernière édition affichée malgré les avertissements, historique fiable et nouvelle journée conservés (1.4s)
+  ✓  252 [chromium-mobile] › tests/e2e/v6.spec.ts:161:1 › V6 : onglets, huit thèmes, image embarquée, zoom jusqu’à 200 %, offline et neuf largeurs (9.2s)
+  ✓  253 [chromium-mobile] › tests/e2e/v6.spec.ts:246:1 › V6 : tous les boutons de section, v2 question seule, copie corrigée et entrée Google sans données privées (3.1s)
+  ✓  254 [chromium-mobile] › tests/e2e/v6.spec.ts:365:1 › V6 : mode sécurisé, presse-papier refusé, popup bloquée et offline ont un repli manuel (8.6s)
+  ✓  255 [chromium-mobile] › tests/e2e/v61.spec.ts:37:1 › V6.1 : les treize ancres conservent le document, le JS, les thèmes et les filtres (3.8s)
+  ✓  256 [chromium-mobile] › tests/e2e/v61.spec.ts:82:1 › V6.1 : onze boutons sans ancien marquage demandent confirmation, copie et lancement des onze questions (7.9s)
+  ✓  257 [chromium-mobile] › tests/e2e/v61.spec.ts:200:1 › V6.1 : ancres sans JS, questions parent puis retour interactif et rechargement conservent le pont (8.7s)
+  ✓  258 [chromium-mobile] › tests/e2e/v61.spec.ts:251:1 › V6.1 : préremplissage borné, offline et lien de repli conservent la question confirmée (3.2s)
+  ✓  259 [chromium-mobile] › tests/e2e/v64-google-buttons.spec.ts:64:1 › 6.4.3 : le lien Mode IA d’un article ouvre la confirmation PWA avec sa question, puis Google Mode IA et la recherche Google (3.0s)
+  ✓  260 [chromium-mobile] › tests/e2e/v64-google-buttons.spec.ts:100:1 › 6.4.3 : « En savoir plus » reste local et le lien de l’approfondissement reprend la question affichée (2.4s)
+  ✓  261 [chromium-mobile] › tests/e2e/v64-google-buttons.spec.ts:119:1 › lien Mode IA sans question : la confirmation s’ouvre quand même et Google Mode IA reste disponible (1.9s)
+  ✓  262 [chromium-mobile] › tests/e2e/v64-google-buttons.spec.ts:156:1 › 6.4 à fenêtre (6.4.1) : « En savoir plus » ouvre directement la confirmation PWA, la fenêtre du journal reste fermée (1.5s)
+  ✓  263 [chromium-mobile] › tests/e2e/v64-google-buttons.spec.ts:176:1 › doublon exact réimporté : le dernier import remplace l’ancienne copie, une seule édition reste (1.5s)
+  ✓  264 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:29:1 › V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale (3.7s)
+  ✓  265 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:155:1 › V7 : mobile, clavier, thèmes, absence de données, sources, reduced motion et radar comparable (7.7s)
+  ✓  266 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:229:1 › V7 : HTML hostile lu sans scripts, question publique conservée, prompt privé non transmis (8.3s)
+  ✓  267 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:295:1 › V7 : adaptateur Future explicite, JSON validé puis import indépendant sans écriture croisée (3.3s)
+  ✓  268 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:349:1 › V7 : MIME incohérent refusé sans écriture puis import HTML valide conservé (943ms)
+  ✓  269 [chromium-mobile] › tests/e2e/v7-unified.spec.ts:377:1 › V7 : chargement différé de l’accueil sans déplacer un bouton pendant le clic (1.4s)
+  ✓  270 [chromium-mobile] › tests/e2e/v8-audit.spec.ts:48:1 › Audit P0/P1 : 10 h seul offline, huit cartes, résumés, fiches intégrales et trois Markdown exacts (8.2s)
+  ✓  271 [chromium-mobile] › tests/e2e/v8-audit.spec.ts:139:1 › Audit P0 : créneaux exacts, retour même filtre/position, historique navigateur et rechargement (3.8s)
+  ✓  272 [chromium-mobile] › tests/e2e/v8-audit.spec.ts:185:1 › Audit P1/P2 : profils réversibles, offline, sept largeurs, clavier, contraste et mouvement réduit (8.3s)
+  ✓  273 [chromium-mobile] › tests/e2e/v8-audit.spec.ts:298:1 › Audit P2 : import, rendu paginé et recherche de 500 puis 2000 articles synthétiques (9.3s)
+  ✓  274 [chromium-mobile] › tests/e2e/v8-audit.spec.ts:381:1 › Audit P2 : texte hostile échappé et URL invalide rejetée sans perte (1.4s)
+  ✓  275 [chromium-mobile] › tests/e2e/v8-reading.spec.ts:36:3 › Lecture réelle du cadre 08 h : HTML d’origine conservé, interactions directes, offline (2.9s)
+  ✓  276 [chromium-mobile] › tests/e2e/v8-reading.spec.ts:36:3 › Lecture réelle du cadre 10 h : HTML d’origine conservé, interactions directes, offline (3.8s)
+  ✓  277 [chromium-mobile] › tests/e2e/v8-reading.spec.ts:36:3 › Lecture réelle du cadre 16 h : HTML d’origine conservé, interactions directes, offline (6.4s)
+  ✓  278 [chromium-mobile] › tests/e2e/v8-reading.spec.ts:109:1 › Développer utilise toute la largeur de la page et Réduire rétablit la carte (1.7s)
+  ✓  279 [chromium-mobile] › tests/e2e/v8-reading.spec.ts:130:1 › 16 h : PARTIAL ne signifie pas contradiction ni article manquant ; prompts parent exacts (2.9s)
+  ✓  280 [chromium-mobile] › tests/e2e/v8-snapshot.spec.ts:26:1 › T01/T04/T09/T15 : SEUL fichier 22 h dans une base vide, huit événements et toutes les annexes offline (4.1s)
+  ✓  281 [chromium-mobile] › tests/e2e/v8-snapshot.spec.ts:123:1 › T02/T03 : un seul 12 h ou 18 h, puis arrivée désordonnée sans rétrogradation (3.1s)
+  ✓  282 [chromium-mobile] › tests/e2e/v8-snapshot.spec.ts:152:1 › T16 : snapshot autonome clavier, axe, sept largeurs, zoom CSS 200 %, thèmes et mouvement réduit (4.4s)
+  ✓  283 [chromium-mobile] › tests/e2e/v8-snapshot.spec.ts:199:1 › T05/T06/T07 : omissions réelles avec provenance et conflit de révision visibles (3.7s)
+  ✓  284 [chromium-mobile] › tests/e2e/v9-live-watch.spec.ts:86:1 › En direct : départ explicite, radar accessible, quotas protégés et dernier résultat conservé après erreur (3.1s)
+  ✓  285 [chromium-mobile] › tests/e2e/v9-live-watch.spec.ts:170:1 › En direct : cadence, suspension hors ligne, arrêt et sortie sans appels en arrière-plan (1.9s)
+  ✓  286 [chromium-mobile] › tests/e2e/v9-live-watch.spec.ts:274:1 › En direct : un arrêt annule la récupération en cours sans écriture tardive (1.1s)
+  ✓  287 [chromium-mobile] › tests/e2e/v9-prompt-tools.spec.ts:36:1 › tous les prompts sont téléchargés en un ZIP, même avec un filtre actif et hors ligne (1.3s)
+  ✓  288 [chromium-mobile] › tests/e2e/v9-prompt-tools.spec.ts:72:1 › la recherche globale permet de rechercher le titre exact sur Google sans ouvrir le HTML (1.4s)
+  ✓  289 [chromium-mobile] › tests/e2e/v9-recurring-searches.spec.ts:7:1 › Récurrent : thèmes, édition, recherche Google récente, persistance et suppression (3.5s)
+  ✓  290 [chromium-mobile] › tests/e2e/v9-recurring-searches.spec.ts:131:1 › Récurrent : stockage indisponible, brouillon conservé sans faux enregistrement (729ms)
+  ✓  291 [chromium-mobile] › tests/e2e/v9-sitegoat.spec.ts:7:3 › SG-13 : lien attaché, refus, confirmation, contenu exact et hors ligne (1.6s)
+  ✓  292 [chromium-mobile] › tests/e2e/v9-sitegoat.spec.ts:7:3 › SG-13 : lien détaché, refus, confirmation, contenu exact et hors ligne (1.3s)
+  ✓  293 [chromium-mobile] › tests/e2e/v9-sitegoat.spec.ts:101:3 › SG-04 : profil neuf sans confiance mémorisée › choix avant exécution, refus mémorisé et révocable (8.0s)
+  ✓  294 [chromium-mobile] › tests/e2e/v9-sitegoat.spec.ts:160:1 › SG-02 : minuit Paris et retour au premier plan sans rechargement (678ms)
+  ✓  295 [chromium-mobile] › tests/e2e/v9-sitegoat.spec.ts:196:1 › SG-08 : deux vrais onglets, ajouts simultanés et conflit sur le même ID (1.5s)
+  ✓  296 [chromium-mobile] › tests/e2e/v9-sitegoat.spec.ts:277:1 › SG-01/09/14 : filtres accessibles, instants réels et date compacte en lecture (728ms)
+  ✓  297 [chromium-mobile] › tests/e2e/v9-sources.spec.ts:6:1 › Sources : récupération explicite, aucun journal envoyé, cache hors ligne et réponse inerte (789ms)
+  ✓  298 [chromium-mobile] › tests/e2e/v9-workspace.spec.ts:51:1 › V9 : Aujourd’hui épuré, Accueil, articles internes, 19 titres réels ou fixture, Google public et préférences (5.1s)
+  ✓  299 [chromium-mobile] › tests/e2e/v9-workspace.spec.ts:189:1 › V9 : HTML original offline, filtres, accordéons, Google et source contrôlés, Markdown exact, isolation (2.2s)
+  ✓  300 [chromium-mobile] › tests/e2e/v9-workspace.spec.ts:344:1 › V9 : panne du stockage des préférences, réglages conservés pour la session (522ms)
+  ✓  301 [chromium-mobile] › tests/e2e/v9-workspace.spec.ts:369:1 › V9 : filtres Articles combinables, calendrier de faits et affichage intégral de 100 brèves synthétiques (1.3s)
+  ✓  302 [chromium-mobile] › tests/e2e/v9-workspace.spec.ts:488:1 › V9 : onglet Actualité rapide, titres des articles automatiques, dates simples et HTML directement interactif (2.4s)
+
+  1 skipped
+  301 passed (17.8m)

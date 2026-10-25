@@ -44,8 +44,9 @@ for (const [name, type, width] of [
     sourceArticles: p?.items?.length || 0,
     sourceBriefs: q?.items?.length || 0,
     sourcePrompts: p?.promptAssets?.length || 0,
-    cloudTransfers: 0,
-    publicApiCalls: [],
+    networkObservation:
+      "Page routing only; service-worker fetches may bypass observation",
+    routedPublicApiCalls: [],
     downloadIntervalMs: Number(
       process.env.SITEGOAT_DOWNLOAD_INTERVAL_MS ?? 1100,
     ),
@@ -74,7 +75,7 @@ for (const [name, type, width] of [
             (provider) =>
               r.request().postData() === JSON.stringify({ provider }),
           )
-        ? (result.publicApiCalls.push(
+        ? (result.routedPublicApiCalls.push(
             JSON.parse(r.request().postData()).provider,
           ),
           r.continue())
@@ -110,7 +111,7 @@ for (const [name, type, width] of [
     await expect(
       page.getByRole("heading", { name: "Veille en direct" }),
     ).toBeVisible();
-    expect(result.publicApiCalls).toHaveLength(0);
+    expect(result.routedPublicApiCalls).toHaveLength(0);
     await page
       .getByRole("button", { name: "Actualiser maintenant", exact: true })
       .click();
@@ -159,6 +160,7 @@ for (const [name, type, width] of [
     await expect(page.getByRole("dialog")).toHaveCount(0);
     // No scripts have run at import. From here on all networking is disabled.
     await context.setOffline(true);
+    result.offlineAfterImport = true;
     phase = "index";
     await nav("Aujourd’hui");
     if (p)

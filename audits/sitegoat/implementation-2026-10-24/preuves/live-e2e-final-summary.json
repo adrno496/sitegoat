@@ -1,0 +1,3638 @@
+{
+  "checkedAt": "2026-10-25T00:52:05.309Z",
+  "runtimeCommit": "39a1d0904d71b2fd77c78449b7d99d05d669fa6f",
+  "stats": {
+    "startTime": "2026-10-25T00:32:40.540Z",
+    "duration": 1066741.531,
+    "expected": 301,
+    "skipped": 1,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "scenarios": [
+    {
+      "title": "parcours complet : import, lecture, notes, favori, recherche, offline, export et restauration",
+      "file": "app.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "démonstrations, interaction explicite et mémoire basée sur event_id",
+      "file": "app.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "renommage doublon, version, archive et corbeille récupérable",
+      "file": "app.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "sécurité : parent, stockage, fetch, ressources, top et popups bloqués",
+      "file": "app.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "responsive, thèmes et accessibilité sur six largeurs",
+      "file": "app.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "manifest et réception Web Share Target en service worker",
+      "file": "app.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "File Handling launchQueue traite un HTML via le même écran de vérification",
+      "file": "app.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "lecture pleine page : tout le viewport, interactions conservées et retour sur mobile",
+      "file": "app.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "mode interactif automatique, choix sécurisé conservé après rechargement et nouvelle édition interactive",
+      "file": "app.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "parcours complet : import, lecture, notes, favori, recherche, offline, export et restauration",
+      "file": "app.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "démonstrations, interaction explicite et mémoire basée sur event_id",
+      "file": "app.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "renommage doublon, version, archive et corbeille récupérable",
+      "file": "app.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "sécurité : parent, stockage, fetch, ressources, top et popups bloqués",
+      "file": "app.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "responsive, thèmes et accessibilité sur six largeurs",
+      "file": "app.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "manifest et réception Web Share Target en service worker",
+      "file": "app.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "File Handling launchQueue traite un HTML via le même écran de vérification",
+      "file": "app.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "lecture pleine page : tout le viewport, interactions conservées et retour sur mobile",
+      "file": "app.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "mode interactif automatique, choix sécurisé conservé après rechargement et nouvelle édition interactive",
+      "file": "app.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation",
+      "file": "google-ai.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles refusés",
+      "file": "google-ai.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Google IA : seule la confirmation ouvre la question affichée, sans opener, referrer ni notes PWA",
+      "file": "google-ai.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Google IA : lecture et confirmation hors ligne, copie HTML originale intacte",
+      "file": "google-ai.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation",
+      "file": "google-ai.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles refusés",
+      "file": "google-ai.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Google IA : seule la confirmation ouvre la question affichée, sans opener, referrer ni notes PWA",
+      "file": "google-ai.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Google IA : lecture et confirmation hors ligne, copie HTML originale intacte",
+      "file": "google-ai.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Google IA : mode sûr inchangé, handshake exact, confirmation et annulation sans navigation",
+      "file": "google-ai.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Google IA : fenêtres étrangères, anciens cadres, types et URL hostiles refusés",
+      "file": "google-ai.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Google IA : seule la confirmation ouvre la question affichée, sans opener, referrer ni notes PWA",
+      "file": "google-ai.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Google IA : lecture et confirmation hors ligne, copie HTML originale intacte",
+      "file": "google-ai.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "mise à jour réelle du service worker sans perte des originaux et favoris",
+      "file": "update.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "mise à jour réelle du service worker sans perte des originaux et favoris",
+      "file": "update.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "articles : import, filtres, lecture, sources, favoris, retour du journal et persistance",
+      "file": "v6-articles.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "articles : pagination et recherche dans tout l’index",
+      "file": "v6-articles.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "questions Google depuis les articles : question exacte, édition, copie, ouverture volontaire et hors ligne",
+      "file": "v6-articles.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "sommaire : ouvre l’analyse complète dans le HTML dynamique et conserve les questions Google du journal",
+      "file": "v6-articles.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "sans question préparée : saisie manuelle, sans inventer depuis le titre ou les notes",
+      "file": "v6-articles.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "articles : import, filtres, lecture, sources, favoris, retour du journal et persistance",
+      "file": "v6-articles.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "articles : pagination et recherche dans tout l’index",
+      "file": "v6-articles.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "questions Google depuis les articles : question exacte, édition, copie, ouverture volontaire et hors ligne",
+      "file": "v6-articles.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "sommaire : ouvre l’analyse complète dans le HTML dynamique et conserve les questions Google du journal",
+      "file": "v6-articles.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "sans question préparée : saisie manuelle, sans inventer depuis le titre ou les notes",
+      "file": "v6-articles.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "articles : import, filtres, lecture, sources, favoris, retour du journal et persistance",
+      "file": "v6-articles.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "articles : pagination et recherche dans tout l’index",
+      "file": "v6-articles.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "questions Google depuis les articles : question exacte, édition, copie, ouverture volontaire et hors ligne",
+      "file": "v6-articles.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "sommaire : ouvre l’analyse complète dans le HTML dynamique et conserve les questions Google du journal",
+      "file": "v6-articles.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "sans question préparée : saisie manuelle, sans inventer depuis le titre ou les notes",
+      "file": "v6-articles.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "HTML seul : deux petits contrôles, pleine hauteur, réduction et historique navigateur sans perte",
+      "file": "v6-clean-reader.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "geste réservé au bord gauche : retour horizontal, mouvements verticaux et mauvais sens ignorés, même sans JS",
+      "file": "v6-clean-reader.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "tactile Chromium réel : le défilement du HTML reste libre et le glissement au bord revient",
+      "file": "v6-clean-reader.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "les contrôles flottants laissent libre l’en-tête du HTML sur smartphone",
+      "file": "v6-clean-reader.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "HTML seul : deux petits contrôles, pleine hauteur, réduction et historique navigateur sans perte",
+      "file": "v6-clean-reader.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "geste réservé au bord gauche : retour horizontal, mouvements verticaux et mauvais sens ignorés, même sans JS",
+      "file": "v6-clean-reader.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "tactile Chromium réel : le défilement du HTML reste libre et le glissement au bord revient",
+      "file": "v6-clean-reader.spec.ts",
+      "project": "webkit",
+      "status": "skipped",
+      "results": [
+        {
+          "status": "skipped",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "les contrôles flottants laissent libre l’en-tête du HTML sur smartphone",
+      "file": "v6-clean-reader.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "HTML seul : deux petits contrôles, pleine hauteur, réduction et historique navigateur sans perte",
+      "file": "v6-clean-reader.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "geste réservé au bord gauche : retour horizontal, mouvements verticaux et mauvais sens ignorés, même sans JS",
+      "file": "v6-clean-reader.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "tactile Chromium réel : le défilement du HTML reste libre et le glissement au bord revient",
+      "file": "v6-clean-reader.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "les contrôles flottants laissent libre l’en-tête du HTML sur smartphone",
+      "file": "v6-clean-reader.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "IA majeur et Sentinel : imports dirigés, documents de même date, doublons séparés et retour du lecteur",
+      "file": "v6-collections.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "destination modifiable à l’import, recherche, archives, corbeille et mode hors ligne",
+      "file": "v6-collections.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "navigation mobile visible et accessibilité des deux nouveaux espaces",
+      "file": "v6-collections.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Sentinel : télécharge le prompt Markdown exact depuis une carte existante, même hors ligne",
+      "file": "v6-collections.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "IA majeur et Sentinel : imports dirigés, documents de même date, doublons séparés et retour du lecteur",
+      "file": "v6-collections.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "destination modifiable à l’import, recherche, archives, corbeille et mode hors ligne",
+      "file": "v6-collections.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "navigation mobile visible et accessibilité des deux nouveaux espaces",
+      "file": "v6-collections.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Sentinel : télécharge le prompt Markdown exact depuis une carte existante, même hors ligne",
+      "file": "v6-collections.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "IA majeur et Sentinel : imports dirigés, documents de même date, doublons séparés et retour du lecteur",
+      "file": "v6-collections.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "destination modifiable à l’import, recherche, archives, corbeille et mode hors ligne",
+      "file": "v6-collections.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "navigation mobile visible et accessibilité des deux nouveaux espaces",
+      "file": "v6-collections.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Sentinel : télécharge le prompt Markdown exact depuis une carte existante, même hors ligne",
+      "file": "v6-collections.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "un HTML par jour : quatre imports successifs remplacent la carte, JS/offline et annotations restent disponibles",
+      "file": "v6-daily.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "lot désordonné, doublon renommé et nouvelle journée : la dernière édition reste seule, recherche limitée au HTML courant",
+      "file": "v6-daily.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "mise à jour des anciens imports indépendants : regroupement immédiat sans migration des UUID ni réimport",
+      "file": "v6-daily.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "archiver, corbeille et restaurer une journée ne font pas réapparaître une ancienne carte",
+      "file": "v6-daily.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "un HTML par jour : quatre imports successifs remplacent la carte, JS/offline et annotations restent disponibles",
+      "file": "v6-daily.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "lot désordonné, doublon renommé et nouvelle journée : la dernière édition reste seule, recherche limitée au HTML courant",
+      "file": "v6-daily.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "mise à jour des anciens imports indépendants : regroupement immédiat sans migration des UUID ni réimport",
+      "file": "v6-daily.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "archiver, corbeille et restaurer une journée ne font pas réapparaître une ancienne carte",
+      "file": "v6-daily.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "un HTML par jour : quatre imports successifs remplacent la carte, JS/offline et annotations restent disponibles",
+      "file": "v6-daily.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "lot désordonné, doublon renommé et nouvelle journée : la dernière édition reste seule, recherche limitée au HTML courant",
+      "file": "v6-daily.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "mise à jour des anciens imports indépendants : regroupement immédiat sans migration des UUID ni réimport",
+      "file": "v6-daily.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "archiver, corbeille et restaurer une journée ne font pas réapparaître une ancienne carte",
+      "file": "v6-daily.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Atlas P0 : compteurs réels, filtres, favoris, pagination et retour du focus",
+      "file": "v6-future-atlas.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Atlas P1 : frise fidèle, clavier, liens déclarés et comparateur",
+      "file": "v6-future-atlas.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Atlas P1 : préparation enregistrée, erreur de quota et brouillon conservé",
+      "file": "v6-future-atlas.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Atlas : zéro, un, beaucoup de jalons, autres scénarios et absence de source",
+      "file": "v6-future-atlas.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Atlas : WCAG sur parcours, reflow, mouvement réduit et tests des tests",
+      "file": "v6-future-atlas.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Atlas : base Le Futur indisponible, erreur visible et autres onglets accessibles",
+      "file": "v6-future-atlas.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Atlas : parcours clavier des contrôles principaux, import annulable et focus rendu",
+      "file": "v6-future-atlas.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Atlas : nouvelle révision annoncée avec accès direct aux différences",
+      "file": "v6-future-atlas.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Atlas P0 : compteurs réels, filtres, favoris, pagination et retour du focus",
+      "file": "v6-future-atlas.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Atlas P1 : frise fidèle, clavier, liens déclarés et comparateur",
+      "file": "v6-future-atlas.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Atlas P1 : préparation enregistrée, erreur de quota et brouillon conservé",
+      "file": "v6-future-atlas.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Atlas : zéro, un, beaucoup de jalons, autres scénarios et absence de source",
+      "file": "v6-future-atlas.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Atlas : WCAG sur parcours, reflow, mouvement réduit et tests des tests",
+      "file": "v6-future-atlas.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Atlas : base Le Futur indisponible, erreur visible et autres onglets accessibles",
+      "file": "v6-future-atlas.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Atlas : parcours clavier des contrôles principaux, import annulable et focus rendu",
+      "file": "v6-future-atlas.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Atlas : nouvelle révision annoncée avec accès direct aux différences",
+      "file": "v6-future-atlas.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Atlas P0 : compteurs réels, filtres, favoris, pagination et retour du focus",
+      "file": "v6-future-atlas.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Atlas P1 : frise fidèle, clavier, liens déclarés et comparateur",
+      "file": "v6-future-atlas.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Atlas P1 : préparation enregistrée, erreur de quota et brouillon conservé",
+      "file": "v6-future-atlas.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Atlas : zéro, un, beaucoup de jalons, autres scénarios et absence de source",
+      "file": "v6-future-atlas.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Atlas : WCAG sur parcours, reflow, mouvement réduit et tests des tests",
+      "file": "v6-future-atlas.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Atlas : base Le Futur indisponible, erreur visible et autres onglets accessibles",
+      "file": "v6-future-atlas.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Atlas : parcours clavier des contrôles principaux, import annulable et focus rendu",
+      "file": "v6-future-atlas.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Atlas : nouvelle révision annoncée avec accès direct aux différences",
+      "file": "v6-future-atlas.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Le Futur : HTML dédié, six modules, notes, révision confirmée, export, sauvegarde et offline",
+      "file": "v6-future.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Le Futur : conflits, hostile, doublons et transfert explicite des journaux",
+      "file": "v6-future.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Le Futur : clavier, axe, quatre largeurs, mouvement réduit et sombre",
+      "file": "v6-future.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Le Futur : migration AI-RADAR explicite et revue personnelle distincte de la source déclarée",
+      "file": "v6-future.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Le Futur : capacité insuffisante et lot mixte avec un journal",
+      "file": "v6-future.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Le Futur : lot désordonné, doublon HTML/JSON et confirmations par révision",
+      "file": "v6-future.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Le Futur : HTML dédié, six modules, notes, révision confirmée, export, sauvegarde et offline",
+      "file": "v6-future.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Le Futur : conflits, hostile, doublons et transfert explicite des journaux",
+      "file": "v6-future.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Le Futur : clavier, axe, quatre largeurs, mouvement réduit et sombre",
+      "file": "v6-future.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Le Futur : migration AI-RADAR explicite et revue personnelle distincte de la source déclarée",
+      "file": "v6-future.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Le Futur : capacité insuffisante et lot mixte avec un journal",
+      "file": "v6-future.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Le Futur : lot désordonné, doublon HTML/JSON et confirmations par révision",
+      "file": "v6-future.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Le Futur : HTML dédié, six modules, notes, révision confirmée, export, sauvegarde et offline",
+      "file": "v6-future.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Le Futur : conflits, hostile, doublons et transfert explicite des journaux",
+      "file": "v6-future.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Le Futur : clavier, axe, quatre largeurs, mouvement réduit et sombre",
+      "file": "v6-future.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Le Futur : migration AI-RADAR explicite et revue personnelle distincte de la source déclarée",
+      "file": "v6-future.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Le Futur : capacité insuffisante et lot mixte avec un journal",
+      "file": "v6-future.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Le Futur : lot désordonné, doublon HTML/JSON et confirmations par révision",
+      "file": "v6-future.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "lien Google classique dynamique : confirmation, question exacte, lien de repli et entrée IA sans question",
+      "file": "v6-google-navigation.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "session : source exacte, origine opaque insuffisante, nonce, rejeu, expiration et renouvellement du cadre",
+      "file": "v6-google-navigation.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "question sensible refusée, offline, copie manuelle, ouverture silencieusement bloquée et exception",
+      "file": "v6-google-navigation.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "HTML autonome : lien classique en nouvel onglet et entrée IA sans préremplissage revendiqué",
+      "file": "v6-google-navigation.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "lien Google classique dynamique : confirmation, question exacte, lien de repli et entrée IA sans question",
+      "file": "v6-google-navigation.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "session : source exacte, origine opaque insuffisante, nonce, rejeu, expiration et renouvellement du cadre",
+      "file": "v6-google-navigation.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "question sensible refusée, offline, copie manuelle, ouverture silencieusement bloquée et exception",
+      "file": "v6-google-navigation.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "HTML autonome : lien classique en nouvel onglet et entrée IA sans préremplissage revendiqué",
+      "file": "v6-google-navigation.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "lien Google classique dynamique : confirmation, question exacte, lien de repli et entrée IA sans question",
+      "file": "v6-google-navigation.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "session : source exacte, origine opaque insuffisante, nonce, rejeu, expiration et renouvellement du cadre",
+      "file": "v6-google-navigation.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "question sensible refusée, offline, copie manuelle, ouverture silencieusement bloquée et exception",
+      "file": "v6-google-navigation.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "HTML autonome : lien classique en nouvel onglet et entrée IA sans préremplissage revendiqué",
+      "file": "v6-google-navigation.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "nouveautés en carte et dans les options, HTML épuré, repère conservé au rechargement et hors ligne",
+      "file": "v6-improvements.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "nouveautés en carte et dans les options, HTML épuré, repère conservé au rechargement et hors ligne",
+      "file": "v6-improvements.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "nouveautés en carte et dans les options, HTML épuré, repère conservé au rechargement et hors ligne",
+      "file": "v6-improvements.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "sync visible : en cours, échec, clic réessayer, succès daté, changements en attente et automatique désactivée",
+      "file": "v6-improvements.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "sync visible : en cours, échec, clic réessayer, succès daté, changements en attente et automatique désactivée",
+      "file": "v6-improvements.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "sync visible : en cours, échec, clic réessayer, succès daté, changements en attente et automatique désactivée",
+      "file": "v6-improvements.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6 : 08→16→21, une carte journée, historique, recherche, original, notes et doublon",
+      "file": "v6.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6 : dernière édition affichée malgré les avertissements, historique fiable et nouvelle journée conservés",
+      "file": "v6.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6 : onglets, huit thèmes, image embarquée, zoom jusqu’à 200 %, offline et neuf largeurs",
+      "file": "v6.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6 : tous les boutons de section, v2 question seule, copie corrigée et entrée Google sans données privées",
+      "file": "v6.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6 : mode sécurisé, presse-papier refusé, popup bloquée et offline ont un repli manuel",
+      "file": "v6.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6 : 08→16→21, une carte journée, historique, recherche, original, notes et doublon",
+      "file": "v6.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6 : dernière édition affichée malgré les avertissements, historique fiable et nouvelle journée conservés",
+      "file": "v6.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6 : onglets, huit thèmes, image embarquée, zoom jusqu’à 200 %, offline et neuf largeurs",
+      "file": "v6.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6 : tous les boutons de section, v2 question seule, copie corrigée et entrée Google sans données privées",
+      "file": "v6.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6 : mode sécurisé, presse-papier refusé, popup bloquée et offline ont un repli manuel",
+      "file": "v6.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6 : 08→16→21, une carte journée, historique, recherche, original, notes et doublon",
+      "file": "v6.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6 : dernière édition affichée malgré les avertissements, historique fiable et nouvelle journée conservés",
+      "file": "v6.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6 : onglets, huit thèmes, image embarquée, zoom jusqu’à 200 %, offline et neuf largeurs",
+      "file": "v6.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6 : tous les boutons de section, v2 question seule, copie corrigée et entrée Google sans données privées",
+      "file": "v6.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6 : mode sécurisé, presse-papier refusé, popup bloquée et offline ont un repli manuel",
+      "file": "v6.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6.1 : les treize ancres conservent le document, le JS, les thèmes et les filtres",
+      "file": "v61.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6.1 : onze boutons sans ancien marquage demandent confirmation, copie et lancement des onze questions",
+      "file": "v61.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6.1 : ancres sans JS, questions parent puis retour interactif et rechargement conservent le pont",
+      "file": "v61.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6.1 : préremplissage borné, offline et lien de repli conservent la question confirmée",
+      "file": "v61.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6.1 : les treize ancres conservent le document, le JS, les thèmes et les filtres",
+      "file": "v61.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6.1 : onze boutons sans ancien marquage demandent confirmation, copie et lancement des onze questions",
+      "file": "v61.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6.1 : ancres sans JS, questions parent puis retour interactif et rechargement conservent le pont",
+      "file": "v61.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6.1 : préremplissage borné, offline et lien de repli conservent la question confirmée",
+      "file": "v61.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6.1 : les treize ancres conservent le document, le JS, les thèmes et les filtres",
+      "file": "v61.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6.1 : onze boutons sans ancien marquage demandent confirmation, copie et lancement des onze questions",
+      "file": "v61.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6.1 : ancres sans JS, questions parent puis retour interactif et rechargement conservent le pont",
+      "file": "v61.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V6.1 : préremplissage borné, offline et lien de repli conservent la question confirmée",
+      "file": "v61.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "6.4.3 : le lien Mode IA d’un article ouvre la confirmation PWA avec sa question, puis Google Mode IA et la recherche Google",
+      "file": "v64-google-buttons.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "6.4.3 : « En savoir plus » reste local et le lien de l’approfondissement reprend la question affichée",
+      "file": "v64-google-buttons.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "lien Mode IA sans question : la confirmation s’ouvre quand même et Google Mode IA reste disponible",
+      "file": "v64-google-buttons.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "6.4 à fenêtre (6.4.1) : « En savoir plus » ouvre directement la confirmation PWA, la fenêtre du journal reste fermée",
+      "file": "v64-google-buttons.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "doublon exact réimporté : le dernier import remplace l’ancienne copie, une seule édition reste",
+      "file": "v64-google-buttons.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "6.4.3 : le lien Mode IA d’un article ouvre la confirmation PWA avec sa question, puis Google Mode IA et la recherche Google",
+      "file": "v64-google-buttons.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "6.4.3 : « En savoir plus » reste local et le lien de l’approfondissement reprend la question affichée",
+      "file": "v64-google-buttons.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "lien Mode IA sans question : la confirmation s’ouvre quand même et Google Mode IA reste disponible",
+      "file": "v64-google-buttons.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "6.4 à fenêtre (6.4.1) : « En savoir plus » ouvre directement la confirmation PWA, la fenêtre du journal reste fermée",
+      "file": "v64-google-buttons.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "doublon exact réimporté : le dernier import remplace l’ancienne copie, une seule édition reste",
+      "file": "v64-google-buttons.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "6.4.3 : le lien Mode IA d’un article ouvre la confirmation PWA avec sa question, puis Google Mode IA et la recherche Google",
+      "file": "v64-google-buttons.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "6.4.3 : « En savoir plus » reste local et le lien de l’approfondissement reprend la question affichée",
+      "file": "v64-google-buttons.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "lien Mode IA sans question : la confirmation s’ouvre quand même et Google Mode IA reste disponible",
+      "file": "v64-google-buttons.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "6.4 à fenêtre (6.4.1) : « En savoir plus » ouvre directement la confirmation PWA, la fenêtre du journal reste fermée",
+      "file": "v64-google-buttons.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "doublon exact réimporté : le dernier import remplace l’ancienne copie, une seule édition reste",
+      "file": "v64-google-buttons.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale",
+      "file": "v7-unified.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V7 : mobile, clavier, thèmes, absence de données, sources, reduced motion et radar comparable",
+      "file": "v7-unified.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V7 : HTML hostile lu sans scripts, question publique conservée, prompt privé non transmis",
+      "file": "v7-unified.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V7 : adaptateur Future explicite, JSON validé puis import indépendant sans écriture croisée",
+      "file": "v7-unified.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V7 : MIME incohérent refusé sans écriture puis import HTML valide conservé",
+      "file": "v7-unified.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V7 : chargement différé de l’accueil sans déplacer un bouton pendant le clic",
+      "file": "v7-unified.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale",
+      "file": "v7-unified.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V7 : mobile, clavier, thèmes, absence de données, sources, reduced motion et radar comparable",
+      "file": "v7-unified.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V7 : HTML hostile lu sans scripts, question publique conservée, prompt privé non transmis",
+      "file": "v7-unified.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V7 : adaptateur Future explicite, JSON validé puis import indépendant sans écriture croisée",
+      "file": "v7-unified.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V7 : MIME incohérent refusé sans écriture puis import HTML valide conservé",
+      "file": "v7-unified.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V7 : chargement différé de l’accueil sans déplacer un bouton pendant le clic",
+      "file": "v7-unified.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V7 : huit imports désordonnés, un cumul, huit originaux, prompts multiples exacts et recherche locale",
+      "file": "v7-unified.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V7 : mobile, clavier, thèmes, absence de données, sources, reduced motion et radar comparable",
+      "file": "v7-unified.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V7 : HTML hostile lu sans scripts, question publique conservée, prompt privé non transmis",
+      "file": "v7-unified.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V7 : adaptateur Future explicite, JSON validé puis import indépendant sans écriture croisée",
+      "file": "v7-unified.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V7 : MIME incohérent refusé sans écriture puis import HTML valide conservé",
+      "file": "v7-unified.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V7 : chargement différé de l’accueil sans déplacer un bouton pendant le clic",
+      "file": "v7-unified.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Audit P0/P1 : 10 h seul offline, huit cartes, résumés, fiches intégrales et trois Markdown exacts",
+      "file": "v8-audit.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Audit P0 : créneaux exacts, retour même filtre/position, historique navigateur et rechargement",
+      "file": "v8-audit.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Audit P1/P2 : profils réversibles, offline, sept largeurs, clavier, contraste et mouvement réduit",
+      "file": "v8-audit.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Audit P2 : import, rendu paginé et recherche de 500 puis 2000 articles synthétiques",
+      "file": "v8-audit.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Audit P2 : texte hostile échappé et URL invalide rejetée sans perte",
+      "file": "v8-audit.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Audit P0/P1 : 10 h seul offline, huit cartes, résumés, fiches intégrales et trois Markdown exacts",
+      "file": "v8-audit.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Audit P0 : créneaux exacts, retour même filtre/position, historique navigateur et rechargement",
+      "file": "v8-audit.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Audit P1/P2 : profils réversibles, offline, sept largeurs, clavier, contraste et mouvement réduit",
+      "file": "v8-audit.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Audit P2 : import, rendu paginé et recherche de 500 puis 2000 articles synthétiques",
+      "file": "v8-audit.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Audit P2 : texte hostile échappé et URL invalide rejetée sans perte",
+      "file": "v8-audit.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Audit P0/P1 : 10 h seul offline, huit cartes, résumés, fiches intégrales et trois Markdown exacts",
+      "file": "v8-audit.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Audit P0 : créneaux exacts, retour même filtre/position, historique navigateur et rechargement",
+      "file": "v8-audit.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Audit P1/P2 : profils réversibles, offline, sept largeurs, clavier, contraste et mouvement réduit",
+      "file": "v8-audit.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Audit P2 : import, rendu paginé et recherche de 500 puis 2000 articles synthétiques",
+      "file": "v8-audit.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Audit P2 : texte hostile échappé et URL invalide rejetée sans perte",
+      "file": "v8-audit.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Lecture réelle du cadre 08 h : HTML d’origine conservé, interactions directes, offline",
+      "file": "v8-reading.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Lecture réelle du cadre 10 h : HTML d’origine conservé, interactions directes, offline",
+      "file": "v8-reading.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Lecture réelle du cadre 16 h : HTML d’origine conservé, interactions directes, offline",
+      "file": "v8-reading.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Développer utilise toute la largeur de la page et Réduire rétablit la carte",
+      "file": "v8-reading.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "16 h : PARTIAL ne signifie pas contradiction ni article manquant ; prompts parent exacts",
+      "file": "v8-reading.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Lecture réelle du cadre 08 h : HTML d’origine conservé, interactions directes, offline",
+      "file": "v8-reading.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Lecture réelle du cadre 10 h : HTML d’origine conservé, interactions directes, offline",
+      "file": "v8-reading.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Lecture réelle du cadre 16 h : HTML d’origine conservé, interactions directes, offline",
+      "file": "v8-reading.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Développer utilise toute la largeur de la page et Réduire rétablit la carte",
+      "file": "v8-reading.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "16 h : PARTIAL ne signifie pas contradiction ni article manquant ; prompts parent exacts",
+      "file": "v8-reading.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Lecture réelle du cadre 08 h : HTML d’origine conservé, interactions directes, offline",
+      "file": "v8-reading.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Lecture réelle du cadre 10 h : HTML d’origine conservé, interactions directes, offline",
+      "file": "v8-reading.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Lecture réelle du cadre 16 h : HTML d’origine conservé, interactions directes, offline",
+      "file": "v8-reading.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Développer utilise toute la largeur de la page et Réduire rétablit la carte",
+      "file": "v8-reading.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "16 h : PARTIAL ne signifie pas contradiction ni article manquant ; prompts parent exacts",
+      "file": "v8-reading.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "T01/T04/T09/T15 : SEUL fichier 22 h dans une base vide, huit événements et toutes les annexes offline",
+      "file": "v8-snapshot.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "T02/T03 : un seul 12 h ou 18 h, puis arrivée désordonnée sans rétrogradation",
+      "file": "v8-snapshot.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "T16 : snapshot autonome clavier, axe, sept largeurs, zoom CSS 200 %, thèmes et mouvement réduit",
+      "file": "v8-snapshot.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "T05/T06/T07 : omissions réelles avec provenance et conflit de révision visibles",
+      "file": "v8-snapshot.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "T01/T04/T09/T15 : SEUL fichier 22 h dans une base vide, huit événements et toutes les annexes offline",
+      "file": "v8-snapshot.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "T02/T03 : un seul 12 h ou 18 h, puis arrivée désordonnée sans rétrogradation",
+      "file": "v8-snapshot.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "T16 : snapshot autonome clavier, axe, sept largeurs, zoom CSS 200 %, thèmes et mouvement réduit",
+      "file": "v8-snapshot.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "T05/T06/T07 : omissions réelles avec provenance et conflit de révision visibles",
+      "file": "v8-snapshot.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "T01/T04/T09/T15 : SEUL fichier 22 h dans une base vide, huit événements et toutes les annexes offline",
+      "file": "v8-snapshot.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "T02/T03 : un seul 12 h ou 18 h, puis arrivée désordonnée sans rétrogradation",
+      "file": "v8-snapshot.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "T16 : snapshot autonome clavier, axe, sept largeurs, zoom CSS 200 %, thèmes et mouvement réduit",
+      "file": "v8-snapshot.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "T05/T06/T07 : omissions réelles avec provenance et conflit de révision visibles",
+      "file": "v8-snapshot.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "En direct : départ explicite, radar accessible, quotas protégés et dernier résultat conservé après erreur",
+      "file": "v9-live-watch.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "En direct : cadence, suspension hors ligne, arrêt et sortie sans appels en arrière-plan",
+      "file": "v9-live-watch.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "En direct : un arrêt annule la récupération en cours sans écriture tardive",
+      "file": "v9-live-watch.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "En direct : départ explicite, radar accessible, quotas protégés et dernier résultat conservé après erreur",
+      "file": "v9-live-watch.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "En direct : cadence, suspension hors ligne, arrêt et sortie sans appels en arrière-plan",
+      "file": "v9-live-watch.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "En direct : un arrêt annule la récupération en cours sans écriture tardive",
+      "file": "v9-live-watch.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "En direct : départ explicite, radar accessible, quotas protégés et dernier résultat conservé après erreur",
+      "file": "v9-live-watch.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "En direct : cadence, suspension hors ligne, arrêt et sortie sans appels en arrière-plan",
+      "file": "v9-live-watch.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "En direct : un arrêt annule la récupération en cours sans écriture tardive",
+      "file": "v9-live-watch.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "tous les prompts sont téléchargés en un ZIP, même avec un filtre actif et hors ligne",
+      "file": "v9-prompt-tools.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "la recherche globale permet de rechercher le titre exact sur Google sans ouvrir le HTML",
+      "file": "v9-prompt-tools.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "tous les prompts sont téléchargés en un ZIP, même avec un filtre actif et hors ligne",
+      "file": "v9-prompt-tools.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "la recherche globale permet de rechercher le titre exact sur Google sans ouvrir le HTML",
+      "file": "v9-prompt-tools.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "tous les prompts sont téléchargés en un ZIP, même avec un filtre actif et hors ligne",
+      "file": "v9-prompt-tools.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "la recherche globale permet de rechercher le titre exact sur Google sans ouvrir le HTML",
+      "file": "v9-prompt-tools.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Récurrent : thèmes, édition, recherche Google récente, persistance et suppression",
+      "file": "v9-recurring-searches.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Récurrent : stockage indisponible, brouillon conservé sans faux enregistrement",
+      "file": "v9-recurring-searches.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Récurrent : thèmes, édition, recherche Google récente, persistance et suppression",
+      "file": "v9-recurring-searches.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Récurrent : stockage indisponible, brouillon conservé sans faux enregistrement",
+      "file": "v9-recurring-searches.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Récurrent : thèmes, édition, recherche Google récente, persistance et suppression",
+      "file": "v9-recurring-searches.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Récurrent : stockage indisponible, brouillon conservé sans faux enregistrement",
+      "file": "v9-recurring-searches.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "SG-13 : lien attaché, refus, confirmation, contenu exact et hors ligne",
+      "file": "v9-sitegoat.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "SG-13 : lien détaché, refus, confirmation, contenu exact et hors ligne",
+      "file": "v9-sitegoat.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "SG-02 : minuit Paris et retour au premier plan sans rechargement",
+      "file": "v9-sitegoat.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "SG-08 : deux vrais onglets, ajouts simultanés et conflit sur le même ID",
+      "file": "v9-sitegoat.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "SG-01/09/14 : filtres accessibles, instants réels et date compacte en lecture",
+      "file": "v9-sitegoat.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "SG-13 : lien attaché, refus, confirmation, contenu exact et hors ligne",
+      "file": "v9-sitegoat.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "SG-13 : lien détaché, refus, confirmation, contenu exact et hors ligne",
+      "file": "v9-sitegoat.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "SG-02 : minuit Paris et retour au premier plan sans rechargement",
+      "file": "v9-sitegoat.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "SG-08 : deux vrais onglets, ajouts simultanés et conflit sur le même ID",
+      "file": "v9-sitegoat.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "SG-01/09/14 : filtres accessibles, instants réels et date compacte en lecture",
+      "file": "v9-sitegoat.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "SG-13 : lien attaché, refus, confirmation, contenu exact et hors ligne",
+      "file": "v9-sitegoat.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "SG-13 : lien détaché, refus, confirmation, contenu exact et hors ligne",
+      "file": "v9-sitegoat.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "SG-02 : minuit Paris et retour au premier plan sans rechargement",
+      "file": "v9-sitegoat.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "SG-08 : deux vrais onglets, ajouts simultanés et conflit sur le même ID",
+      "file": "v9-sitegoat.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "SG-01/09/14 : filtres accessibles, instants réels et date compacte en lecture",
+      "file": "v9-sitegoat.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "choix avant exécution, refus mémorisé et révocable",
+      "file": "v9-sitegoat.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "choix avant exécution, refus mémorisé et révocable",
+      "file": "v9-sitegoat.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "choix avant exécution, refus mémorisé et révocable",
+      "file": "v9-sitegoat.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Sources : récupération explicite, aucun journal envoyé, cache hors ligne et réponse inerte",
+      "file": "v9-sources.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Sources : récupération explicite, aucun journal envoyé, cache hors ligne et réponse inerte",
+      "file": "v9-sources.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "Sources : récupération explicite, aucun journal envoyé, cache hors ligne et réponse inerte",
+      "file": "v9-sources.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V9 : Aujourd’hui épuré, Accueil, articles internes, 19 titres réels ou fixture, Google public et préférences",
+      "file": "v9-workspace.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V9 : HTML original offline, filtres, accordéons, Google et source contrôlés, Markdown exact, isolation",
+      "file": "v9-workspace.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V9 : panne du stockage des préférences, réglages conservés pour la session",
+      "file": "v9-workspace.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V9 : filtres Articles combinables, calendrier de faits et affichage intégral de 100 brèves synthétiques",
+      "file": "v9-workspace.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V9 : onglet Actualité rapide, titres des articles automatiques, dates simples et HTML directement interactif",
+      "file": "v9-workspace.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V9 : Aujourd’hui épuré, Accueil, articles internes, 19 titres réels ou fixture, Google public et préférences",
+      "file": "v9-workspace.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V9 : HTML original offline, filtres, accordéons, Google et source contrôlés, Markdown exact, isolation",
+      "file": "v9-workspace.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V9 : panne du stockage des préférences, réglages conservés pour la session",
+      "file": "v9-workspace.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V9 : filtres Articles combinables, calendrier de faits et affichage intégral de 100 brèves synthétiques",
+      "file": "v9-workspace.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V9 : onglet Actualité rapide, titres des articles automatiques, dates simples et HTML directement interactif",
+      "file": "v9-workspace.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V9 : Aujourd’hui épuré, Accueil, articles internes, 19 titres réels ou fixture, Google public et préférences",
+      "file": "v9-workspace.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V9 : HTML original offline, filtres, accordéons, Google et source contrôlés, Markdown exact, isolation",
+      "file": "v9-workspace.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V9 : panne du stockage des préférences, réglages conservés pour la session",
+      "file": "v9-workspace.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V9 : filtres Articles combinables, calendrier de faits et affichage intégral de 100 brèves synthétiques",
+      "file": "v9-workspace.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "V9 : onglet Actualité rapide, titres des articles automatiques, dates simples et HTML directement interactif",
+      "file": "v9-workspace.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    }
+  ]
+}

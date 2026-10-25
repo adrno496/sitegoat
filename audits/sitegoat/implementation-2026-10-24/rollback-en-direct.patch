@@ -1,0 +1,1381 @@
+diff --git b/api/sources.mjs a/api/sources.mjs
+index 8b45a8c..a987f7e 100644
+--- b/api/sources.mjs
++++ a/api/sources.mjs
+@@ -13,7 +13,6 @@ export function createSourcesHandler({
+   verifySession,
+ } = {}) {
+   const cache = new Map(),
+-    inFlight = new Map(),
+     limits = new Map();
+   return async function handler(req, res) {
+     res.setHeader("Cache-Control", "no-store");
+@@ -106,9 +105,6 @@ export function createSourcesHandler({
+       const old = cache.get(cacheKey);
+       if (old && Date.now() - old.at < 15 * 60_000)
+         return reply(200, { ...old.value, cached: true });
+-      if (inFlight.has(cacheKey))
+-        return reply(200, await inFlight.get(cacheKey));
+-      if (inFlight.size >= 50) return reply(429, { code: "RATE_LIMITED" });
+       const previous = limits.get(identity),
+         current =
+           previous && Date.now() - previous.at < 60_000
+@@ -124,16 +120,10 @@ export function createSourcesHandler({
+         res.setHeader("Retry-After", "60");
+         return reply(429, { code: "RATE_LIMITED" });
+       }
+-      const pending = fetchSource(body.provider, query, env, request);
+-      inFlight.set(cacheKey, pending);
+-      try {
+-        const value = await pending;
+-        if (cache.size >= 50) cache.delete(cache.keys().next().value);
+-        cache.set(cacheKey, { at: Date.now(), value });
+-        return reply(200, value);
+-      } finally {
+-        inFlight.delete(cacheKey);
+-      }
++      const value = await fetchSource(body.provider, query, env, request);
++      if (cache.size >= 50) cache.delete(cache.keys().next().value);
++      cache.set(cacheKey, { at: Date.now(), value });
++      return reply(200, value);
+     } catch (e) {
+       return reply(e instanceof SourceError ? e.status : 502, {
+         code: e instanceof SourceError ? e.code : "PROVIDER_UNAVAILABLE",
+diff --git b/scripts/sitegoat-production-v10.mjs a/scripts/sitegoat-production-v10.mjs
+index ba3ec72..c72e94e 100644
+--- b/scripts/sitegoat-production-v10.mjs
++++ a/scripts/sitegoat-production-v10.mjs
+@@ -44,9 +44,7 @@ for (const [name, type, width] of [
+     sourceArticles: p?.items?.length || 0,
+     sourceBriefs: q?.items?.length || 0,
+     sourcePrompts: p?.promptAssets?.length || 0,
+-    networkObservation:
+-      "Page routing only; service-worker fetches may bypass observation",
+-    routedPublicApiCalls: [],
++    cloudTransfers: 0,
+     downloadIntervalMs: Number(
+       process.env.SITEGOAT_DOWNLOAD_INTERVAL_MS ?? 1100,
+     ),
+@@ -71,14 +69,8 @@ for (const [name, type, width] of [
+       : u.origin === origin &&
+           u.pathname === "/api/sources" &&
+           r.request().method() === "POST" &&
+-          ["ecb", "worldbank"].some(
+-            (provider) =>
+-              r.request().postData() === JSON.stringify({ provider }),
+-          )
+-        ? (result.routedPublicApiCalls.push(
+-            JSON.parse(r.request().postData()).provider,
+-          ),
+-          r.continue())
++          r.request().postData() === JSON.stringify({ provider: "ecb" })
++        ? r.continue()
+         : r.abort();
+   });
+   const nav = async (label) => {
+@@ -106,35 +98,6 @@ for (const [name, type, width] of [
+         timeout: 30000,
+       })
+       .toBe(true);
+-    phase = "live-radar";
+-    await nav("En direct");
+-    await expect(
+-      page.getByRole("heading", { name: "Veille en direct" }),
+-    ).toBeVisible();
+-    expect(result.routedPublicApiCalls).toHaveLength(0);
+-    await page
+-      .getByRole("button", { name: "Actualiser maintenant", exact: true })
+-      .click();
+-    await expect(page.locator(".live-results article")).toHaveCount(16);
+-    await expect(page.locator(".live-controls").getByRole("status")).toHaveText(
+-      "Suivi en pause",
+-    );
+-    await page
+-      .getByRole("tab", { name: "Radar économique mondial", exact: true })
+-      .click();
+-    await expect(page.getByRole("tabpanel")).toContainText(
+-      "France · Croissance du PIB",
+-    );
+-    expect(
+-      await page.evaluate(
+-        () => document.documentElement.scrollWidth <= innerWidth,
+-      ),
+-    ).toBe(true);
+-    result.liveRadarRows = 16;
+-    await page.screenshot({
+-      path: `audits/sitegoat/implementation-2026-10-24/preuves/production-live-${name}.png`,
+-      fullPage: true,
+-    });
+     phase = "public-api";
+     await nav("Actualité rapide");
+     await page.getByRole("tab", { name: "Sources", exact: true }).click();
+@@ -160,7 +123,6 @@ for (const [name, type, width] of [
+     await expect(page.getByRole("dialog")).toHaveCount(0);
+     // No scripts have run at import. From here on all networking is disabled.
+     await context.setOffline(true);
+-    result.offlineAfterImport = true;
+     phase = "index";
+     await nav("Aujourd’hui");
+     if (p)
+@@ -281,7 +243,7 @@ for (const [name, type, width] of [
+         prompt.sha256 || digest(Buffer.from(prompt.content)),
+       );
+       result.native.push({
+-        promptNumber: result.native.length + 1,
++        promptId: prompt.promptId,
+         bytes: bytes.length,
+         shaValid: true,
+       });
+@@ -323,7 +285,7 @@ for (const [name, type, width] of [
+       expect(
+         (await readFile(await (await event).path())).toString("utf8"),
+       ).toBe(prompt.content);
+-      result.fallback.push({ promptNumber: n + 1, exact: true });
++      result.fallback.push({ promptId: prompt.promptId, exact: true });
+     }
+     result.fallbackExact = p.promptAssets.length;
+     phase = "offline-reload";
+@@ -337,21 +299,6 @@ for (const [name, type, width] of [
+     await page.getByRole("tab", { name: "Sources", exact: true }).click();
+     await expect(page.locator(".source-results article")).toHaveCount(6);
+     result.publicSourceOfflineReload = true;
+-    await nav("En direct");
+-    await expect(page.locator(".live-results article")).toHaveCount(16);
+-    await expect(
+-      page.locator(".live-controls").getByRole("status"),
+-    ).toContainText("Hors ligne");
+-    await expect(
+-      page.getByRole("button", { name: "Démarrer le suivi", exact: true }),
+-    ).toBeDisabled();
+-    await page
+-      .getByRole("tab", { name: "Radar économique mondial", exact: true })
+-      .click();
+-    await expect(page.getByRole("tabpanel")).toContainText(
+-      "France · Croissance du PIB",
+-    );
+-    result.liveRadarOfflineReload = true;
+     await nav("Aujourd’hui");
+     const metadata = page.locator(".event-card .editorial-metadata").first();
+     await expect(metadata.locator("time")).toHaveCount(1);
+diff --git b/server/source-providers.mjs a/server/source-providers.mjs
+index ea871c6..7837a94 100644
+--- b/server/source-providers.mjs
++++ a/server/source-providers.mjs
+@@ -14,7 +14,6 @@ export const SOURCES = [
+   },
+   { id: "exa", label: "Recherche · Exa", key: "EXA_API_KEY", search: true },
+   { id: "ecb", label: "Économie · devises BCE" },
+-  { id: "worldbank", label: "Économie · Banque mondiale" },
+   { id: "cisa", label: "Cybersécurité · CISA" },
+   ...[
+     ["vscode", "microsoft/vscode"],
+@@ -201,9 +200,6 @@ export async function fetchSource(
+     };
+   } else if (provider === "ecb")
+     endpoint = "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml";
+-  else if (provider === "worldbank")
+-    endpoint =
+-      "https://api.worldbank.org/v2/country/WLD;FRA;EMU;USA;CHN/indicator/NY.GDP.MKTP.KD.ZG;FP.CPI.TOTL.ZG?source=2&format=json&per_page=100&mrnev=2";
+   else if (provider === "cisa")
+     endpoint =
+       "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json";
+@@ -244,48 +240,7 @@ export async function fetchSource(
+     } catch {
+       throw new SourceError("INVALID_RESPONSE");
+     }
+-    if (provider === "worldbank") {
+-      if (!Array.isArray(body) || !Array.isArray(body[1]))
+-        throw new SourceError("INVALID_RESPONSE");
+-      const number = new Intl.NumberFormat("fr-FR", {
+-        maximumFractionDigits: 2,
+-      });
+-      entries = [];
+-      for (const [country, label, location] of [
+-        ["WLD", "Monde", "1W"],
+-        ["FRA", "France", "FR"],
+-        ["EMU", "Zone euro", "XC"],
+-        ["USA", "États-Unis", "US"],
+-        ["CHN", "Chine", "CN"],
+-      ]) {
+-        for (const [indicator, name] of [
+-          ["NY.GDP.MKTP.KD.ZG", "Croissance du PIB"],
+-          ["FP.CPI.TOTL.ZG", "Inflation"],
+-        ]) {
+-          const series = body[1]
+-            .filter(
+-              (v) =>
+-                v?.countryiso3code === country &&
+-                v?.indicator?.id === indicator &&
+-                /^\d{4}$/.test(v.date) &&
+-                typeof v.value === "number" &&
+-                Number.isFinite(v.value),
+-            )
+-            .sort((a, b) => Number(b.date) - Number(a.date));
+-          const latest = series[0],
+-            previous = series.find(
+-              (v) => latest && Number(v.date) === Number(latest.date) - 1,
+-            );
+-          entries.push({
+-            title: `${label} · ${name}`,
+-            summary: latest
+-              ? `${latest.date} : ${number.format(latest.value)} %${previous ? ` · ${previous.date} : ${number.format(previous.value)} % · variation : ${number.format(latest.value - previous.value)} point(s)` : " · comparaison annuelle indisponible"}.`
+-              : "Donnée non fournie pour cette série.",
+-            url: `https://data.worldbank.org/indicator/${indicator}?locations=${location}`,
+-          });
+-        }
+-      }
+-    } else if (provider === "brave")
++    if (provider === "brave")
+       entries = (body.results || []).map((v) => ({
+         ...v,
+         summary: v.description,
+diff --git b/src/App.tsx a/src/App.tsx
+index 459f575..3f85161 100644
+--- b/src/App.tsx
++++ a/src/App.tsx
+@@ -112,13 +112,11 @@ import type { FutureFile } from "./features/future/import";
+ const UnifiedWorkspace = lazy(
+   () => import("./features/unified/UnifiedWorkspace"),
+ );
+-const LiveWatch = lazy(() => import("./features/v9/LiveWatch"));
+ const FutureView = lazy(() => import("./features/future/FutureView"));
+ const FutureImportDialog = lazy(() => import("./features/future/ImportDialog"));
+ type Tab =
+   | "home"
+   | "today"
+-  | "live"
+   | "quick"
+   | "library"
+   | "articles"
+@@ -133,7 +131,6 @@ const tabs = [
+   { id: "today" as const, label: "Aujourd’hui", icon: Home },
+   { id: "quick" as const, label: "Actualité rapide", icon: Newspaper },
+   { id: "articles" as const, label: "Articles", icon: FileText },
+-  { id: "live" as const, label: "En direct", icon: RefreshCw },
+   { id: "library" as const, label: "Bibliothèque", icon: Library },
+   { id: "ai-major" as const, label: "IA majeur", icon: Brain },
+   { id: "sentinel" as const, label: "Sentinel", icon: Shield },
+@@ -168,7 +165,7 @@ function JournalApp() {
+   const visibleTabs = tabs.filter(
+     (t) =>
+       extraNavigation ||
+-      ["home", "today", "quick", "articles", "live", "settings"].includes(t.id),
++      ["home", "today", "quick", "articles", "settings"].includes(t.id),
+   );
+   const [importsDiagnosticOpen, setImportsDiagnosticOpen] = useState(false);
+   const [todayPanel, setTodayPanel] = useState("overview");
+@@ -1198,15 +1195,6 @@ function JournalApp() {
+               />
+             </div>
+           )}
+-          {data.ready && tab === "live" && !current && !selectedDay && (
+-            <Suspense fallback={<p>Ouverture de la veille en direct…</p>}>
+-              <LiveWatch
+-                editions={allEditions}
+-                accessToken={session?.access_token}
+-                onSettings={() => navigate("settings")}
+-              />
+-            </Suspense>
+-          )}
+           {data.ready && tab === "future" && !current && !selectedDay && (
+             <Suspense fallback={<p>Ouverture de Le Futur…</p>}>
+               <FutureView
+diff --git b/src/features/v9/LiveWatch.tsx a/src/features/v9/LiveWatch.tsx
+deleted file mode 100644
+index b86a50b..0000000
+--- b/src/features/v9/LiveWatch.tsx
++++ /dev/null
+@@ -1,379 +0,0 @@
+-import { useEffect, useRef, useState } from "react";
+-import type { Edition } from "../../data/model";
+-import { editorialDate } from "../editorialPresentation";
+-import { validateSourceUrl } from "../sourceUrl";
+-import { EconomyRadar } from "../unified/EconomyRadar";
+-import {
+-  catalogSchema,
+-  DEFAULT_SOURCES,
+-  readSourceCache,
+-  requestSource,
+-  saveSourceResult,
+-  type SourceResult,
+-} from "./SourceExplorer";
+-import "../unified/unified.css";
+-import "./liveWatch.css";
+-
+-export default function LiveWatch({
+-  editions,
+-  accessToken,
+-  onSettings,
+-}: {
+-  editions: Edition[];
+-  accessToken?: string;
+-  onSettings: () => void;
+-}) {
+-  const [pane, setPane] = useState("feeds");
+-  const [sources, setSources] = useState(DEFAULT_SOURCES);
+-  const [selected, setSelected] = useState(["worldbank", "ecb"]);
+-  const [query, setQuery] = useState("");
+-  const [minutes, setMinutes] = useState(30);
+-  const [mode, setMode] = useState<"paused" | "once" | "continuous">("paused");
+-  const [ticket, setTicket] = useState(0);
+-  const [busy, setBusy] = useState(false);
+-  const [online, setOnline] = useState(navigator.onLine);
+-  const [visible, setVisible] = useState(!document.hidden);
+-  const [results, setResults] = useState(readSourceCache);
+-  const [errors, setErrors] = useState<Record<string, string>>({});
+-  const [storageNotice, setStorageNotice] = useState("");
+-  const nextDue = useRef(0);
+-  const catalog = useRef(DEFAULT_SOURCES);
+-  useEffect(() => {
+-    const connectivity = () => setOnline(navigator.onLine);
+-    const visibility = () => setVisible(!document.hidden);
+-    const storage = () => setResults(readSourceCache());
+-    window.addEventListener("online", connectivity);
+-    window.addEventListener("offline", connectivity);
+-    window.addEventListener("storage", storage);
+-    document.addEventListener("visibilitychange", visibility);
+-    return () => {
+-      window.removeEventListener("online", connectivity);
+-      window.removeEventListener("offline", connectivity);
+-      window.removeEventListener("storage", storage);
+-      document.removeEventListener("visibilitychange", visibility);
+-    };
+-  }, []);
+-  useEffect(() => {
+-    if (!online) return;
+-    const controller = new AbortController();
+-    fetch("/api/sources", {
+-      signal: controller.signal,
+-      credentials: "omit",
+-      cache: "no-store",
+-    })
+-      .then(async (r) => {
+-        if (!r.ok) throw Error();
+-        return catalogSchema.parse(await r.json());
+-      })
+-      .then((r) => {
+-        catalog.current = r.sources;
+-        setSources(r.sources);
+-      })
+-      .catch(() => {});
+-    return () => controller.abort();
+-  }, [online]);
+-  useEffect(() => {
+-    if (mode === "paused" || !online || !visible) {
+-      setBusy(false);
+-      return;
+-    }
+-    const controller = new AbortController();
+-    let timer: ReturnType<typeof setTimeout>;
+-    async function cycle() {
+-      const targets = catalog.current.filter(
+-        (s) =>
+-          selected.includes(s.id) && s.available && (!s.private || accessToken),
+-      );
+-      setBusy(true);
+-      setErrors({});
+-      setStorageNotice("");
+-      for (const source of targets) {
+-        if (controller.signal.aborted) return;
+-        try {
+-          const value = await requestSource(
+-            source,
+-            query,
+-            accessToken,
+-            controller.signal,
+-          );
+-          if (controller.signal.aborted) return;
+-          setResults((old) =>
+-            [
+-              value,
+-              ...old.filter(
+-                (r) => r.provider !== value.provider || r.query !== value.query,
+-              ),
+-            ].slice(0, 10),
+-          );
+-          try {
+-            saveSourceResult(value);
+-          } catch {
+-            setStorageNotice(
+-              "Résultats reçus, mais leur conservation hors ligne est indisponible. Les anciennes données sont conservées.",
+-            );
+-          }
+-        } catch (error) {
+-          if (controller.signal.aborted) return;
+-          setErrors((old) => ({
+-            ...old,
+-            [source.id]:
+-              error instanceof Error ? error.message : "Source indisponible.",
+-          }));
+-        }
+-      }
+-      if (controller.signal.aborted) return;
+-      setBusy(false);
+-      nextDue.current = Date.now() + minutes * 60000;
+-      if (mode === "continuous")
+-        timer = setTimeout(() => void cycle(), minutes * 60000);
+-      else setMode("paused");
+-    }
+-    timer = setTimeout(
+-      () => void cycle(),
+-      mode === "once" ? 0 : Math.max(0, nextDue.current - Date.now()),
+-    );
+-    return () => {
+-      controller.abort();
+-      clearTimeout(timer);
+-    };
+-  }, [mode, ticket, online, visible, selected, query, accessToken, minutes]);
+-
+-  const targets = sources.filter(
+-    (s) =>
+-      selected.includes(s.id) && s.available && (!s.private || accessToken),
+-  );
+-  const canStart =
+-    online &&
+-    targets.length > 0 &&
+-    (!targets.some((s) => s.search) || query.trim().length >= 3);
+-  const latest = results.filter(
+-    (r, i) => results.findIndex((v) => v.provider === r.provider) === i,
+-  );
+-  const displayed =
+-    pane === "radar"
+-      ? latest.filter((r) => ["worldbank", "ecb"].includes(r.provider))
+-      : latest;
+-  function start(continuous: boolean) {
+-    nextDue.current = 0;
+-    setTicket((value) => value + 1);
+-    setMode(continuous ? "continuous" : "once");
+-  }
+-  const status = !online
+-    ? "Hors ligne · derniers résultats conservés"
+-    : !visible && mode !== "paused"
+-      ? "Suivi suspendu · onglet masqué"
+-      : busy
+-        ? "Actualisation en cours…"
+-        : mode === "continuous"
+-          ? `Suivi actif · toutes les ${minutes} min`
+-          : "Suivi en pause";
+-  return (
+-    <div className="live-watch">
+-      <h1>Veille en direct</h1>
+-      <div
+-        className="live-tabs"
+-        role="tablist"
+-        aria-label="Vue de la veille en direct"
+-      >
+-        {[
+-          ["feeds", "Flux API"],
+-          ["radar", "Radar économique mondial"],
+-        ].map(([id, label]) => (
+-          <button
+-            key={id}
+-            id={`live-tab-${id}`}
+-            role="tab"
+-            aria-selected={pane === id}
+-            aria-controls="live-panel"
+-            tabIndex={pane === id ? 0 : -1}
+-            onClick={() => setPane(id)}
+-            onKeyDown={(event) => {
+-              if (
+-                !["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)
+-              )
+-                return;
+-              event.preventDefault();
+-              const next =
+-                event.key === "Home"
+-                  ? "feeds"
+-                  : event.key === "End"
+-                    ? "radar"
+-                    : pane === "feeds"
+-                      ? "radar"
+-                      : "feeds";
+-              setPane(next);
+-              document.getElementById(`live-tab-${next}`)?.focus();
+-            }}
+-          >
+-            {label}
+-          </button>
+-        ))}
+-      </div>
+-      <section className="live-controls" aria-label="Suivi des sources">
+-        <div className="live-actions">
+-          <button
+-            className="primary"
+-            disabled={!canStart || mode !== "paused"}
+-            onClick={() => start(true)}
+-          >
+-            Démarrer le suivi
+-          </button>
+-          <button
+-            className="secondary"
+-            disabled={!canStart || busy}
+-            onClick={() => start(mode === "continuous")}
+-          >
+-            Actualiser maintenant
+-          </button>
+-          <button
+-            className="secondary"
+-            disabled={mode === "paused"}
+-            onClick={() => setMode("paused")}
+-          >
+-            Mettre en pause
+-          </button>
+-          <label>
+-            Fréquence
+-            <select
+-              value={minutes}
+-              onChange={(e) => {
+-                setMode("paused");
+-                setMinutes(Number(e.target.value));
+-              }}
+-            >
+-              {[15, 30, 60].map((n) => (
+-                <option value={n} key={n}>
+-                  {n} min
+-                </option>
+-              ))}
+-            </select>
+-          </label>
+-        </div>
+-        <p role="status">{status}</p>
+-        <details>
+-          <summary>Choisir les sources et la recherche</summary>
+-          <fieldset className="live-source-options">
+-            <legend>Sources à suivre</legend>
+-            {sources.map((source) => (
+-              <label key={source.id}>
+-                <input
+-                  type="checkbox"
+-                  checked={selected.includes(source.id)}
+-                  disabled={
+-                    !source.available || (source.private && !accessToken)
+-                  }
+-                  onChange={(e) => {
+-                    setMode("paused");
+-                    setSelected((old) =>
+-                      e.target.checked
+-                        ? [...old, source.id]
+-                        : old.filter((id) => id !== source.id),
+-                    );
+-                  }}
+-                />
+-                {source.label}
+-                {source.private && !accessToken ? " · connexion requise" : ""}
+-                {!source.available ? " · indisponible" : ""}
+-              </label>
+-            ))}
+-          </fieldset>
+-          <label>
+-            Recherche publique
+-            <input
+-              type="search"
+-              maxLength={200}
+-              value={query}
+-              placeholder="Un sujet, sans donnée privée"
+-              onChange={(e) => {
+-                setMode("paused");
+-                setQuery(e.target.value);
+-              }}
+-            />
+-          </label>
+-          <p className="small-note">
+-            Un appel par source et par cycle. Brave, Tavily et Exa utilisent les
+-            quotas de vos comptes. Seuls les mots de cette recherche sont
+-            envoyés aux moteurs choisis.
+-          </p>
+-          {!accessToken && (
+-            <button className="text-button" onClick={onSettings}>
+-              Se connecter dans Paramètres
+-            </button>
+-          )}
+-        </details>
+-        {storageNotice && <p role="alert">{storageNotice}</p>}
+-        {Object.entries(errors).map(([id, error]) => (
+-          <p role="alert" key={id}>
+-            <strong>{sources.find((s) => s.id === id)?.label}</strong> : {error}
+-          </p>
+-        ))}
+-      </section>
+-      <section
+-        id="live-panel"
+-        role="tabpanel"
+-        aria-labelledby={`live-tab-${pane}`}
+-      >
+-        {pane === "radar" && (
+-          <p className="small-note">
+-            Banque mondiale : PIB et inflation annuels, Monde, France, zone
+-            euro, États-Unis et Chine. BCE : devises de référence. La période
+-            figure sur chaque chiffre ; ces données ne sont pas des cotations en
+-            temps réel.
+-          </p>
+-        )}
+-        {!displayed.length && (
+-          <p>
+-            Aucun résultat conservé. Actualisez pour recevoir les données des
+-            sources choisies.
+-          </p>
+-        )}
+-        <div className="live-results">
+-          {displayed.map((result) => (
+-            <LiveResult key={result.provider} result={result} />
+-          ))}
+-        </div>
+-        {pane === "radar" && (
+-          <details className="live-imported">
+-            <summary>Indicateurs de mes éditions</summary>
+-            <EconomyRadar editions={editions} />
+-          </details>
+-        )}
+-      </section>
+-    </div>
+-  );
+-}
+-function LiveResult({ result }: { result: SourceResult }) {
+-  return (
+-    <section className="live-source-result" aria-label={result.label}>
+-      <h2>{result.label}</h2>
+-      <p className="small-note">
+-        <time dateTime={result.retrievedAt}>
+-          {editorialDate(result.retrievedAt)}
+-        </time>
+-        {result.query ? ` · ${result.query}` : ""}
+-      </p>
+-      {!result.entries.length && <p>Aucun résultat reçu.</p>}
+-      <div className="live-entry-grid">
+-        {result.entries.map((entry, index) => (
+-          <article className="brief-card" key={`${entry.url}:${index}`}>
+-            <h3>{entry.title}</h3>
+-            {entry.publishedAt && (
+-              <p className="small-note">{editorialDate(entry.publishedAt)}</p>
+-            )}
+-            <p>{entry.summary}</p>
+-            {validateSourceUrl(entry.url) && (
+-              <a
+-                href={entry.url}
+-                target="_blank"
+-                rel="noopener noreferrer"
+-                referrerPolicy="no-referrer"
+-              >
+-                Lire la source
+-              </a>
+-            )}
+-          </article>
+-        ))}
+-      </div>
+-    </section>
+-  );
+-}
+diff --git b/src/features/v9/SourceExplorer.tsx a/src/features/v9/SourceExplorer.tsx
+index d058521..ef8afa2 100644
+--- b/src/features/v9/SourceExplorer.tsx
++++ a/src/features/v9/SourceExplorer.tsx
+@@ -21,8 +21,8 @@ export const sourceResultSchema = z
+     cached: z.boolean().optional(),
+   })
+   .strict();
+-export type SourceResult = z.infer<typeof sourceResultSchema>;
+-export const catalogSchema = z.object({
++type SourceResult = z.infer<typeof sourceResultSchema>;
++const catalogSchema = z.object({
+   sources: z
+     .array(
+       z.object({
+@@ -35,7 +35,7 @@ export const catalogSchema = z.object({
+     )
+     .max(12),
+ });
+-export const DEFAULT_SOURCES = [
++const DEFAULT_SOURCES = [
+   {
+     id: "ecb",
+     label: "Économie · devises BCE",
+@@ -43,13 +43,6 @@ export const DEFAULT_SOURCES = [
+     private: false,
+     available: true,
+   },
+-  {
+-    id: "worldbank",
+-    label: "Économie · Banque mondiale",
+-    search: false,
+-    private: false,
+-    available: true,
+-  },
+   {
+     id: "cisa",
+     label: "Cybersécurité · CISA",
+@@ -85,7 +78,7 @@ export function readSourceCache(): SourceResult[] {
+     return [];
+   }
+ }
+-export function saveSourceResult(value: SourceResult) {
++function saveSourceResult(value: SourceResult) {
+   const next = [
+     value,
+     ...readSourceCache().filter(
+@@ -108,44 +101,6 @@ const ERRORS: Record<string, string> = {
+   PUBLIC_QUERY_REQUIRED:
+     "Utilisez quelques mots publics, sans clé, adresse e-mail ni donnée privée.",
+ };
+-export async function requestSource(
+-  source: (typeof DEFAULT_SOURCES)[number],
+-  query: string,
+-  accessToken?: string,
+-  signal?: AbortSignal,
+-): Promise<SourceResult> {
+-  const response = await fetch("/api/sources", {
+-    method: "POST",
+-    credentials: "omit",
+-    headers: {
+-      "Content-Type": "application/json",
+-      ...(source.private && accessToken
+-        ? { Authorization: `Bearer ${accessToken}` }
+-        : {}),
+-    },
+-    body: JSON.stringify({
+-      provider: source.id,
+-      ...(source.search ? { query } : {}),
+-    }),
+-    signal: signal
+-      ? AbortSignal.any([signal, AbortSignal.timeout(20000)])
+-      : AbortSignal.timeout(20000),
+-  });
+-  if (!response.ok) {
+-    const error = await response.json().catch(() => ({}));
+-    throw Error(
+-      ERRORS[error.code] ||
+-        "Cette source est indisponible. Les résultats conservés restent lisibles.",
+-    );
+-  }
+-  const value = sourceResultSchema.parse(await response.json());
+-  if (
+-    value.provider !== source.id ||
+-    value.query !== (source.search ? query.trim() : "")
+-  )
+-    throw Error("Réponse incompatible avec la source demandée.");
+-  return value;
+-}
+ export function SourceExplorer({
+   accessToken,
+   onSettings,
+@@ -183,7 +138,29 @@ export function SourceExplorer({
+     setBusy(true);
+     setNotice("");
+     try {
+-      const value = await requestSource(selected, query, accessToken);
++      const response = await fetch("/api/sources", {
++        method: "POST",
++        credentials: "omit",
++        headers: {
++          "Content-Type": "application/json",
++          ...(selected.private && accessToken
++            ? { Authorization: `Bearer ${accessToken}` }
++            : {}),
++        },
++        body: JSON.stringify({
++          provider: source,
++          ...(selected.search ? { query } : {}),
++        }),
++        signal: AbortSignal.timeout(20000),
++      });
++      if (!response.ok) {
++        const error = await response.json().catch(() => ({}));
++        throw Error(
++          ERRORS[error.code] ||
++            "Cette source est indisponible. Les résultats conservés restent lisibles.",
++        );
++      }
++      const value = sourceResultSchema.parse(await response.json());
+       setResult(value);
+       try {
+         setHistory(saveSourceResult(value));
+diff --git b/src/features/v9/liveWatch.css a/src/features/v9/liveWatch.css
+deleted file mode 100644
+index d3f0ad5..0000000
+--- b/src/features/v9/liveWatch.css
++++ /dev/null
+@@ -1,70 +0,0 @@
+-.live-watch {
+-  max-width: 1240px;
+-  margin: 0 auto;
+-}
+-.live-tabs,
+-.live-actions {
+-  display: flex;
+-  flex-wrap: wrap;
+-  align-items: center;
+-  gap: 0.65rem;
+-}
+-.live-tabs {
+-  margin-bottom: 1rem;
+-}
+-.live-tabs [aria-selected="true"] {
+-  box-shadow: inset 0 -3px currentColor;
+-  font-weight: 700;
+-}
+-.live-controls {
+-  margin-bottom: 1.5rem;
+-  padding: 1rem;
+-  border: 1px solid var(--line);
+-  border-radius: 14px;
+-}
+-.live-controls label {
+-  display: flex;
+-  flex-wrap: wrap;
+-  align-items: center;
+-  gap: 0.5rem;
+-}
+-.live-controls input[type="search"] {
+-  width: min(100%, 32rem);
+-}
+-.live-controls input[type="checkbox"] {
+-  width: auto;
+-}
+-.live-source-options {
+-  display: grid;
+-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+-  gap: 0.65rem;
+-  margin: 1rem 0;
+-  padding: 1rem;
+-  border: 1px solid var(--line);
+-}
+-.live-results {
+-  display: grid;
+-  gap: 1.5rem;
+-}
+-.live-source-result {
+-  min-width: 0;
+-}
+-.live-entry-grid {
+-  display: grid;
+-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+-  gap: 1rem;
+-}
+-.live-entry-grid article {
+-  overflow-wrap: anywhere;
+-}
+-.live-imported {
+-  margin-top: 1.5rem;
+-}
+-@media (max-width: 600px) {
+-  .live-actions > button {
+-    flex: 1 1 140px;
+-  }
+-  .live-tabs > button {
+-    flex: 1 1 120px;
+-  }
+-}
+diff --git b/tests/e2e/v6-collections.spec.ts a/tests/e2e/v6-collections.spec.ts
+index 8c7aaa8..c41d5aa 100644
+--- b/tests/e2e/v6-collections.spec.ts
++++ a/tests/e2e/v6-collections.spec.ts
+@@ -148,7 +148,7 @@ test("navigation mobile visible et accessibilité des deux nouveaux espaces", as
+       ),
+     ).toBe(true);
+     if (width < 700) {
+-      await expect(page.locator(".mobile-nav button:visible")).toHaveCount(13);
++      await expect(page.locator(".mobile-nav button:visible")).toHaveCount(12);
+       await expect(
+         page
+           .locator(".mobile-nav")
+diff --git b/tests/e2e/v9-live-watch.spec.ts a/tests/e2e/v9-live-watch.spec.ts
+deleted file mode 100644
+index fa7c37b..0000000
+--- b/tests/e2e/v9-live-watch.spec.ts
++++ /dev/null
+@@ -1,376 +0,0 @@
+-import { test, expect, type BrowserContext } from "@playwright/test";
+-import AxeBuilder from "@axe-core/playwright";
+-import { navigate } from "../helpers/navigation";
+-test.use({ serviceWorkers: "block" });
+-async function mockSources(context: BrowserContext) {
+-  const calls: string[] = [];
+-  let fail = false;
+-  await context.route("**/api/sources", async (route) => {
+-    const req = route.request();
+-    if (req.method() === "GET")
+-      return route.fulfill({
+-        json: {
+-          sources: [
+-            {
+-              id: "worldbank",
+-              label: "Économie · Banque mondiale",
+-              search: false,
+-              private: false,
+-              available: true,
+-            },
+-            {
+-              id: "ecb",
+-              label: "Économie · devises BCE",
+-              search: false,
+-              private: false,
+-              available: true,
+-            },
+-            {
+-              id: "brave",
+-              label: "Actualités · Brave",
+-              search: true,
+-              private: true,
+-              available: true,
+-            },
+-          ],
+-        },
+-      });
+-    const data = req.postDataJSON();
+-    expect(Object.keys(data)).toEqual(["provider"]);
+-    expect(req.headers().authorization).toBeUndefined();
+-    calls.push(data.provider);
+-    if (fail)
+-      return route.fulfill({ status: 429, json: { code: "RATE_LIMITED" } });
+-    return route.fulfill({
+-      json: {
+-        provider: data.provider,
+-        label:
+-          data.provider === "ecb"
+-            ? "Économie · devises BCE"
+-            : "Économie · Banque mondiale",
+-        query: "",
+-        retrievedAt: "2026-10-25T08:00:00Z",
+-        entries:
+-          data.provider === "ecb"
+-            ? [
+-                {
+-                  title: "1 EUR = 1.1 USD",
+-                  summary: "Taux BCE",
+-                  url: "https://www.ecb.europa.eu/",
+-                  publishedAt: "2026-10-23",
+-                },
+-              ]
+-            : [
+-                {
+-                  title: "France · Croissance du PIB",
+-                  summary:
+-                    "2025 : 1,5 % · 2024 : -0,5 % · variation : 2 point(s).",
+-                  url: "https://data.worldbank.org/indicator/NY.GDP.MKTP.KD.ZG?locations=FRA",
+-                },
+-                {
+-                  title: "<img src=x onerror=alert(1)>",
+-                  summary: "Texte inerte",
+-                  url: "javascript:alert(1)",
+-                },
+-              ],
+-      },
+-    });
+-  });
+-  return {
+-    calls,
+-    setFail: () => {
+-      fail = true;
+-    },
+-  };
+-}
+-test("En direct : départ explicite, radar accessible, quotas protégés et dernier résultat conservé après erreur", async ({
+-  page,
+-  context,
+-}) => {
+-  const { calls, setFail } = await mockSources(context);
+-  await page.goto("/");
+-  await navigate(page, "En direct");
+-  await expect(
+-    page.getByRole("heading", { name: "Veille en direct" }),
+-  ).toBeVisible();
+-  expect(calls).toEqual([]);
+-  await page
+-    .getByText("Choisir les sources et la recherche", { exact: true })
+-    .click();
+-  await expect(
+-    page.getByRole("checkbox", {
+-      name: "Actualités · Brave · connexion requise",
+-    }),
+-  ).toBeDisabled();
+-  await page
+-    .getByRole("button", { name: "Actualiser maintenant", exact: true })
+-    .click();
+-  await expect(page.locator(".live-entry-grid article")).toHaveCount(3);
+-  await expect(
+-    page
+-      .locator(".live-controls")
+-      .getByRole("status")
+-      .filter({ hasText: "Suivi en pause" }),
+-  ).toBeVisible();
+-  expect([...calls].sort()).toEqual(["ecb", "worldbank"]);
+-  expect(await page.locator(".live-results img").count()).toBe(0);
+-  await expect(page.locator(".live-results a")).toHaveCount(2);
+-  await page.getByRole("tab", { name: "Flux API", exact: true }).focus();
+-  await page.keyboard.press("ArrowRight");
+-  await expect(
+-    page.getByRole("tab", { name: "Radar économique mondial", exact: true }),
+-  ).toHaveAttribute("aria-selected", "true");
+-  await expect(page.getByRole("tabpanel")).toContainText("2025 : 1,5 %");
+-  await expect(page.getByRole("tabpanel")).toContainText(
+-    "pas des cotations en temps réel",
+-  );
+-  await expect(
+-    page.getByText("Indicateurs de mes éditions", { exact: true }),
+-  ).toBeVisible();
+-  setFail();
+-  await page
+-    .getByRole("button", { name: "Actualiser maintenant", exact: true })
+-    .click();
+-  await expect(page.getByRole("alert")).toHaveCount(2);
+-  await expect(page.getByRole("tabpanel")).toContainText("2025 : 1,5 %");
+-  expect(calls).toHaveLength(4);
+-  expect(
+-    await page.evaluate(
+-      () => document.documentElement.scrollWidth <= innerWidth,
+-    ),
+-  ).toBe(true);
+-  expect(
+-    (await new AxeBuilder({ page }).include(".live-watch").analyze())
+-      .violations,
+-  ).toEqual([]);
+-  await page.screenshot({
+-    path: test.info().outputPath("live-radar.png"),
+-    fullPage: true,
+-  });
+-  await page.reload();
+-  // With the service worker deliberately blocked, wait for the lazy module.
+-  // A separate production test reloads fully offline using the real worker.
+-  await expect(
+-    page.getByRole("heading", { name: "Veille en direct" }),
+-  ).toBeVisible();
+-  await context.setOffline(true);
+-  await navigate(page, "En direct");
+-  await expect(page.locator(".live-results")).toContainText("2025 : 1,5 %");
+-  await expect(
+-    page
+-      .locator(".live-controls")
+-      .getByRole("status")
+-      .filter({ hasText: "Hors ligne" }),
+-  ).toBeVisible();
+-  await expect(
+-    page.getByRole("button", { name: "Démarrer le suivi", exact: true }),
+-  ).toBeDisabled();
+-  expect(calls).toHaveLength(4);
+-});
+-test("En direct : cadence, suspension hors ligne, arrêt et sortie sans appels en arrière-plan", async ({
+-  page,
+-  context,
+-}) => {
+-  const { calls } = await mockSources(context);
+-  await page.goto("/");
+-  await navigate(page, "En direct");
+-  await page
+-    .getByText("Choisir les sources et la recherche", { exact: true })
+-    .click();
+-  await page.clock.install();
+-  await page
+-    .getByRole("button", { name: "Démarrer le suivi", exact: true })
+-    .click();
+-  await page.clock.runFor(30);
+-  await expect.poll(() => calls.length).toBe(2);
+-  await expect(
+-    page
+-      .locator(".live-controls")
+-      .getByRole("status")
+-      .filter({ hasText: "Suivi actif" }),
+-  ).toBeVisible();
+-  await page.clock.fastForward(29 * 60000);
+-  expect(calls).toHaveLength(2);
+-  await page.clock.fastForward(61000);
+-  await expect.poll(() => calls.length).toBe(4);
+-  await expect(
+-    page
+-      .locator(".live-controls")
+-      .getByRole("status")
+-      .filter({ hasText: "Suivi actif" }),
+-  ).toBeVisible();
+-  await page.evaluate(() => {
+-    Object.defineProperty(document, "hidden", {
+-      configurable: true,
+-      value: true,
+-    });
+-    document.dispatchEvent(new Event("visibilitychange"));
+-  });
+-  await expect(
+-    page.locator(".live-controls").getByRole("status"),
+-  ).toContainText("onglet masqué");
+-  await page.clock.fastForward(31 * 60000);
+-  expect(calls).toHaveLength(4);
+-  await page.evaluate(() => {
+-    Object.defineProperty(document, "hidden", {
+-      configurable: true,
+-      value: false,
+-    });
+-    document.dispatchEvent(new Event("visibilitychange"));
+-  });
+-  await page.clock.runFor(30);
+-  await expect.poll(() => calls.length).toBe(6);
+-  await expect(
+-    page.locator(".live-controls").getByRole("status"),
+-  ).toContainText("Suivi actif");
+-  await context.setOffline(true);
+-  await expect(
+-    page
+-      .locator(".live-controls")
+-      .getByRole("status")
+-      .filter({ hasText: "Hors ligne" }),
+-  ).toBeVisible();
+-  await page.clock.fastForward(31 * 60000);
+-  expect(calls).toHaveLength(6);
+-  await context.setOffline(false);
+-  await page.clock.runFor(30);
+-  await expect.poll(() => calls.length).toBe(8);
+-  await expect(
+-    page
+-      .locator(".live-controls")
+-      .getByRole("status")
+-      .filter({ hasText: "Suivi actif" }),
+-  ).toBeVisible();
+-  await page
+-    .getByRole("button", { name: "Mettre en pause", exact: true })
+-    .click();
+-  await page.clock.fastForward(31 * 60000);
+-  expect(calls).toHaveLength(8);
+-  await page
+-    .getByRole("button", { name: "Démarrer le suivi", exact: true })
+-    .click();
+-  await page.clock.runFor(30);
+-  await expect.poll(() => calls.length).toBe(10);
+-  await expect(
+-    page
+-      .locator(".live-controls")
+-      .getByRole("status")
+-      .filter({ hasText: "Suivi actif" }),
+-  ).toBeVisible();
+-  await navigate(page, "Accueil");
+-  await page.clock.fastForward(31 * 60000);
+-  expect(calls).toHaveLength(10);
+-  await navigate(page, "En direct");
+-  await expect(
+-    page
+-      .locator(".live-controls")
+-      .getByRole("status")
+-      .filter({ hasText: "Suivi en pause" }),
+-  ).toBeVisible();
+-  await page.clock.fastForward(31 * 60000);
+-  expect(calls).toHaveLength(10);
+-});
+-
+-test("En direct : un arrêt annule la récupération en cours sans écriture tardive", async ({
+-  page,
+-  context,
+-}) => {
+-  await page.addInitScript(() => {
+-    const observed = window as Window & {
+-      watchAbortProbe?: { aborted: boolean; outcome: string; reason?: string };
+-    };
+-    const nativeFetch = window.fetch.bind(window);
+-    window.fetch = async (input, init) => {
+-      if (String(input) !== "/api/sources" || init?.method !== "POST")
+-        return nativeFetch(input, init);
+-      const probe = { aborted: false, outcome: "pending", reason: "" };
+-      observed.watchAbortProbe = probe;
+-      init.signal?.addEventListener("abort", () => {
+-        probe.aborted = true;
+-      });
+-      try {
+-        const response = await nativeFetch(input, init);
+-        probe.outcome = "resolved";
+-        return response;
+-      } catch (error) {
+-        probe.outcome = "rejected";
+-        probe.reason = error instanceof DOMException ? error.name : "Unknown";
+-        throw error;
+-      }
+-    };
+-  });
+-  let release!: () => void;
+-  let calls = 0;
+-  await context.route("**/api/sources", async (route) => {
+-    if (route.request().method() === "GET")
+-      return route.fulfill({
+-        json: {
+-          sources: [
+-            {
+-              id: "ecb",
+-              label: "Économie · devises BCE",
+-              search: false,
+-              private: false,
+-              available: true,
+-            },
+-          ],
+-        },
+-      });
+-    calls++;
+-    await new Promise<void>((resolve) => {
+-      release = resolve;
+-    });
+-    await route
+-      .fulfill({
+-        json: {
+-          provider: "ecb",
+-          label: "Économie · devises BCE",
+-          query: "",
+-          retrievedAt: "2026-10-25T08:00:00Z",
+-          entries: [
+-            {
+-              title: "Réponse tardive",
+-              summary: "Ne doit pas remplacer le cache",
+-              url: "https://www.ecb.europa.eu/",
+-            },
+-          ],
+-        },
+-      })
+-      .catch(() => {});
+-  });
+-  await page.goto("/");
+-  await navigate(page, "En direct");
+-  await page
+-    .getByText("Choisir les sources et la recherche", { exact: true })
+-    .click();
+-  await expect(
+-    page.getByRole("checkbox", { name: "Économie · devises BCE", exact: true }),
+-  ).toBeChecked();
+-  await page
+-    .getByRole("button", { name: "Démarrer le suivi", exact: true })
+-    .click();
+-  await expect.poll(() => calls).toBe(1);
+-  await page
+-    .getByRole("button", { name: "Mettre en pause", exact: true })
+-    .click();
+-  // Observe the real Fetch rejection; WebKit does not emit Playwright's
+-  // requestfailed event consistently for a held route cancelled by the page.
+-  await expect
+-    .poll(() =>
+-      page.evaluate(
+-        () =>
+-          (window as Window & { watchAbortProbe?: unknown }).watchAbortProbe,
+-      ),
+-    )
+-    .toEqual({ aborted: true, outcome: "rejected", reason: "AbortError" });
+-  release();
+-  await expect(page.locator(".live-controls").getByRole("status")).toHaveText(
+-    "Suivi en pause",
+-  );
+-  expect(
+-    await page.evaluate(() =>
+-      localStorage.getItem("journal360.online-sources.v1"),
+-    ),
+-  ).toBeNull();
+-  await expect(page.locator(".live-results article")).toHaveCount(0);
+-});
+diff --git b/tests/sitegoat-sources.unit.test.ts a/tests/sitegoat-sources.unit.test.ts
+index 04fd47b..4d60e64 100644
+--- b/tests/sitegoat-sources.unit.test.ts
++++ a/tests/sitegoat-sources.unit.test.ts
+@@ -124,7 +124,7 @@ it("Sources : aucune clé dans le catalogue, refus fournisseur sans corps d’er
+   });
+   const catalog = await call(handler, {}, { method: "GET" });
+   expect(catalog.status).toBe(200);
+-  expect(catalog.body.sources).toHaveLength(10);
++  expect(catalog.body.sources).toHaveLength(9);
+   const response = await call(
+     handler,
+     { provider: "brave", query: "robotique actualités" },
+@@ -341,106 +341,3 @@ it("Sources : une session valide d’un autre compte ne donne jamais accès aux
+   ).toBe(401);
+   expect(request).toHaveBeenCalledTimes(1);
+ });
+-
+-it("Radar : années et variations comparables exactes, valeurs absentes explicites, aucune fausse publication", async () => {
+-  const row = (
+-    year: string,
+-    value: unknown,
+-    indicator = "NY.GDP.MKTP.KD.ZG",
+-  ) => ({
+-    countryiso3code: "FRA",
+-    indicator: { id: indicator },
+-    date: year,
+-    value,
+-  });
+-  const request = vi
+-    .fn()
+-    .mockResolvedValue(
+-      new Response(
+-        JSON.stringify([
+-          { lastupdated: "2026-10-08" },
+-          [
+-            row("2023", 2),
+-            row("2025", 1.5),
+-            row("2024", -0.5),
+-            row("2026", null),
+-            row("2027", "99"),
+-            row("invalid", 99),
+-            row("2025", 0, "FP.CPI.TOTL.ZG"),
+-            row("2023", 3, "FP.CPI.TOTL.ZG"),
+-          ],
+-        ]),
+-      ),
+-    );
+-  const value = await fetchSource("worldbank", "", {}, request);
+-  expect(value.entries).toHaveLength(10);
+-  const gdp = value.entries.find(
+-    (v: { title: string }) => v.title === "France · Croissance du PIB",
+-  );
+-  expect(gdp.url).toBe(
+-    "https://data.worldbank.org/indicator/NY.GDP.MKTP.KD.ZG?locations=FR",
+-  );
+-  expect(gdp.summary).toBe(
+-    "2025 : 1,5 % · 2024 : -0,5 % · variation : 2 point(s).",
+-  );
+-  const inflation = value.entries.find(
+-    (v: { title: string }) => v.title === "France · Inflation",
+-  );
+-  expect(inflation.summary).toBe(
+-    "2025 : 0 % · comparaison annuelle indisponible.",
+-  );
+-  expect(
+-    value.entries.filter(
+-      (v: { summary: string }) =>
+-        v.summary === "Donnée non fournie pour cette série.",
+-    ),
+-  ).toHaveLength(8);
+-  expect(
+-    value.entries.every((v: { publishedAt?: string }) => !v.publishedAt),
+-  ).toBe(true);
+-  expect(request.mock.calls[0][0]).toMatch(
+-    /^https:\/\/api.worldbank.org\/v2\/country\/WLD;FRA;EMU;USA;CHN\/indicator\//,
+-  );
+-  expect(request.mock.calls[0][1].headers.Authorization).toBeUndefined();
+-  expect(
+-    value.entries.every((v: { url: string }) =>
+-      v.url.startsWith("https://data.worldbank.org/indicator/"),
+-    ),
+-  ).toBe(true);
+-});
+-it.each([{}, [null, null], { message: "invalid indicator" }])(
+-  "Radar : contrat Banque mondiale invalide refusé %j",
+-  async (body) => {
+-    await expect(
+-      fetchSource(
+-        "worldbank",
+-        "",
+-        {},
+-        async () => new Response(JSON.stringify(body)),
+-      ),
+-    ).rejects.toMatchObject({ code: "INVALID_RESPONSE" });
+-  },
+-);
+-it("Sources : appels concurrents mutualisés après authentification, une seule consommation fournisseur", async () => {
+-  let release!: (response: Response) => void;
+-  const request = vi.fn(
+-    () =>
+-      new Promise<Response>((resolve) => {
+-        release = resolve;
+-      }),
+-  );
+-  const verifySession = vi.fn(async () => "owner");
+-  const handler = createSourcesHandler({ env, request, verifySession });
+-  const body = { provider: "brave", query: "robotique" },
+-    options = { token: "Bearer owner" };
+-  const first = call(handler, body, options),
+-    second = call(handler, body, options);
+-  await vi.waitFor(() => expect(verifySession).toHaveBeenCalledTimes(2));
+-  await vi.waitFor(() => expect(request).toHaveBeenCalledTimes(1));
+-  expect((await call(handler, body)).status).toBe(401);
+-  release(new Response(JSON.stringify({ results: [result] })));
+-  const replies = await Promise.all([first, second]);
+-  expect(replies.map((r) => r.status)).toEqual([200, 200]);
+-  expect(replies[0].body).toEqual(replies[1].body);
+-  expect(request).toHaveBeenCalledTimes(1);
+-});

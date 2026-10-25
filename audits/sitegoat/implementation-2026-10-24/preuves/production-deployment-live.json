@@ -1,0 +1,93 @@
+{
+  "checkedAt": "2026-10-25T00:34:03.058Z",
+  "origin": "https://sitegoat.vercel.app",
+  "commit": "39a1d0904d71b2fd77c78449b7d99d05d669fa6f",
+  "assets": [
+    {
+      "path": "/assets/index-CeHkVXJq.js",
+      "status": 200,
+      "localSha256": "ae7dec25695b365b3f6d9f35c54515781055afbd080898cf1c1b3259830d5f95",
+      "publicSha256": "ae7dec25695b365b3f6d9f35c54515781055afbd080898cf1c1b3259830d5f95",
+      "match": true
+    },
+    {
+      "path": "/assets/LiveWatch-8F_ksg1Q.css",
+      "status": 200,
+      "localSha256": "6e29535dcdc289d0947e28ba774f2545fdaadd2d61bed99efc61c91f3bd48149",
+      "publicSha256": "6e29535dcdc289d0947e28ba774f2545fdaadd2d61bed99efc61c91f3bd48149",
+      "match": true
+    },
+    {
+      "path": "/assets/LiveWatch-JV50VVoM.js",
+      "status": 200,
+      "localSha256": "56cb49bbbbb1510698832498e0670a343af9203cd30ada8bb10898d9f897fe7b",
+      "publicSha256": "56cb49bbbbb1510698832498e0670a343af9203cd30ada8bb10898d9f897fe7b",
+      "match": true
+    }
+  ],
+  "sources": [
+    {
+      "id": "brave",
+      "private": true,
+      "available": true
+    },
+    {
+      "id": "tavily",
+      "private": true,
+      "available": true
+    },
+    {
+      "id": "exa",
+      "private": true,
+      "available": true
+    },
+    {
+      "id": "ecb",
+      "private": false,
+      "available": true
+    },
+    {
+      "id": "worldbank",
+      "private": false,
+      "available": true
+    },
+    {
+      "id": "cisa",
+      "private": false,
+      "available": true
+    },
+    {
+      "id": "vscode",
+      "private": false,
+      "available": true
+    },
+    {
+      "id": "node",
+      "private": false,
+      "available": true
+    },
+    {
+      "id": "react",
+      "private": false,
+      "available": true
+    },
+    {
+      "id": "ollama",
+      "private": false,
+      "available": true
+    }
+  ],
+  "anonymousPrivate": {
+    "brave": 401,
+    "tavily": 401,
+    "exa": 401
+  },
+  "crossOrigin": 403,
+  "syntheticExtraField": 400,
+  "worldbank": {
+    "status": 200,
+    "entries": 10
+  },
+  "privateUpstreamCalls": 0,
+  "personalLibraryUsed": false
+}

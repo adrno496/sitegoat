@@ -1,0 +1,31 @@
+{
+  "checkedAt": "2026-10-25T00:52:05.309Z",
+  "runtimeCommit": "39a1d0904d71b2fd77c78449b7d99d05d669fa6f",
+  "command": "npm run check",
+  "exitCode": 0,
+  "lint": "PASS",
+  "build": "PASS",
+  "unit": {
+    "passed": 366,
+    "skipped": 1,
+    "failed": 0
+  },
+  "e2e": {
+    "passed": 301,
+    "skipped": 1,
+    "failed": 0,
+    "flaky": 0,
+    "retries": 0
+  },
+  "auditVulnerabilities": 0,
+  "productionProfilesPassed": 3,
+  "v10": {
+    "articles": 37,
+    "briefs": 60,
+    "nativePromptsExact": 13,
+    "fallbackPromptsExact": 13,
+    "originalExact": true,
+    "offlineReload": true
+  },
+  "knownSecretValuesScanned": 26
+}

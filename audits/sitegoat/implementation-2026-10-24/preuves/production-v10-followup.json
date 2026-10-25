@@ -1,0 +1,472 @@
+{
+  "origin": "https://sitegoat.vercel.app",
+  "codeCommit": "39a1d0904d71b2fd77c78449b7d99d05d669fa6f",
+  "results": [
+    {
+      "browser": "chromium",
+      "version": "156.0.8078.4",
+      "sourceBytes": 481178,
+      "sourceSha256": "f3f3bd9652d62d6b7a8dcf4843b410b452b65bc4680afd9cb3dcc0e58dced2a4",
+      "sourceArticles": 37,
+      "sourceBriefs": 60,
+      "sourcePrompts": 13,
+      "downloadIntervalMs": 1100,
+      "downloadThrottleWarnings": 0,
+      "liveRadarRows": 16,
+      "publicSourceRows": 6,
+      "stored": {
+        "editions": 1,
+        "articles": 37,
+        "briefs": 60,
+        "prompts": 13
+      },
+      "navigationAnchors": 11,
+      "nativeAccordion": true,
+      "native": [
+        {
+          "promptNumber": 1,
+          "bytes": 2391,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 2,
+          "bytes": 1671,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 3,
+          "bytes": 1538,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 4,
+          "bytes": 4724,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 5,
+          "bytes": 3242,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 6,
+          "bytes": 3153,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 7,
+          "bytes": 2742,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 8,
+          "bytes": 2806,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 9,
+          "bytes": 3783,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 10,
+          "bytes": 3218,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 11,
+          "bytes": 2887,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 12,
+          "bytes": 3468,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 13,
+          "bytes": 4069,
+          "shaValid": true
+        }
+      ],
+      "originalExact": true,
+      "fallback": [
+        {
+          "promptNumber": 1,
+          "exact": true
+        },
+        {
+          "promptNumber": 2,
+          "exact": true
+        },
+        {
+          "promptNumber": 3,
+          "exact": true
+        },
+        {
+          "promptNumber": 4,
+          "exact": true
+        },
+        {
+          "promptNumber": 5,
+          "exact": true
+        },
+        {
+          "promptNumber": 6,
+          "exact": true
+        },
+        {
+          "promptNumber": 7,
+          "exact": true
+        },
+        {
+          "promptNumber": 8,
+          "exact": true
+        },
+        {
+          "promptNumber": 9,
+          "exact": true
+        },
+        {
+          "promptNumber": 10,
+          "exact": true
+        },
+        {
+          "promptNumber": 11,
+          "exact": true
+        },
+        {
+          "promptNumber": 12,
+          "exact": true
+        },
+        {
+          "promptNumber": 13,
+          "exact": true
+        }
+      ],
+      "fallbackExact": 13,
+      "offlineReload": true,
+      "publicSourceOfflineReload": true,
+      "liveRadarOfflineReload": true,
+      "compactDateAndBoldTitle": true,
+      "status": "PASS",
+      "networkObservation": "Page routing only; service-worker fetches may bypass observation",
+      "routedPublicApiCalls": [
+        "ecb",
+        "worldbank",
+        "ecb"
+      ],
+      "offlineAfterImport": true
+    },
+    {
+      "browser": "webkit",
+      "version": "27.2",
+      "sourceBytes": 481178,
+      "sourceSha256": "f3f3bd9652d62d6b7a8dcf4843b410b452b65bc4680afd9cb3dcc0e58dced2a4",
+      "sourceArticles": 37,
+      "sourceBriefs": 60,
+      "sourcePrompts": 13,
+      "downloadIntervalMs": 1100,
+      "downloadThrottleWarnings": 0,
+      "liveRadarRows": 16,
+      "publicSourceRows": 6,
+      "stored": {
+        "editions": 1,
+        "articles": 37,
+        "briefs": 60,
+        "prompts": 13
+      },
+      "navigationAnchors": 11,
+      "nativeAccordion": true,
+      "native": [
+        {
+          "promptNumber": 1,
+          "bytes": 2391,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 2,
+          "bytes": 1671,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 3,
+          "bytes": 1538,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 4,
+          "bytes": 4724,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 5,
+          "bytes": 3242,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 6,
+          "bytes": 3153,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 7,
+          "bytes": 2742,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 8,
+          "bytes": 2806,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 9,
+          "bytes": 3783,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 10,
+          "bytes": 3218,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 11,
+          "bytes": 2887,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 12,
+          "bytes": 3468,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 13,
+          "bytes": 4069,
+          "shaValid": true
+        }
+      ],
+      "originalExact": true,
+      "fallback": [
+        {
+          "promptNumber": 1,
+          "exact": true
+        },
+        {
+          "promptNumber": 2,
+          "exact": true
+        },
+        {
+          "promptNumber": 3,
+          "exact": true
+        },
+        {
+          "promptNumber": 4,
+          "exact": true
+        },
+        {
+          "promptNumber": 5,
+          "exact": true
+        },
+        {
+          "promptNumber": 6,
+          "exact": true
+        },
+        {
+          "promptNumber": 7,
+          "exact": true
+        },
+        {
+          "promptNumber": 8,
+          "exact": true
+        },
+        {
+          "promptNumber": 9,
+          "exact": true
+        },
+        {
+          "promptNumber": 10,
+          "exact": true
+        },
+        {
+          "promptNumber": 11,
+          "exact": true
+        },
+        {
+          "promptNumber": 12,
+          "exact": true
+        },
+        {
+          "promptNumber": 13,
+          "exact": true
+        }
+      ],
+      "fallbackExact": 13,
+      "offlineReload": true,
+      "publicSourceOfflineReload": true,
+      "liveRadarOfflineReload": true,
+      "compactDateAndBoldTitle": true,
+      "status": "PASS",
+      "networkObservation": "Page routing only; service-worker fetches may bypass observation",
+      "routedPublicApiCalls": [],
+      "offlineAfterImport": true
+    },
+    {
+      "browser": "chromium-mobile",
+      "version": "156.0.8078.4",
+      "sourceBytes": 481178,
+      "sourceSha256": "f3f3bd9652d62d6b7a8dcf4843b410b452b65bc4680afd9cb3dcc0e58dced2a4",
+      "sourceArticles": 37,
+      "sourceBriefs": 60,
+      "sourcePrompts": 13,
+      "downloadIntervalMs": 1100,
+      "downloadThrottleWarnings": 0,
+      "liveRadarRows": 16,
+      "publicSourceRows": 6,
+      "stored": {
+        "editions": 1,
+        "articles": 37,
+        "briefs": 60,
+        "prompts": 13
+      },
+      "navigationAnchors": 11,
+      "nativeAccordion": true,
+      "native": [
+        {
+          "promptNumber": 1,
+          "bytes": 2391,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 2,
+          "bytes": 1671,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 3,
+          "bytes": 1538,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 4,
+          "bytes": 4724,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 5,
+          "bytes": 3242,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 6,
+          "bytes": 3153,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 7,
+          "bytes": 2742,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 8,
+          "bytes": 2806,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 9,
+          "bytes": 3783,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 10,
+          "bytes": 3218,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 11,
+          "bytes": 2887,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 12,
+          "bytes": 3468,
+          "shaValid": true
+        },
+        {
+          "promptNumber": 13,
+          "bytes": 4069,
+          "shaValid": true
+        }
+      ],
+      "originalExact": true,
+      "fallback": [
+        {
+          "promptNumber": 1,
+          "exact": true
+        },
+        {
+          "promptNumber": 2,
+          "exact": true
+        },
+        {
+          "promptNumber": 3,
+          "exact": true
+        },
+        {
+          "promptNumber": 4,
+          "exact": true
+        },
+        {
+          "promptNumber": 5,
+          "exact": true
+        },
+        {
+          "promptNumber": 6,
+          "exact": true
+        },
+        {
+          "promptNumber": 7,
+          "exact": true
+        },
+        {
+          "promptNumber": 8,
+          "exact": true
+        },
+        {
+          "promptNumber": 9,
+          "exact": true
+        },
+        {
+          "promptNumber": 10,
+          "exact": true
+        },
+        {
+          "promptNumber": 11,
+          "exact": true
+        },
+        {
+          "promptNumber": 12,
+          "exact": true
+        },
+        {
+          "promptNumber": 13,
+          "exact": true
+        }
+      ],
+      "fallbackExact": 13,
+      "offlineReload": true,
+      "publicSourceOfflineReload": true,
+      "liveRadarOfflineReload": true,
+      "compactDateAndBoldTitle": true,
+      "status": "PASS",
+      "networkObservation": "Page routing only; service-worker fetches may bypass observation",
+      "routedPublicApiCalls": [
+        "ecb",
+        "worldbank",
+        "ecb"
+      ],
+      "offlineAfterImport": true
+    }
+  ],
+  "evidenceNote": "Counter labels clarified after execution; no browser assertion or product behavior changed. Original raw receipt retained locally.",
+  "rawReceiptSha256": "eea676858cc225c688b38b827da484744c252092c19dc093befa7af3e55d6e81"
+}

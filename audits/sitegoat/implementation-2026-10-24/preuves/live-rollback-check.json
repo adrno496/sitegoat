@@ -1,8 +1,13 @@
 {
-  "checkedAt": "2026-10-25T00:22:44.431536+00:00",
-  "featureCommit": "4b9bd7e",
-  "command": "git show --format= --binary 4b9bd7e | git apply --reverse --check",
+  "checkedAt": "2026-10-25T00:42:37.041823+00:00",
+  "sourceCommit": "39a1d0904d71b2fd77c78449b7d99d05d669fa6f plus metadata-only harness clarification",
+  "runtimeTarget": "051fae53b7a4de4fb777401e513a185bc93a5b34",
+  "patch": "rollback-en-direct.patch",
+  "scope": "ten feature, API, harness and test files; personal storage and audit reports excluded",
+  "command": "git apply --check audits/sitegoat/implementation-2026-10-24/rollback-en-direct.patch",
   "exitCode": 0,
   "workingFilesModified": false,
-  "productionRevertExecuted": false
+  "productionRollbackExecuted": false,
+  "earlierSimpleReverseCheck": "passed before the follow-up cancellation test modification; the prepared combined patch includes that modification to avoid a modify/delete conflict",
+  "patchSha256": "f333347b474d365f722e7f88b129628e741566f2cae916b978445ad17ab1f39b"
 }

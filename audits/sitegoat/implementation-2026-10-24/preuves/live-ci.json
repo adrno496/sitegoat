@@ -1,0 +1,12 @@
+{
+  "checkedAt": "2026-10-25T00:54:38.755444+00:00",
+  "url": "https://github.com/adrno496/sitegoat/actions/runs/40147136993",
+  "headSha": "39a1d0904d71b2fd77c78449b7d99d05d669fa6f",
+  "status": "completed",
+  "conclusion": "success",
+  "completedAt": "2026-10-25T00:52:36Z",
+  "unitPassed": 366,
+  "e2ePassed": 301,
+  "runtimeChangesAfterValidation": false,
+  "postValidationChanges": "reports, evidence, rollback patch and metadata labels in the production harness only"
+}
