@@ -5,7 +5,12 @@ import { RecurringSearches } from "./RecurringSearches";
 import { DisplayFilters } from "./preferences";
 import { useId, useMemo, useState } from "react";
 import type { Edition } from "../../data/model";
-import { indexQuickNews, latestPublicationDate } from "../../data/quickNews";
+import { indexQuickNews } from "../../data/quickNews";
+import {
+  latestEditorialEdition,
+  isLatestArticle,
+  isLatestBrief,
+} from "../../data/editionHighlights";
 import { normalizeArticleSearch } from "../../data/articles";
 import { PublicGoogleLink } from "../PublicGoogleLink";
 import { validateSourceUrl } from "../sourceUrl";
@@ -26,7 +31,7 @@ export function QuickNews({
   );
   const tabsId = useId();
   const rows = useMemo(() => indexQuickNews(editions), [editions]);
-  const latest = latestPublicationDate(rows.map((r) => r.publishedAt));
+  const latest = latestEditorialEdition(editions);
   const [query, setQuery] = useState(""),
     [theme, setTheme] = useState(""),
     [sort, setSort] = useState("recent"),
@@ -154,7 +159,10 @@ export function QuickNews({
         <div className="brief-list">
           {filtered.slice(0, limit).map((r) => {
             const { article, brief, edition } = r;
-            const isLatest = !!latest && r.publishedAt === latest;
+            const isLatest = !!(
+              (article && isLatestArticle(article, latest)) ||
+              (brief && isLatestBrief(brief, latest))
+            );
             const source = r.source && validateSourceUrl(r.source.url);
             return (
               <article
@@ -169,7 +177,7 @@ export function QuickNews({
               >
                 {isLatest && (
                   <span className="latest-publication-badge">
-                    Dernière publication
+                    Dernière édition
                   </span>
                 )}
                 <p className="eyebrow">{r.theme}</p>

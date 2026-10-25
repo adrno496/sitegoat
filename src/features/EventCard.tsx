@@ -58,7 +58,7 @@ export function EventCard({
     >
       <div inert={question}>
         {latest && (
-          <span className="latest-publication-badge">Dernière publication</span>
+          <span className="latest-publication-badge">Dernière édition</span>
         )}
         <p className="eyebrow">
           {i.category} ·{" "}

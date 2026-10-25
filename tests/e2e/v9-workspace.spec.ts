@@ -76,7 +76,7 @@ test("V9 : Aujourd’hui épuré, Accueil, articles internes, 19 titres réels o
   const first = w.locator(".event-card").first();
   await expect(first).toHaveAttribute("data-latest", "true");
   await expect(first.locator(".latest-publication-badge")).toHaveText(
-    "Dernière publication",
+    "Dernière édition",
   );
   const eventId = await first.getAttribute("data-event-id");
   const expectedItem = p.items.find((i) => i.eventId === eventId)!;

@@ -1,0 +1,16 @@
+
+> journal360-mobile@2.1.1 test
+> vitest run
+
+
+ RUN  v5.0.4 /Users/dreano/Downloads/veille/sitegoat-implementation
+
+
+ Test Files  39 passed (39)
+      Tests  370 passed | 1 skipped (371)
+   Start at  09:18:50
+   Duration  33.16s (tests 64%, environment 23%, import 9%, transform 2%, setup 2%)
+
+    Isolate  39 workers spawned · ~906ms startup each (spawn + environment, per file)
+             at least ~3.02s faster with isolate: false — reuses workers across files instead of one per file
+

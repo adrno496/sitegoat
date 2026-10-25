@@ -3241,9 +3241,14 @@ a.secondary, a.primary { text-decoration: none; display: inline-flex; align-item
 .recurring-search-card { min-width: 0; overflow-wrap: anywhere; }
 
 :is(.article-card, .article-detail, .brief-card, .event-card).latest-publication {
-  background: color-mix(in srgb, var(--surface) 89%, var(--accent) 11%);
-  border-color: var(--accent);
-  box-shadow: inset 4px 0 0 var(--accent);
+  background: #fff0dc;
+  border-color: #bd570b;
+  box-shadow: inset 5px 0 0 #bd570b;
+}
+[data-theme="dark"] :is(.article-card, .article-detail, .brief-card, .event-card).latest-publication {
+  background: #49301e;
+  border-color: #f3a550;
+  box-shadow: inset 5px 0 0 #f3a550;
 }
 .latest-publication-badge {
   display: inline-flex;

@@ -1,5 +1,5 @@
 import { EditionFreshness, instantCompare } from "../editorialPresentation";
-import { latestPublicationDate } from "../../data/quickNews";
+import { belongsToLatestEdition } from "../../data/editionHighlights";
 import { DisplayFilters, useDisplay } from "../v9/preferences";
 import {
   useCallback,
@@ -74,9 +74,7 @@ export default function UnifiedWorkspace({
   const { display } = useDisplay();
   const current = latestCurrent(editions),
     p = current?.unified;
-  const latestPublishedAt = latestPublicationDate(
-    (p?.items || []).map((i) => new Date(i.publishedAt).toISOString()),
-  );
+
   const items = useMemo(
     () => indexArticles(editions.filter((e) => !e.deleted && !e.archived)),
     [editions],
@@ -106,8 +104,8 @@ export default function UnifiedWorkspace({
     )
     .sort(
       (a, b) =>
-        Number(new Date(b.publishedAt).toISOString() === latestPublishedAt) -
-          Number(new Date(a.publishedAt).toISOString() === latestPublishedAt) ||
+        Number(belongsToLatestEdition(current!, current, b)) -
+          Number(belongsToLatestEdition(current!, current, a)) ||
         (eventSort === "newest"
           ? instantCompare(b.lastChangedAt, a.lastChangedAt)
           : Number(display.favorites.includes(b.category)) -
@@ -286,9 +284,7 @@ export default function UnifiedWorkspace({
               <EventCard
                 key={current!.id + i.eventId}
                 item={i}
-                latest={
-                  new Date(i.publishedAt).toISOString() === latestPublishedAt
-                }
+                latest={belongsToLatestEdition(current!, current, i)}
                 edition={current!}
                 onOriginal={() => onOpen(current!.id, i.id)}
                 onRead={

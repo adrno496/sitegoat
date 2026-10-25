@@ -2,9 +2,9 @@ import { readingExport } from "./readingExports";
 import { download } from "./backup";
 import { EditorialMetadata, instantCompare } from "./editorialPresentation";
 import {
-  articlePublicationOrder,
-  latestPublicationDate,
-} from "../data/quickNews";
+  latestEditorialEdition,
+  isLatestArticle,
+} from "../data/editionHighlights";
 import { DisplayFilters } from "./v9/preferences";
 import { PublicGoogleLink } from "./PublicGoogleLink";
 import { EventCard } from "./EventCard";
@@ -57,16 +57,13 @@ export function ArticlesView({
 }) {
   const items = useMemo(() => indexArticles(editions), [editions]);
   const latestArticles = useMemo(() => {
-    const dates = new Map(
-      items.map((item) => [item.key, articlePublicationOrder(item)]),
-    );
-    const latest = latestPublicationDate(dates.values());
+    const latest = latestEditorialEdition(editions);
     return new Set(
       items
-        .filter((item) => latest && dates.get(item.key) === latest)
+        .filter((item) => isLatestArticle(item, latest))
         .map((item) => item.key),
     );
-  }, [items]);
+  }, [items, editions]);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
   const [group, setGroup] = useState("");
@@ -630,7 +627,7 @@ export function ArticlesView({
                   >
                     {latestArticles.has(current.key) && (
                       <span className="latest-publication-badge">
-                        Dernière publication
+                        Dernière édition
                       </span>
                     )}
                     <button className="text-button" onClick={back}>
@@ -907,7 +904,7 @@ export function ArticlesView({
                             >
                               {latestArticles.has(item.key) && (
                                 <span className="latest-publication-badge">
-                                  Dernière publication
+                                  Dernière édition
                                 </span>
                               )}
                               <p className="eyebrow">{item.article.category}</p>

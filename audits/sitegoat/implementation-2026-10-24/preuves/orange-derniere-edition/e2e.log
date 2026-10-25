@@ -1,0 +1,33 @@
+[WebServer] (node:41498) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:41500) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 18 tests using 1 worker
+
+(node:41505) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/v9-orange-edition.spec.ts:6:1 › orange : tout le dernier créneau, anciens neutres, détail, filtres, reload et thème sombre (3.2s)
+  ✓   2 [chromium] › tests/e2e/v9-workspace.spec.ts:51:1 › V9 : Aujourd’hui épuré, Accueil, articles internes, 19 titres réels ou fixture, Google public et préférences (3.2s)
+  ✓   3 [chromium] › tests/e2e/v9-workspace.spec.ts:189:1 › V9 : HTML original offline, filtres, accordéons, Google et source contrôlés, Markdown exact, isolation (2.1s)
+  ✓   4 [chromium] › tests/e2e/v9-workspace.spec.ts:344:1 › V9 : panne du stockage des préférences, réglages conservés pour la session (484ms)
+  ✓   5 [chromium] › tests/e2e/v9-workspace.spec.ts:369:1 › V9 : filtres Articles combinables, calendrier de faits et affichage intégral de 100 brèves synthétiques (1.2s)
+  ✓   6 [chromium] › tests/e2e/v9-workspace.spec.ts:488:1 › V9 : onglet Actualité rapide, titres des articles automatiques, dates simples et HTML directement interactif (2.0s)
+(node:41560) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   7 [webkit] › tests/e2e/v9-orange-edition.spec.ts:6:1 › orange : tout le dernier créneau, anciens neutres, détail, filtres, reload et thème sombre (4.5s)
+  ✓   8 [webkit] › tests/e2e/v9-workspace.spec.ts:51:1 › V9 : Aujourd’hui épuré, Accueil, articles internes, 19 titres réels ou fixture, Google public et préférences (4.8s)
+  ✓   9 [webkit] › tests/e2e/v9-workspace.spec.ts:189:1 › V9 : HTML original offline, filtres, accordéons, Google et source contrôlés, Markdown exact, isolation (2.9s)
+  ✓  10 [webkit] › tests/e2e/v9-workspace.spec.ts:344:1 › V9 : panne du stockage des préférences, réglages conservés pour la session (938ms)
+  ✓  11 [webkit] › tests/e2e/v9-workspace.spec.ts:369:1 › V9 : filtres Articles combinables, calendrier de faits et affichage intégral de 100 brèves synthétiques (2.0s)
+  ✓  12 [webkit] › tests/e2e/v9-workspace.spec.ts:488:1 › V9 : onglet Actualité rapide, titres des articles automatiques, dates simples et HTML directement interactif (3.3s)
+(node:41619) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [chromium-mobile] › tests/e2e/v9-orange-edition.spec.ts:6:1 › orange : tout le dernier créneau, anciens neutres, détail, filtres, reload et thème sombre (3.4s)
+  ✓  14 [chromium-mobile] › tests/e2e/v9-workspace.spec.ts:51:1 › V9 : Aujourd’hui épuré, Accueil, articles internes, 19 titres réels ou fixture, Google public et préférences (5.5s)
+  ✓  15 [chromium-mobile] › tests/e2e/v9-workspace.spec.ts:189:1 › V9 : HTML original offline, filtres, accordéons, Google et source contrôlés, Markdown exact, isolation (2.1s)
+  ✓  16 [chromium-mobile] › tests/e2e/v9-workspace.spec.ts:344:1 › V9 : panne du stockage des préférences, réglages conservés pour la session (533ms)
+  ✓  17 [chromium-mobile] › tests/e2e/v9-workspace.spec.ts:369:1 › V9 : filtres Articles combinables, calendrier de faits et affichage intégral de 100 brèves synthétiques (1.3s)
+  ✓  18 [chromium-mobile] › tests/e2e/v9-workspace.spec.ts:488:1 › V9 : onglet Actualité rapide, titres des articles automatiques, dates simples et HTML directement interactif (2.3s)
+
+  18 passed (49.1s)
