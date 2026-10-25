@@ -1,6 +1,6 @@
 # SITEGOAT — BILAN DES CORRECTIFS ET DE LA PUBLICATION
 
-**Complément utilisateur :** le rapport 09 complète ce bilan avec les dates compactes, titres gras et sources API. La consigne utilisateur remplace l’affichage systématique des statuts SG-10. Le code des sources et les champs éditoriaux restent conservés ; les dernières preuves sont distinguées de la première publication ci-dessous. Dernier état local : **361 unitaires et 292 E2E réussis, deux skips historiques, aucun échec**.
+**Compléments utilisateur :** le rapport 09 décrit les dates compactes, titres gras et sources API, publiés au commit `051fae5` (CI verte). Le rapport 10 suit la reprise du 25 octobre : nouvel onglet En direct, suivi API activable et radar Banque mondiale/BCE. Il contient les dernières preuves, le fichier V10 réellement disponible et le rollback de ce complément. La consigne utilisateur remplace l’affichage systématique des statuts SG-10 ; les champs éditoriaux demeurent conservés. Le bilan de la publication initiale ci-dessous reste historique ; ne pas lui attribuer les validations en cours du rapport 10.
 
 HEAD initial : `987b5637707ef0af05bb1900fa8e187a96848246`. Branche isolée : `codex/sitegoat-audit-v4-local`. Worktree : `/Users/dreano/Downloads/veille/sitegoat-implementation`. Le dépôt d’origine et ses audits sont conservés. HEAD de publication / résultat production : suivis dans le rapport 08 et les preuves de publication.
 

@@ -174,8 +174,17 @@ Le retour au code précédent se fait dans un autre worktree au commit initial, 
 
 ## Récupération facultative de sources
 
-Dans **Actualité rapide → Sources**, choisir une source puis **Récupérer**. La liste de vos titres reste la vue par défaut. BCE, CISA et les versions publiques VS Code/Node/React/Ollama fonctionnent sans clé. Brave, Tavily et Exa utilisent des clés **côté serveur**, la connexion habituelle de votre bibliothèque et uniquement la recherche publique que vous saisissez. Aucune lecture de journal ne déclenche une recherche distante.
+Dans **Actualité rapide → Sources**, choisir une source puis **Récupérer**. La liste de vos titres reste la vue par défaut. BCE, Banque mondiale, CISA et les versions publiques VS Code/Node/React/Ollama fonctionnent sans clé. Brave, Tavily et Exa utilisent des clés **côté serveur**, la connexion habituelle de votre bibliothèque et uniquement la recherche publique que vous saisissez. Aucune lecture de journal ne déclenche une recherche distante.
 
-Les dix récupérations les plus récentes restent lisibles hors ligne ; ce cache public est distinct des sauvegardes personnelles et n’en modifie aucun original. Les réponses ne deviennent pas automatiquement des articles de votre bibliothèque. Les requêtes sont manuelles, bornées et peuvent consommer le quota du moteur choisi. Aucune clé `VITE_` ; les variables serveur figurent vides dans `.env.example`. [Décisions, tests, limites et rollback du complément](audits/sitegoat/implementation-2026-10-24/09_AFFICHAGE_COMPACT_ET_SOURCES_API.md).
+Les dix récupérations les plus récentes restent lisibles hors ligne ; ce cache public est distinct des sauvegardes personnelles et n’en modifie aucun original. Les réponses ne deviennent pas automatiquement des articles de votre bibliothèque. Les requêtes de cet espace sont manuelles, bornées et peuvent consommer le quota du moteur choisi. Aucune clé `VITE_` ; les variables serveur figurent vides dans `.env.example`. [Décisions, tests, limites et rollback du complément](audits/sitegoat/implementation-2026-10-24/09_AFFICHAGE_COMPACT_ET_SOURCES_API.md).
 
 L’affichage courant garde une date/heure compacte et des titres gras. Les détails de vérification restent dans les données et exports, conformément à la demande d’alléger les cartes.
+
+
+### Veille en direct et radar économique mondial
+
+Ouvrir **En direct** dans la navigation principale. **Flux API** réunit les dernières récupérations ; **Radar économique mondial** affiche les séries de la Banque mondiale et les devises BCE. Les indicateurs des éditions restent accessibles dans un volet distinct. Aucun journal n’est envoyé aux fournisseurs.
+
+**Actualiser maintenant** récupère une fois les sources cochées. Pour un suivi périodique, choisir les sources et la recherche publique, puis **Démarrer le suivi** : 15, 30 ou 60 minutes, 30 par défaut. Les moteurs à clé utilisent votre connexion de bibliothèque et leurs quotas existants. Les clés restent côté serveur. Le suivi se suspend quand la page est masquée ou hors ligne, et s’arrête en quittant cet espace ou en rechargeant la page. Les dernières données conservées restent consultables hors ligne.
+
+Le radar couvre Monde, France, zone euro, États-Unis et Chine pour le PIB et l’inflation annuels. Chaque chiffre garde sa période statistique ; une comparaison absente reste explicite. Ce ne sont pas des cotations de marché instantanées. [Implémentation, preuves, limites et rollback](audits/sitegoat/implementation-2026-10-24/10_ONGLET_EN_DIRECT_ET_RADAR_MONDIAL.md).

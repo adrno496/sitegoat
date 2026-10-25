@@ -1,0 +1,47 @@
+{
+  "checkedAt": "2026-10-25T00:12:17.514Z",
+  "commit": "051fae53b7a4de4fb777401e513a185bc93a5b34",
+  "asset": "/assets/index-MSgajw0R.js",
+  "sha256": "64156af3ce6c05a358f9d24e287419b41b25c890518f8b5b3de82e7bd2681c66",
+  "sources": [
+    {
+      "id": "brave",
+      "available": true
+    },
+    {
+      "id": "tavily",
+      "available": true
+    },
+    {
+      "id": "exa",
+      "available": true
+    },
+    {
+      "id": "ecb",
+      "available": true
+    },
+    {
+      "id": "cisa",
+      "available": true
+    },
+    {
+      "id": "vscode",
+      "available": true
+    },
+    {
+      "id": "node",
+      "available": true
+    },
+    {
+      "id": "react",
+      "available": true
+    },
+    {
+      "id": "ollama",
+      "available": true
+    }
+  ],
+  "ci": "https://github.com/adrno496/sitegoat/actions/runs/40124474360",
+  "ciConclusion": "success",
+  "previousV10Edition16": "missing locally at resume; no claim of new validation"
+}

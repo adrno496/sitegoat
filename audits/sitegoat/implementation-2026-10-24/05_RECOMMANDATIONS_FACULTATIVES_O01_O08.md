@@ -1,6 +1,6 @@
 # Huit décisions facultatives
 
-Aucun déploiement d’option par défaut, aucun modèle ni service externe ajouté. Les gains d’ergonomie ne sont pas présentés comme des mesures de temps humain.
+Cette étude concerne les huit options de l’audit : aucune activation par défaut ni modèle ajouté. Les sources API demandées ultérieurement par l’utilisateur constituent les compléments distincts 09/10 ; elles ne sont pas une validation des options reportées. Les gains d’ergonomie ne sont pas présentés comme des mesures de temps humain.
 
 | ID | Option | Décision |
 |---|---|---|

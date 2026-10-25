@@ -1,0 +1,121 @@
+{
+  "checkedAt": "2026-10-25T00:32:29.717Z",
+  "stats": {
+    "startTime": "2026-10-25T00:29:15.569Z",
+    "duration": 17824.291,
+    "expected": 9,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "scenarios": [
+    {
+      "title": "En direct : départ explicite, radar accessible, quotas protégés et dernier résultat conservé après erreur",
+      "file": "v9-live-watch.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "En direct : cadence, suspension hors ligne, arrêt et sortie sans appels en arrière-plan",
+      "file": "v9-live-watch.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "En direct : un arrêt annule la récupération en cours sans écriture tardive",
+      "file": "v9-live-watch.spec.ts",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "En direct : départ explicite, radar accessible, quotas protégés et dernier résultat conservé après erreur",
+      "file": "v9-live-watch.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "En direct : cadence, suspension hors ligne, arrêt et sortie sans appels en arrière-plan",
+      "file": "v9-live-watch.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "En direct : un arrêt annule la récupération en cours sans écriture tardive",
+      "file": "v9-live-watch.spec.ts",
+      "project": "webkit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "En direct : départ explicite, radar accessible, quotas protégés et dernier résultat conservé après erreur",
+      "file": "v9-live-watch.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "En direct : cadence, suspension hors ligne, arrêt et sortie sans appels en arrière-plan",
+      "file": "v9-live-watch.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "title": "En direct : un arrêt annule la récupération en cours sans écriture tardive",
+      "file": "v9-live-watch.spec.ts",
+      "project": "chromium-mobile",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    }
+  ]
+}

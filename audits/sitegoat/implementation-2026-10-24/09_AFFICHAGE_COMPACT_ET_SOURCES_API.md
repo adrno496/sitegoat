@@ -36,10 +36,10 @@ Les dix résultats de récupération les plus récents sont conservés localemen
 
 ## Vérifications et incidents
 
-- Dix-huit tests ciblés unitaires PASS, puis un seizième contrôle ajouté sur le compte propriétaire ; donc seize nouveaux sur authentification, origine, schéma, clé réfléchie, requête privée, endpoint fixe, réponse volumineuse, quota, cache et projection des neuf sources.
+- Quinze nouveaux contrôles unitaires PASS, puis un seizième ajouté sur le compte propriétaire ; donc seize nouveaux sur authentification, origine, schéma, clé réfléchie, requête privée, endpoint fixe, réponse volumineuse, quota, cache et projection des neuf sources.
 - Six scénarios navigateur ciblés de dates/navigation PASS ; puis trois scénarios Sources PASS. La suite complète est consignée dans `check-followup-final.log` et son reçu final.
 - Les API ont réellement répondu : `provider-live-smoke.json`. Le premier endpoint historique `facebook/react` renvoyait 301 ; le dépôt canonique `react/react` a été vérifié puis utilisé, sans autoriser les redirects. Aucun faux succès sur le premier refus.
-- Le premier mock API était intercepté par le service worker ; le test de mocks est désormais isolé avec service worker bloqué. Il vérifie la persistance après reload et la lecture hors ligne après remontage. Le test de production séparé vérifie le **vrai rechargement hors ligne avec service worker et source BCE réelle**, sans mock.
+- Le premier mock API était intercepté par le service worker ; le test de mocks est désormais isolé avec service worker bloqué. Il vérifie la persistance après reload et la lecture hors ligne après remontage. Le test de production séparé est prévu pour vérifier le **vrai rechargement hors ligne avec service worker et source BCE réelle**, sans mock ; son résultat effectif ultérieur est dans le rapport 10.
 - Une première assertion comparait la carte triée au premier élément brut ; elle compare désormais l’événement affiché à son identifiant source. Une sélection de formulaire utilise son rôle/nom accessible. Aucune assertion de contenu ou de sécurité supprimée.
 - Le probe local a d’abord utilisé un port refusé par Fetch, puis 4191 : catalogue 200, neuf sources, clé absente du JSON, privé sans session 401, origine tierce 403. Aucun appel fournisseur pour ce probe.
 - Scan des fichiers versionnés/build contre 26 valeurs distinctes connues du coffre : aucune correspondance. Ce contrôle ciblé ne prétend pas détecter tous les secrets inconnus.
@@ -52,7 +52,7 @@ Un dernier contrôle négatif a démontré qu’accepter tout utilisateur valide
 
 Validation locale finale : **361 unitaires PASS / 1 skip historique ; 292 E2E PASS / 1 skip historique**, aucun FAIL, retries 0. Le `npm run check` complet contient le point de contrôle 360 unitaires ; après le renforcement serveur du propriétaire, lint/typecheck et les 361 unitaires complets ont été rejoués. Le bundle navigateur n’a pas changé entre ces deux points ; les E2E portent sur ce même bundle. Le routage local explicite a son probe HTTP distinct.
 
-La publication du complément sera une avance rapide non forcée de main. Le bundle public sera comparé au build local, puis le V10 sera retesté dans trois profils vierges avec la source BCE réelle et son cache hors ligne. Les reçus finaux sont `production-deployment-followup.json` et `production-v10-followup.json`.
+Ce complément a été poussé sans force sur main au commit `051fae5`. À la reprise du 25 octobre, CI verte (run 40124474360), bundle public vérifié et neuf sources disponibles : reçu `production-051-resume.json`. Le fichier V10 édition 16 n’est plus présent au chemin fourni ; sa relance s’est arrêtée sur ENOENT avant navigateur. Aucun nouveau succès V10 sur 051fae5 n’est revendiqué. La validation de production suivante porte sur l’édition 20 et le nouvel onglet En direct, dans le rapport 10 et `production-v10-followup.json`.
 
 Le login réel de la bibliothèque et les recherches payantes complètes en production ne sont pas testés avec le compte personnel : authentification couverte en tests isolés, refus anonyme vérifié et réponses fournisseurs réelles vérifiées séparément. Aucune migration de bibliothèque ni test sur session personnelle. SG-03 reste partiel pour la mémoire des très gros corpus et les appareils physiques restent non certifiés.
 

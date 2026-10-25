@@ -1,0 +1,54 @@
+{
+  "checkedAt": "2026-10-25T00:17:26.128Z",
+  "origin": "http://127.0.0.1:4191",
+  "sources": 10,
+  "worldbankStatus": 200,
+  "worldbankEntries": 10,
+  "cached": true,
+  "anonymousPrivate": 401,
+  "crossOrigin": 403,
+  "privateProviderCalls": 0,
+  "statisticalPeriods": [
+    {
+      "title": "Monde · Croissance du PIB",
+      "summary": "2025 : 2,92 % · 2024 : 2,9 % · variation : 0,02 point(s)."
+    },
+    {
+      "title": "Monde · Inflation",
+      "summary": "2025 : 3,04 % · 2024 : 3,01 % · variation : 0,03 point(s)."
+    },
+    {
+      "title": "France · Croissance du PIB",
+      "summary": "2025 : 0,84 % · 2024 : 1,19 % · variation : -0,35 point(s)."
+    },
+    {
+      "title": "France · Inflation",
+      "summary": "2025 : 0,94 % · 2024 : 2 % · variation : -1,05 point(s)."
+    },
+    {
+      "title": "Zone euro · Croissance du PIB",
+      "summary": "2025 : 1,41 % · 2024 : 0,94 % · variation : 0,47 point(s)."
+    },
+    {
+      "title": "Zone euro · Inflation",
+      "summary": "2025 : 2,47 % · 2024 : 2,26 % · variation : 0,21 point(s)."
+    },
+    {
+      "title": "États-Unis · Croissance du PIB",
+      "summary": "2025 : 2,16 % · 2024 : 2,79 % · variation : -0,63 point(s)."
+    },
+    {
+      "title": "États-Unis · Inflation",
+      "summary": "2024 : 2,95 % · 2023 : 4,12 % · variation : -1,17 point(s)."
+    },
+    {
+      "title": "Chine · Croissance du PIB",
+      "summary": "2025 : 4,96 % · 2024 : 4,96 % · variation : 0 point(s)."
+    },
+    {
+      "title": "Chine · Inflation",
+      "summary": "2025 : 0,06 % · 2024 : 0,22 % · variation : -0,16 point(s)."
+    }
+  ],
+  "secretsIncluded": false
+}

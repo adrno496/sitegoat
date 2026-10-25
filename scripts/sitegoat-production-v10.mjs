@@ -279,7 +279,7 @@ for (const [name, type, width] of [
         prompt.sha256 || digest(Buffer.from(prompt.content)),
       );
       result.native.push({
-        promptId: prompt.promptId,
+        promptNumber: result.native.length + 1,
         bytes: bytes.length,
         shaValid: true,
       });
@@ -321,7 +321,7 @@ for (const [name, type, width] of [
       expect(
         (await readFile(await (await event).path())).toString("utf8"),
       ).toBe(prompt.content);
-      result.fallback.push({ promptId: prompt.promptId, exact: true });
+      result.fallback.push({ promptNumber: n + 1, exact: true });
     }
     result.fallbackExact = p.promptAssets.length;
     phase = "offline-reload";

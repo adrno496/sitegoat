@@ -21,3 +21,8 @@ Aucune suppression de test, aucun skip nouveau de confort. Les deux assertions d
 Régressions supplémentaires découvertes dans la première validation globale : filtre direct du radar économique hors wrapper, deux niveaux de volets à ouvrir dans Aujourd’hui, ordre clavier réel de l’Atlas, test de sauvegarde qui ne devait pas sauter un bouton temporairement occupé, attente de fin de mutation avant reload d’une recherche. Les préconditions ont été corrigées via l’interface publique. Une surveillance onLoad ajoutée au lecteur réinitialisait le compteur dans WebKit après un fragment ; elle a été remplacée par une invalidation pagehide sans rechargement. La contre-épreuve de session et les tests existants conservent leurs assertions d’état. La première suite globale devenue obsolète a été interrompue pour relancer la version figée : elle n’est pas revendiquée verte.
 
 Mandat complémentaire exécuté : push main `1a06ce7` en avance rapide, production Vercel vérifiée par bundle SHA, puis V10 3 PASS. Le rapport 08 détaille les sélecteurs V10 et la cadence Chromium ; aucun correctif produit n’a été nécessaire après le push.
+
+
+## Complément du 25 octobre demandé après reprise
+
+Commit `4b9bd7e` : onglet En direct, deux vues Flux API/Radar, suivi explicitement activé et suspendu hors ligne/onglet masqué ; source Banque mondiale à endpoints fixes, sans nouvelle clé ; mutualisation serveur après authentification. Dépend des barrières de sécurité/intégrité des lots précédents et du complément sources API 09 ; n’altère aucune migration ou sauvegarde personnelle. Rapport 10 pour preuves, incidents, publication et rollback.

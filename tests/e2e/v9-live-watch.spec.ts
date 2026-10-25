@@ -275,6 +275,30 @@ test("En direct : un arrêt annule la récupération en cours sans écriture tar
   page,
   context,
 }) => {
+  await page.addInitScript(() => {
+    const observed = window as Window & {
+      watchAbortProbe?: { aborted: boolean; outcome: string; reason?: string };
+    };
+    const nativeFetch = window.fetch.bind(window);
+    window.fetch = async (input, init) => {
+      if (String(input) !== "/api/sources" || init?.method !== "POST")
+        return nativeFetch(input, init);
+      const probe = { aborted: false, outcome: "pending", reason: "" };
+      observed.watchAbortProbe = probe;
+      init.signal?.addEventListener("abort", () => {
+        probe.aborted = true;
+      });
+      try {
+        const response = await nativeFetch(input, init);
+        probe.outcome = "resolved";
+        return response;
+      } catch (error) {
+        probe.outcome = "rejected";
+        probe.reason = error instanceof DOMException ? error.name : "Unknown";
+        throw error;
+      }
+    };
+  });
   let release!: () => void;
   let calls = 0;
   await context.route("**/api/sources", async (route) => {
@@ -326,15 +350,19 @@ test("En direct : un arrêt annule la récupération en cours sans écriture tar
     .getByRole("button", { name: "Démarrer le suivi", exact: true })
     .click();
   await expect.poll(() => calls).toBe(1);
-  const failed = page.waitForEvent(
-    "requestfailed",
-    (request) =>
-      request.url().endsWith("/api/sources") && request.method() === "POST",
-  );
   await page
     .getByRole("button", { name: "Mettre en pause", exact: true })
     .click();
-  await failed;
+  // Observe the real Fetch rejection; WebKit does not emit Playwright's
+  // requestfailed event consistently for a held route cancelled by the page.
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          (window as Window & { watchAbortProbe?: unknown }).watchAbortProbe,
+      ),
+    )
+    .toEqual({ aborted: true, outcome: "rejected", reason: "AbortError" });
   release();
   await expect(page.locator(".live-controls").getByRole("status")).toHaveText(
     "Suivi en pause",

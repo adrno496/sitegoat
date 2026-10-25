@@ -1,0 +1,13 @@
+
+> journal360-mobile@2.1.1 test
+> vitest run tests/sitegoat-sources.unit.test.ts
+
+
+ RUN  v5.0.4 /Users/dreano/Downloads/veille/sitegoat-implementation
+
+
+ Test Files  1 passed (1)
+      Tests  21 passed (21)
+   Start at  02:14:40
+   Duration  297ms (tests 53%, transform 27%, setup 11%, import 6%, worker 2%)
+

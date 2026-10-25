@@ -31,3 +31,8 @@ La première passe globale intermédiaire interrompue a révélé des régressio
 ## Complément utilisateur 09
 
 Affichage compact et API : `check-followup-final.log` = lint/build, 360 unitaires PASS/1 skip, 292 E2E PASS/1 skip. Puis restriction serveur au compte propriétaire : `followup-lint-latest.log`, `followup-typecheck-latest.log` PASS et `followup-unit-latest.log` **361 PASS/1 skip**, aucun FAIL. Bundle navigateur identique, aucun E2E supprimé. `followup-e2e-summary.json` : zéro unexpected/flaky, retries0. Tests Sources de mocks isolés du service worker ; vrai offline reload API+V10 vérifié séparément en production dans 09. Ne pas compter le rouge volontaire `source-owner-red.log` parmi les échecs finaux. Les captures `ui-compact-390/1440.png` sont synthétiques, sans journal utilisateur.
+
+
+## Complément utilisateur 10 — En direct
+
+Voir `10_ONGLET_EN_DIRECT_ET_RADAR_MONDIAL.md` et les reçus `live-*` pour la dernière validation et les limites. Le contrôle Sources contient désormais 21 tests, dont cinq nouveaux pour Banque mondiale et mutualisation après authentification. Les nouveaux scénarios En direct couvrent les trois projets existants. La navigation mobile étendue passe de 12 à 13 boutons avec l’ajout explicite d’En direct ; aucun écran antérieur ou contrôle de sécurité n’est supprimé. Les essais de cadence/visibilité sont simulés ; le hors ligne complet et le nouveau V10 sont réservés au test post-publication réel.

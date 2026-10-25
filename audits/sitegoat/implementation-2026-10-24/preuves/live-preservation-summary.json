@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-10-25T00:24:06.074981+00:00",
+  "initialV9InventoryCount": 13,
+  "v9LocatedByTargetedDownloadsSearch": 0,
+  "v9RevalidatedNow": 0,
+  "searchScope": "filenames under Downloads, depth four; initial inventory does not record absolute directories",
+  "edition16ProvidedPathPresent": false,
+  "edition20FilesCompared": 3,
+  "edition20AllUnchanged": true,
+  "selectedFileBytes": 481178,
+  "selectedFileSha256": "f3f3bd9652d62d6b7a8dcf4843b410b452b65bc4680afd9cb3dcc0e58dced2a4",
+  "userHtmlFilesWrittenOrDeletedByTask": false,
+  "originalRepositoryHeadUnchanged": true,
+  "originalRepositoryWorktreeStatus": "only initial untracked audits",
+  "privateInventoryPublished": false
+}

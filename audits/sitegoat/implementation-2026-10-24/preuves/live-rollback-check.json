@@ -1,0 +1,8 @@
+{
+  "checkedAt": "2026-10-25T00:22:44.431536+00:00",
+  "featureCommit": "4b9bd7e",
+  "command": "git show --format= --binary 4b9bd7e | git apply --reverse --check",
+  "exitCode": 0,
+  "workingFilesModified": false,
+  "productionRevertExecuted": false
+}
