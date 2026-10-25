@@ -1,0 +1,14 @@
+
+Running 3 tests using 1 worker
+
+(node:79930) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/v9-many-warnings.spec.ts:5:1 › importe un journal avec 100 avertissements et retrouve ses articles après rechargement (1.7s)
+(node:79946) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [webkit] › tests/e2e/v9-many-warnings.spec.ts:5:1 › importe un journal avec 100 avertissements et retrouve ses articles après rechargement (2.0s)
+(node:79961) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [chromium-mobile] › tests/e2e/v9-many-warnings.spec.ts:5:1 › importe un journal avec 100 avertissements et retrouve ses articles après rechargement (1.3s)
+
+  3 passed (7.0s)

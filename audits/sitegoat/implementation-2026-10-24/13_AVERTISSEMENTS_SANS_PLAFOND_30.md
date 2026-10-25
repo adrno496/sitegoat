@@ -17,3 +17,10 @@ Aucun journal personnel réel importé ou modifié, aucune sauvegarde utilisateu
 ## Retour arrière
 
 Le code précédent est `72e15ad`. Sur une branche isolée, après vérification qu’aucune évolution ultérieure n’a modifié ces mêmes fichiers, restaurer uniquement `src/data/model.ts` et `src/data/unified.ts` depuis cette référence. Retirer les deux nouveaux tests `tests/warnings-count.unit.test.ts` et `tests/e2e/v9-many-warnings.spec.ts`, puis exécuter lint, build et tests avant tout commit/publication de rollback. Aucune donnée personnelle n’est à supprimer ou migrer. Une annulation réintroduit le refus des listes de plus de 30 : les journaux originaux restent intacts, mais leur import et la restauration d’archives contenant ces listes demandent de remettre le correctif. Aucun rollback réel n’a été exécuté.
+
+## Reçu après publication
+
+- Code publié sur `main` sans force ni merge : **`3281eb60d7e616fef9c925b1996ea65858527f8a`**. Vercel **success**. L’origine `https://sitegoat.vercel.app` répond 200 ; huit ressources JS/CSS du shell et du journal unifié correspondent exactement aux SHA-256 du build local.
+- Après déploiement, le test d’import de 100 avertissements et rechargement a été rejoué sur cette origine : **3 PASS, 0 FAIL, 0 retry**, Chromium/WebKit/Chromium mobile, profils neufs sans données personnelles. Commande : `npx playwright test --config /tmp/sitegoat-warnings-production.config.ts` ; configuration limitée à `v9-many-warnings.spec.ts` dans chaque projet, sans serveurs/proxy locaux ni préférence interactive héritée. Les logs, SHA et résumé sont conservés dans les preuves.
+- Applicabilité du retour arrière sur les deux fichiers runtime vérifiée sans mutation par `git diff --binary HEAD 72e15ad -- src/data/model.ts src/data/unified.ts | git apply --check` : PASS.
+- [CI complète automatique du commit de code](https://github.com/adrno496/sitegoat/actions/runs/40234837287) : **en cours** lors du reçu. Les vérifications locales et production ci-dessus sont terminées ; aucun résultat final de cette CI n’est encore revendiqué.

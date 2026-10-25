@@ -1,0 +1,71 @@
+{
+  "commit": "3281eb60d7e616fef9c925b1996ea65858527f8a",
+  "checkedAt": "2026-10-25T21:19:22.523Z",
+  "shellStatus": 200,
+  "assets": [
+    {
+      "asset": "/assets/index-DT_sfWYr.js",
+      "status": 200,
+      "linkedInShell": true,
+      "localSha256": "56a20d0920a516a2a7ed1f1fdc72a6e2c3347112333120c704ee8c4c1bfcc1d2",
+      "productionSha256": "56a20d0920a516a2a7ed1f1fdc72a6e2c3347112333120c704ee8c4c1bfcc1d2",
+      "sameSha": true
+    },
+    {
+      "asset": "/assets/model-BOw2W7be.js",
+      "status": 200,
+      "linkedInShell": true,
+      "localSha256": "dfab088bafa50f7c7c0a008f13fc06f660b453398dc14f2bdadaa3b2ba5a5488",
+      "productionSha256": "dfab088bafa50f7c7c0a008f13fc06f660b453398dc14f2bdadaa3b2ba5a5488",
+      "sameSha": true
+    },
+    {
+      "asset": "/assets/dialogFocus-aCKLWaOu.js",
+      "status": 200,
+      "linkedInShell": true,
+      "localSha256": "4174cfec16c6937f98e70242a3fd9c925e30880ba1f452cfa41d97443905093c",
+      "productionSha256": "4174cfec16c6937f98e70242a3fd9c925e30880ba1f452cfa41d97443905093c",
+      "sameSha": true
+    },
+    {
+      "asset": "/assets/day-vGDtmJ_4.js",
+      "status": 200,
+      "linkedInShell": true,
+      "localSha256": "afb96e33123826edd8f6a1f6bab3749d404cfeb1baf6326b92c21dc0c63b90fe",
+      "productionSha256": "afb96e33123826edd8f6a1f6bab3749d404cfeb1baf6326b92c21dc0c63b90fe",
+      "sameSha": true
+    },
+    {
+      "asset": "/assets/index-DNjbJTz1.css",
+      "status": 200,
+      "linkedInShell": true,
+      "localSha256": "5289917f0267e6c12d61f964223793852dc1e2bda2d9df900ee7ba9181e4b1b6",
+      "productionSha256": "5289917f0267e6c12d61f964223793852dc1e2bda2d9df900ee7ba9181e4b1b6",
+      "sameSha": true
+    },
+    {
+      "asset": "/assets/UnifiedWorkspace-C0BkLTdl.js",
+      "status": 200,
+      "linkedInShell": false,
+      "localSha256": "0a4c84037b5af6660bce31e7d104060c8abf3a6a22cc0d656bae47c8c7ba17e1",
+      "productionSha256": "0a4c84037b5af6660bce31e7d104060c8abf3a6a22cc0d656bae47c8c7ba17e1",
+      "sameSha": true
+    },
+    {
+      "asset": "/assets/unified-Bjv06_F_.css",
+      "status": 200,
+      "linkedInShell": false,
+      "localSha256": "2b98b5c7a7655b7a67a0412e0cb3e68a9353c783af0075324a4f5fa81b850436",
+      "productionSha256": "2b98b5c7a7655b7a67a0412e0cb3e68a9353c783af0075324a4f5fa81b850436",
+      "sameSha": true
+    },
+    {
+      "asset": "/assets/unified-CDunpCux.js",
+      "status": 200,
+      "linkedInShell": false,
+      "localSha256": "515ed224136804bf488042d73c99b2a3810fba710f83f8f2b6c4f7aa95305077",
+      "productionSha256": "515ed224136804bf488042d73c99b2a3810fba710f83f8f2b6c4f7aa95305077",
+      "sameSha": true
+    }
+  ]
+}

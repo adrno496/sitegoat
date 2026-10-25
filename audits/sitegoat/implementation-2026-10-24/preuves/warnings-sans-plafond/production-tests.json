@@ -1,0 +1,35 @@
+{
+  "runtimeCommit": "3281eb60d7e616fef9c925b1996ea65858527f8a",
+  "url": "https://sitegoat.vercel.app",
+  "stats": {
+    "startTime": "2026-10-25T21:19:20.801Z",
+    "duration": 6964.961,
+    "expected": 3,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "projects": [
+    {
+      "name": "chromium",
+      "testMatch": [
+        "/v9-many-warnings\\.spec\\.ts$/"
+      ]
+    },
+    {
+      "name": "webkit",
+      "testMatch": [
+        "/v9-many-warnings\\.spec\\.ts$/"
+      ]
+    },
+    {
+      "name": "chromium-mobile",
+      "testMatch": [
+        "/v9-many-warnings\\.spec\\.ts$/"
+      ]
+    }
+  ],
+  "freshProfiles": true,
+  "fixture": "synthetic",
+  "warningCount": 100
+}
