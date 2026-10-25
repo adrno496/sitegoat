@@ -13,6 +13,7 @@ export function createSourcesHandler({
   verifySession,
 } = {}) {
   const cache = new Map(),
+    inFlight = new Map(),
     limits = new Map();
   return async function handler(req, res) {
     res.setHeader("Cache-Control", "no-store");
@@ -105,6 +106,9 @@ export function createSourcesHandler({
       const old = cache.get(cacheKey);
       if (old && Date.now() - old.at < 15 * 60_000)
         return reply(200, { ...old.value, cached: true });
+      if (inFlight.has(cacheKey))
+        return reply(200, await inFlight.get(cacheKey));
+      if (inFlight.size >= 50) return reply(429, { code: "RATE_LIMITED" });
       const previous = limits.get(identity),
         current =
           previous && Date.now() - previous.at < 60_000
@@ -120,10 +124,16 @@ export function createSourcesHandler({
         res.setHeader("Retry-After", "60");
         return reply(429, { code: "RATE_LIMITED" });
       }
-      const value = await fetchSource(body.provider, query, env, request);
-      if (cache.size >= 50) cache.delete(cache.keys().next().value);
-      cache.set(cacheKey, { at: Date.now(), value });
-      return reply(200, value);
+      const pending = fetchSource(body.provider, query, env, request);
+      inFlight.set(cacheKey, pending);
+      try {
+        const value = await pending;
+        if (cache.size >= 50) cache.delete(cache.keys().next().value);
+        cache.set(cacheKey, { at: Date.now(), value });
+        return reply(200, value);
+      } finally {
+        inFlight.delete(cacheKey);
+      }
     } catch (e) {
       return reply(e instanceof SourceError ? e.status : 502, {
         code: e instanceof SourceError ? e.code : "PROVIDER_UNAVAILABLE",

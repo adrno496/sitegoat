@@ -1,0 +1,70 @@
+.live-watch {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+.live-tabs,
+.live-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+}
+.live-tabs {
+  margin-bottom: 1rem;
+}
+.live-tabs [aria-selected="true"] {
+  box-shadow: inset 0 -3px currentColor;
+  font-weight: 700;
+}
+.live-controls {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+.live-controls label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+.live-controls input[type="search"] {
+  width: min(100%, 32rem);
+}
+.live-controls input[type="checkbox"] {
+  width: auto;
+}
+.live-source-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 0.65rem;
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid var(--line);
+}
+.live-results {
+  display: grid;
+  gap: 1.5rem;
+}
+.live-source-result {
+  min-width: 0;
+}
+.live-entry-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 1rem;
+}
+.live-entry-grid article {
+  overflow-wrap: anywhere;
+}
+.live-imported {
+  margin-top: 1.5rem;
+}
+@media (max-width: 600px) {
+  .live-actions > button {
+    flex: 1 1 140px;
+  }
+  .live-tabs > button {
+    flex: 1 1 120px;
+  }
+}

@@ -148,7 +148,7 @@ test("navigation mobile visible et accessibilité des deux nouveaux espaces", as
       ),
     ).toBe(true);
     if (width < 700) {
-      await expect(page.locator(".mobile-nav button:visible")).toHaveCount(12);
+      await expect(page.locator(".mobile-nav button:visible")).toHaveCount(13);
       await expect(
         page
           .locator(".mobile-nav")

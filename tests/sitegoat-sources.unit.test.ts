@@ -124,7 +124,7 @@ it("Sources : aucune clé dans le catalogue, refus fournisseur sans corps d’er
   });
   const catalog = await call(handler, {}, { method: "GET" });
   expect(catalog.status).toBe(200);
-  expect(catalog.body.sources).toHaveLength(9);
+  expect(catalog.body.sources).toHaveLength(10);
   const response = await call(
     handler,
     { provider: "brave", query: "robotique actualités" },
@@ -339,5 +339,108 @@ it("Sources : une session valide d’un autre compte ne donne jamais accès aux 
       )
     ).status,
   ).toBe(401);
+  expect(request).toHaveBeenCalledTimes(1);
+});
+
+it("Radar : années et variations comparables exactes, valeurs absentes explicites, aucune fausse publication", async () => {
+  const row = (
+    year: string,
+    value: unknown,
+    indicator = "NY.GDP.MKTP.KD.ZG",
+  ) => ({
+    countryiso3code: "FRA",
+    indicator: { id: indicator },
+    date: year,
+    value,
+  });
+  const request = vi
+    .fn()
+    .mockResolvedValue(
+      new Response(
+        JSON.stringify([
+          { lastupdated: "2026-10-08" },
+          [
+            row("2023", 2),
+            row("2025", 1.5),
+            row("2024", -0.5),
+            row("2026", null),
+            row("2027", "99"),
+            row("invalid", 99),
+            row("2025", 0, "FP.CPI.TOTL.ZG"),
+            row("2023", 3, "FP.CPI.TOTL.ZG"),
+          ],
+        ]),
+      ),
+    );
+  const value = await fetchSource("worldbank", "", {}, request);
+  expect(value.entries).toHaveLength(10);
+  const gdp = value.entries.find(
+    (v: { title: string }) => v.title === "France · Croissance du PIB",
+  );
+  expect(gdp.url).toBe(
+    "https://data.worldbank.org/indicator/NY.GDP.MKTP.KD.ZG?locations=FR",
+  );
+  expect(gdp.summary).toBe(
+    "2025 : 1,5 % · 2024 : -0,5 % · variation : 2 point(s).",
+  );
+  const inflation = value.entries.find(
+    (v: { title: string }) => v.title === "France · Inflation",
+  );
+  expect(inflation.summary).toBe(
+    "2025 : 0 % · comparaison annuelle indisponible.",
+  );
+  expect(
+    value.entries.filter(
+      (v: { summary: string }) =>
+        v.summary === "Donnée non fournie pour cette série.",
+    ),
+  ).toHaveLength(8);
+  expect(
+    value.entries.every((v: { publishedAt?: string }) => !v.publishedAt),
+  ).toBe(true);
+  expect(request.mock.calls[0][0]).toMatch(
+    /^https:\/\/api.worldbank.org\/v2\/country\/WLD;FRA;EMU;USA;CHN\/indicator\//,
+  );
+  expect(request.mock.calls[0][1].headers.Authorization).toBeUndefined();
+  expect(
+    value.entries.every((v: { url: string }) =>
+      v.url.startsWith("https://data.worldbank.org/indicator/"),
+    ),
+  ).toBe(true);
+});
+it.each([{}, [null, null], { message: "invalid indicator" }])(
+  "Radar : contrat Banque mondiale invalide refusé %j",
+  async (body) => {
+    await expect(
+      fetchSource(
+        "worldbank",
+        "",
+        {},
+        async () => new Response(JSON.stringify(body)),
+      ),
+    ).rejects.toMatchObject({ code: "INVALID_RESPONSE" });
+  },
+);
+it("Sources : appels concurrents mutualisés après authentification, une seule consommation fournisseur", async () => {
+  let release!: (response: Response) => void;
+  const request = vi.fn(
+    () =>
+      new Promise<Response>((resolve) => {
+        release = resolve;
+      }),
+  );
+  const verifySession = vi.fn(async () => "owner");
+  const handler = createSourcesHandler({ env, request, verifySession });
+  const body = { provider: "brave", query: "robotique" },
+    options = { token: "Bearer owner" };
+  const first = call(handler, body, options),
+    second = call(handler, body, options);
+  await vi.waitFor(() => expect(verifySession).toHaveBeenCalledTimes(2));
+  await vi.waitFor(() => expect(request).toHaveBeenCalledTimes(1));
+  expect((await call(handler, body)).status).toBe(401);
+  release(new Response(JSON.stringify({ results: [result] })));
+  const replies = await Promise.all([first, second]);
+  expect(replies.map((r) => r.status)).toEqual([200, 200]);
+  expect(replies[0].body).toEqual(replies[1].body);
   expect(request).toHaveBeenCalledTimes(1);
 });

@@ -112,11 +112,13 @@ import type { FutureFile } from "./features/future/import";
 const UnifiedWorkspace = lazy(
   () => import("./features/unified/UnifiedWorkspace"),
 );
+const LiveWatch = lazy(() => import("./features/v9/LiveWatch"));
 const FutureView = lazy(() => import("./features/future/FutureView"));
 const FutureImportDialog = lazy(() => import("./features/future/ImportDialog"));
 type Tab =
   | "home"
   | "today"
+  | "live"
   | "quick"
   | "library"
   | "articles"
@@ -131,6 +133,7 @@ const tabs = [
   { id: "today" as const, label: "Aujourd’hui", icon: Home },
   { id: "quick" as const, label: "Actualité rapide", icon: Newspaper },
   { id: "articles" as const, label: "Articles", icon: FileText },
+  { id: "live" as const, label: "En direct", icon: RefreshCw },
   { id: "library" as const, label: "Bibliothèque", icon: Library },
   { id: "ai-major" as const, label: "IA majeur", icon: Brain },
   { id: "sentinel" as const, label: "Sentinel", icon: Shield },
@@ -165,7 +168,7 @@ function JournalApp() {
   const visibleTabs = tabs.filter(
     (t) =>
       extraNavigation ||
-      ["home", "today", "quick", "articles", "settings"].includes(t.id),
+      ["home", "today", "quick", "articles", "live", "settings"].includes(t.id),
   );
   const [importsDiagnosticOpen, setImportsDiagnosticOpen] = useState(false);
   const [todayPanel, setTodayPanel] = useState("overview");
@@ -1194,6 +1197,15 @@ function JournalApp() {
                 onSettings={() => navigate("settings")}
               />
             </div>
+          )}
+          {data.ready && tab === "live" && !current && !selectedDay && (
+            <Suspense fallback={<p>Ouverture de la veille en direct…</p>}>
+              <LiveWatch
+                editions={allEditions}
+                accessToken={session?.access_token}
+                onSettings={() => navigate("settings")}
+              />
+            </Suspense>
           )}
           {data.ready && tab === "future" && !current && !selectedDay && (
             <Suspense fallback={<p>Ouverture de Le Futur…</p>}>

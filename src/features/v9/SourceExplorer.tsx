@@ -21,8 +21,8 @@ export const sourceResultSchema = z
     cached: z.boolean().optional(),
   })
   .strict();
-type SourceResult = z.infer<typeof sourceResultSchema>;
-const catalogSchema = z.object({
+export type SourceResult = z.infer<typeof sourceResultSchema>;
+export const catalogSchema = z.object({
   sources: z
     .array(
       z.object({
@@ -35,10 +35,17 @@ const catalogSchema = z.object({
     )
     .max(12),
 });
-const DEFAULT_SOURCES = [
+export const DEFAULT_SOURCES = [
   {
     id: "ecb",
     label: "Économie · devises BCE",
+    search: false,
+    private: false,
+    available: true,
+  },
+  {
+    id: "worldbank",
+    label: "Économie · Banque mondiale",
     search: false,
     private: false,
     available: true,
@@ -78,7 +85,7 @@ export function readSourceCache(): SourceResult[] {
     return [];
   }
 }
-function saveSourceResult(value: SourceResult) {
+export function saveSourceResult(value: SourceResult) {
   const next = [
     value,
     ...readSourceCache().filter(
@@ -101,6 +108,44 @@ const ERRORS: Record<string, string> = {
   PUBLIC_QUERY_REQUIRED:
     "Utilisez quelques mots publics, sans clé, adresse e-mail ni donnée privée.",
 };
+export async function requestSource(
+  source: (typeof DEFAULT_SOURCES)[number],
+  query: string,
+  accessToken?: string,
+  signal?: AbortSignal,
+): Promise<SourceResult> {
+  const response = await fetch("/api/sources", {
+    method: "POST",
+    credentials: "omit",
+    headers: {
+      "Content-Type": "application/json",
+      ...(source.private && accessToken
+        ? { Authorization: `Bearer ${accessToken}` }
+        : {}),
+    },
+    body: JSON.stringify({
+      provider: source.id,
+      ...(source.search ? { query } : {}),
+    }),
+    signal: signal
+      ? AbortSignal.any([signal, AbortSignal.timeout(20000)])
+      : AbortSignal.timeout(20000),
+  });
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw Error(
+      ERRORS[error.code] ||
+        "Cette source est indisponible. Les résultats conservés restent lisibles.",
+    );
+  }
+  const value = sourceResultSchema.parse(await response.json());
+  if (
+    value.provider !== source.id ||
+    value.query !== (source.search ? query.trim() : "")
+  )
+    throw Error("Réponse incompatible avec la source demandée.");
+  return value;
+}
 export function SourceExplorer({
   accessToken,
   onSettings,
@@ -138,29 +183,7 @@ export function SourceExplorer({
     setBusy(true);
     setNotice("");
     try {
-      const response = await fetch("/api/sources", {
-        method: "POST",
-        credentials: "omit",
-        headers: {
-          "Content-Type": "application/json",
-          ...(selected.private && accessToken
-            ? { Authorization: `Bearer ${accessToken}` }
-            : {}),
-        },
-        body: JSON.stringify({
-          provider: source,
-          ...(selected.search ? { query } : {}),
-        }),
-        signal: AbortSignal.timeout(20000),
-      });
-      if (!response.ok) {
-        const error = await response.json().catch(() => ({}));
-        throw Error(
-          ERRORS[error.code] ||
-            "Cette source est indisponible. Les résultats conservés restent lisibles.",
-        );
-      }
-      const value = sourceResultSchema.parse(await response.json());
+      const value = await requestSource(selected, query, accessToken);
       setResult(value);
       try {
         setHistory(saveSourceResult(value));

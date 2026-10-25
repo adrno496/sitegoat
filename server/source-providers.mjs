@@ -14,6 +14,7 @@ export const SOURCES = [
   },
   { id: "exa", label: "Recherche · Exa", key: "EXA_API_KEY", search: true },
   { id: "ecb", label: "Économie · devises BCE" },
+  { id: "worldbank", label: "Économie · Banque mondiale" },
   { id: "cisa", label: "Cybersécurité · CISA" },
   ...[
     ["vscode", "microsoft/vscode"],
@@ -200,6 +201,9 @@ export async function fetchSource(
     };
   } else if (provider === "ecb")
     endpoint = "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml";
+  else if (provider === "worldbank")
+    endpoint =
+      "https://api.worldbank.org/v2/country/WLD;FRA;EMU;USA;CHN/indicator/NY.GDP.MKTP.KD.ZG;FP.CPI.TOTL.ZG?source=2&format=json&per_page=100&mrnev=2";
   else if (provider === "cisa")
     endpoint =
       "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json";
@@ -240,7 +244,48 @@ export async function fetchSource(
     } catch {
       throw new SourceError("INVALID_RESPONSE");
     }
-    if (provider === "brave")
+    if (provider === "worldbank") {
+      if (!Array.isArray(body) || !Array.isArray(body[1]))
+        throw new SourceError("INVALID_RESPONSE");
+      const number = new Intl.NumberFormat("fr-FR", {
+        maximumFractionDigits: 2,
+      });
+      entries = [];
+      for (const [country, label, location] of [
+        ["WLD", "Monde", "1W"],
+        ["FRA", "France", "FR"],
+        ["EMU", "Zone euro", "XC"],
+        ["USA", "États-Unis", "US"],
+        ["CHN", "Chine", "CN"],
+      ]) {
+        for (const [indicator, name] of [
+          ["NY.GDP.MKTP.KD.ZG", "Croissance du PIB"],
+          ["FP.CPI.TOTL.ZG", "Inflation"],
+        ]) {
+          const series = body[1]
+            .filter(
+              (v) =>
+                v?.countryiso3code === country &&
+                v?.indicator?.id === indicator &&
+                /^\d{4}$/.test(v.date) &&
+                typeof v.value === "number" &&
+                Number.isFinite(v.value),
+            )
+            .sort((a, b) => Number(b.date) - Number(a.date));
+          const latest = series[0],
+            previous = series.find(
+              (v) => latest && Number(v.date) === Number(latest.date) - 1,
+            );
+          entries.push({
+            title: `${label} · ${name}`,
+            summary: latest
+              ? `${latest.date} : ${number.format(latest.value)} %${previous ? ` · ${previous.date} : ${number.format(previous.value)} % · variation : ${number.format(latest.value - previous.value)} point(s)` : " · comparaison annuelle indisponible"}.`
+              : "Donnée non fournie pour cette série.",
+            url: `https://data.worldbank.org/indicator/${indicator}?locations=${location}`,
+          });
+        }
+      }
+    } else if (provider === "brave")
       entries = (body.results || []).map((v) => ({
         ...v,
         summary: v.description,

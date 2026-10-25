@@ -45,6 +45,7 @@ for (const [name, type, width] of [
     sourceBriefs: q?.items?.length || 0,
     sourcePrompts: p?.promptAssets?.length || 0,
     cloudTransfers: 0,
+    publicApiCalls: [],
     downloadIntervalMs: Number(
       process.env.SITEGOAT_DOWNLOAD_INTERVAL_MS ?? 1100,
     ),
@@ -69,8 +70,14 @@ for (const [name, type, width] of [
       : u.origin === origin &&
           u.pathname === "/api/sources" &&
           r.request().method() === "POST" &&
-          r.request().postData() === JSON.stringify({ provider: "ecb" })
-        ? r.continue()
+          ["ecb", "worldbank"].some(
+            (provider) =>
+              r.request().postData() === JSON.stringify({ provider }),
+          )
+        ? (result.publicApiCalls.push(
+            JSON.parse(r.request().postData()).provider,
+          ),
+          r.continue())
         : r.abort();
   });
   const nav = async (label) => {
@@ -98,6 +105,35 @@ for (const [name, type, width] of [
         timeout: 30000,
       })
       .toBe(true);
+    phase = "live-radar";
+    await nav("En direct");
+    await expect(
+      page.getByRole("heading", { name: "Veille en direct" }),
+    ).toBeVisible();
+    expect(result.publicApiCalls).toHaveLength(0);
+    await page
+      .getByRole("button", { name: "Actualiser maintenant", exact: true })
+      .click();
+    await expect(page.locator(".live-results article")).toHaveCount(16);
+    await expect(page.locator(".live-controls").getByRole("status")).toHaveText(
+      "Suivi en pause",
+    );
+    await page
+      .getByRole("tab", { name: "Radar économique mondial", exact: true })
+      .click();
+    await expect(page.getByRole("tabpanel")).toContainText(
+      "France · Croissance du PIB",
+    );
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    result.liveRadarRows = 16;
+    await page.screenshot({
+      path: `audits/sitegoat/implementation-2026-10-24/preuves/production-live-${name}.png`,
+      fullPage: true,
+    });
     phase = "public-api";
     await nav("Actualité rapide");
     await page.getByRole("tab", { name: "Sources", exact: true }).click();
@@ -299,6 +335,21 @@ for (const [name, type, width] of [
     await page.getByRole("tab", { name: "Sources", exact: true }).click();
     await expect(page.locator(".source-results article")).toHaveCount(6);
     result.publicSourceOfflineReload = true;
+    await nav("En direct");
+    await expect(page.locator(".live-results article")).toHaveCount(16);
+    await expect(
+      page.locator(".live-controls").getByRole("status"),
+    ).toContainText("Hors ligne");
+    await expect(
+      page.getByRole("button", { name: "Démarrer le suivi", exact: true }),
+    ).toBeDisabled();
+    await page
+      .getByRole("tab", { name: "Radar économique mondial", exact: true })
+      .click();
+    await expect(page.getByRole("tabpanel")).toContainText(
+      "France · Croissance du PIB",
+    );
+    result.liveRadarOfflineReload = true;
     await nav("Aujourd’hui");
     const metadata = page.locator(".event-card .editorial-metadata").first();
     await expect(metadata.locator("time")).toHaveCount(1);
